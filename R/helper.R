@@ -1,4 +1,4 @@
-names_semicolon <- function() {
+names_semicolon <- function(value_labels, codebook_column_spaces) {
   matches <- rev(unique(grep(paste(
     codebook_column_spaces$column_number,
     collapse = "|"),
@@ -34,13 +34,23 @@ value_label_matrixer <- function(value_label_section) {
                                                c("", " ", "/" )]
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
   value_label_section[,1] <- trimws(value_label_section[,1])
+
+  # for digits under 10 this fixes the error where it starts with 0
+  # and doesn't match dataset
+  if (length(grepl("^0", value_label_section[,1])) > 0) {
+  under10 <- matrix(value_label_section[grepl("^0",value_label_section[,1]),],
+                    ncol = 2, byrow = FALSE)
+  under10[,1] <- gsub("^0", "", under10[,1])
+  value_label_section <- rbind(value_label_section, under10)
+  }
+
   colnames(value_label_section) <- c(column_name, "variable_fixer12345")
   value_label_section <- data.table::data.table(value_label_section)
   return(value_label_section)
 }
 
 
-fix_variable_values <- function(variable_fix) {
+fix_variable_values <- function(dataset, variable_fix) {
   dataset[, names(variable_fix)[1] :=
             as.character(get(names(variable_fix)[1]))]
   dataset2 <- variable_fix[dataset, on = names(variable_fix)[1]]

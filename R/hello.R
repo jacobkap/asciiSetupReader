@@ -80,8 +80,9 @@ spss_reader <- function(dataset_name, spss_name) {
 
 
   names(codebook_column_spaces) <- c("column_number", "first_num", "second_num")
-  codebook_column_spaces[,2:3] <- apply(codebook_column_spaces[2:3], 2,
-                                        as.numeric)
+  codebook_column_spaces[,2:3] <- suppressWarnings(
+                                   apply(codebook_column_spaces[2:3], 2,
+                                        as.numeric))
   codebook_column_spaces <- codebook_column_spaces[
             !is.na(codebook_column_spaces[,2]),]
 
@@ -107,7 +108,7 @@ spss_reader <- function(dataset_name, spss_name) {
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
 
 
-  value_labels <- names_semicolon()
+  value_labels <- names_semicolon(value_labels, codebook_column_spaces)
 
   all_column_names <- paste(codebook_column_spaces$column_number,
                             collapse = "|")
@@ -128,7 +129,7 @@ spss_reader <- function(dataset_name, spss_name) {
     }
     variable_fix <-  value_label_matrixer(value_label_section)
     listing[[count]] <- variable_fix
-    dataset <- fix_variable_values(variable_fix)
+    dataset <- fix_variable_values(dataset, variable_fix)
     count <- count + 1
   }
   data.table::setcolorder(dataset, column_order)
