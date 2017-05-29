@@ -119,7 +119,6 @@ spss_reader <- function(dataset_name, spss_name) {
   # }
 
   listing <- vector("list", length(matching_rows))
-  count <- 1
   for (i in seq(1, length(matching_rows), 1)) {
     if (i < length(matching_rows)) {
       value_label_section <-
@@ -130,7 +129,7 @@ spss_reader <- function(dataset_name, spss_name) {
     variable_fix <-  value_label_matrixer(value_label_section)
     listing[[count]] <- variable_fix
     dataset <- fix_variable_values(dataset, variable_fix)
-    count <- count + 1
+
   }
   data.table::setcolorder(dataset, column_order)
 

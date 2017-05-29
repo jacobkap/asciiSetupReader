@@ -35,13 +35,24 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
   value_label_section[,1] <- trimws(value_label_section[,1])
 
-  # for digits under 10 this fixes the error where it starts with 0
+  # for digits under 10 this fixes the error where it starts WITH 0
   # and doesn't match dataset
-  if (length(grepl("^0", value_label_section[,1])) > 0) {
-  under10 <- matrix(value_label_section[grepl("^0",value_label_section[,1]),],
+  if (length(grepl("^0[0-9]", value_label_section[,1])) > 0) {
+  under10 <- matrix(value_label_section[grepl("^0[0-9]",
+                    value_label_section[,1]),],
                     ncol = 2, byrow = FALSE)
-  under10[,1] <- gsub("^0", "", under10[,1])
+  under10[,1] <- gsub("^0([0-9])", "\\1", under10[,1])
   value_label_section <- rbind(value_label_section, under10)
+  }
+
+  # for digits under 10 this fixes the error where it starts withOUT 0
+  # and doesn't match dataset
+  if (length(grepl("^[0-9]$", value_label_section[,1])) > 0) {
+    under10 <- matrix(value_label_section[grepl("^[0-9]$",
+                      value_label_section[,1]),],
+                      ncol = 2, byrow = FALSE)
+    under10[,1] <- paste0("0", under10[,1])
+    value_label_section <- rbind(value_label_section, under10)
   }
 
   colnames(value_label_section) <- c(column_name, "variable_fixer12345")
