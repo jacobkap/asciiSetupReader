@@ -32,6 +32,8 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- stringr::str_split(value_label_section, "'")[[1]]
   value_label_section <- value_label_section[!value_label_section  %in%
                                                c("", " ", "/" )]
+
+
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
   value_label_section[,1] <- trimws(value_label_section[,1])
 
@@ -56,7 +58,9 @@ value_label_matrixer <- function(value_label_section) {
   }
   value_label_section <-
       value_label_section[!duplicated(value_label_section[,1]),]
+  if (!is.matrix(value_label_section)) {
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
+  }
   colnames(value_label_section) <- c(column_name, "variable_fixer12345")
   value_label_section <- data.table::data.table(value_label_section)
   return(value_label_section)
