@@ -19,7 +19,7 @@
 #' example2 <- spssSetup(dataset_name = "juvenile_jails_1994_5.txt",
 #' setup_file_name = "juvenile_jails_1994_5.sps", smart_col_class = TRUE)
 spss_reader <- function(dataset_name, spss_name) {
-  codebook <- readr::read_lines(spss_name)
+  codebook <- suppressMessages(readr::read_lines(spss_name))
   codebook <- trimws(codebook)
   codebook <- codebook[grep("^DATA LIST",
                                 codebook)[length(grep("^DATA LIST",
@@ -103,6 +103,7 @@ spss_reader <- function(dataset_name, spss_name) {
 
   end_row = grep("\\*|^\\.$", codebook[,1])
   end_row <- end_row[end_row > value_start][1] - 1
+  if (is.na(end_row)) { end_row <- nrow(codebook) }
   value_labels <- codebook[value_start:end_row,]
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
