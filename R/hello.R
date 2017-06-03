@@ -31,7 +31,7 @@ spss_reader <- function(dataset_name, spss_name) {
                                           ignore.case = TRUE, codebook[,1]):
                                        grep("^value labels$",
                                             ignore.case = TRUE, codebook[,1]),]
-  codebook_variables <- gsub("\\s{2,}", " ", codebook_variables)
+  # codebook_variables <- gsub("\\s{2,}", " ", codebook_variables)
   codebook_variables <- data.frame(column_number =
                                      unlist(strsplit(codebook_variables,
                                      "\\s{2,}")), stringsAsFactors = FALSE)
@@ -91,9 +91,9 @@ spss_reader <- function(dataset_name, spss_name) {
   codebook_column_spaces$length <- lapply(x, length)
   codebook_column_spaces$length <- as.numeric(codebook_column_spaces$length)
 
-  dataset <- readr::read_fwf(dataset_name,
+  dataset <- suppressMessages(readr::read_fwf(dataset_name,
                        readr::fwf_widths(codebook_column_spaces$length,
-                       codebook_column_spaces$column_number))
+                       codebook_column_spaces$column_number)))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
