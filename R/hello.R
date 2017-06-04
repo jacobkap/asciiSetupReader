@@ -31,10 +31,18 @@ spss_reader <- function(dataset_name, spss_name) {
                                           ignore.case = TRUE, codebook[,1]):
                                        grep("^value labels$",
                                             ignore.case = TRUE, codebook[,1]),]
-  # codebook_variables <- gsub("\\s{2,}", " ", codebook_variables)
-  codebook_variables <- data.frame(column_number =
-                                     unlist(strsplit(codebook_variables,
+  if (any(stringr::str_count(codebook_variables, '\\"') > 2 |
+      stringr::str_count(codebook_variables, "\\'") > 2)) {
+    codebook_variables <- data.frame(column_number =
+                                       unlist(strsplit(codebook_variables,
                                      "\\s{2,}")), stringsAsFactors = FALSE)
+  } else {
+    codebook_variables <- gsub("\\s{2,}", " ", codebook_variables)
+    codebook_variables <- data.frame(column_number =
+                                       unlist(strsplit(codebook_variables,
+                                       "\\s{2,}")), stringsAsFactors = FALSE)
+  }
+
   codebook_variables[,1] <- gsub("\'", "\"", codebook_variables[,1])
 
   codebook_variables$column_name <- gsub(".*\"(.*)\"", "\\1",
