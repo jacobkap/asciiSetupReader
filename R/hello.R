@@ -137,8 +137,10 @@ spss_reader <- function(dataset_name, spss_name) {
       value_label_section <- value_labels[matching_rows[i]:length(value_labels)]
     }
     variable_fix <-  value_label_matrixer(value_label_section)
+    if (nrow(variable_fix) < nrow(dataset)/2) {
     listing[[count]] <- variable_fix
     dataset <- fix_variable_values(dataset, variable_fix)
+    }
     count <- count + 1
 
   }
