@@ -57,7 +57,7 @@ spss_reader <- function(dataset_name, spss_name) {
 
 
 
-  codebook_column_spaces <- data.frame(codebook[,1][grep("DATA LIST FILE",
+  codebook_column_spaces <- data.frame(codebook[,1][grep("DATA LIST",
                           ignore.case = TRUE, codebook[,1]):
                        grep("^variable labels$",
                             ignore.case = TRUE, codebook[,1])],
