@@ -94,13 +94,14 @@ spss_reader <- function(dataset_name, spss_name) {
   codebook_column_spaces <- codebook_column_spaces[
             !is.na(codebook_column_spaces[,2]),]
 
-  x = mapply(seq, codebook_column_spaces$first_num,
-             codebook_column_spaces$second_num)
-  codebook_column_spaces$length <- lapply(x, length)
-  codebook_column_spaces$length <- as.numeric(codebook_column_spaces$length)
+  # x = mapply(seq, codebook_column_spaces$first_num,
+  #            codebook_column_spaces$second_num)
+  # codebook_column_spaces$length <- lapply(x, length)
+  # codebook_column_spaces$length <- as.numeric(codebook_column_spaces$length)
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                       readr::fwf_widths(codebook_column_spaces$length,
+                       readr::fwf_positions(codebook_column_spaces$first,
+                                            codebook_column_spaces$second_num,
                        codebook_column_spaces$column_number)))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
