@@ -68,6 +68,7 @@ value_label_matrixer <- function(value_label_section) {
 
 
 fix_variable_values <- function(dataset, variable_fix) {
+  variable_fixer12345 <- NULL
   dataset[, names(variable_fix)[1] :=
             as.character(get(names(variable_fix)[1]))]
   dataset2 <- variable_fix[dataset, on = names(variable_fix)[1]]

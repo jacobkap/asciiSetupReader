@@ -1,46 +1,68 @@
 #' Read ASCII file using SPSS Setup file
 #'
 #' @param dataset_name
-#' Name of the ASCII file
-#' @param setup_file_name
-#' Name of the SPSS Setup file
+#' Name of the ASCII file with the data
+#' @param sps_name
+#' Name of the SPSS Setup file - should be a .sps or .txt file.
+#' @param value_label_fix
+#' If TRUE, fixes value labels of the data. e.g. If a column is "sex" and has
+#' values of 0 or 1, and the setup file says 0 = male and 1 = female, it will
+#' make that change. The reader is much faster is this parameter is FALSE.
+#' @param real_names
+#' If TRUE fixes column names from default column name in the SPSS setup file
+#' (e.g. V1, V2) to the name is says the column is calle (e.g. age, sex, etc.)
 #' @return
-#' Data frame of the data from the ASCII file
+#' Data.frame of the data from the ASCII file
 #' @export
 #'
 #' @examples
 #'
-#' # The juvenile jails dataset contains info about jails that house
-#' # juveniles in the United States in 1995
+#' \dontrun{
+#' example <- spss_reader(dataset_name = system.file("extdata",
+#' "example_data.txt", package = "asciiReader"),
+#' sps_name = system.file("extdata", "example_sps.txt", package = "asciiReader"))
+#' }
+#' # Does not fix value labels
+#' example2 <- spss_reader(dataset_name = system.file("extdata",
+#' "example_data.txt", package = "asciiReader"), sps_name = system.file("extdata",
+#'  "example_sps.txt", package = "asciiReader"), value_label_fix = FALSE)
 #'
-#' example <- spssSetup(dataset_name = "juvenile_jails_1994_5.txt",
-#' setup_file_name = "juvenile_jails_1994_5.sps")
-#'
-#' example2 <- spssSetup(dataset_name = "juvenile_jails_1994_5.txt",
-#' setup_file_name = "juvenile_jails_1994_5.sps", smart_col_class = TRUE)
-spss_reader <- function(dataset_name, spss_name) {
-  codebook <- suppressMessages(readr::read_lines(spss_name))
+#' \dontrun{
+#' # Keeps original column names
+#' example3 <- spss_reader(dataset_name = system.file("extdata",
+#' "example_data.txt", package = "asciiReader"), sps_name = system.file("extdata",
+#'  "example_sps.txt", package = "asciiReader"), real_names = FALSE)
+#'  }
+spss_reader <- function(dataset_name,
+                        sps_name,
+                        value_label_fix = TRUE,
+                        real_names = TRUE) {
+
+
+  codebook <- suppressMessages(readr::read_lines(sps_name))
+  codebook <- iconv(codebook, 'UTF-8', 'ASCII')
   codebook <- trimws(codebook)
   codebook <- codebook[grep("^DATA LIST",
-                                codebook)[length(grep("^DATA LIST",
-                                codebook))]:length(codebook)]
+                            codebook)[length(grep("^DATA LIST",
+                                                  codebook))]:length(codebook)]
   codebook <- data.frame(codebook, stringsAsFactors = FALSE)
 
   # Get the column names
   codebook_variables <- codebook[grep("^variable labels$",
-                                          ignore.case = TRUE, codebook[,1]):
-                                       grep("^value labels$",
-                                            ignore.case = TRUE, codebook[,1]),]
-  if (any(stringr::str_count(codebook_variables, '\\"') > 2 |
-      stringr::str_count(codebook_variables, "\\'") > 2)) {
+                                      ignore.case = TRUE, codebook[,1]):
+                                   grep("^value labels$",
+                                        ignore.case = TRUE, codebook[,1]),]
+  temp <- any(stringr::str_count(codebook_variables, '\\"') > 2 |
+                stringr::str_count(codebook_variables, "\\'") > 2)
+  if (!is.na(temp && temp == TRUE)) {
     codebook_variables <- data.frame(column_number =
                                        unlist(strsplit(codebook_variables,
-                                     "\\s{2,}")), stringsAsFactors = FALSE)
+                                                       "\\s{2,}")), stringsAsFactors = FALSE)
   } else {
     codebook_variables <- gsub("\\s{2,}", " ", codebook_variables)
     codebook_variables <- data.frame(column_number =
                                        unlist(strsplit(codebook_variables,
-                                       "\\s{2,}")), stringsAsFactors = FALSE)
+                                                       "\\s{2,}")), stringsAsFactors = FALSE)
   }
 
   codebook_variables[,1] <- gsub("\'", "\"", codebook_variables[,1])
@@ -50,7 +72,7 @@ spss_reader <- function(dataset_name, spss_name) {
   codebook_variables$column_number <- gsub("(.*) \".*", "\\1",
                                            codebook_variables$column_number)
   codebook_variables$column_name <- gsub(" ", "_",
-                                           codebook_variables$column_name)
+                                         codebook_variables$column_name)
   codebook_variables$column_name <- gsub("_/$", "",
                                          codebook_variables$column_name)
 
@@ -58,17 +80,17 @@ spss_reader <- function(dataset_name, spss_name) {
 
 
   codebook_column_spaces <- data.frame(codebook[,1][grep("DATA LIST",
-                          ignore.case = TRUE, codebook[,1]):
-                       grep("^variable labels$",
-                            ignore.case = TRUE, codebook[,1])],
-                       stringsAsFactors = FALSE)
+                                                         ignore.case = TRUE, codebook[,1]):
+                                                      grep("^variable labels$",
+                                                           ignore.case = TRUE, codebook[,1])],
+                                       stringsAsFactors = FALSE)
 
 
   codebook_column_spaces[,1] <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                                      codebook_column_spaces[,1])
 
-    codebook_column_spaces <- unlist(
-      strsplit(codebook_column_spaces[,1], "\\s{2,}"))
+  codebook_column_spaces <- unlist(
+    strsplit(codebook_column_spaces[,1], "\\s{2,}"))
   codebook_column_spaces <- data.frame(codebook_column_spaces,
                                        stringsAsFactors = FALSE)
   codebook_column_spaces[,1] <- gsub("\\(.*", "", codebook_column_spaces[,1])
@@ -84,25 +106,20 @@ spss_reader <- function(dataset_name, spss_name) {
   codebook_column_spaces[,2] <- splitted2[[1]]
   codebook_column_spaces[,3] <- ifelse(is.na(codebook_column_spaces[,3]),
                                        codebook_column_spaces[,2],
-         codebook_column_spaces[,3])
+                                       codebook_column_spaces[,3])
 
 
   names(codebook_column_spaces) <- c("column_number", "first_num", "second_num")
   codebook_column_spaces[,2:3] <- suppressWarnings(
-                                   apply(codebook_column_spaces[2:3], 2,
-                                        as.numeric))
+    apply(codebook_column_spaces[2:3], 2,
+          as.numeric))
   codebook_column_spaces <- codebook_column_spaces[
-            !is.na(codebook_column_spaces[,2]),]
-
-  # x = mapply(seq, codebook_column_spaces$first_num,
-  #            codebook_column_spaces$second_num)
-  # codebook_column_spaces$length <- lapply(x, length)
-  # codebook_column_spaces$length <- as.numeric(codebook_column_spaces$length)
+    !is.na(codebook_column_spaces[,2]),]
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                       readr::fwf_positions(codebook_column_spaces$first,
-                                            codebook_column_spaces$second_num,
-                       codebook_column_spaces$column_number)))
+                                              readr::fwf_positions(codebook_column_spaces$first,
+                                                                   codebook_column_spaces$second_num,
+                                                                   codebook_column_spaces$column_number)))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
@@ -118,15 +135,13 @@ spss_reader <- function(dataset_name, spss_name) {
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
 
 
+  if (value_label_fix) {
   value_labels <- names_semicolon(value_labels, codebook_column_spaces)
 
   all_column_names <- paste(codebook_column_spaces$column_number,
                             collapse = "|")
 
   matching_rows <- grep(all_column_names, value_labels)
-  # if (length(matching_rows) %% 2 != 0) {
-  # matching_rows <- c(matching_rows, length(value_labels))
-  # }
 
   listing <- vector("list", length(matching_rows))
   count <- 1
@@ -139,22 +154,24 @@ spss_reader <- function(dataset_name, spss_name) {
     }
     variable_fix <-  value_label_matrixer(value_label_section)
     if (nrow(variable_fix) < nrow(dataset)/2) {
-    listing[[count]] <- variable_fix
-    dataset <- fix_variable_values(dataset, variable_fix)
+      listing[[count]] <- variable_fix
+      dataset <- fix_variable_values(dataset, variable_fix)
     }
     count <- count + 1
 
   }
   data.table::setcolorder(dataset, column_order)
+  }
 
-
+  if (real_names) {
   # Fixes column names to real names
   for (n in 1:nrow(codebook_variables)) {
     names(dataset)[which(names(dataset) ==
-                             codebook_variables$column_number[n])] <-
+                           codebook_variables$column_number[n])] <-
       codebook_variables$column_name[n]
   }
-
+  }
 
   return(dataset)
 }
+
