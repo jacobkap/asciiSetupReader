@@ -3,10 +3,6 @@ title: "Introduction to asciiReader"
 author: "Jacob Kaplan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 Some datasets are only available in fixed-width delimited  (this means the each row has the same number of characters) text files (.txt) that have an SPSS setup file (.sps) that tells the SPSS software how to read in the data. This package allows R to read in this type of data by mimicking SPSS' process. To use it you need a text file containing data and the corresponding SPSS setup file. SPSS setup files come with the file extention .sps but changing it to .txt will work the same.
