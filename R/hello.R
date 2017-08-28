@@ -17,30 +17,30 @@
 #'
 #' @examples
 #'
+#' data_name <- system.file("extdata", "example_data.txt",
+#'  package = "asciiSetupReader")
+#' sps_name <- system.file("extdata", "example_setup.sps",
+#' package = "asciiSetupReader")
+#'
 #' \dontrun{
-#' example <- spss_reader(dataset_name = system.file("extdata",
-#' "example_data.txt", package = "asciiReader"),
-#' sps_name = system.file("extdata", "example_sps.txt", package = "asciiReader"))
+#' example <- spss_ascii_reader(dataset_name = data_name,
+#' sps_name = sps_name)
 #' }
 #' # Does not fix value labels
-#' example2 <- spss_reader(dataset_name = system.file("extdata",
-#' "example_data.txt", package = "asciiReader"), sps_name = system.file("extdata",
-#'  "example_sps.txt", package = "asciiReader"), value_label_fix = FALSE)
+#' example2 <- spss_ascii_reader(dataset_name = data_name,
+#' sps_name = sps_name, value_label_fix = FALSE)
 #'
 #' \dontrun{
 #' # Keeps original column names
-#' example3 <- spss_reader(dataset_name = system.file("extdata",
-#' "example_data.txt", package = "asciiReader"), sps_name = system.file("extdata",
-#'  "example_sps.txt", package = "asciiReader"), real_names = FALSE)
+#' example3 <- spss_ascii_reader(dataset_name = data_name,
+#' sps_name = sps_name, real_names = FALSE)
 #'  }
-spss_reader <- function(dataset_name,
+spss_ascii_reader <- function(dataset_name,
                         sps_name,
                         value_label_fix = TRUE,
                         real_names = TRUE) {
 
-
   codebook <- suppressMessages(readr::read_lines(sps_name))
-  codebook <- iconv(codebook, 'UTF-8', 'ASCII')
   codebook <- trimws(codebook)
   codebook <- codebook[grep("^DATA LIST",
                             codebook)[length(grep("^DATA LIST",

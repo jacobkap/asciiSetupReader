@@ -1,9 +1,9 @@
-Package: asciiReader
+Package: asciiSetupReader
 Type: Package
-Title: Reads SPSS files from ASCII data files (.txt) and SPSS Setup Files (.sps)
+Title: Reads SPSS Files from ASCII Data Files (.txt) and SPSS Setup Files (.sps)
 Version: 1.0
 Authors@R: person("Jacob", "Kaplan", email = "jkkaplan6@gmail.com", role = c("aut", "cre"))
-Description: Lets you open a SPSS data file using a .txt file that has the data and a .sps file with setup instructions.
+Description: Lets you open a SPSS data file using a .txt file that has the data and a .sps file with setup instructions. This will only run in a txt-sps pair in which the sps file is an SPSS setup file with instructions to open that text file. It will NOT open other text files or .sav or .por files. 
 Depends:
     R (>= 2.10),
     data.table,
