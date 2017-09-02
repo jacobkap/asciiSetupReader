@@ -8,9 +8,9 @@ names_semicolon <- function(value_labels, codebook_column_spaces) {
 
     secondi <- i + 19
     if (secondi > length(matches)) {secondi <- length(matches)}
-    matches2 <- paste0("^", matches[i:(i+19)], "$",  collapse = "|")
+    matches2 <- paste0("^", matches[i:(i + 19)], "$",  collapse = "|")
     matches2 <- paste0("(", matches2, ")")
-    matches3 <- paste0("^", matches[i:(i+19)], " ",  collapse = "|")
+    matches3 <- paste0("^", matches[i:(i + 19)], " ",  collapse = "|")
     matches3 <- paste0("(", matches3, ")")
 
     value_labels <- gsub(matches2, "\\1;;;;;", value_labels)
@@ -23,11 +23,10 @@ names_semicolon <- function(value_labels, codebook_column_spaces) {
 
 value_label_matrixer <- function(value_label_section) {
   column_name <- stringr::str_split(value_label_section, ";;;;;")[[1]][1]
-  # value_label_section <- gsub(paste0(column_name, ";;;;;"), "",
-  #                             value_label_section)
-  value_label_section <- value_label_section[-1]
-  # value_label_section <- paste(value_label_section, collapse = "")
-  value_label_section <- gsub(" {2,}| /|\\.", "", value_label_section)
+
+   value_label_section <- value_label_section[-1]
+
+   value_label_section <- gsub(" {2,}| /|\\.", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
   value_label_section <- gsub("'$", "", value_label_section)
   value_label_section <- unlist(stringr::str_split(value_label_section, "' '"))
@@ -36,38 +35,10 @@ value_label_matrixer <- function(value_label_section) {
   }
   value_label_section <- gsub("'", "", value_label_section)
   value_label_section <- trimws(value_label_section)
-  # value_label_section <- stringr::str_split(value_label_section, "'")[[1]]
-  # value_label_section <- value_label_section[!value_label_section  %in%
-  #                                              c("", " ", "/" )]
 
 
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
-  #value_label_section[,1] <- trimws(value_label_section[,1])
 
-  # for digits under 10 this fixes the error where it starts WITH 0
-  # and doesn't match dataset
-  # if (length(grepl("^0[0-9]", value_label_section[,1])) > 0) {
-  # under10 <- matrix(value_label_section[grepl("^0[0-9]",
-  #                   value_label_section[,1]),],
-  #                   ncol = 2, byrow = FALSE)
-  # under10[,1] <- gsub("^0([0-9])", "\\1", under10[,1])
-  # value_label_section <- rbind(value_label_section, under10)
-  # }
-
-  # for digits under 10 this fixes the error where it starts withOUT 0
-  # and doesn't match dataset
-  # if (length(grepl("^[0-9]$", value_label_section[,1])) > 0) {
-  #   under10 <- matrix(value_label_section[grepl("^[0-9]$",
-  #                     value_label_section[,1]),],
-  #                     ncol = 2, byrow = FALSE)
-  #   under10[,1] <- paste0("0", under10[,1])
-  #   value_label_section <- rbind(value_label_section, under10)
-  # }
-  # value_label_section <-
-  #     value_label_section[!duplicated(value_label_section[,1]),]
-  # if (!is.matrix(value_label_section)) {
-  # value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
-  # }
   colnames(value_label_section) <- c(column_name, "variable_fixer12345")
   value_label_section <- data.table::data.table(value_label_section)
   return(value_label_section)
@@ -75,15 +46,7 @@ value_label_matrixer <- function(value_label_section) {
 
 
 fix_variable_values <- function(dataset, variable_fix) {
-  # variable_fixer12345 <- NULL
-  # dataset[, names(variable_fix)[1] :=
-  #           as.character(get(names(variable_fix)[1]))]
-  # dataset2 <- variable_fix[dataset, on = names(variable_fix)[1]]
-  # dataset2[, names(variable_fix)[1] :=
-  #            as.character(get(names(variable_fix)[1]))]
-  # dataset2[!is.na(variable_fixer12345),
-  #          names(variable_fix)[1] := variable_fixer12345]
-  # dataset2[, variable_fixer12345 := NULL]
+
   column_num <- as.numeric(grep(paste0("^", names(variable_fix)[1], "$"), names(dataset)))
   dataset[[column_num]] <- gsub("^0([1-9])$", "\\1", dataset[[column_num]])
   variable_fix <- data.frame(variable_fix)

@@ -35,7 +35,6 @@ value_label_fix = FALSE)
 example[1:6, 1:4] # Look at first 6 rows and first 4 columns
 ```
 ## real_names
-This parameter, when TRUE, changes the column names from the default (e.g. V1, V2) to the actual name as specified in the SPSS setup file. Though the real names are much more descriptive, if you have code for this dataset that uses the default names, it may be necessary to set this parameter as FALSE.
 ```{r}
 example <- asciiSetupReader::spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name,
