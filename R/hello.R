@@ -17,24 +17,22 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' data_name <- system.file("extdata", "example_data.txt",
 #'  package = "asciiSetupReader")
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #' package = "asciiSetupReader")
+#' }
 #'
-#' \dontrun{
 #' example <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name)
-#' }
 #' # Does not fix value labels
 #' example2 <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name, value_label_fix = FALSE)
 #'
-#' \dontrun{
 #' # Keeps original column names
 #' example3 <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name, real_names = FALSE)
-#'  }
 spss_ascii_reader <- function(dataset_name,
                         sps_name,
                         value_label_fix = TRUE,
@@ -131,6 +129,7 @@ spss_ascii_reader <- function(dataset_name,
   end_row <- end_row[end_row > value_start][1] - 1
   if (is.na(end_row)) { end_row <- nrow(codebook) }
   value_labels <- codebook[value_start:end_row,]
+  value_labels <- gsub("&\\s+", "& ", value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
 
@@ -146,6 +145,7 @@ spss_ascii_reader <- function(dataset_name,
   listing <- vector("list", length(matching_rows))
   count <- 1
   for (i in seq(1, length(matching_rows), 1)) {
+
     if (i < length(matching_rows)) {
       value_label_section <-
         value_labels[matching_rows[i]:(matching_rows[(i + 1)]-1)]
@@ -153,12 +153,12 @@ spss_ascii_reader <- function(dataset_name,
       value_label_section <- value_labels[matching_rows[i]:length(value_labels)]
     }
     variable_fix <-  value_label_matrixer(value_label_section)
+
     if (nrow(variable_fix) < nrow(dataset)/2) {
       listing[[count]] <- variable_fix
       dataset <- fix_variable_values(dataset, variable_fix)
     }
     count <- count + 1
-
   }
   data.table::setcolorder(dataset, column_order)
   }

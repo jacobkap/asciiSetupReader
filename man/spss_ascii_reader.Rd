@@ -27,22 +27,20 @@ Read ASCII file using SPSS Setup file
 }
 \examples{
 
+\dontrun{
 data_name <- system.file("extdata", "example_data.txt",
  package = "asciiSetupReader")
 sps_name <- system.file("extdata", "example_setup.sps",
 package = "asciiSetupReader")
+}
 
-\dontrun{
 example <- spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name)
-}
 # Does not fix value labels
 example2 <- spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name, value_label_fix = FALSE)
 
-\dontrun{
 # Keeps original column names
 example3 <- spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name, real_names = FALSE)
- }
 }
