@@ -5,7 +5,7 @@
 \title{Read ASCII file using SPSS Setup file}
 \usage{
 spss_ascii_reader(dataset_name, sps_name, value_label_fix = TRUE,
-  real_names = TRUE)
+  real_names = TRUE, keep_columns = NULL)
 }
 \arguments{
 \item{dataset_name}{Name of the ASCII file with the data}
@@ -18,6 +18,10 @@ make that change. The reader is much faster is this parameter is FALSE.}
 
 \item{real_names}{If TRUE fixes column names from default column name in the SPSS setup file
 (e.g. V1, V2) to the name is says the column is calle (e.g. age, sex, etc.)}
+
+\item{keep_columns}{Specify which columns from the dataset you want. If NULL, will return all columns.
+Accepts the column number (e.g. 1:5), column name (e.g. V1, V2, etc.) or
+column label (e.g. VICTIM_NAME, CITY, etc.)}
 }
 \value{
 Data.frame of the data from the ASCII file
@@ -27,15 +31,16 @@ Read ASCII file using SPSS Setup file
 }
 \examples{
 
-\dontrun{
 data_name <- system.file("extdata", "example_data.txt",
  package = "asciiSetupReader")
 sps_name <- system.file("extdata", "example_setup.sps",
 package = "asciiSetupReader")
-}
 
+\dontrun{
 example <- spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name)
+}
+
 # Does not fix value labels
 example2 <- spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name, value_label_fix = FALSE)
@@ -43,4 +48,8 @@ sps_name = sps_name, value_label_fix = FALSE)
 # Keeps original column names
 example3 <- spss_ascii_reader(dataset_name = data_name,
 sps_name = sps_name, real_names = FALSE)
+
+# Only returns the first 5 columns
+example <- spss_ascii_reader(dataset_name = data_name,
+sps_name = sps_name, keep_columns = 1:5)
 }

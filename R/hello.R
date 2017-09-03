@@ -11,21 +11,26 @@
 #' @param real_names
 #' If TRUE fixes column names from default column name in the SPSS setup file
 #' (e.g. V1, V2) to the name is says the column is calle (e.g. age, sex, etc.)
+#' @param keep_columns
+#' Specify which columns from the dataset you want. If NULL, will return all columns.
+#' Accepts the column number (e.g. 1:5), column name (e.g. V1, V2, etc.) or
+#' column label (e.g. VICTIM_NAME, CITY, etc.)
 #' @return
 #' Data.frame of the data from the ASCII file
 #' @export
 #'
 #' @examples
 #'
-#' \dontrun{
 #' data_name <- system.file("extdata", "example_data.txt",
 #'  package = "asciiSetupReader")
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #' package = "asciiSetupReader")
-#' }
 #'
+#' \dontrun{
 #' example <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name)
+#' }
+#'
 #' # Does not fix value labels
 #' example2 <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name, value_label_fix = FALSE)
@@ -33,10 +38,15 @@
 #' # Keeps original column names
 #' example3 <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name, real_names = FALSE)
+#'
+#' # Only returns the first 5 columns
+#' example <- spss_ascii_reader(dataset_name = data_name,
+#' sps_name = sps_name, keep_columns = 1:5)
 spss_ascii_reader <- function(dataset_name,
                         sps_name,
                         value_label_fix = TRUE,
-                        real_names = TRUE) {
+                        real_names = TRUE,
+                        keep_columns = NULL) {
 
   codebook <- suppressMessages(readr::read_lines(sps_name))
   codebook <- trimws(codebook)
@@ -52,7 +62,7 @@ spss_ascii_reader <- function(dataset_name,
                                         ignore.case = TRUE, codebook[,1]),]
   temp <- any(stringr::str_count(codebook_variables, '\\"') > 2 |
                 stringr::str_count(codebook_variables, "\\'") > 2)
-  if (!is.na(temp && temp == TRUE)) {
+  if (!is.na(temp) && temp == TRUE) {
     codebook_variables <- data.frame(column_number =
                                        unlist(strsplit(codebook_variables,
                                                        "\\s{2,}")), stringsAsFactors = FALSE)
@@ -61,7 +71,7 @@ spss_ascii_reader <- function(dataset_name,
     codebook_variables <- data.frame(column_number =
                                        unlist(strsplit(codebook_variables,
                                                        "\\s{2,}")), stringsAsFactors = FALSE)
-  }
+ }
 
   codebook_variables[,1] <- gsub("\'", "\"", codebook_variables[,1])
 
@@ -113,6 +123,25 @@ spss_ascii_reader <- function(dataset_name,
           as.numeric))
   codebook_column_spaces <- codebook_column_spaces[
     !is.na(codebook_column_spaces[,2]),]
+  codebook_column_spaces <- merge(codebook_column_spaces, codebook_variables,
+                                  all.x = TRUE)
+  codebook_column_spaces <- codebook_column_spaces[
+                            order(codebook_column_spaces$first_num),]
+  codebook_column_spaces2 <- codebook_column_spaces
+
+  if (!is.null(keep_columns)) {
+    if (is.numeric(keep_columns)) {
+      codebook_column_spaces <- codebook_column_spaces[keep_columns,]
+    } else if (all(keep_columns %in% codebook_column_spaces$column_number)) {
+      codebook_column_spaces <- codebook_column_spaces[
+        codebook_column_spaces$column_number %in% keep_columns,]
+    } else if (all(keep_columns %in% codebook_column_spaces$column_name)) {
+      codebook_column_spaces <- codebook_column_spaces[
+        codebook_column_spaces$column_name %in% keep_columns,]
+    } else {
+      stop("Not all column names in 'keep_columns' are in data. Please check spelling")
+    }
+  }
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(codebook_column_spaces$first,
@@ -125,7 +154,7 @@ spss_ascii_reader <- function(dataset_name,
   value_start <- grep("^value labels$",
                       codebook[,1], ignore.case = TRUE)
 
-  end_row = grep("\\*|^\\.$", codebook[,1])
+  end_row <- grep("\\*|^\\.$", codebook[,1])
   end_row <- end_row[end_row > value_start][1] - 1
   if (is.na(end_row)) { end_row <- nrow(codebook) }
   value_labels <- codebook[value_start:end_row,]
@@ -135,15 +164,15 @@ spss_ascii_reader <- function(dataset_name,
 
 
   if (value_label_fix) {
-  value_labels <- names_semicolon(value_labels, codebook_column_spaces)
+  value_labels <- names_semicolon(value_labels, codebook_column_spaces2)
 
-  all_column_names <- paste(codebook_column_spaces$column_number,
+  all_column_names <- paste(codebook_column_spaces2$column_number,
                             collapse = "|")
 
   matching_rows <- grep(all_column_names, value_labels)
 
   listing <- vector("list", length(matching_rows))
-  count <- 1
+  # count <- 1
   for (i in seq(1, length(matching_rows), 1)) {
 
     if (i < length(matching_rows)) {
@@ -154,11 +183,12 @@ spss_ascii_reader <- function(dataset_name,
     }
     variable_fix <-  value_label_matrixer(value_label_section)
 
-    if (nrow(variable_fix) < nrow(dataset)/2) {
-      listing[[count]] <- variable_fix
+    if (names(variable_fix)[1] %in% codebook_column_spaces$column_number
+        && nrow(variable_fix) < nrow(dataset)/2) {
+#      listing[[count]] <- variable_fix
       dataset <- fix_variable_values(dataset, variable_fix)
     }
-    count <- count + 1
+ #   count <- count + 1
   }
   data.table::setcolorder(dataset, column_order)
   }
