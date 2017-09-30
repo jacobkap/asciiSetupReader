@@ -43,12 +43,12 @@
 #' example <- spss_ascii_reader(dataset_name = data_name,
 #' sps_name = sps_name, keep_columns = 1:5)
 spss_ascii_reader <- function(dataset_name,
-                        sps_name,
-                        value_label_fix = TRUE,
-                        real_names = TRUE,
-                        keep_columns = NULL) {
+                              sps_name,
+                              value_label_fix = TRUE,
+                              real_names = TRUE,
+                              keep_columns = NULL) {
 
-  codebook <- suppressMessages(readr::read_lines(sps_name))
+  codebook <- readr::read_lines(sps_name)
   codebook <- trimws(codebook)
   codebook <- codebook[grep("^DATA LIST",
                             codebook)[length(grep("^DATA LIST",
@@ -71,7 +71,7 @@ spss_ascii_reader <- function(dataset_name,
     codebook_variables <- data.frame(column_number =
                                        unlist(strsplit(codebook_variables,
                                                        "\\s{2,}")), stringsAsFactors = FALSE)
- }
+  }
 
   codebook_variables[,1] <- gsub("\'", "\"", codebook_variables[,1])
 
@@ -83,6 +83,8 @@ spss_ascii_reader <- function(dataset_name,
                                          codebook_variables$column_name)
   codebook_variables$column_name <- gsub("_/$", "",
                                          codebook_variables$column_name)
+  codebook_variables <- codebook_variables[codebook_variables$column_number !=
+                                             codebook_variables$column_name,]
 
 
 
@@ -104,29 +106,20 @@ spss_ascii_reader <- function(dataset_name,
   codebook_column_spaces[,1] <- gsub("\\(.*", "", codebook_column_spaces[,1])
   codebook_column_spaces[,1] <- stringr::str_trim(codebook_column_spaces[,1])
 
-  # Splits column name and spaces
-  splitted <- data.table::tstrsplit(codebook_column_spaces[,1], " ")
-  codebook_column_spaces[,2] <- splitted[[2]]
-  codebook_column_spaces[,1] <- splitted[[1]]
+  names(codebook_column_spaces)[1] <- "column_number"
+  codebook_column_spaces$first_num <- gsub(".* ", "", codebook_column_spaces$column_number)
+  codebook_column_spaces$second_num <- gsub(".*-", "", codebook_column_spaces$first_num)
+  codebook_column_spaces$first_num <- gsub("-.*", "", codebook_column_spaces$first_num)
+  codebook_column_spaces$column_number <- gsub(" .*", "", codebook_column_spaces$column_number)
+  codebook_column_spaces <- codebook_column_spaces[codebook_column_spaces$column_number %in%
+                                                     codebook_variables$column_number,]
+  codebook_column_spaces$first_num <- as.numeric(codebook_column_spaces$first_num)
+  codebook_column_spaces$second_num <- as.numeric(codebook_column_spaces$second_num)
 
-  splitted2 <- data.table::tstrsplit(codebook_column_spaces[,2], "-")
-  codebook_column_spaces[,3] <- splitted2[[2]]
-  codebook_column_spaces[,2] <- splitted2[[1]]
-  codebook_column_spaces[,3] <- ifelse(is.na(codebook_column_spaces[,3]),
-                                       codebook_column_spaces[,2],
-                                       codebook_column_spaces[,3])
-
-
-  names(codebook_column_spaces) <- c("column_number", "first_num", "second_num")
-  codebook_column_spaces[,2:3] <- suppressWarnings(
-    apply(codebook_column_spaces[2:3], 2,
-          as.numeric))
-  codebook_column_spaces <- codebook_column_spaces[
-    !is.na(codebook_column_spaces[,2]),]
   codebook_column_spaces <- merge(codebook_column_spaces, codebook_variables,
                                   all.x = TRUE)
   codebook_column_spaces <- codebook_column_spaces[
-                            order(codebook_column_spaces$first_num),]
+    order(codebook_column_spaces$first_num),]
   codebook_column_spaces2 <- codebook_column_spaces
 
   if (!is.null(keep_columns)) {
@@ -144,7 +137,7 @@ spss_ascii_reader <- function(dataset_name,
   }
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                                              readr::fwf_positions(codebook_column_spaces$first,
+                                              readr::fwf_positions(codebook_column_spaces$first_num,
                                                                    codebook_column_spaces$second_num,
                                                                    codebook_column_spaces$column_number)))
   dataset <- data.table::data.table(dataset)
@@ -164,42 +157,41 @@ spss_ascii_reader <- function(dataset_name,
 
 
   if (value_label_fix) {
-  value_labels <- names_semicolon(value_labels, codebook_column_spaces2)
+    # value_labels <- names_semicolon(value_labels, codebook_column_spaces2)
 
-  all_column_names <- paste(codebook_column_spaces2$column_number,
-                            collapse = "|")
+    all_column_names <- paste(codebook_column_spaces2$column_number,
+                              collapse = "|")
 
-  matching_rows <- grep(all_column_names, value_labels)
+    matching_rows <- grep(all_column_names, value_labels)
 
-  listing <- vector("list", length(matching_rows))
-  # count <- 1
-  for (i in seq(1, length(matching_rows), 1)) {
+    # listing <- vector("list", length(matching_rows))
+    # count <- 1
+    for (i in seq(1, length(matching_rows), 1)) {
+      if (i < length(matching_rows)) {
+        value_label_section <-
+          value_labels[matching_rows[i]:(matching_rows[(i + 1)]-1)]
+      } else {
+        value_label_section <- value_labels[matching_rows[i]:length(value_labels)]
+      }
+      variable_fix <-  value_label_matrixer(value_label_section)
 
-    if (i < length(matching_rows)) {
-      value_label_section <-
-        value_labels[matching_rows[i]:(matching_rows[(i + 1)]-1)]
-    } else {
-      value_label_section <- value_labels[matching_rows[i]:length(value_labels)]
+      if (names(variable_fix)[1] %in% codebook_column_spaces$column_number
+          && nrow(variable_fix) < nrow(dataset)/2) {
+        dataset <- fix_variable_values(dataset, variable_fix)
+      }
     }
-    variable_fix <-  value_label_matrixer(value_label_section)
+    data.table::setcolorder(dataset, column_order)
+  }
 
-    if (names(variable_fix)[1] %in% codebook_column_spaces$column_number
-        && nrow(variable_fix) < nrow(dataset)/2) {
-#      listing[[count]] <- variable_fix
-      dataset <- fix_variable_values(dataset, variable_fix)
-    }
- #   count <- count + 1
-  }
-  data.table::setcolorder(dataset, column_order)
-  }
+
 
   if (real_names) {
-  # Fixes column names to real names
-  for (n in 1:nrow(codebook_variables)) {
-    names(dataset)[which(names(dataset) ==
-                           codebook_variables$column_number[n])] <-
-      codebook_variables$column_name[n]
-  }
+    # Fixes column names to real names
+    for (n in 1:nrow(codebook_variables)) {
+      names(dataset)[which(names(dataset) ==
+                             codebook_variables$column_number[n])] <-
+        codebook_variables$column_name[n]
+    }
   }
 
   return(dataset)
