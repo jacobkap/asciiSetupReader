@@ -31,25 +31,25 @@ Read ASCII file using SPSS Setup file
 }
 \examples{
 
-data_name <- system.file("extdata", "example_data.txt",
+dataset_name <- system.file("extdata", "example_data.txt",
  package = "asciiSetupReader")
 sps_name <- system.file("extdata", "example_setup.sps",
 package = "asciiSetupReader")
 
 \dontrun{
-example <- spss_ascii_reader(dataset_name = data_name,
+example <- spss_ascii_reader(dataset_name = dataset_name,
 sps_name = sps_name)
 }
 
 # Does not fix value labels
-example2 <- spss_ascii_reader(dataset_name = data_name,
+example2 <- spss_ascii_reader(dataset_name = dataset_name,
 sps_name = sps_name, value_label_fix = FALSE)
 
 # Keeps original column names
-example3 <- spss_ascii_reader(dataset_name = data_name,
+example3 <- spss_ascii_reader(dataset_name = dataset_name,
 sps_name = sps_name, real_names = FALSE)
 
 # Only returns the first 5 columns
-example <- spss_ascii_reader(dataset_name = data_name,
+example <- spss_ascii_reader(dataset_name = dataset_name,
 sps_name = sps_name, keep_columns = 1:5)
 }

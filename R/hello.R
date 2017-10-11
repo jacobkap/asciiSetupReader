@@ -21,26 +21,26 @@
 #'
 #' @examples
 #'
-#' data_name <- system.file("extdata", "example_data.txt",
+#' dataset_name <- system.file("extdata", "example_data.txt",
 #'  package = "asciiSetupReader")
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #' package = "asciiSetupReader")
 #'
 #' \dontrun{
-#' example <- spss_ascii_reader(dataset_name = data_name,
+#' example <- spss_ascii_reader(dataset_name = dataset_name,
 #' sps_name = sps_name)
 #' }
 #'
 #' # Does not fix value labels
-#' example2 <- spss_ascii_reader(dataset_name = data_name,
+#' example2 <- spss_ascii_reader(dataset_name = dataset_name,
 #' sps_name = sps_name, value_label_fix = FALSE)
 #'
 #' # Keeps original column names
-#' example3 <- spss_ascii_reader(dataset_name = data_name,
+#' example3 <- spss_ascii_reader(dataset_name = dataset_name,
 #' sps_name = sps_name, real_names = FALSE)
 #'
 #' # Only returns the first 5 columns
-#' example <- spss_ascii_reader(dataset_name = data_name,
+#' example <- spss_ascii_reader(dataset_name = dataset_name,
 #' sps_name = sps_name, keep_columns = 1:5)
 spss_ascii_reader <- function(dataset_name,
                               sps_name,
@@ -157,23 +157,21 @@ spss_ascii_reader <- function(dataset_name,
 
 
   if (value_label_fix) {
-    # value_labels <- names_semicolon(value_labels, codebook_column_spaces2)
 
-    all_column_names <- paste(codebook_column_spaces2$column_number,
+    all_column_names <- paste0(codebook_column_spaces2$column_number, "$",
                               collapse = "|")
 
     matching_rows <- grep(all_column_names, value_labels)
 
-    # listing <- vector("list", length(matching_rows))
-    # count <- 1
     for (i in seq(1, length(matching_rows), 1)) {
       if (i < length(matching_rows)) {
         value_label_section <-
-          value_labels[matching_rows[i]:(matching_rows[(i + 1)]-1)]
+          value_labels[matching_rows[i]:(matching_rows[(i + 1)] - 1)]
       } else {
         value_label_section <- value_labels[matching_rows[i]:length(value_labels)]
       }
       variable_fix <-  value_label_matrixer(value_label_section)
+      names(variable_fix) <- gsub("/", "", names(variable_fix))
 
       if (names(variable_fix)[1] %in% codebook_column_spaces$column_number
           && nrow(variable_fix) < nrow(dataset)/2) {
