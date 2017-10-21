@@ -147,7 +147,7 @@ spss_ascii_reader <- function(dataset_name,
   value_start <- grep("^value labels$",
                       codebook[,1], ignore.case = TRUE)
 
-  end_row <- grep("\\*|^\\.$", codebook[,1])
+  end_row <- grep("^\\.$", codebook[,1])
   end_row <- end_row[end_row > value_start][1] - 1
   if (is.na(end_row)) { end_row <- nrow(codebook) }
   value_labels <- codebook[value_start:end_row,]
