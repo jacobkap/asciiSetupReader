@@ -196,6 +196,7 @@ spss_ascii_reader <- function(dataset_name,
     }
   }
 
+  dataset <- as.data.frame(dataset)
   return(dataset)
 }
 
