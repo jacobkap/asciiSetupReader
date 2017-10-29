@@ -162,14 +162,12 @@ spss_ascii_reader <- function(dataset_name,
 
 
   if (value_label_fix) {
-
     all_column_names <- paste0(codebook_column_spaces2$column_number, "$",
                               collapse = "|")
 
     matching_rows <- grep(all_column_names, value_labels)
 
     for (i in seq(1, length(matching_rows), 1)) {
-      message(i)
       if (i < length(matching_rows)) {
         value_label_section <-
           value_labels[matching_rows[i]:(matching_rows[(i + 1)] - 1)]
