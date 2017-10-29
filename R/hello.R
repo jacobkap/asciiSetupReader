@@ -46,7 +46,8 @@ spss_ascii_reader <- function(dataset_name,
                               sps_name,
                               value_label_fix = TRUE,
                               real_names = TRUE,
-                              keep_columns = NULL) {
+                              keep_columns = NULL,
+                              ...) {
 
   codebook <- readr::read_lines(sps_name)
   codebook <- trimws(codebook)
@@ -140,7 +141,8 @@ spss_ascii_reader <- function(dataset_name,
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(codebook_column_spaces$first_num,
                                                                    codebook_column_spaces$second_num,
-                                                                   codebook_column_spaces$column_number)))
+                                                                   codebook_column_spaces$column_number),
+                                              ...))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
