@@ -1,5 +1,16 @@
 value_label_matrixer <- function(value_label_section) {
-  # column_name <- stringr::str_split(value_label_section, ";;;;;")[[1]][1]
+
+  # In case some labels are on multiple lines
+  plus <- grep("^\\+", value_label_section)
+  if (length(plus) > 0) {
+  for (n in 1:length(plus)) {
+    value_label_section[n-1] <- paste(value_label_section[n-1],
+                                      value_label_section[n],
+                                      collapse = " ")
+  }
+    value_label_section <- value_label_section[-plus]
+  }
+
   column_name <- value_label_section[1]
   value_label_section <- value_label_section[-1]
 
