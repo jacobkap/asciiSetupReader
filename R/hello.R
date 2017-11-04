@@ -15,6 +15,8 @@
 #' Specify which columns from the dataset you want. If NULL, will return all columns.
 #' Accepts the column number (e.g. 1:5), column name (e.g. V1, V2, etc.) or
 #' column label (e.g. VICTIM_NAME, CITY, etc.)
+#' @param ...
+#' Further arguments to read_fwf
 #' @return
 #' Data.frame of the data from the ASCII file
 #' @export
@@ -141,8 +143,8 @@ spss_ascii_reader <- function(dataset_name,
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(codebook_column_spaces$first_num,
                                                                    codebook_column_spaces$second_num,
-                                                                   codebook_column_spaces$column_number),
-                                              ...))
+                                                                   codebook_column_spaces$column_number), col_types = paste0(rep("c", nrow(codebook_column_spaces)), collapse = ""), ...
+                                              ))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
