@@ -50,6 +50,6 @@ example3 <- spss_ascii_reader(dataset_name = dataset_name,
 sps_name = sps_name, real_names = FALSE)
 
 # Only returns the first 5 columns
-example <- spss_ascii_reader(dataset_name = dataset_name,
+example4 <- spss_ascii_reader(dataset_name = dataset_name,
 sps_name = sps_name, keep_columns = 1:5)
 }

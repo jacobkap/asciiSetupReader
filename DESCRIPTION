@@ -1,7 +1,7 @@
 Package: asciiSetupReader
 Type: Package
 Title: Reads 'SPSS' and 'SAS' Files from ASCII Data Files (.txt) and Setup Files (.sps or .sas)
-Version: 1.1
+Version: 1.2
 Authors@R: person("Jacob", "Kaplan", email = "jkkaplan6@gmail.com", role = c("aut", "cre"))
 Description: Lets you open an 'SPSS' or 'SAS' data file using a .txt file that has the data and a .sps or .sas file with setup instructions. This will only run in a txt-sps or txt-sas pair in which the setup file contains instructions to open that text file. It will NOT open other text files, .sav, .por, or 'SAS' files. 
 Depends:
@@ -9,7 +9,9 @@ Depends:
     data.table,
 Imports:
     stringr,
-    readr
+    readr,
+    haven,
+    stringi
 License: GPL
 Encoding: UTF-8
 LazyData: true

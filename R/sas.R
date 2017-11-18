@@ -21,26 +21,26 @@
 #'
 #' @examples
 #'
-#' data_name <- system.file("extdata", "example_data.txt",
+#' dataset_name <- system.file("extdata", "example_data.txt",
 #'  package = "asciiSetupReader")
 #' sas_name <- system.file("extdata", "example_setup.sas",
 #' package = "asciiSetupReader")
 #'
 #' \dontrun{
-#' example <- sas_ascii_reader(dataset_name = data_name,
+#' example <- sas_ascii_reader(dataset_name = dataset_name,
 #' sas_name = sas_name)
 #' }
 #'
 #' # Does not fix value labels
-#' example2 <- sas_ascii_reader(dataset_name = data_name,
+#' example2 <- sas_ascii_reader(dataset_name = dataset_name,
 #' sas_name = sas_name, value_label_fix = FALSE)
 #'
 #' # Keeps original column names
-#' example3 <- sas_ascii_reader(dataset_name = data_name,
+#' example3 <- sas_ascii_reader(dataset_name = dataset_name,
 #' sas_name = sas_name, real_names = FALSE)
 #'
 #' # Only returns the first 5 columns
-#' example <- sas_ascii_reader(dataset_name = data_name,
+#' example <- sas_ascii_reader(dataset_name = dataset_name,
 #' sas_name = sas_name, keep_columns = 1:5)
 sas_ascii_reader <- function(dataset_name,
                              sas_name,
@@ -114,7 +114,7 @@ sas_ascii_reader <- function(dataset_name,
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(column_spaces$first_num,
                                                                    column_spaces$second_num,
-                                                                   column_spaces$column_number)))
+                                                                   column_spaces$column_number), col_types = paste0(rep("c", nrow(column_spaces)), collapse = "")))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
@@ -131,57 +131,38 @@ sas_ascii_reader <- function(dataset_name,
   value_labels <- value_labels[grep("VALUE|=", value_labels)]
   value_labels <- gsub("\\'|\\(.*\\) |\\$", "", value_labels)
   value_labels <- unlist(strsplit(value_labels, "="))
-  for (i in 1:length(value_labels)) {
-    if (value_labels[i] %in% format$f_name) {
-      value_labels[i] <-
-        format$real_name[format$f_name == value_labels[i]]
+
+  value_labels <- data.frame(value_labels)
+  value_labels$group <- 0
+
+  group <- 1
+  for (i in 1:nrow(value_labels)) {
+    value_labels$group[i] <- group
+    if (grepl(";", value_labels$value_labels[i])) {
+      group <- group + 1
     }
   }
+  value_labels$value_labels <- gsub(";$", "", value_labels$value_labels)
+  value_labels <- split.data.frame(value_labels, value_labels$group)
+
 
   if (value_label_fix) {
-    all_column_names <- paste0("^",format$real_name, "$",
-                               collapse = "|")
-    matching_rows <- grep(all_column_names, value_labels)
-
-    for (i in seq(1, length(matching_rows), 1)) {
-
-      if (i < length(matching_rows)) {
-        value_label_section <-
-          value_labels[matching_rows[i]:(matching_rows[(i + 1)]-1)]
-      } else {
-        value_label_section <- value_labels[matching_rows[i]:length(value_labels)]
-      }
-      variable_fix <-  value_label_matrixer(value_label_section)
-
-      if (names(variable_fix)[1] %in% column_spaces$column_number
-          && nrow(variable_fix) < nrow(dataset)/2) {
-        dataset <- fix_variable_values(dataset, variable_fix)
+    for (i in 1:length(value_labels)) {
+      column <- as.character(value_labels[[i]][1, 1])
+      column <- toupper(gsub("f+$|^VALUE ", "", column))
+      if (column %in% toupper(column_spaces$column_number)) {
+        value_label_section <-  value_label_matrixer(value_labels[[i]])
+        dataset <- fix_variable_values(dataset, value_label_section, column)
       }
     }
     data.table::setcolorder(dataset, column_order)
   }
 
-#   # Get missing values
-#   if (fix_missing) {
-#   missing_location <- grep("MISSING VALUES", sas)
-#   if (length(missing_location) > 0) {
-#     missing <- sas[missing_location : grep("^$", sas)[grep("^$", sas) >
-#                                                         missing_location + 2][1]]
-#     missing <- missing[grep("IF", missing)]
-#     missing <- unlist(strsplit(missing, " OR "))
-#     missing <- gsub(".*\\(|\\).*|\\'", "", missing)
-#     missing <- data.frame(missing)
-#     missing$column <- gsub(" .*", "", missing$missing)
-#     missing$value <- gsub(".*= ", "", missing$missing)
-#     missing <- missing[missing$column %in% column_spaces$column_number,]
-#     for (i in 1:nrow(missing)) {
-#       x <- missing$column[i]
-#       dataset[, (x) := ifelse (get(x) %in% missing$value[i], NA , get(x))]
-#     }
-#   }
-# }
-
   column_name$real_name <- gsub("^\\s*|\\s*$|\\'", "", column_name$real_name)
+  column_name$real_name <- gsub(" |:", "_",
+                                  column_name$real_name)
+  column_name$column_name <- gsub("_/$", "",
+                                  column_name$real_name)
   if (real_names) {
     # Fixes column names to real names
     for (n in 1:nrow(column_name)) {
@@ -190,6 +171,7 @@ sas_ascii_reader <- function(dataset_name,
         column_name$real_name[n]
     }
   }
+  dataset <- as.data.frame(dataset)
   return(dataset)
 }
 
