@@ -198,7 +198,7 @@ spss_ascii_reader <- function(dataset_name,
   if (times < 100000 & nrow(dataset) > 100000) { times <- 100000 }
   times <- sample(1:nrow(dataset), times, replace = FALSE)
   for (i in 1:ncol(dataset)) {
-    if all((!is.factor(dataset[[i]]) & all_numeric(dataset[[i]][times]))) {
+    if (all((!is.factor(dataset[[i]]) & all_numeric(dataset[[i]][times])))) {
       suppressWarnings(data.table::set(dataset, j = i, value = as.numeric(dataset[[i]])))
     }
   }
