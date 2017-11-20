@@ -169,8 +169,8 @@ spss_ascii_reader <- function(dataset_name,
 
   if (value_label_fix) {
     for (i in 1:length(value_labels)) {
-      if (value_labels[[i]][1, 1] %in% codebook_column_spaces$column_number) {
       column <- as.character(value_labels[[i]][1, 1])
+      if (column %in% codebook_column_spaces$column_number) {
       value_label_section <-  value_label_matrixer(value_labels[[i]])
       dataset <- fix_variable_values(dataset, value_label_section, column)
       }
@@ -198,7 +198,7 @@ spss_ascii_reader <- function(dataset_name,
   if (times < 100000 & nrow(dataset) > 100000) { times <- 100000 }
   times <- sample(1:nrow(dataset), times, replace = FALSE)
   for (i in 1:ncol(dataset)) {
-    if (all_numeric(dataset[[i]][times])) {
+    if all((!is.factor(dataset[[i]]) & all_numeric(dataset[[i]][times]))) {
       suppressWarnings(data.table::set(dataset, j = i, value = as.numeric(dataset[[i]])))
     }
   }
