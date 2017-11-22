@@ -116,7 +116,6 @@ spss_ascii_reader <- function(dataset_name,
                                   all.x = TRUE)
   codebook_column_spaces <- codebook_column_spaces[
     order(codebook_column_spaces$first_num),]
-  codebook_column_spaces2 <- codebook_column_spaces
 
   if (!is.null(keep_columns)) {
     if (is.numeric(keep_columns)) {
@@ -157,15 +156,22 @@ spss_ascii_reader <- function(dataset_name,
   value_labels <- gsub('"', "'", value_labels)
   value_labels <- data.frame(value_labels)
   value_labels$group <- 0
-
+  value_labels$column <- value_labels$value_labels[1]
 
   group <- 1
+  column <- value_labels$value_labels[1]
   for (i in 1:nrow(value_labels)) {
     value_labels$group[i] <- group
-    if (grepl("\\' \\/$", value_labels$value_labels[i])) {
+    value_labels$column[i] <- column
+    if (grepl("\\' \\/$", value_labels$value_labels[i]) |
+        value_labels$value_labels[i + 1] %in% codebook_column_spaces$column_number) {
       group <- group + 1
+      column <- value_labels$value_labels[i + 1]
     }
   }
+  # Removes columns not asked for
+  value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
+
   value_labels <- split.data.frame(value_labels, value_labels$group)
 
 
