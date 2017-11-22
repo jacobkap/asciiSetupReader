@@ -117,6 +117,9 @@ spss_ascii_reader <- function(dataset_name,
   codebook_column_spaces <- codebook_column_spaces[
     order(codebook_column_spaces$first_num),]
 
+
+  value_labels <- get_value_labels(codebook, codebook_column_spaces)
+
   if (!is.null(keep_columns)) {
     if (is.numeric(keep_columns)) {
       codebook_column_spaces <- codebook_column_spaces[keep_columns,]
@@ -131,6 +134,12 @@ spss_ascii_reader <- function(dataset_name,
     }
   }
 
+  # Removes columns not asked for
+  value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
+
+  value_labels <- split.data.frame(value_labels, value_labels$group)
+
+
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(codebook_column_spaces$first_num,
                                                                    codebook_column_spaces$second_num,
@@ -138,49 +147,13 @@ spss_ascii_reader <- function(dataset_name,
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
-  value_start <- grep("^value labels$",
-                      codebook[,1], ignore.case = TRUE)
-
-  end_row <- grep("^\\.$", codebook[,1])
-  end_row <- end_row[end_row > value_start][1] - 1
-  if (is.na(end_row)) { end_row <- nrow(codebook) }
-  value_labels <- codebook[value_start:end_row,]
-  value_labels <- trimws(value_labels)
-  value_labels <- gsub('\\s+\\"$', '"', value_labels)
-  value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels, ignore.case = TRUE)
-  value_labels <- gsub("\\s+\\(", " \\(", value_labels)
-  value_labels <- gsub("&\\s+", "& ", value_labels)
-  value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
-  value_labels <- value_labels[!value_labels %in% c(".", "/")]
-  value_labels <- value_labels[-1]
-  value_labels <- gsub('"', "'", value_labels)
-  value_labels <- data.frame(value_labels)
-  value_labels$group <- 0
-  value_labels$column <- value_labels$value_labels[1]
-
-  group <- 1
-  column <- value_labels$value_labels[1]
-  for (i in 1:nrow(value_labels)) {
-    value_labels$group[i] <- group
-    value_labels$column[i] <- column
-    if (grepl("\\' \\/$", value_labels$value_labels[i]) |
-        value_labels$value_labels[i + 1] %in% codebook_column_spaces$column_number) {
-      group <- group + 1
-      column <- value_labels$value_labels[i + 1]
-    }
-  }
-  # Removes columns not asked for
-  value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
-
-  value_labels <- split.data.frame(value_labels, value_labels$group)
-
 
   if (value_label_fix) {
     for (i in 1:length(value_labels)) {
       column <- as.character(value_labels[[i]][1, 1])
       if (column %in% codebook_column_spaces$column_number) {
-      value_label_section <-  value_label_matrixer(value_labels[[i]])
-      dataset <- fix_variable_values(dataset, value_label_section, column)
+       value_label_section <- value_label_matrixer(value_labels[[i]])
+       dataset <- fix_variable_values(dataset, value_label_section, column)
       }
     }
     data.table::setcolorder(dataset, column_order)

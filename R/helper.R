@@ -35,5 +35,43 @@ fix_variable_values <- function(dataset, value_label_section, column) {
   if (!is.character(dataset[[column]])) {
   data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   }
+  if (length(value_label_section) < nrow(dataset) / 2) {
   data.table::set(dataset, j = column,  value = haven::as_factor(haven::labelled(dataset[[column]], value_label_section)))
+  }
+  return(dataset)
+}
+
+get_value_labels <- function(codebook, codebook_column_spaces) {
+  value_start <- grep("^value labels$",
+                      codebook[,1], ignore.case = TRUE)
+
+  end_row <- grep("^\\.$", codebook[,1])
+  end_row <- end_row[end_row > value_start][1] - 1
+  if (is.na(end_row)) { end_row <- nrow(codebook) }
+  value_labels <- codebook[value_start:end_row,]
+  value_labels <- trimws(value_labels)
+  value_labels <- gsub('\\s+\\"$', '"', value_labels)
+  value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels, ignore.case = TRUE)
+  value_labels <- gsub("\\s+\\(", " \\(", value_labels)
+  value_labels <- gsub("&\\s+", "& ", value_labels)
+  value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
+  value_labels <- value_labels[!value_labels %in% c(".", "/")]
+  value_labels <- value_labels[-1]
+  value_labels <- gsub('"', "'", value_labels)
+  value_labels <- data.frame(value_labels)
+  value_labels$group <- 0
+  value_labels$column <- value_labels$value_labels[1]
+
+  group <- 1
+  column <- value_labels$value_labels[1]
+  for (i in 1:nrow(value_labels)) {
+    value_labels$group[i] <- group
+    value_labels$column[i] <- column
+    if (grepl("\\' \\/$", value_labels$value_labels[i]) |
+        value_labels$value_labels[i + 1] %in% codebook_column_spaces$column_number) {
+      group <- group + 1
+      column <- value_labels$value_labels[i + 1]
+    }
+  }
+  return(value_labels)
 }
