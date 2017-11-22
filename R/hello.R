@@ -154,8 +154,10 @@ spss_ascii_reader <- function(dataset_name,
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]
+  value_labels <- gsub('"', "'", value_labels)
   value_labels <- data.frame(value_labels)
   value_labels$group <- 0
+
 
   group <- 1
   for (i in 1:nrow(value_labels)) {
