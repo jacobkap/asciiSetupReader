@@ -32,6 +32,14 @@ value_label_matrixer <- function(value_label_section) {
 
 fix_variable_values <- function(dataset, value_label_section, column) {
   column <- as.integer(grep(paste0("^", column, "$"), names(dataset)))
+
+  if (any(grepl("^[0-9]$", value_label_section))) {
+  single_digit <- value_label_section[grep("^[0-9]$", value_label_section)]
+  names_single_digit <- names(single_digit)
+  single_digit <- paste0("0", single_digit)
+  names(single_digit) <- names_single_digit
+  value_label_section <- c(value_label_section, single_digit)
+  }
   if (!is.character(dataset[[column]])) {
   data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   }
