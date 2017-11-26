@@ -20,8 +20,8 @@
 #' @export
 #'
 #' @examples
-#'
-#' dataset_name <- system.file("extdata", "example_data.txt",
+#' # Text file is zipped to save space.
+#' dataset_name <- system.file("extdata", "example_data.zip",
 #'  package = "asciiSetupReader")
 #' sas_name <- system.file("extdata", "example_setup.sas",
 #' package = "asciiSetupReader")

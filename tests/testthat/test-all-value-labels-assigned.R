@@ -1,11 +1,24 @@
 context("All value labels are present")
 
-dataset_name <- system.file("extdata", "example_data.txt",
+SHR_dataset_name <- system.file("extdata", "example_data.zip",
+                                package = "asciiSetupReader")
+SHR_sps_name <- system.file("extdata", "example_setup.sps",
                             package = "asciiSetupReader")
-sps_name <- system.file("extdata", "example_setup.sps",
-                        package = "asciiSetupReader")
-example <- spss_ascii_reader(dataset_name = dataset_name,
-                             sps_name = sps_name)
+UCR_dataset_name <- system.file("testdata", "ucr1960.zip",
+                                package = "asciiSetupReader")
+UCR_sps_name <- system.file("testdata", "ucr1960.sps",
+                            package = "asciiSetupReader")
+NIBRS_dataset_name <- system.file("testdata", "nibrs_2000_batch_header1.zip",
+                                  package = "asciiSetupReader")
+NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
+                              package = "asciiSetupReader")
+
+example <- spss_ascii_reader(dataset_name = SHR_dataset_name,
+                             sps_name = SHR_sps_name)
+UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
+                         sps_name = UCR_sps_name)
+NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
+                           sps_name = NIBRS_sps_name)
 
 test_that("All labels are assigned correctly - SHR", {
 
@@ -56,4 +69,93 @@ test_that("All labels are assigned correctly - SHR", {
                     unique(example$OFFENDER_1_RELATIONSHIP_TO_FIRST_VICTIM)))
 
 
+})
+
+test_that("All labels are assigned correctly - UCR", {
+  expect_true(all(c("Alabama", "Arizona",  "Arkansas", "California",
+                    "Colorado", "Connecticut", "Delaware", "District of Columbia",
+                    "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa",
+                    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+                    "Michigan", "Minnesota", "Mississippi", "Missouri",
+                    "Montana", "Nebraska", "Nevada", "New Hampshire",
+                    "New Jersey", "New Mexico", "New York", "North Carolina",
+                    "North Dakota", "Ohio", "Oklahoma", "Oregon",
+                    "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+                    "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+                    "West Virginia", "Wisconsin", "Wyoming", "Alaska",
+                    "Hawaii", "Canal Zone", "Puerto Rico",
+                    "Guam") %in%
+                    unique(UCR$NUMERIC_STATE_CODE)))
+
+  expect_true(all(c("Possessions",
+                    "Cit 1,000,000 +", "Cit 500,000-999,999",
+                    "Cit 250,000-499,999", "Cit 100,000-249,999",
+                    "Cit 50,000-99,999", "Cit 25,000-49,999",
+                    "Cit 10,000-24,999", "Cit 2,500-9,999",
+                    "Cit < 2,500",  "Non-MSA co. 100,000 +",
+                    "Non-MSA co. 25,000-99,999", "Non-MSA co. 10,000-24,999",
+                    "Non-MSA co. < 10,000", "MSA co. 100,000 +",
+                    "MSA co. 25,000-99,999", "MSA co. 10,000-24,999",
+                    "MSA co. < 10,000") %in%
+                    unique(UCR$GROUP_NUMBER)))
+
+  expect_true(all(c("All other agencies") %in%
+                    unique(UCR$AGENCY_COUNT)))
+
+  expect_true(all(c("Not a special mailing address",
+                    "Special mailing address") %in%
+                    unique(UCR$SPECIAL_MAILING_ADDRESS)))
+
+  expect_true(all(c("Jan not w oth month", "Reported with Mar",
+                    "Reported with Apr", "Reported with Feb",
+                    "Reported with Jun") %in%
+                    unique(UCR$JAN_MONTH_INCLUDED_IN)))
+
+  expect_true(all(c("No months reported", "Jan last reported",
+                    "Feb last reported", "March last reported",
+                    "April last reported", "May last reported",
+                    "June last reported", "July last reported",
+                    "August last reported", "Sep last reported",
+                    "Oct last reported", "Nov last reported",
+                    "Dec last reported") %in%
+                    unique(UCR$NUMBER_OF_MONTHS_REPORTED)))
+})
+
+test_that("All labels are assigned correctly - NIBRS", {
+  expect_true(all(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT",
+                    "CZ", "DC", "DE", "FL", "GA", "GM", "HI", "IA",
+                    "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD",
+                    "ME", "MI", "MN", "MO", "MS", "MT", "NB", "NC",
+                    "ND", "NH", "NJ", "NM", "NV", "NY", "OH", "OK",
+                    "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX",
+                    "UT", "VA", "VT", "WA", "WI", "WV", "WY") %in%
+                    unique(NIBRS$NUMERIC_STATE_CODE)))
+
+  expect_true(all(c("Possessions",
+                    "Cities 1,000,000+", "Cities 500,000-999,999",
+                    "Cities 250,000-499,999", "Cities 100,000-249,999",
+                    "Cities 50,000-99,999", "Cities 25,000-49,999",
+                    "Cities 10,000-24,999", "Cities 2,500-9,999",
+                    "Cites < 2,500",
+                    "Non-MSA Counties 100,000+", "Non-MSA Counties 25,000-99,999",
+                    "Non-MSA Counties 10,000-24,999", "Non-MSA Counties < 10,000",
+                    "Non-MSA State Police",
+                    "MSA Counties 100,000+", "MSA Counties 25,000-99,999",
+                    "MSA Counties 10,000-24,999", "MSA Counties < 10,000",
+                    "MSA State Police") %in%
+                    unique(NIBRS$POPULATION_GROUP)))
+
+  expect_true(all(c("North East", "North Central", "South", "West") %in%
+                    unique(NIBRS$COUNTRY_REGION)))
+
+  expect_true(all(c("Covered by another agency",
+                    "City", "County", "University or college",
+                    "State Police", "Special Agency") %in%
+                    unique(NIBRS$AGENCY_INDICATOR)))
+
+  expect_true(all(c("Yes", "No") %in%
+                    unique(NIBRS$CORE_CITY)))
+
+  expect_true(all(c("Inactive", "Active") %in%
+                    unique(NIBRS$AGENCY_NIBRS_FLAG)))
 })

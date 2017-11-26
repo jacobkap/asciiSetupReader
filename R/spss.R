@@ -3,7 +3,7 @@
 #' @param dataset_name
 #' Name of the ASCII file with the data
 #' @param sps_name
-#' Name of the SPSS Setup file - should be a .sps or .txt file.
+#' Name of the SPSS Setup file - should be a .sps or .txt (zipped text files also work) file.
 #' @param value_label_fix
 #' If TRUE, fixes value labels of the data. e.g. If a column is "sex" and has
 #' values of 0 or 1, and the setup file says 0 = male and 1 = female, it will
@@ -20,8 +20,8 @@
 #' @export
 #'
 #' @examples
-#'
-#' dataset_name <- system.file("extdata", "example_data.txt",
+#' # Text file is zipped to save space.
+#' dataset_name <- system.file("extdata", "example_data.zip",
 #'  package = "asciiSetupReader")
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #' package = "asciiSetupReader")
@@ -176,8 +176,9 @@ spss_ascii_reader <- function(dataset_name,
 
   # Make numeric columns numeric
   all_numeric <- function(column) {
+    column_NAs <- sum(is.na(column))
     column <- suppressWarnings(as.numeric(column))
-    return(all(is.numeric(column) & !is.na(column)))
+    return(all(is.numeric(column) & sum(is.na(column)) == column_NAs))
   }
   times <- nrow(dataset) * .10
   if (times < 100000 & nrow(dataset) > 100000) { times <- 100000 }

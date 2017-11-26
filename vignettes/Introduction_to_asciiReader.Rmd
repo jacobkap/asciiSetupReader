@@ -13,7 +13,7 @@ Some datasets are only available in fixed-width delimited  (this means the each 
 
 To use the spss_ascii_reader function, all that is needed is to provide a string with the name of the dataset (the .txt) file and a string with the name of the SPSS setup file (the .sps) including the file extention. The files must be in the working directory. Below is an example of reading in the example dataset - the original can be found [here](https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&restrictionType%5B0%5D=Public+Use&classification%5B0%5D=NACJD.IX.*&dataFormat%5B0%5D=SPSS).
 ```{r}
-dataset_name <- system.file("extdata", "example_data.txt",
+dataset_name <- system.file("extdata", "example_data.zip",
              package = "asciiSetupReader")
 sps_name <- system.file("extdata", "example_setup.sps",
              package = "asciiSetupReader")

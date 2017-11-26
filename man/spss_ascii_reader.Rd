@@ -10,7 +10,7 @@ spss_ascii_reader(dataset_name, sps_name, value_label_fix = TRUE,
 \arguments{
 \item{dataset_name}{Name of the ASCII file with the data}
 
-\item{sps_name}{Name of the SPSS Setup file - should be a .sps or .txt file.}
+\item{sps_name}{Name of the SPSS Setup file - should be a .sps or .txt (zipped text files also work) file.}
 
 \item{value_label_fix}{If TRUE, fixes value labels of the data. e.g. If a column is "sex" and has
 values of 0 or 1, and the setup file says 0 = male and 1 = female, it will
@@ -30,8 +30,8 @@ Data.frame of the data from the ASCII file
 Read ASCII file using SPSS Setup file
 }
 \examples{
-
-dataset_name <- system.file("extdata", "example_data.txt",
+# Text file is zipped to save space.
+dataset_name <- system.file("extdata", "example_data.zip",
  package = "asciiSetupReader")
 sps_name <- system.file("extdata", "example_setup.sps",
 package = "asciiSetupReader")
