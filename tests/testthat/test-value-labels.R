@@ -17,7 +17,8 @@ NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
 example <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                              sps_name = SHR_sps_name)
 UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
-                         sps_name = UCR_sps_name)
+                         sps_name = UCR_sps_name,
+                         keep_columns = c("ID_CODE", "NUMERIC_STATE_CODE", "ORI_CODE", "CORE_CITY_INDICATION", "DIVISION", "NUMBER_OF_MONTHS_REPORTED", "FOLLOW_UP_INDICATION", "SPECIAL_MAILING_GROUP", "JAN_MONTH_INCLUDED_IN", "JAN_CARD_0_TYPE"))
 NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                            sps_name = NIBRS_sps_name)
 

@@ -16,7 +16,15 @@ NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
 example <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                              sps_name = SHR_sps_name)
 UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
-                         sps_name = UCR_sps_name)
+                         sps_name = UCR_sps_name,
+                         keep_columns = c("ORI_CODE", "AGENCY_NAME", "AGENCY_STATE_NAME",
+                                          "MAILING_ADDRESS_LINE_1", "MAILING_ADDRESS_LINE_2",
+                                          "MAILING_ADDRESS_LINE_3", "POPULATION_1",
+                                          "POPULATION_3", "DEC_ACT_#_VHC_THEFT_TO",
+                                          "AUG_ACT_#_AUTO_THEFT", "ID_CODE",
+                                          "NUMERIC_STATE_CODE", "GROUP_NUMBER",
+                                          "DIVISION", "NUMBER_OF_MONTHS_REPORTED",
+                                          "DEC_CLR<18_ALL_FIELDS"))
 NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                            sps_name = NIBRS_sps_name)
 
@@ -45,7 +53,6 @@ test_that("Numeric columns are Numeric", {
   expect_is(UCR$POPULATION_1, "numeric")
   expect_is(UCR$POPULATION_3, "numeric")
   expect_is(UCR$`DEC_CLR<18_ALL_FIELDS`, "numeric")
-  expect_is(UCR$POPULATION_1, "numeric")
   expect_is(UCR$`DEC_ACT_#_VHC_THEFT_TO`, "numeric")
   expect_is(UCR$`AUG_ACT_#_AUTO_THEFT`, "numeric")
 
