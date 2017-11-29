@@ -15,8 +15,8 @@ Imports:
 License: GPL
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/jacobkap/asciiReader
-BugReports: https://github.com/jacobkap/asciiReader/issues
+URL: https://github.com/jacobkap/asciiSetupReader
+BugReports: https://github.com/jacobkap/asciiSetupReader/issues
 Suggests: knitr,
     rmarkdown,
     testthat
