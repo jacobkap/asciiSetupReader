@@ -84,6 +84,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]
   value_labels <- gsub('"', "'", value_labels)
+  value_labels <- gsub('^/', "", value_labels)
   value_labels <- data.frame(value_labels)
   value_labels$group <- 0
   value_labels$column <- value_labels$value_labels[1]
