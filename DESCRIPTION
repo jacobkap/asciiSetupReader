@@ -10,7 +10,6 @@ Imports:
     data.table,
     haven,
     readr,
-    stringi,
     stringr          
 License: GPL
 Encoding: UTF-8

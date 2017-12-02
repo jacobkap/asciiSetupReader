@@ -26,7 +26,6 @@
 #'   etc.).
 #' @return Data.frame of the data from the ASCII file
 #' @export
-#'
 #' @examples
 #' # Text file is zipped to save space.
 #' dataset_name <- system.file("extdata", "example_data.zip",
@@ -57,7 +56,7 @@ spss_ascii_reader <- function(dataset_name,
                               keep_columns = NULL) {
 
   codebook <- readr::read_lines(sps_name)
-  codebook <- trimws(codebook)
+  codebook <- stringr::str_trim(codebook)
   codebook <- codebook[grep("^DATA LIST",
                             codebook, ignore.case = TRUE)[length(grep("^DATA LIST",
                                                   codebook, ignore.case = TRUE))]:length(codebook)]
@@ -66,8 +65,8 @@ spss_ascii_reader <- function(dataset_name,
   # Get the column names
   codebook_variables <- codebook[grep("^variable labels$",
                                       ignore.case = TRUE, codebook[,1]):
-                                   grep("^value labels$",
-                                        ignore.case = TRUE, codebook[,1]),]
+                                   grep("^value labels$|missing values",
+                                        ignore.case = TRUE, codebook[,1])[1],]
   codebook_variables <- gsub("\\'\\'", "\\'", codebook_variables)
   codebook_variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2", codebook_variables)
   temp <- any(stringr::str_count(codebook_variables, '\\"') > 2 |
@@ -89,12 +88,8 @@ spss_ascii_reader <- function(dataset_name,
                                          codebook_variables$column_number)
   codebook_variables$column_number <- gsub("(.*) \".*", "\\1",
                                            codebook_variables$column_number)
-  codebook_variables$column_name <- gsub(" |:|-", "_",
-                                         codebook_variables$column_name)
-  codebook_variables$column_name <- gsub("_+", "_",
-                                         codebook_variables$column_name)
-  codebook_variables$column_name <- gsub("_/$", "",
-                                         codebook_variables$column_name)
+  codebook_variables$column_name <- fix_names(codebook_variables$column_name)
+
 
   codebook_column_spaces <- data.frame(codebook[,1][grep("DATA LIST",
                                                          ignore.case = TRUE, codebook[,1]):
@@ -129,9 +124,6 @@ spss_ascii_reader <- function(dataset_name,
   codebook_column_spaces <- codebook_column_spaces[
     order(codebook_column_spaces$first_num),]
 
-
-  value_labels <- get_value_labels(codebook, codebook_column_spaces)
-
   if (!is.null(keep_columns)) {
     if (is.numeric(keep_columns)) {
       codebook_column_spaces <- codebook_column_spaces[keep_columns,]
@@ -146,10 +138,6 @@ spss_ascii_reader <- function(dataset_name,
     }
   }
 
-  # Removes columns not asked for
-  value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
-
-  value_labels <- split.data.frame(value_labels, value_labels$group)
 
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
@@ -159,6 +147,11 @@ spss_ascii_reader <- function(dataset_name,
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
+  # Removes columns not asked for
+  value_labels <- get_value_labels(codebook, codebook_column_spaces)
+  if (!is.null(value_labels)) {
+    value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
+    value_labels <- split.data.frame(value_labels, value_labels$group)
 
   if (value_label_fix) {
     for (i in 1:length(value_labels)) {
@@ -169,6 +162,7 @@ spss_ascii_reader <- function(dataset_name,
       }
     }
     data.table::setcolorder(dataset, column_order)
+  }
   }
 
 
@@ -182,20 +176,9 @@ spss_ascii_reader <- function(dataset_name,
     }
   }
 
-  # Make numeric columns numeric
-  all_numeric <- function(column) {
-    column_NAs <- sum(is.na(column))
-    column <- suppressWarnings(as.numeric(column))
-    return(all(is.numeric(column) & sum(is.na(column)) == column_NAs))
-  }
-  times <- nrow(dataset) * .10
-  if (times < 100000 & nrow(dataset) > 100000) { times <- 100000 }
-  times <- sample(1:nrow(dataset), times, replace = FALSE)
-  for (i in 1:ncol(dataset)) {
-    if (all((!is.factor(dataset[[i]]) & all_numeric(dataset[[i]][times])))) {
-      suppressWarnings(data.table::set(dataset, j = i, value = as.numeric(dataset[[i]])))
-    }
-  }
+
+  # Makes columns that should be numeric numeric
+  dataset <- make_cols_numeric(dataset)
 
   dataset <- as.data.frame(dataset)
   return(dataset)

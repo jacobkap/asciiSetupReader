@@ -15,12 +15,16 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- gsub(" {2,}| /", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
   value_label_section <- gsub("'$", "", value_label_section)
+  value_label_section <- gsub("=", " ", value_label_section)
+  value_label_section <- gsub("\\s+", " ", value_label_section)
+
   value_label_section <- unlist(stringr::str_split(value_label_section, "' '"))
   if (all(grepl("\\s", value_label_section))) {
     value_label_section <- unlist(stringr::str_split(value_label_section, "'"))
   }
-  value_label_section <- gsub("'", "", value_label_section)
-  value_label_section <- trimws(value_label_section)
+  value_label_section <- gsub("'| =", "", value_label_section)
+  value_label_section <- gsub("^\\(.*\\) ", "", value_label_section)
+  value_label_section <- stringr::str_trim(value_label_section)
 
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
   values <- value_label_section[,1]
@@ -68,6 +72,10 @@ double_digit <- function(value_label_section) {
 }
 
 get_value_labels <- function(codebook, codebook_column_spaces) {
+  if (!any(grepl("^value labels$",
+           codebook[,1], ignore.case = TRUE))) {
+    return(NULL)
+  }
   value_start <- grep("^value labels$",
                       codebook[,1], ignore.case = TRUE)
 
@@ -75,7 +83,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   end_row <- end_row[end_row > value_start][1] - 1
   if (is.na(end_row)) { end_row <- nrow(codebook) }
   value_labels <- codebook[value_start:end_row,]
-  value_labels <- trimws(value_labels)
+  value_labels <- stringr::str_trim(value_labels)
   value_labels <- gsub('\\s+\\"$', '"', value_labels)
   value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels, ignore.case = TRUE)
   value_labels <- gsub("\\s+\\(", " \\(", value_labels)
@@ -101,4 +109,35 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
     }
   }
   return(value_labels)
+}
+
+fix_names <- function(names) {
+  names <- gsub(" |:|-", "_", names)
+  names <- gsub("_/$|.*=|^\\s*|\\s*$", "", names)
+  names <- gsub("^_*|_*$|\\'", "", names)
+  names <- gsub('\\"|\\#|\\/', "", names)
+  names <- gsub('[-][[:punct:]]', "", names)
+  names <- gsub("<", "_", names)
+  names <- gsub("_+", "_", names)
+  names <- stringr::str_trim(names)
+  return(names)
+}
+
+# Make numeric columns numeric
+all_numeric <- function(column) {
+  column_NAs <- sum(is.na(column))
+  column <- suppressWarnings(as.numeric(column))
+  return(all(is.numeric(column) & sum(is.na(column)) == column_NAs))
+}
+
+make_cols_numeric <- function(dataset) {
+  times <- nrow(dataset) * .10
+  if (times < 100000 & nrow(dataset) > 100000) { times <- 100000 }
+  times <- sample(1:nrow(dataset), times, replace = FALSE)
+  for (i in 1:ncol(dataset)) {
+    if (all((!is.factor(dataset[[i]]) & all_numeric(dataset[[i]][times])))) {
+      suppressWarnings(data.table::set(dataset, j = i, value = as.numeric(dataset[[i]])))
+    }
+  }
+  return(dataset)
 }
