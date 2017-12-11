@@ -12,7 +12,7 @@ value_label_matrixer <- function(value_label_section) {
 
   value_label_section <- value_label_section[2:nrow(value_label_section), 1]
 
-  value_label_section <- gsub(" {2,}| /", "", value_label_section)
+  value_label_section <- gsub(" {2,}| /| /\\.", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
   value_label_section <- gsub("'$", "", value_label_section)
   value_label_section <- gsub("=", " ", value_label_section)
@@ -103,7 +103,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
     value_labels$group[i] <- group
     value_labels$column[i] <- column
     if (grepl("\\' \\/$", value_labels$value_labels[i]) |
-        value_labels$value_labels[i + 1] %in% codebook_column_spaces$column_number) {
+        value_labels$value_labels[i + 1] %in% codebook_column_spaces$column_number | (!grepl("\\'", value_labels$value_labels[i + 1]) & !grepl('\\"', value_labels$value_labels[i + 1]))) {
       group <- group + 1
       column <- value_labels$value_labels[i + 1]
     }

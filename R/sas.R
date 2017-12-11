@@ -45,16 +45,6 @@ sas_ascii_reader <- function(dataset_name,
   sas <- readr::read_lines(sas_name)
   sas <- stringr::str_trim(sas)
 
-
-  # Get format - column names and column names with f ====================
-  format <- sas[grep("^FORMAT$", sas, ignore.case = TRUE) : length(sas)]
-  format <- format[-1]
-  format <- unlist(strsplit(format, "\\."))
-  format <- stringr::str_trim(format)
-  format <- data.frame(format)
-  format$real_name <- gsub(" .*", "", format$format)
-  format$f_name <- gsub(".* ", "", format$format)
-
   # Get column name - both undescriptive and descriptive =====================
   column_name <- sas[grep("^LABEL$", sas): grep("^$", sas)[grep("^$", sas) >
                                                              grep("^LABEL$", sas)][1]]
@@ -103,11 +93,19 @@ sas_ascii_reader <- function(dataset_name,
       stop("Not all column names in 'keep_columns' are in data. Please check spelling")
     }
   }
+  if (any(grepl("^FORMAT$", sas, ignore.case = TRUE))) {
+    # Get format - column names and column names with f ====================
+    format <- sas[grep("^FORMAT$", sas, ignore.case = TRUE) : length(sas)]
+    format <- format[-1]
+    format <- unlist(strsplit(format, "\\."))
+    format <- stringr::str_trim(format)
+    format <- data.frame(format)
+    format$real_name <- gsub(" .*", "", format$format)
+    format$f_name <- gsub(".* ", "", format$format)
   column_spaces <- merge(column_spaces, format, by.x = "column_number",
                          by.y = "real_name", all.x = TRUE)
+  }
   column_spaces <- column_spaces[order(column_spaces$first_num),]
-
-
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(column_spaces$first_num,
@@ -116,6 +114,7 @@ sas_ascii_reader <- function(dataset_name,
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
+  if (any(grepl("^FORMAT$", sas, ignore.case = TRUE))) {
   # Gets value labels
   value_position <- grep("^VALUE ", sas)
   value_labels <- sas[value_position[1] : grep("\\*/$", sas)[grep("\\*/$", sas) >
@@ -162,7 +161,8 @@ sas_ascii_reader <- function(dataset_name,
       }
     }
       data.table::setcolorder(dataset, column_order)
-    }
+  }
+  }
 
   column_name$column_name <- gsub("_/$", "",
                                   column_name$real_name)

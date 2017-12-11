@@ -152,8 +152,9 @@ spss_ascii_reader <- function(dataset_name,
   if (!is.null(value_labels)) {
     value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
     value_labels <- split.data.frame(value_labels, value_labels$group)
+  }
 
-  if (value_label_fix) {
+  if (value_label_fix & length(value_labels) > 0) {
     for (i in 1:length(value_labels)) {
       column <- as.character(value_labels[[i]][1, 1])
       if (column %in% codebook_column_spaces$column_number) {
@@ -163,7 +164,7 @@ spss_ascii_reader <- function(dataset_name,
     }
     data.table::setcolorder(dataset, column_order)
   }
-  }
+
 
 
 

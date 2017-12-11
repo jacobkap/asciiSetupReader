@@ -2,6 +2,9 @@ context("Proper column names")
 
 SHR_dataset_name <- system.file("extdata", "example_data.zip",
                                 package = "asciiSetupReader")
+weimar_dataset_name <- system.file("testdata", "weimar.txt",
+                                package = "asciiSetupReader")
+
 SHR_sps_name <- system.file("extdata", "example_setup.sps",
                             package = "asciiSetupReader")
 SHR_sas_name <- system.file("extdata", "example_setup.sas",
@@ -19,11 +22,18 @@ NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
 NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1.sas",
                               package = "asciiSetupReader")
 
+weimar_sps_name <- system.file("testdata", "weimar.sps",
+                            package = "asciiSetupReader")
+weimar_sas_name <- system.file("testdata", "weimar.sas",
+                              package = "asciiSetupReader")
+
 SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
-                             sps_name = SHR_sps_name)
+                             sps_name = SHR_sps_name,
+                         keep_columns = c(1, 33, 45, 72, 100, 152))
 SHR2 <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                              sps_name = SHR_sps_name,
-                             real_names = FALSE)
+                             real_names = FALSE,
+                          keep_columns = c(1, 33, 45, 72, 100, 152))
 UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
                           sps_name = UCR_sps_name,
                           keep_columns = c(1,33,345,572,1000,1400))
@@ -32,22 +42,29 @@ UCR2 <- spss_ascii_reader(dataset_name = UCR_dataset_name,
                           keep_columns = c(1,33,345,572,1000,1400),
                           real_names = FALSE)
 NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sps_name = NIBRS_sps_name)
+                           sps_name = NIBRS_sps_name,
+                           keep_columns = c(1, 3, 5, 7, 10, 15))
 NIBRS2 <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                             sps_name = NIBRS_sps_name,
+                            real_names = FALSE,
+                            keep_columns = c(1, 3, 5, 7, 10, 15))
+
+weimar <- spss_ascii_reader(dataset_name = weimar_dataset_name,
+                            sps_name = weimar_sps_name,
+                            keep_columns = c(1:7, 23))
+weimar2 <- spss_ascii_reader(dataset_name = weimar_dataset_name,
+                            sps_name = weimar_sps_name,
                             real_names = FALSE)
+
+
 # Read SAS ===============================================================
 SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                         sas_name = SHR_sas_name)
+                         sas_name = SHR_sas_name,
+                         keep_columns = c(1, 33, 45, 72, 100, 152))
 SHR2_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
                               sas_name = SHR_sas_name,
-                          real_names = FALSE)
-SHR3_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                             sas_name = SHR_sas_name)
-SHR4_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                             sas_name = SHR_sas_name,
-                         real_names = FALSE)
-
+                          real_names = FALSE,
+                          keep_columns = c(1, 33, 45, 72, 100, 152))
 UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                              sas_name = UCR_sas_name,
                          keep_columns = c(1,33,345,572,1000,1400))
@@ -56,109 +73,110 @@ UCR2_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                           keep_columns = c(1,33,345,572,1000,1400),
                           real_names = FALSE)
 NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
-                               sas_name = NIBRS_sas_name)
+                               sas_name = NIBRS_sas_name,
+                              keep_columns = c(1, 3, 5, 7, 10, 15))
 NIBRS2_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
-                                sas_name = NIBRS_sas_name,
-                            real_names = FALSE)
+                               sas_name = NIBRS_sas_name,
+                               real_names = FALSE,
+                               keep_columns = c(1, 3, 5, 7, 10, 15))
+
+weimar_sas <- sas_ascii_reader(dataset_name = weimar_dataset_name,
+                           sas_name = weimar_sas_name,
+                           keep_columns = c(1:7, 23))
+weimar2_sas <- sas_ascii_reader(dataset_name = weimar_dataset_name,
+                            sas_name = weimar_sas_name,
+                             real_names = FALSE)
 
 
 
 test_that("Fixed (real names) columns are correct - SPSS", {
-  expect_equal(names(SHR)[1], "IDENTIFIER_CODE")
-  expect_equal(names(SHR)[33], "VICTIM_2_AGE")
-  expect_equal(names(SHR)[45], "VICTIM_5_AGE")
-  expect_equal(names(SHR)[72], "VICTIM_11_ETHNIC_ORIGIN")
-  expect_equal(names(SHR)[100], "OFFENDER_5_ETHNIC_ORIGIN")
-  expect_equal(names(SHR)[152], "OFFENDER_11_SUB_CIRCUMSTANCE")
 
+  expect_named(SHR, c("IDENTIFIER_CODE", "VICTIM_2_AGE",
+                      "VICTIM_5_AGE",
+                      "VICTIM_11_ETHNIC_ORIGIN",
+                      "OFFENDER_5_ETHNIC_ORIGIN",
+                      "OFFENDER_11_SUB_CIRCUMSTANCE"))
 
-  expect_equal(names(NIBRS)[1], "SEGMENT_LEVEL")
-  expect_equal(names(NIBRS)[3], "ORIGINATING_AGENCY_IDENTIFIER")
-  expect_equal(names(NIBRS)[5], "DATE_ORI_WAS_ADDED")
-  expect_equal(names(NIBRS)[7], "CITY_NAME")
-  expect_equal(names(NIBRS)[10], "COUNTRY_DIVISION")
-  expect_equal(names(NIBRS)[15], "FBI_FIELD_OFFICE")
+  expect_named(NIBRS, c("SEGMENT_LEVEL", "ORIGINATING_AGENCY_IDENTIFIER",
+                      "DATE_ORI_WAS_ADDED",
+                      "CITY_NAME",
+                      "COUNTRY_DIVISION",
+                      "FBI_FIELD_OFFICE"))
 
-  expect_equal(names(UCR)[1], "ID_CODE")
-  expect_equal(names(UCR)[2], "JAN_MONTH_INCLUDED_IN")
-  expect_equal(names(UCR)[3], "MAR_TOT_CLR_OTH_WPN_ASLT")
-  expect_equal(names(UCR)[4], "MAY_TOT_CLR_ATMPTD_RAPE")
-  expect_equal(names(UCR)[5], "SEP_UNFOUND_KNIFE_ASSL")
-  expect_equal(names(UCR)[6], "DEC_TOT_CLR_GUN_ROBBER")
+  expect_named(UCR, c("ID_CODE", "JAN_MONTH_INCLUDED_IN",
+                      "MAR_TOT_CLR_OTH_WPN_ASLT",
+                      "MAY_TOT_CLR_ATMPTD_RAPE",
+                      "SEP_UNFOUND_KNIFE_ASSL",
+                      "DEC_TOT_CLR_GUN_ROBBER"))
 
+  expect_named(weimar, c("WAHLKREISCODE", "LAND_REGIERUNGSBEZ_CODE",
+                             "DATA_TYPE_CODE", "UNIT_OF_ANALYSIS_NAME",
+                             "V1919_RT_NR_ELIGIBLE_VTRS",
+                             "V1919_RT_NR_VOTES_CAST",
+                             "V1919_RT_VOTES_CAST",
+                             "V1919_RT_OTHER_PARTIES"))
 
 })
 
 
-test_that("Not fixed columns are correct - SPSS", {
-  expect_equal(names(SHR2)[1], "V1")
-  expect_equal(names(SHR2)[33], "V33")
-  expect_equal(names(SHR2)[45], "V45")
-  expect_equal(names(SHR2)[72], "V72")
-  expect_equal(names(SHR2)[100], "V100")
-  expect_equal(names(SHR2)[152], "V152")
+test_that("Not fixed column names are correct - SPSS", {
 
-  expect_equal(names(NIBRS2)[1], "B1001")
-  expect_equal(names(NIBRS2)[3], "B1003")
-  expect_equal(names(NIBRS2)[5], "B1005")
-  expect_equal(names(NIBRS2)[7], "B1007")
-  expect_equal(names(NIBRS2)[10], "B1010")
-  expect_equal(names(NIBRS2)[15], "B1015")
+  expect_named(SHR2, c("V1", "V33", "V45", "V72", "V100", "V152"))
 
-  expect_equal(names(UCR2)[1], "V1")
-  expect_equal(names(UCR2)[2], "V33")
-  expect_equal(names(UCR2)[3], "V345")
-  expect_equal(names(UCR2)[4], "V572")
-  expect_equal(names(UCR2)[5], "V1000")
-  expect_equal(names(UCR2)[6], "V1400")
+  expect_named(NIBRS2, c("B1001", "B1003", "B1005",
+                             "B1007", "B1010", "B1015"))
+
+  expect_named(UCR2, c("V1", "V33", "V345", "V572", "V1000", "V1400"))
+
+  expect_named(weimar2, c("V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8",
+                          "V9", "V10", "V11", "V12", "V13", "V14", "V15",
+                          "V16", "V17", "V18", "V19", "V20", "V21", "V22",
+                          "V23"))
+
 })
 
 # Test SAS ============================================================
 test_that("Fixed (real names) columns are correct - SAS", {
-  expect_equal(names(SHR_sas)[1], "IDENTIFIER_CODE")
-  expect_equal(names(SHR_sas)[33], "VICTIM_2_AGE")
-  expect_equal(names(SHR_sas)[45], "VICTIM_5_AGE")
-  expect_equal(names(SHR_sas)[72], "VICTIM_11_ETHNIC_ORIGIN")
-  expect_equal(names(SHR_sas)[100], "OFFENDER_5_ETHNIC_ORIGIN")
-  expect_equal(names(SHR_sas)[152], "OFFENDER_11_SUB_CIRCUMSTANCE")
+  expect_named(SHR_sas, c("IDENTIFIER_CODE", "VICTIM_2_AGE",
+                      "VICTIM_5_AGE",
+                      "VICTIM_11_ETHNIC_ORIGIN",
+                      "OFFENDER_5_ETHNIC_ORIGIN",
+                      "OFFENDER_11_SUB_CIRCUMSTANCE"))
 
+  expect_named(NIBRS_sas, c("SEGMENT_LEVEL", "ORIGINATING_AGENCY_IDENTIFIER",
+                        "DATE_ORI_WAS_ADDED",
+                        "CITY_NAME",
+                        "COUNTRY_DIVISION",
+                        "FBI_FIELD_OFFICE"))
 
-  expect_equal(names(NIBRS_sas)[1], "SEGMENT_LEVEL")
-  expect_equal(names(NIBRS_sas)[3], "ORIGINATING_AGENCY_IDENTIFIER")
-  expect_equal(names(NIBRS_sas)[5], "DATE_ORI_WAS_ADDED")
-  expect_equal(names(NIBRS_sas)[7], "CITY_NAME")
-  expect_equal(names(NIBRS_sas)[10], "COUNTRY_DIVISION")
-  expect_equal(names(NIBRS_sas)[15], "FBI_FIELD_OFFICE")
+  expect_named(UCR_sas, c("ID_CODE", "JAN_MONTH_INCLUDED_IN",
+                      "MAR_TOT_CLR_OTH_WPN_ASLT",
+                      "MAY_TOT_CLR_ATMPTD_RAPE",
+                      "SEP_UNFOUND_KNIFE_ASSL",
+                      "DEC_TOT_CLR_GUN_ROBBER"))
 
-  expect_equal(names(UCR_sas)[1], "ID_CODE")
-  expect_equal(names(UCR_sas)[2], "JAN_MONTH_INCLUDED_IN")
-  expect_equal(names(UCR_sas)[3], "MAR_TOT_CLR_OTH_WPN_ASLT")
-  expect_equal(names(UCR_sas)[4], "MAY_TOT_CLR_ATMPTD_RAPE")
-  expect_equal(names(UCR_sas)[5], "SEP_UNFOUND_KNIFE_ASSL")
-  expect_equal(names(UCR_sas)[6], "DEC_TOT_CLR_GUN_ROBBER")
+  expect_named(weimar_sas, c("WAHLKREISCODE", "LAND_REGIERUNGSBEZ_CODE",
+                             "DATA_TYPE_CODE", "UNIT_OF_ANALYSIS_NAME",
+                             "V1919_RT_NR_ELIGIBLE_VTRS",
+                             "V1919_RT_NR_VOTES_CAST",
+                             "V1919_RT_VOTES_CAST",
+                             "V1919_RT_OTHER_PARTIES"))
+
 
 })
 
 
-test_that("Not fixed columns are correct - SAS", {
-  expect_equal(names(SHR2_sas)[1], "V1")
-  expect_equal(names(SHR2_sas)[33], "V33")
-  expect_equal(names(SHR2_sas)[45], "V45")
-  expect_equal(names(SHR2_sas)[72], "V72")
-  expect_equal(names(SHR2_sas)[100], "V100")
-  expect_equal(names(SHR2_sas)[152], "V152")
+test_that("Not fixed column names are correct - SAS", {
+  expect_named(SHR2_sas, c("V1", "V33", "V45", "V72", "V100", "V152"))
 
-  expect_equal(names(NIBRS2_sas)[1], "B1001")
-  expect_equal(names(NIBRS2_sas)[3], "B1003")
-  expect_equal(names(NIBRS2_sas)[5], "B1005")
-  expect_equal(names(NIBRS2_sas)[7], "B1007")
-  expect_equal(names(NIBRS2_sas)[10], "B1010")
-  expect_equal(names(NIBRS2_sas)[15], "B1015")
+  expect_named(NIBRS2_sas, c("B1001", "B1003", "B1005",
+                             "B1007", "B1010", "B1015"))
 
-  expect_equal(names(UCR2_sas)[1], "V1")
-  expect_equal(names(UCR2_sas)[2], "V33")
-  expect_equal(names(UCR2_sas)[3], "V345")
-  expect_equal(names(UCR2_sas)[4], "V572")
-  expect_equal(names(UCR2_sas)[5], "V1000")
-  expect_equal(names(UCR2_sas)[6], "V1400")
+  expect_named(UCR2_sas, c("V1", "V33", "V345", "V572", "V1000", "V1400"))
+
+  expect_named(weimar2_sas, c("V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8",
+                          "V9", "V10", "V11", "V12", "V13", "V14", "V15",
+                          "V16", "V17", "V18", "V19", "V20", "V21", "V22",
+                          "V23"))
+
 })
