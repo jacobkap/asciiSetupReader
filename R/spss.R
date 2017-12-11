@@ -167,7 +167,6 @@ spss_ascii_reader <- function(dataset_name,
 
 
 
-
   if (real_names) {
     # Fixes column names to real names
     for (n in 1:nrow(codebook_variables)) {

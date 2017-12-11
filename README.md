@@ -53,4 +53,4 @@ keep_columns = c("IDENTIFIER_CODE", "NUMERIC_STATE_CODE")) # Gets only the first
 example[1:6, 1:2] # Look at first 6 rows and first 4 columns
 ```
 
-https://travis-ci.org/jacobkap/asciiSetupReader.svg?branch=master
+[![Build Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)

@@ -114,12 +114,15 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
 fix_names <- function(names) {
   names <- gsub(" |:|-", "_", names)
   names <- gsub("_/$|.*=|^\\s*|\\s*$", "", names)
-  names <- gsub("^_*|_*$|\\'", "", names)
-  names <- gsub('\\"|\\#|\\/', "", names)
-  names <- gsub('[-][[:punct:]]', "", names)
-  names <- gsub("<", "_", names)
-  names <- gsub("_+", "_", names)
+  names <- gsub("^_*|_*$|\\'|%", "", names)
+  names <- gsub('\\"|\\#', "", names)
+  names <- gsub('[[:punct:]]', "_", names)
+  names <- gsub("_+|/", "_", names)
+  names <- gsub("^_|_$", "", names)
   names <- stringr::str_trim(names)
+
+  names[grepl("^[0-9]", names)] <- paste0("X", names[grepl("^[0-9]", names)])
+
   return(names)
 }
 

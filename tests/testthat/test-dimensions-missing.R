@@ -88,7 +88,7 @@ test_that("Character columns have proper number of NAs - SPSS", {
   expect_equal(sum(is.na(SHR$ORI_CODE)), 0)
   expect_equal(sum(is.na(SHR$LAST_UPDATE)), 0)
 
-  expect_equal(sum(is.na(UCR$JAN_CARD_0_PT)), 8452)
+  expect_equal(sum(is.na(UCR$JAN_CARD_0_P_T)), 8452)
   expect_equal(sum(is.na(UCR$MAILING_ADDRESS_LINE_1)), 200)
   expect_equal(sum(is.na(UCR$MAILING_ADDRESS_LINE_2)), 2)
   expect_equal(sum(is.na(UCR$MAILING_ADDRESS_LINE_4)), 8452)
@@ -170,7 +170,7 @@ test_that("Character columns have proper number of NAs - SAS", {
   expect_equal(sum(is.na(SHR_sas$ORI_CODE)), 0)
   expect_equal(sum(is.na(SHR_sas$LAST_UPDATE)), 0)
 
-  expect_equal(sum(is.na(UCR_sas$JAN_CARD_0_PT)), 8452)
+  expect_equal(sum(is.na(UCR_sas$JAN_CARD_0_P_T)), 8452)
   expect_equal(sum(is.na(UCR_sas$MAILING_ADDRESS_LINE_1)), 200)
   expect_equal(sum(is.na(UCR_sas$MAILING_ADDRESS_LINE_2)), 2)
   expect_equal(sum(is.na(UCR_sas$MAILING_ADDRESS_LINE_4)), 8452)

@@ -111,10 +111,10 @@ test_that("Fixed (real names) columns are correct - SPSS", {
 
   expect_named(weimar, c("WAHLKREISCODE", "LAND_REGIERUNGSBEZ_CODE",
                              "DATA_TYPE_CODE", "UNIT_OF_ANALYSIS_NAME",
-                             "V1919_RT_NR_ELIGIBLE_VTRS",
-                             "V1919_RT_NR_VOTES_CAST",
-                             "V1919_RT_VOTES_CAST",
-                             "V1919_RT_OTHER_PARTIES"))
+                             "X1919_RT_NR_ELIGIBLE_VTRS",
+                             "X1919_RT_NR_VOTES_CAST",
+                             "X1919_RT_VOTES_CAST",
+                             "X1919_RT_OTHER_PARTIES"))
 
 })
 
@@ -157,10 +157,10 @@ test_that("Fixed (real names) columns are correct - SAS", {
 
   expect_named(weimar_sas, c("WAHLKREISCODE", "LAND_REGIERUNGSBEZ_CODE",
                              "DATA_TYPE_CODE", "UNIT_OF_ANALYSIS_NAME",
-                             "V1919_RT_NR_ELIGIBLE_VTRS",
-                             "V1919_RT_NR_VOTES_CAST",
-                             "V1919_RT_VOTES_CAST",
-                             "V1919_RT_OTHER_PARTIES"))
+                             "X1919_RT_NR_ELIGIBLE_VTRS",
+                             "X1919_RT_NR_VOTES_CAST",
+                             "X1919_RT_VOTES_CAST",
+                             "X1919_RT_OTHER_PARTIES"))
 
 
 })
