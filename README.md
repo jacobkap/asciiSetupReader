@@ -52,3 +52,5 @@ sps_name = sps_name,
 keep_columns = c("IDENTIFIER_CODE", "NUMERIC_STATE_CODE")) # Gets only the first 2 columns
 example[1:6, 1:2] # Look at first 6 rows and first 4 columns
 ```
+
+https://travis-ci.org/jacobkap/asciiSetupReader.svg?branch=master
