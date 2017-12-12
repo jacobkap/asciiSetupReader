@@ -2,6 +2,7 @@ context("Columns are the correct type/class")
 
 SHR_dataset_name <- system.file("extdata", "example_data.zip",
                                 package = "asciiSetupReader")
+
 SHR_sps_name <- system.file("extdata", "example_setup.sps",
                             package = "asciiSetupReader")
 SHR_sas_name <- system.file("extdata", "example_setup.sas",
@@ -19,6 +20,14 @@ NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
 NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1.sas",
                               package = "asciiSetupReader")
 
+weimar_dataset_name <- system.file("testdata", "weimar.txt",
+                                   package = "asciiSetupReader")
+weimar_sps_name <- system.file("testdata", "weimar.sps",
+                               package = "asciiSetupReader")
+weimar_sas_name <- system.file("testdata", "weimar.sas",
+                               package = "asciiSetupReader")
+
+
 SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                              sps_name = SHR_sps_name)
 UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
@@ -34,6 +43,10 @@ UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
 NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                            sps_name = NIBRS_sps_name)
 
+weimar <- spss_ascii_reader(dataset_name = weimar_dataset_name,
+                            sps_name = weimar_sps_name)
+
+
 SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
                          sas_name = SHR_sas_name)
 UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
@@ -48,6 +61,8 @@ UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                                           "DEC_CLR_18_ALL_FIELDS"))
 NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
                            sas_name = NIBRS_sas_name)
+weimar_sas <- sas_ascii_reader(dataset_name = weimar_dataset_name,
+                                sas_name = weimar_sas_name)
 
 test_that("Character columns are character - SPSS", {
   expect_is(SHR$ORI_CODE, "character")
@@ -63,6 +78,8 @@ test_that("Character columns are character - SPSS", {
   expect_is(NIBRS$STATE_ABBREVIATION, "character")
   expect_is(NIBRS$ORIGINATING_AGENCY_IDENTIFIER, "character")
   expect_is(NIBRS$JUDICIAL_DISTRICT, "character")
+
+  expect_is(weimar[,4], "character")
 })
 
 test_that("Numeric columns are Numeric - SPSS", {
@@ -80,6 +97,17 @@ test_that("Numeric columns are Numeric - SPSS", {
   expect_is(NIBRS$N_RECORDS_PER_ORI_INCIDENT_NUMBER, "numeric")
   expect_is(NIBRS$DATE_ORI_WAS_ADDED, "numeric")
   expect_is(NIBRS$DATE_ORI_WENT_NIBRS, "numeric")
+
+  expect_is(weimar[,1], "numeric")
+  expect_is(weimar[,2], "numeric")
+  expect_is(weimar[,3], "numeric")
+  expect_is(weimar[,5], "numeric")
+  expect_is(weimar[,6], "numeric")
+  expect_is(weimar[,7], "numeric")
+  expect_is(weimar[,8], "numeric")
+  expect_is(weimar[,9], "numeric")
+  expect_is(weimar[,10], "numeric")
+  expect_is(weimar[,11], "numeric")
 })
 
 test_that("Factor columns are Factor - SPSS", {
@@ -115,6 +143,7 @@ test_that("Character columns are character - SAS", {
   expect_is(NIBRS_sas$STATE_ABBREVIATION, "character")
   expect_is(NIBRS_sas$ORIGINATING_AGENCY_IDENTIFIER, "character")
   expect_is(NIBRS_sas$JUDICIAL_DISTRICT, "character")
+  expect_is(weimar_sas[,4], "character")
 })
 
 test_that("Numeric columns are Numeric - SAS", {
@@ -132,6 +161,17 @@ test_that("Numeric columns are Numeric - SAS", {
   expect_is(NIBRS_sas$N_RECORDS_PER_ORI_INCIDENT_NUMBER, "numeric")
   expect_is(NIBRS_sas$DATE_ORI_WAS_ADDED, "numeric")
   expect_is(NIBRS_sas$DATE_ORI_WENT_NIBRS, "numeric")
+
+  expect_is(weimar_sas[,1], "numeric")
+  expect_is(weimar_sas[,2], "numeric")
+  expect_is(weimar_sas[,3], "numeric")
+  expect_is(weimar_sas[,5], "numeric")
+  expect_is(weimar_sas[,6], "numeric")
+  expect_is(weimar_sas[,7], "numeric")
+  expect_is(weimar_sas[,8], "numeric")
+  expect_is(weimar_sas[,9], "numeric")
+  expect_is(weimar_sas[,10], "numeric")
+  expect_is(weimar_sas[,11], "numeric")
 })
 
 test_that("Factor columns are Factor - SAS", {

@@ -19,6 +19,13 @@ NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
 NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1.sas",
                               package = "asciiSetupReader")
 
+weimar_dataset_name <- system.file("testdata", "weimar.txt",
+                                   package = "asciiSetupReader")
+weimar_sps_name <- system.file("testdata", "weimar.sps",
+                               package = "asciiSetupReader")
+weimar_sas_name <- system.file("testdata", "weimar.sas",
+                               package = "asciiSetupReader")
+
 SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                              sps_name = SHR_sps_name)
 SHR2 <- spss_ascii_reader(dataset_name = SHR_dataset_name,

@@ -55,6 +55,11 @@ spss_ascii_reader <- function(dataset_name,
                               real_names = TRUE,
                               keep_columns = NULL) {
 
+  stopifnot(is.character(dataset_name), length(dataset_name) == 1,
+            is.character(sps_name), length(sps_name) == 1,
+            is.logical(value_label_fix), length(value_label_fix) == 1,
+            is.logical(real_names), length(real_names) == 1)
+
   codebook <- readr::read_lines(sps_name)
   codebook <- stringr::str_trim(codebook)
   codebook <- codebook[grep("^DATA LIST",
@@ -83,7 +88,6 @@ spss_ascii_reader <- function(dataset_name,
   }
 
   codebook_variables[,1] <- gsub("\'", "\"", codebook_variables[,1])
-
   codebook_variables$column_name <- gsub(".*\"(.*)\"", "\\1",
                                          codebook_variables$column_number)
   codebook_variables$column_number <- gsub("(.*) \".*", "\\1",
@@ -91,48 +95,48 @@ spss_ascii_reader <- function(dataset_name,
   codebook_variables$column_name <- fix_names(codebook_variables$column_name)
 
 
-  codebook_column_spaces <- data.frame(codebook[,1][grep("DATA LIST",
+  column_spaces <- data.frame(codebook[,1][grep("DATA LIST",
                                                          ignore.case = TRUE, codebook[,1]):
                                                       grep("^variable labels$",
                                                            ignore.case = TRUE, codebook[,1])],
                                        stringsAsFactors = FALSE)
 
 
-  codebook_column_spaces[,1] <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
-                                     codebook_column_spaces[,1])
+  column_spaces[,1] <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
+                                     column_spaces[,1])
 
-  codebook_column_spaces <- unlist(
-    strsplit(codebook_column_spaces[,1], "\\s{2,}"))
-  codebook_column_spaces <- data.frame(codebook_column_spaces,
+  column_spaces <- unlist(
+    strsplit(column_spaces[,1], "\\s{2,}"))
+  column_spaces <- data.frame(column_spaces,
                                        stringsAsFactors = FALSE)
-  codebook_column_spaces[,1] <- gsub("\\(.*", "", codebook_column_spaces[,1])
-  codebook_column_spaces[,1] <- stringr::str_trim(codebook_column_spaces[,1])
+  column_spaces[,1] <- gsub("\\(.*", "", column_spaces[,1])
+  column_spaces[,1] <- stringr::str_trim(column_spaces[,1])
 
-  names(codebook_column_spaces)[1] <- "column_number"
-  codebook_column_spaces$first_num <- gsub(".* ", "", codebook_column_spaces$column_number)
-  codebook_column_spaces$second_num <- gsub(".*-", "", codebook_column_spaces$first_num)
-  codebook_column_spaces$first_num <- gsub("-.*", "", codebook_column_spaces$first_num)
-  codebook_column_spaces$column_number <- gsub(" .*", "", codebook_column_spaces$column_number)
-  codebook_column_spaces <- codebook_column_spaces[codebook_column_spaces$column_number %in%
+  names(column_spaces)[1] <- "column_number"
+  column_spaces$first_num <- gsub(".* ", "", column_spaces$column_number)
+  column_spaces$second_num <- gsub(".*-", "", column_spaces$first_num)
+  column_spaces$first_num <- gsub("-.*", "", column_spaces$first_num)
+  column_spaces$column_number <- gsub(" .*", "", column_spaces$column_number)
+  column_spaces <- column_spaces[column_spaces$column_number %in%
                                                      codebook_variables$column_number,]
-  codebook_column_spaces$first_num <- suppressWarnings(as.numeric(codebook_column_spaces$first_num))
-  codebook_column_spaces$second_num <- suppressWarnings(as.numeric(codebook_column_spaces$second_num))
-  codebook_column_spaces <- codebook_column_spaces[!is.na(codebook_column_spaces$first_num),]
+  column_spaces$first_num <- suppressWarnings(as.numeric(column_spaces$first_num))
+  column_spaces$second_num <- suppressWarnings(as.numeric(column_spaces$second_num))
+  column_spaces <- column_spaces[!is.na(column_spaces$first_num),]
 
-  codebook_column_spaces <- merge(codebook_column_spaces, codebook_variables,
+  column_spaces <- merge(column_spaces, codebook_variables,
                                   all.x = TRUE)
-  codebook_column_spaces <- codebook_column_spaces[
-    order(codebook_column_spaces$first_num),]
+  column_spaces <- column_spaces[
+    order(column_spaces$first_num),]
 
   if (!is.null(keep_columns)) {
     if (is.numeric(keep_columns)) {
-      codebook_column_spaces <- codebook_column_spaces[keep_columns,]
-    } else if (all(keep_columns %in% codebook_column_spaces$column_number)) {
-      codebook_column_spaces <- codebook_column_spaces[
-        codebook_column_spaces$column_number %in% keep_columns,]
-    } else if (all(keep_columns %in% codebook_column_spaces$column_name)) {
-      codebook_column_spaces <- codebook_column_spaces[
-        codebook_column_spaces$column_name %in% keep_columns,]
+      column_spaces <- column_spaces[keep_columns,]
+    } else if (all(keep_columns %in% column_spaces$column_number)) {
+      column_spaces <- column_spaces[
+        column_spaces$column_number %in% keep_columns,]
+    } else if (all(keep_columns %in% column_spaces$column_name)) {
+      column_spaces <- column_spaces[
+        column_spaces$column_name %in% keep_columns,]
     } else {
       stop("Not all column names in 'keep_columns' are in data. Please check spelling")
     }
@@ -141,23 +145,25 @@ spss_ascii_reader <- function(dataset_name,
 
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                                              readr::fwf_positions(codebook_column_spaces$first_num,
-                                                                   codebook_column_spaces$second_num,
-                                                                   codebook_column_spaces$column_number), col_types = paste0(rep("c", nrow(codebook_column_spaces)), collapse = "")))
+                                              readr::fwf_positions(column_spaces$first_num,
+                                                                   column_spaces$second_num,
+                                                                   column_spaces$column_number), col_types = paste0(rep("c", nrow(column_spaces)), collapse = "")))
   dataset <- data.table::data.table(dataset)
   column_order <- colnames(dataset)
 
-  # Removes columns not asked for
-  value_labels <- get_value_labels(codebook, codebook_column_spaces)
+
+# Value Labels ------------------------------------------------------------
+    # Removes columns not asked for
+  value_labels <- get_value_labels(codebook, column_spaces)
   if (!is.null(value_labels)) {
-    value_labels <- value_labels[value_labels$column %in% codebook_column_spaces$column_number,]
+    value_labels <- value_labels[value_labels$column %in% column_spaces$column_number,]
     value_labels <- split.data.frame(value_labels, value_labels$group)
   }
 
   if (value_label_fix & length(value_labels) > 0) {
     for (i in 1:length(value_labels)) {
       column <- as.character(value_labels[[i]][1, 1])
-      if (column %in% codebook_column_spaces$column_number) {
+      if (column %in% column_spaces$column_number) {
        value_label_section <- value_label_matrixer(value_labels[[i]])
        dataset <- fix_variable_values(dataset, value_label_section, column)
       }

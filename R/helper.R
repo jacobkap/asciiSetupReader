@@ -88,6 +88,9 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels, ignore.case = TRUE)
   value_labels <- gsub("\\s+\\(", " \\(", value_labels)
   value_labels <- gsub("&\\s+", "& ", value_labels)
+  value_labels <- gsub("([[:alpha:]])\\s{2,}([[:alpha:]])", "\\1 \\2",
+                       value_labels)
+
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]

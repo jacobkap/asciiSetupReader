@@ -4,10 +4,6 @@ output:
     variant: markdown_github
 html_preview: false
 ---
-
-[![HitCount](http://hits.dwyl.io/jacobkap/asciiSetupReader.svg)](http://hits.dwyl.io/jacobkap/asciiSetupReader)
-
-
 [![Build Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)
 
 # Introduction to asciiSetupReader

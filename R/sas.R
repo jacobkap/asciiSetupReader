@@ -41,6 +41,12 @@ sas_ascii_reader <- function(dataset_name,
                              real_names = TRUE,
                              keep_columns = NULL) {
 
+  stopifnot(is.character(dataset_name), length(dataset_name) == 1,
+            is.character(sas_name), length(sas_name) == 1,
+            is.logical(value_label_fix), length(value_label_fix) == 1,
+            is.logical(real_names), length(real_names) == 1)
+
+
   # SAS setup
   sas <- readr::read_lines(sas_name)
   sas <- stringr::str_trim(sas)
@@ -107,6 +113,10 @@ sas_ascii_reader <- function(dataset_name,
   }
   column_spaces <- column_spaces[order(column_spaces$first_num),]
 
+
+# Reads in Data File ------------------------------------------------------
+
+
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                               readr::fwf_positions(column_spaces$first_num,
                                                                    column_spaces$second_num,
@@ -145,7 +155,7 @@ sas_ascii_reader <- function(dataset_name,
   value_labels <- split.data.frame(value_labels, value_labels$group)
 
 
-  if (value_label_fix) {
+  if (value_label_fix & length(value_labels) > 0) {
     for (i in 1:length(value_labels)) {
       column <- as.character(value_labels[[i]][1, 1])
       if (toupper(column) %in% toupper(column_spaces$f_name)) {
