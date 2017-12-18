@@ -1,6 +1,4 @@
-[![HitCount](http://hits.dwyl.io/jacobkap/asciiSetupReader.svg)](http://hits.dwyl.io/jacobkap/asciiSetupReader)
-
-[![Build Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)
+[![Build Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiReader?branch=master&svg=true)](https://ci.appveyor.com/project/jacobkap/asciiReader)
 
 Introduction to asciiSetupReader
 ================================
