@@ -79,11 +79,9 @@ spss_ascii_reader <- function(dataset_name,
 
 
   codebook_variables[,1] <- gsub("\'", "\"", codebook_variables[,1])
-  codebook_variables$column_name <- gsub(".*\"(.*)\"", "\\1",
-                                         codebook_variables$column_number)
-  codebook_variables$column_number <- gsub("(.*) \".*", "\\1",
+  codebook_variables$column_name <- fix_names(codebook_variables$column_number)
+  codebook_variables$column_number <- gsub(" .*", "",
                                            codebook_variables$column_number)
-  codebook_variables$column_name <- fix_names(codebook_variables$column_name)
 
 
   column_spaces <- codebook[,1][grep2("DATA LIST", codebook[,1]):

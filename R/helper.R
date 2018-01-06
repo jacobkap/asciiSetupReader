@@ -116,7 +116,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
 }
 
 fix_names <- function(names) {
-  names <- gsub("^.* = |\\W", "_", names)
+  names <- gsub('^.* = |^.* \\"|\\W', "_", names)
   names <- gsub("_+", "_", names)
   names <- gsub("^_|_$", "", names)
   names <- gsub("^([0-9])", "X\\1", names)
@@ -127,7 +127,7 @@ fix_names <- function(names) {
 all_numeric <- function(column) {
   column_NAs <- sum(is.na(column))
   column <- suppressWarnings(as.numeric(column))
-  return(all(is.numeric(column) & sum(is.na(column)) == column_NAs))
+  return(is.numeric(column) && sum(is.na(column)) == column_NAs)
 }
 
 make_cols_numeric <- function(dataset) {
@@ -135,7 +135,7 @@ make_cols_numeric <- function(dataset) {
   if (times < 100000 & nrow(dataset) > 100000) { times <- 100000 }
   times <- sample(1:nrow(dataset), times, replace = FALSE)
   for (i in 1:ncol(dataset)) {
-    if (all((!is.factor(dataset[[i]]) & all_numeric(dataset[[i]][times])))) {
+    if ((!is.factor(dataset[[i]]) && all_numeric(dataset[[i]][times]))) {
       suppressWarnings(data.table::set(dataset, j = i, value = as.numeric(dataset[[i]])))
     }
   }
