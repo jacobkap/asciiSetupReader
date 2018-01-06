@@ -35,7 +35,7 @@ value_label_matrixer <- function(value_label_section) {
 
 
 fix_variable_values <- function(dataset, value_label_section, column) {
-  column <- as.integer(grep(paste0("^", column, "$"), names(dataset)))
+#  column <- as.integer(grep(paste0("^", column, "$"), names(dataset)))
 
   value_label_section <- single_digit(value_label_section)
   value_label_section <- double_digit(value_label_section)
@@ -72,12 +72,12 @@ double_digit <- function(value_label_section) {
 }
 
 get_value_labels <- function(codebook, codebook_column_spaces) {
-  if (!any(grepl("^value labels$",
-           codebook[,1], ignore.case = TRUE))) {
+  if (!any(grepl2("^value labels$",
+           codebook[,1]))) {
     return(NULL)
   }
-  value_start <- grep("^value labels$",
-                      codebook[,1], ignore.case = TRUE)
+  value_start <- grep2("^value labels$",
+                      codebook[,1])
 
   end_row <- grep("^\\.$", codebook[,1])
   end_row <- end_row[end_row > value_start][1] - 1
@@ -85,12 +85,13 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- codebook[value_start:end_row,]
   value_labels <- stringr::str_trim(value_labels)
   value_labels <- gsub('\\s+\\"$', '"', value_labels)
-  value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels, ignore.case = TRUE)
+  value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels)
   value_labels <- gsub("\\s+\\(", " \\(", value_labels)
   value_labels <- gsub("&\\s+", "& ", value_labels)
   value_labels <- gsub("([[:alpha:]])\\s{2,}([[:alpha:]])", "\\1 \\2",
                        value_labels)
 
+  value_labels <- gsub('^([0-9]+)\\s{2,}\\"', '\\1 \\"', value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]
@@ -115,17 +116,10 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
 }
 
 fix_names <- function(names) {
-  names <- gsub(" |:|-", "_", names)
-  names <- gsub("_/$|.*=|^\\s*|\\s*$", "", names)
-  names <- gsub("^_*|_*$|\\'|%", "", names)
-  names <- gsub('\\"|\\#', "", names)
-  names <- gsub('[[:punct:]]', "_", names)
-  names <- gsub("_+|/", "_", names)
+  names <- gsub("^.* = |\\W", "_", names)
+  names <- gsub("_+", "_", names)
   names <- gsub("^_|_$", "", names)
-  names <- stringr::str_trim(names)
-
-  names[grepl("^[0-9]", names)] <- paste0("X", names[grepl("^[0-9]", names)])
-
+  names <- gsub("^([0-9])", "X\\1", names)
   return(names)
 }
 

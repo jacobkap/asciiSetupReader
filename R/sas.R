@@ -52,79 +52,49 @@ sas_ascii_reader <- function(dataset_name,
   sas <- stringr::str_trim(sas)
 
   # Get column name - both undescriptive and descriptive =====================
-  column_name <- sas[grep("^LABEL$", sas): grep("^$", sas)[grep("^$", sas) >
-                                                             grep("^LABEL$", sas)][1]]
-  column_name <- column_name[grep("=", column_name)]
-  column_name <- gsub("(\\w)=","\\1 =", column_name)
-  column_name <- data.frame(column_name)
-  column_name$real_name <- fix_names(column_name$column_name)
-  column_name$original_name <- gsub(" .*", "", column_name$column_name)
+  codebook_variables <- sas[grep2("^LABEL$", sas): grep("^$", sas)[grep("^$", sas) >
+                                                             grep2("^LABEL$", sas)][1]]
+  codebook_variables <- codebook_variables[grep("=", codebook_variables)]
+  codebook_variables <- gsub("(\\w)=","\\1 =", codebook_variables)
+  codebook_variables <- data.frame(codebook_variables)
+  codebook_variables$column_name <- fix_names(codebook_variables$codebook_variables)
+  codebook_variables$column_number <- gsub(" .*", "", codebook_variables$codebook_variables)
 
 
 
   # Get column spacing ==================================================
-  column_spaces <- sas[grep("INPUT STATEMENTS", sas) : grep("^$", sas)[grep("^$", sas) >
-                                        grep("INPUT STATEMENTS", sas) + 5][1]]
-  column_spaces <- unlist(strsplit(x = column_spaces, split = "\\s{2,}"))
-  column_spaces <- gsub("\\$|\\;", "", column_spaces)
-  column_spaces <- stringr::str_trim(column_spaces)
-  column_spaces <- column_spaces[grep("[0-9]$", column_spaces)]
-  column_spaces <- gsub(" \\.[0-9]*", "", column_spaces)
-  column_spaces <- data.frame(column_spaces, stringsAsFactors = FALSE)
-  names(column_spaces)[1] <- "column_number"
+  column_spaces <- sas[grep2("INPUT STATEMENTS", sas) : grep("^$", sas)[grep("^$", sas) >
+                                        grep2("INPUT STATEMENTS", sas) + 5][1]]
 
-  column_spaces$first_num <- gsub(".* ", "", column_spaces$column_number)
-  column_spaces$second_num <- gsub(".*-", "", column_spaces$first_num)
-  column_spaces$first_num <- gsub("-.*", "", column_spaces$first_num)
+  column_spaces <- get_column_spaces(column_spaces, codebook_variables)
+  column_spaces <- selected_columns(keep_columns, column_spaces)
 
-  column_spaces$column_number <- gsub(" .*", "", column_spaces$column_number)
-  column_spaces <- column_spaces[column_spaces$column_number %in%
-                                   column_name$original_name,]
-  column_spaces <- merge(column_spaces, column_name, by.x = "column_number",
-                         by.y = "original_name", all.x = TRUE)
-  column_spaces$first_num <- as.numeric(column_spaces$first_num)
-  column_spaces$second_num <- as.numeric(column_spaces$second_num)
-  column_spaces <- column_spaces[order(column_spaces$first_num),]
 
-  if (!is.null(keep_columns)) {
-    if (is.numeric(keep_columns)) {
-      column_spaces <- column_spaces[keep_columns,]
-    } else if (all(keep_columns %in% column_spaces$column_number)) {
-      column_spaces <- column_spaces[
-        column_spaces$column_number %in% keep_columns,]
-    } else if (all(keep_columns %in% column_spaces$real_name)) {
-      column_spaces <- column_spaces[
-        column_spaces$real_name %in% keep_columns,]
-    } else {
-      stop("Not all column names in 'keep_columns' are in data. Please check spelling")
-    }
-  }
-  if (any(grepl("^FORMAT$", sas, ignore.case = TRUE))) {
+  if (any(grepl2("^FORMAT$", sas))) {
     # Get format - column names and column names with f ====================
-    format <- sas[grep("^FORMAT$", sas, ignore.case = TRUE) : length(sas)]
-    format <- format[-1]
+    format <- sas[grep2("^FORMAT$", sas) : length(sas)]
+  #  format <- format[-1]
     format <- unlist(strsplit(format, "\\."))
     format <- stringr::str_trim(format)
-    format <- data.frame(format)
-    format$real_name <- gsub(" .*", "", format$format)
-    format$f_name <- gsub(".* ", "", format$format)
+    format <- data.frame(column_name = gsub(" .*", "", format),
+                         f_name      = gsub(".* ", "", format))
   column_spaces <- merge(column_spaces, format, by.x = "column_number",
-                         by.y = "real_name", all.x = TRUE)
+                         by.y = "column_name", all.x = TRUE)
   }
-  column_spaces <- column_spaces[order(column_spaces$first_num),]
+  column_spaces <- column_spaces[order(column_spaces$begin),]
 
 
 # Reads in Data File ------------------------------------------------------
 
-
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                                              readr::fwf_positions(column_spaces$first_num,
-                                                                   column_spaces$second_num,
-                                                                   column_spaces$column_number), col_types = paste0(rep("c", nrow(column_spaces)), collapse = "")))
+                                              readr::fwf_positions(column_spaces$begin,
+                                                                   column_spaces$end,
+                                                                   column_spaces$column_number),
+                                              col_types = readr::cols(.default = readr::col_character())))
   dataset <- data.table::data.table(dataset)
-  column_order <- colnames(dataset)
+  column_order <- names(dataset)
 
-  if (any(grepl("^FORMAT$", sas, ignore.case = TRUE))) {
+  if (any(grepl2("^FORMAT$", sas))) {
   # Gets value labels
   value_position <- grep("^VALUE ", sas)
   value_labels <- sas[value_position[1] : grep("\\*/$", sas)[grep("\\*/$", sas) >
@@ -156,7 +126,7 @@ sas_ascii_reader <- function(dataset_name,
 
 
   if (value_label_fix & length(value_labels) > 0) {
-    for (i in 1:length(value_labels)) {
+    for (i in seq_along(value_labels)) {
       column <- as.character(value_labels[[i]][1, 1])
       if (toupper(column) %in% toupper(column_spaces$f_name)) {
         column <- column_spaces$column_number[toupper(column_spaces$f_name) %in% toupper(column)]
@@ -174,20 +144,16 @@ sas_ascii_reader <- function(dataset_name,
   }
   }
 
-  column_name$column_name <- gsub("_/$", "",
-                                  column_name$real_name)
+  codebook_variables$codebook_variables <- gsub("_/$", "",
+                                  codebook_variables$column_name)
   if (real_names) {
-    # Fixes column names to real names
-    for (n in 1:nrow(column_name)) {
-      names(dataset)[which(names(dataset) ==
-                             column_name$original_name[n])] <-
-        column_name$real_name[n]
-    }
+    codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(dataset),]
+    data.table::setnames(dataset, old = codebook_variables$column_number,
+                         new = codebook_variables$column_name)
   }
 
   # Makes columns that should be numeric numeric
   dataset <- make_cols_numeric(dataset)
-
   dataset <- as.data.frame(dataset)
   return(dataset)
 }
