@@ -55,7 +55,7 @@ sas_ascii_reader <- function(dataset_name,
   codebook_variables <- codebook[grep2("^LABEL$", codebook): grep("^$", codebook)[grep("^$", codebook) >
                                                              grep2("^LABEL$", codebook)][1]]
   codebook_variables <- codebook_variables[grep("=", codebook_variables)]
-  codebook_variables <- gsub("(\\w)=","\\1 =", codebook_variables)
+  codebook_variables <- gsub("\\S="," =", codebook_variables)
   codebook_variables <- data.frame(column_name = fix_names(codebook_variables),                                                                column_number = gsub(" .*", "", codebook_variables),
                                    stringsAsFactors = FALSE)
 
@@ -145,8 +145,6 @@ sas_ascii_reader <- function(dataset_name,
   }
   }
 
-  codebook_variables$codebook_variables <- gsub("_/$", "",
-                                  codebook_variables$column_name)
   if (real_names) {
     codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(dataset),]
     data.table::setnames(dataset, old = codebook_variables$column_number,

@@ -62,9 +62,7 @@ spss_ascii_reader <- function(dataset_name,
 
     codebook <- readr::read_lines(sps_name)
     codebook <- stringr::str_trim(codebook)
-    codebook <- codebook[grep2("^DATA LIST",
-                              codebook)[length(grep2("^DATA LIST",
-                                                    codebook))]:length(codebook)]
+    codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook)-1))]
 
     # Get the column names
     codebook_variables <- codebook[grep2("^variable labels$", codebook):
