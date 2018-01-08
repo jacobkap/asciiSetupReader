@@ -32,13 +32,18 @@ SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                              sps_name = SHR_sps_name)
 UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
                          sps_name = UCR_sps_name,
-                         keep_columns = c("ORI_CODE", "AGENCY_NAME", "AGENCY_STATE_NAME",
-                                          "MAILING_ADDRESS_LINE_1", "MAILING_ADDRESS_LINE_2",
-                                          "MAILING_ADDRESS_LINE_3", "POPULATION_1",
-                                          "POPULATION_3", "DEC_ACT_VHC_THEFT_TO",
+                         keep_columns = c("ORI_CODE", "AGENCY_NAME",
+                                          "AGENCY_STATE_NAME",
+                                          "MAILING_ADDRESS_LINE_1",
+                                          "MAILING_ADDRESS_LINE_2",
+                                          "MAILING_ADDRESS_LINE_3",
+                                          "POPULATION_1",
+                                          "POPULATION_3",
+                                          "DEC_ACT_VHC_THEFT_TO",
                                           "AUG_ACT_AUTO_THEFT", "ID_CODE",
                                           "NUMERIC_STATE_CODE", "GROUP_NUMBER",
-                                          "DIVISION", "NUMBER_OF_MONTHS_REPORTED",
+                                          "DIVISION",
+                                          "NUMBER_OF_MONTHS_REPORTED",
                                           "DEC_CLR_18_ALL_FIELDS"))
 NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                            sps_name = NIBRS_sps_name)
@@ -51,13 +56,18 @@ SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
                          sas_name = SHR_sas_name)
 UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                          sas_name = UCR_sas_name,
-                         keep_columns = c("ORI_CODE", "AGENCY_NAME", "AGENCY_STATE_NAME",
-                                          "MAILING_ADDRESS_LINE_1", "MAILING_ADDRESS_LINE_2",
-                                          "MAILING_ADDRESS_LINE_3", "POPULATION_1",
-                                          "POPULATION_3", "DEC_ACT_VHC_THEFT_TO",
+                         keep_columns = c("ORI_CODE", "AGENCY_NAME",
+                                          "AGENCY_STATE_NAME",
+                                          "MAILING_ADDRESS_LINE_1",
+                                          "MAILING_ADDRESS_LINE_2",
+                                          "MAILING_ADDRESS_LINE_3",
+                                          "POPULATION_1",
+                                          "POPULATION_3",
+                                          "DEC_ACT_VHC_THEFT_TO",
                                           "AUG_ACT_AUTO_THEFT", "ID_CODE",
                                           "NUMERIC_STATE_CODE", "GROUP_NUMBER",
-                                          "DIVISION", "NUMBER_OF_MONTHS_REPORTED",
+                                          "DIVISION",
+                                          "NUMBER_OF_MONTHS_REPORTED",
                                           "DEC_CLR_18_ALL_FIELDS"))
 NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
                            sas_name = NIBRS_sas_name)
@@ -79,7 +89,7 @@ test_that("Character columns are character - SPSS", {
   expect_is(NIBRS$ORIGINATING_AGENCY_IDENTIFIER, "character")
   expect_is(NIBRS$JUDICIAL_DISTRICT, "character")
 
-  expect_is(weimar[,4], "character")
+  expect_is(weimar[, 4], "character")
 })
 
 test_that("Numeric columns are Numeric - SPSS", {
@@ -98,16 +108,16 @@ test_that("Numeric columns are Numeric - SPSS", {
   expect_is(NIBRS$DATE_ORI_WAS_ADDED, "numeric")
   expect_is(NIBRS$DATE_ORI_WENT_NIBRS, "numeric")
 
-  expect_is(weimar[,1], "numeric")
-  expect_is(weimar[,2], "numeric")
-  expect_is(weimar[,3], "numeric")
-  expect_is(weimar[,5], "numeric")
-  expect_is(weimar[,6], "numeric")
-  expect_is(weimar[,7], "numeric")
-  expect_is(weimar[,8], "numeric")
-  expect_is(weimar[,9], "numeric")
-  expect_is(weimar[,10], "numeric")
-  expect_is(weimar[,11], "numeric")
+  expect_is(weimar[, 1], "numeric")
+  expect_is(weimar[, 2], "numeric")
+  expect_is(weimar[, 3], "numeric")
+  expect_is(weimar[, 5], "numeric")
+  expect_is(weimar[, 6], "numeric")
+  expect_is(weimar[, 7], "numeric")
+  expect_is(weimar[, 8], "numeric")
+  expect_is(weimar[, 9], "numeric")
+  expect_is(weimar[, 10], "numeric")
+  expect_is(weimar[, 11], "numeric")
 })
 
 test_that("Factor columns are Factor - SPSS", {
@@ -143,7 +153,7 @@ test_that("Character columns are character - SAS", {
   expect_is(NIBRS_sas$STATE_ABBREVIATION, "character")
   expect_is(NIBRS_sas$ORIGINATING_AGENCY_IDENTIFIER, "character")
   expect_is(NIBRS_sas$JUDICIAL_DISTRICT, "character")
-  expect_is(weimar_sas[,4], "character")
+  expect_is(weimar_sas[, 4], "character")
 })
 
 test_that("Numeric columns are Numeric - SAS", {
@@ -162,16 +172,16 @@ test_that("Numeric columns are Numeric - SAS", {
   expect_is(NIBRS_sas$DATE_ORI_WAS_ADDED, "numeric")
   expect_is(NIBRS_sas$DATE_ORI_WENT_NIBRS, "numeric")
 
-  expect_is(weimar_sas[,1], "numeric")
-  expect_is(weimar_sas[,2], "numeric")
-  expect_is(weimar_sas[,3], "numeric")
-  expect_is(weimar_sas[,5], "numeric")
-  expect_is(weimar_sas[,6], "numeric")
-  expect_is(weimar_sas[,7], "numeric")
-  expect_is(weimar_sas[,8], "numeric")
-  expect_is(weimar_sas[,9], "numeric")
-  expect_is(weimar_sas[,10], "numeric")
-  expect_is(weimar_sas[,11], "numeric")
+  expect_is(weimar_sas[, 1], "numeric")
+  expect_is(weimar_sas[, 2], "numeric")
+  expect_is(weimar_sas[, 3], "numeric")
+  expect_is(weimar_sas[, 5], "numeric")
+  expect_is(weimar_sas[, 6], "numeric")
+  expect_is(weimar_sas[, 7], "numeric")
+  expect_is(weimar_sas[, 8], "numeric")
+  expect_is(weimar_sas[, 9], "numeric")
+  expect_is(weimar_sas[, 10], "numeric")
+  expect_is(weimar_sas[, 11], "numeric")
 })
 
 test_that("Factor columns are Factor - SAS", {

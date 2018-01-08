@@ -62,13 +62,15 @@ spss_ascii_reader <- function(dataset_name,
 
     codebook <- readr::read_lines(sps_name)
     codebook <- stringr::str_trim(codebook)
-    codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook)-1))]
+    codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]
 
     # Get the column names
     codebook_variables <- codebook[grep2("^variable labels$", codebook):
-                                     grep2("^value labels$|missing values", codebook)[1]]
+                                     grep2("^value labels$|missing values",
+                                           codebook)[1]]
     codebook_variables <- gsub("\\'\\'", "\\'", codebook_variables)
-    codebook_variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2", codebook_variables)
+    codebook_variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
+                               codebook_variables)
     codebook_variables <- gsub("\'", "\"", codebook_variables)
     codebook_variables <- data.frame(column_name = fix_names(codebook_variables),
                                      column_number = gsub(" .*", "",
@@ -76,8 +78,7 @@ spss_ascii_reader <- function(dataset_name,
                                      stringsAsFactors = FALSE)
 
     column_spaces <- codebook[grep2("DATA LIST", codebook):
-                                                        grep2("^variable labels$",
-                                                              codebook)]
+                                                        grep2("^variable labels$", codebook)]
     column_spaces <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                                        column_spaces)
     column_spaces <- get_column_spaces(column_spaces, codebook_variables)
@@ -85,10 +86,10 @@ spss_ascii_reader <- function(dataset_name,
 
 
     dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                                                readr::fwf_positions(column_spaces$begin,
-                                                                     column_spaces$end,
-                                                                     column_spaces$column_number),
-                                                col_types = readr::cols(.default = readr::col_character())))
+                               readr::fwf_positions(column_spaces$begin,
+                                                    column_spaces$end,
+                                                    column_spaces$column_number),
+                               col_types = readr::cols(.default = readr::col_character())))
     dataset <- data.table::as.data.table(dataset)
     column_order <- names(dataset)
 
@@ -97,7 +98,8 @@ spss_ascii_reader <- function(dataset_name,
       # Removes columns not asked for
     value_labels <- get_value_labels(codebook, column_spaces)
     if (!is.null(value_labels)) {
-      value_labels <- value_labels[value_labels$column %in% column_spaces$column_number,]
+      value_labels <- value_labels[value_labels$column %in%
+                                     column_spaces$column_number, ]
       value_labels <- split.data.frame(value_labels, value_labels$group)
     }
 
@@ -116,7 +118,8 @@ spss_ascii_reader <- function(dataset_name,
 
     if (real_names) {
       # Fixes column names to real names
-      codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(dataset),]
+      codebook_variables <- codebook_variables[codebook_variables$column_number
+                                               %in% names(dataset), ]
       data.table::setnames(dataset, old = codebook_variables$column_number,
                            new = codebook_variables$column_name)
 
@@ -128,4 +131,3 @@ spss_ascii_reader <- function(dataset_name,
     dataset <- as.data.frame(dataset)
   return(dataset)
 }
-

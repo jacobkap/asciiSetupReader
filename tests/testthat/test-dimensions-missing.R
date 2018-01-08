@@ -31,18 +31,21 @@ SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
 SHR2 <- spss_ascii_reader(dataset_name = SHR_dataset_name,
                               sps_name = SHR_sps_name, keep_columns = 1:5)
 SHR3 <- spss_ascii_reader(dataset_name = SHR_dataset_name,
-                              sps_name = SHR_sps_name, keep_columns = c(1, 5, 50:55, 100:121, 152))
+                              sps_name = SHR_sps_name,
+                          keep_columns = c(1, 5, 50:55, 100:121, 152))
 
 UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
                              sps_name = UCR_sps_name)
 UCR2 <- spss_ascii_reader(dataset_name = UCR_dataset_name,
                              sps_name = UCR_sps_name,
-                             keep_columns = c("V1", "V50", "V100", "V111", "V1000"))
+                             keep_columns = c("V1", "V50", "V100", "V111",
+                                              "V1000"))
 NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                          sps_name = NIBRS_sps_name)
 NIBRS2 <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                           sps_name = NIBRS_sps_name,
-                          keep_columns = c("B1001", "B1005", "B1010", "B1016", "B1019"))
+                          keep_columns = c("B1001", "B1005", "B1010",
+                                           "B1016", "B1019"))
 
 # Read SAS ====================================================================
 SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
@@ -50,18 +53,21 @@ SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
 SHR2_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
                          sas_name = SHR_sas_name, keep_columns = 1:5)
 SHR3_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                         sas_name = SHR_sas_name, keep_columns = c(1, 5, 50:55, 100:121, 152))
+                         sas_name = SHR_sas_name,
+                         keep_columns = c(1, 5, 50:55, 100:121, 152))
 
 UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                         sas_name = UCR_sas_name)
 UCR2_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                          sas_name = UCR_sas_name,
-                          keep_columns = c("V1", "V50", "V100", "V111", "V1000"))
+                          keep_columns = c("V1", "V50", "V100",
+                                           "V111", "V1000"))
 NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
                           sas_name = NIBRS_sas_name)
 NIBRS2_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
                             sas_name = NIBRS_sas_name,
-                            keep_columns = c("B1001", "B1005", "B1010", "B1016", "B1019"))
+                            keep_columns = c("B1001", "B1005",
+                                             "B1010", "B1016", "B1019"))
 
 test_that("number of columns is correct - SPSS", {
   expect_equal(ncol(SHR), 152)
@@ -144,7 +150,7 @@ test_that("Factor columns have proper number of NAs - SPSS", {
 
 })
 
-## SAS tests =============================================================
+# SAS tests
 test_that("number of columns is correct - SAS", {
   expect_equal(ncol(SHR_sas), 152)
   expect_equal(ncol(SHR2_sas), 5)
@@ -225,4 +231,3 @@ test_that("Factor columns have proper number of NAs - SAS", {
   expect_equal(sum(is.na(NIBRS_sas$NUMERIC_STATE_CODE)), 0)
 
 })
-

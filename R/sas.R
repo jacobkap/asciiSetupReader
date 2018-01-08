@@ -52,18 +52,21 @@ sas_ascii_reader <- function(dataset_name,
   codebook <- stringr::str_trim(codebook)
 
   # Get column name - both undescriptive and descriptive =====================
-  codebook_variables <- codebook[grep2("^LABEL$", codebook): grep("^$", codebook)[grep("^$", codebook) >
-                                                             grep2("^LABEL$", codebook)][1]]
+  codebook_variables <- codebook[grep2("^LABEL$", codebook):
+                                   grep("^$", codebook)[grep("^$", codebook) >
+                                                             grep2("^LABEL$",
+                                                                   codebook)][1]]
   codebook_variables <- codebook_variables[grep("=", codebook_variables)]
-  codebook_variables <- gsub("\\S="," =", codebook_variables)
-  codebook_variables <- data.frame(column_name = fix_names(codebook_variables),                                                                column_number = gsub(" .*", "", codebook_variables),
+  codebook_variables <- gsub("\\S=", " =", codebook_variables)
+  codebook_variables <- data.frame(column_name = fix_names(codebook_variables),
+                                   column_number = gsub(" .*", "",
+                                                        codebook_variables),
                                    stringsAsFactors = FALSE)
 
 
 
   # Get column spacing ==================================================
-  column_spaces <- codebook[grep2("INPUT STATEMENTS", codebook) : grep("^$", codebook)[grep("^$", codebook) >
-                                        grep2("INPUT STATEMENTS", codebook) + 5][1]]
+  column_spaces <- codebook[grep2("INPUT STATEMENTS", codebook) : grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
 
   column_spaces <- get_column_spaces(column_spaces, codebook_variables)
   column_spaces <- selected_columns(keep_columns, column_spaces)
@@ -72,7 +75,6 @@ sas_ascii_reader <- function(dataset_name,
   if (any(grepl2("^FORMAT$", codebook))) {
     # Get format - column names and column names with f ====================
     format <- codebook[grep2("^FORMAT$", codebook) : length(codebook)]
-  #  format <- format[-1]
     format <- unlist(strsplit(format, "\\."))
     format <- stringr::str_trim(format)
     format <- data.frame(column_name = gsub(" .*", "", format),
@@ -80,24 +82,24 @@ sas_ascii_reader <- function(dataset_name,
   column_spaces <- merge(column_spaces, format, by.x = "column_number",
                          by.y = "column_name", all.x = TRUE)
   }
-  column_spaces <- column_spaces[order(column_spaces$begin),]
+  column_spaces <- column_spaces[order(column_spaces$begin), ]
 
 
 # Reads in Data File ------------------------------------------------------
 
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                                              readr::fwf_positions(column_spaces$begin,
-                                                                   column_spaces$end,
-                                                                   column_spaces$column_number),
-                                              col_types = readr::cols(.default = readr::col_character())))
+                              readr::fwf_positions(column_spaces$begin,
+                                                   column_spaces$end,
+                                                   column_spaces$column_number),
+                             col_types = readr::cols(.default =
+                                                       readr::col_character())))
   dataset <- data.table::as.data.table(dataset)
   column_order <- names(dataset)
 
   if (any(grepl2("^FORMAT$", codebook))) {
   # Gets value labels
   value_position <- grep("^VALUE ", codebook)
-  value_labels <- codebook[value_position[1] : grep("\\*/$", codebook)[grep("\\*/$", codebook) >
-                                                            value_position[length(value_position)]][1]]
+  value_labels <- codebook[value_position[1] : grep("\\*/$", codebook)[grep("\\*/$", codebook) > value_position[length(value_position)]][1]]
   value_labels <- gsub(";\\*\\/", "", value_labels)
   value_labels <- unlist(strsplit(value_labels, ";"))
   value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels)
@@ -122,7 +124,7 @@ sas_ascii_reader <- function(dataset_name,
       column <- value_labels$value_labels[i + 1]
     }
   }
-  value_labels <- value_labels[value_labels$column %in% column_spaces$f_name,]
+  value_labels <- value_labels[value_labels$column %in% column_spaces$f_name, ]
   value_labels <- split.data.frame(value_labels, value_labels$group)
 
 
@@ -130,7 +132,8 @@ sas_ascii_reader <- function(dataset_name,
     for (i in seq_along(value_labels)) {
       column <- value_labels[[i]][1, 1]
       if (toupper(column) %in% toupper(column_spaces$f_name)) {
-        column <- column_spaces$column_number[toupper(column_spaces$f_name) %in% toupper(column)]
+        column <- column_spaces$column_number[toupper(column_spaces$f_name) %in%
+                                                toupper(column)]
         value_label_section <-  value_label_matrixer(value_labels[[i]])
         if (length(column) > 1) {
           for (col in column) {
@@ -146,7 +149,7 @@ sas_ascii_reader <- function(dataset_name,
   }
 
   if (real_names) {
-    codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(dataset),]
+    codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(dataset), ]
     data.table::setnames(dataset, old = codebook_variables$column_number,
                          new = codebook_variables$column_name)
   }

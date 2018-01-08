@@ -47,62 +47,81 @@ NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
 
 test_that("All labels are assigned correctly - SPSS", {
 
-  expect_true(all(c('Single victim/single offender',
-                    'Single victim/unknown offender(s)',
-                    'Single victim/multiple offenders',
-                    'Multiple victims/single offender',
-                    'Multiple victims/multiple offenders',
-                    'Multiple victims/unknown offender(s)') %in% unique(SHR$SITUATION)))
+  expect_true(all(c("Single victim/single offender",
+                    "Single victim/unknown offender(s)",
+                    "Single victim/multiple offenders",
+                    "Multiple victims/single offender",
+                    "Multiple victims/multiple offenders",
+                    "Multiple victims/unknown offender(s)") %in%
+                    unique(SHR$SITUATION)))
   expect_true(all(c("Female", "Male", "Unknown") %in% unique(SHR$VICTIM_1_SEX)))
   expect_true(all(c("Hispanic or Latino", "Not Hispanic or Latino",
-                    "Unknown or not reported") %in% unique(SHR$VICTIM_1_ETHNIC_ORIGIN)))
-  expect_true(all(c("Asian", "Black or African American", "American Indian or Alaska Native", "Unknown",
+                    "Unknown or not reported") %in%
+                    unique(SHR$VICTIM_1_ETHNIC_ORIGIN)))
+  expect_true(all(c("Asian", "Black or African American",
+                    "American Indian or Alaska Native", "Unknown",
                     "White") %in% unique(SHR$VICTIM_1_RACE)))
-  expect_true(all(c("7 days old to 364 days old", "Birth to 6 days old", "Unknown") %in%
+  expect_true(all(c("7 days old to 364 days old",
+                    "Birth to 6 days old", "Unknown") %in%
                     unique(SHR$VICTIM_1_AGE)))
-  expect_true(all(c("Female", "Male", "Unknown") %in% unique(SHR$OFFENDER_1_SEX)))
-  expect_true(all(c("Asian", "Black or African American", "American Indian or Alaska Native",
+  expect_true(all(c("Female", "Male", "Unknown") %in%
+                    unique(SHR$OFFENDER_1_SEX)))
+  expect_true(all(c("Asian", "Black or African American",
+                    "American Indian or Alaska Native",
                     "Unknown",
                     "White") %in% unique(SHR$OFFENDER_1_RACE)))
 
-  expect_true(all(c("Firearm, type not stated", "Handgun - pistol, revolver, etc",
-                    "Rifle", "Shotgun", "Other gun", "Knife or cutting instrument",
-                    "Blunt object - hammer, club, etc", "Personal weapons, includes beating",
-                    "Poison - does not include gas", "Pushed or thrown out window",
+  expect_true(all(c("Firearm, type not stated",
+                    "Handgun - pistol, revolver, etc",
+                    "Rifle", "Shotgun", "Other gun",
+                    "Knife or cutting instrument",
+                    "Blunt object - hammer, club, etc",
+                    "Personal weapons, includes beating",
+                    "Poison - does not include gas",
+                    "Pushed or thrown out window",
                     "Explosives", "Fire", "Narcotics or drugs, sleeping pills",
-                    "Drowning", "Strangulation - hanging", "Asphyxiation - includes death by gas",
+                    "Drowning", "Strangulation - hanging",
+                    "Asphyxiation - includes death by gas",
                     "Other or type unknown") %in%
                     unique(SHR$OFFENDER_1_WEAPON)))
 
-  expect_true(all(c('Felon attacked police officer',
-                    'Felon attacked fellow police officer',
-                    'Felon attacked a civilian',
-                    'Felon attempted flight from a crime',
-                    'Felon killed in commission of a crime',
-                    'Felon resisted arrest',
-                    'Not enough information to determine') %in%
+  expect_true(all(c("Felon attacked police officer",
+                    "Felon attacked fellow police officer",
+                    "Felon attacked a civilian",
+                    "Felon attempted flight from a crime",
+                    "Felon killed in commission of a crime",
+                    "Felon resisted arrest",
+                    "Not enough information to determine") %in%
                     unique(SHR$OFFENDER_1_SUB_CIRCUMSTANCE)))
 
-  expect_true(all(c('Acquaintance', 'Boyfriend', 'Brother', 'Common-law husband',
-                    'Common-law wife', 'Daughter', 'Employee',
-                    'Employer', 'Father', 'Friend', 'Girlfriend',
-                    'Homosexual relationship', 'Husband', 'In-law', 'Mother',
-                    'Neighbor', 'Other family', 'Other - known to victim', 'Stepdaughter',
-                    'Stepfather', 'Sister', 'Stepmother', 'Son',
-                    'Stepson', 'Stranger', 'Relationship not determined', 'Wife',
-                    'Ex-husband', 'Ex-wife') %in%
+  expect_true(all(c("Acquaintance", "Boyfriend", "Brother",
+                    "Common-law husband",
+                    "Common-law wife", "Daughter", "Employee",
+                    "Employer", "Father", "Friend", "Girlfriend",
+                    "Homosexual relationship", "Husband", "In-law", "Mother",
+                    "Neighbor", "Other family", "Other - known to victim",
+                    "Stepdaughter",
+                    "Stepfather", "Sister", "Stepmother", "Son",
+                    "Stepson", "Stranger", "Relationship not determined",
+                    "Wife",
+                    "Ex-husband", "Ex-wife") %in%
                     unique(SHR$OFFENDER_1_RELATIONSHIP_TO_FIRST_VICTIM)))
 
     expect_true(all(c("Alabama", "Arizona",  "Arkansas", "California",
-                    "Colorado", "Connecticut", "Delaware", "District of Columbia",
-                    "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa",
-                    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+                    "Colorado", "Connecticut", "Delaware",
+                    "District of Columbia",
+                    "Florida", "Georgia", "Idaho", "Illinois",
+                    "Indiana", "Iowa",
+                    "Kansas", "Kentucky", "Louisiana", "Maine",
+                    "Maryland", "Massachusetts",
                     "Michigan", "Minnesota", "Mississippi", "Missouri",
                     "Montana", "Nebraska", "Nevada", "New Hampshire",
                     "New Jersey", "New Mexico", "New York", "North Carolina",
                     "North Dakota", "Ohio", "Oklahoma", "Oregon",
-                    "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-                    "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+                    "Pennsylvania", "Rhode Island", "South Carolina",
+                    "South Dakota",
+                    "Tennessee", "Texas", "Utah", "Vermont",
+                    "Virginia", "Washington",
                     "West Virginia", "Wisconsin", "Wyoming", "Alaska",
                     "Hawaii", "Canal Zone", "Puerto Rico",
                     "Guam") %in%
@@ -156,8 +175,10 @@ test_that("All labels are assigned correctly - SPSS", {
                     "Cities 50,000-99,999", "Cities 25,000-49,999",
                     "Cities 10,000-24,999", "Cities 2,500-9,999",
                     "Cites < 2,500",
-                    "Non-MSA Counties 100,000+", "Non-MSA Counties 25,000-99,999",
-                    "Non-MSA Counties 10,000-24,999", "Non-MSA Counties < 10,000",
+                    "Non-MSA Counties 100,000+",
+                    "Non-MSA Counties 25,000-99,999",
+                    "Non-MSA Counties 10,000-24,999",
+                    "Non-MSA Counties < 10,000",
                     "Non-MSA State Police",
                     "MSA Counties 100,000+", "MSA Counties 25,000-99,999",
                     "MSA Counties 10,000-24,999", "MSA Counties < 10,000",
@@ -180,68 +201,85 @@ test_that("All labels are assigned correctly - SPSS", {
 # Read SAS =====================================================
 test_that("All labels are assigned correctly - SAS", {
 
-  expect_true(all(c('Single victim/single offender',
-                    'Single victim/unknown offender(s)',
-                    'Single victim/multiple offenders',
-                    'Multiple victims/single offender',
-                    'Multiple victims/multiple offenders',
-                    'Multiple victims/unknown offender(s)') %in%
+  expect_true(all(c("Single victim/single offender",
+                    "Single victim/unknown offender(s)",
+                    "Single victim/multiple offenders",
+                    "Multiple victims/single offender",
+                    "Multiple victims/multiple offenders",
+                    "Multiple victims/unknown offender(s)") %in%
                     unique(SHR_sas$SITUATION)))
   expect_true(all(c("Female", "Male", "Unknown") %in%
                     unique(SHR_sas$VICTIM_1_SEX)))
   expect_true(all(c("Hispanic or Latino", "Not Hispanic or Latino",
                     "Unknown or not reported") %in%
                     unique(SHR_sas$VICTIM_1_ETHNIC_ORIGIN)))
-  expect_true(all(c("Asian", "Black or African American", "American Indian or Alaska Native", "Unknown",
+  expect_true(all(c("Asian", "Black or African American",
+                    "American Indian or Alaska Native", "Unknown",
                     "White") %in%
                     unique(SHR_sas$VICTIM_1_RACE)))
-  expect_true(all(c("7 days old to 364 days old", "Birth to 6 days old", "Unknown") %in%
+  expect_true(all(c("7 days old to 364 days old", "Birth to 6 days old",
+                    "Unknown") %in%
                     unique(SHR_sas$VICTIM_1_AGE)))
   expect_true(all(c("Female", "Male", "Unknown") %in%
                     unique(SHR_sas$OFFENDER_1_SEX)))
-  expect_true(all(c("Asian", "Black or African American", "American Indian or Alaska Native",
+  expect_true(all(c("Asian", "Black or African American",
+                    "American Indian or Alaska Native",
                     "Unknown",
                     "White") %in%
                     unique(SHR_sas$OFFENDER_1_RACE)))
 
-  expect_true(all(c("Firearm, type not stated", "Handgun - pistol, revolver, etc",
-                    "Rifle", "Shotgun", "Other gun", "Knife or cutting instrument",
-                    "Blunt object - hammer, club, etc", "Personal weapons, includes beating",
-                    "Poison - does not include gas", "Pushed or thrown out window",
+  expect_true(all(c("Firearm, type not stated",
+                    "Handgun - pistol, revolver, etc",
+                    "Rifle", "Shotgun", "Other gun",
+                    "Knife or cutting instrument",
+                    "Blunt object - hammer, club, etc",
+                    "Personal weapons, includes beating",
+                    "Poison - does not include gas",
+                    "Pushed or thrown out window",
                     "Explosives", "Fire", "Narcotics or drugs, sleeping pills",
-                    "Drowning", "Strangulation - hanging", "Asphyxiation - includes death by gas",
+                    "Drowning", "Strangulation - hanging",
+                    "Asphyxiation - includes death by gas",
                     "Other or type unknown") %in%
                     unique(SHR_sas$OFFENDER_1_WEAPON)))
 
-  expect_true(all(c('Felon attacked police officer',
-                    'Felon attacked fellow police officer',
-                    'Felon attacked a civilian',
-                    'Felon attempted flight from a crime',
-                    'Felon killed in commission of a crime',
-                    'Felon resisted arrest',
-                    'Not enough information to determine') %in%
+  expect_true(all(c("Felon attacked police officer",
+                    "Felon attacked fellow police officer",
+                    "Felon attacked a civilian",
+                    "Felon attempted flight from a crime",
+                    "Felon killed in commission of a crime",
+                    "Felon resisted arrest",
+                    "Not enough information to determine") %in%
                     unique(SHR_sas$OFFENDER_1_SUB_CIRCUMSTANCE)))
 
-  expect_true(all(c('Acquaintance', 'Boyfriend', 'Brother', 'Common-law husband',
-                    'Common-law wife', 'Daughter', 'Employee',
-                    'Employer', 'Father', 'Friend', 'Girlfriend',
-                    'Homosexual relationship', 'Husband', 'In-law', 'Mother',
-                    'Neighbor', 'Other family', 'Other - known to victim', 'Stepdaughter',
-                    'Stepfather', 'Sister', 'Stepmother', 'Son',
-                    'Stepson', 'Stranger', 'Relationship not determined', 'Wife',
-                    'Ex-husband', 'Ex-wife') %in%
+  expect_true(all(c("Acquaintance", "Boyfriend", "Brother",
+                    "Common-law husband",
+                    "Common-law wife", "Daughter", "Employee",
+                    "Employer", "Father", "Friend", "Girlfriend",
+                    "Homosexual relationship", "Husband", "In-law",
+                    "Mother",
+                    "Neighbor", "Other family", "Other - known to victim",
+                    "Stepdaughter",
+                    "Stepfather", "Sister", "Stepmother", "Son",
+                    "Stepson", "Stranger", "Relationship not determined",
+                    "Wife",
+                    "Ex-husband", "Ex-wife") %in%
                     unique(SHR_sas$OFFENDER_1_RELATIONSHIP_TO_FIRST_VICTIM)))
 
   expect_true(all(c("Alabama", "Arizona",  "Arkansas", "California",
-                    "Colorado", "Connecticut", "Delaware", "District of Columbia",
-                    "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa",
-                    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+                    "Colorado", "Connecticut", "Delaware",
+                    "District of Columbia",
+                    "Florida", "Georgia", "Idaho", "Illinois", "Indiana",
+                    "Iowa",
+                    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+                    "Massachusetts",
                     "Michigan", "Minnesota", "Mississippi", "Missouri",
                     "Montana", "Nebraska", "Nevada", "New Hampshire",
                     "New Jersey", "New Mexico", "New York", "North Carolina",
                     "North Dakota", "Ohio", "Oklahoma", "Oregon",
-                    "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-                    "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+                    "Pennsylvania", "Rhode Island", "South Carolina",
+                    "South Dakota",
+                    "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+                    "Washington",
                     "West Virginia", "Wisconsin", "Wyoming", "Alaska",
                     "Hawaii", "Canal Zone", "Puerto Rico",
                     "Guam") %in%
@@ -295,8 +333,10 @@ test_that("All labels are assigned correctly - SAS", {
                     "Cities 50,000-99,999", "Cities 25,000-49,999",
                     "Cities 10,000-24,999", "Cities 2,500-9,999",
                     "Cites < 2,500",
-                    "Non-MSA Counties 100,000+", "Non-MSA Counties 25,000-99,999",
-                    "Non-MSA Counties 10,000-24,999", "Non-MSA Counties < 10,000",
+                    "Non-MSA Counties 100,000+",
+                    "Non-MSA Counties 25,000-99,999",
+                    "Non-MSA Counties 10,000-24,999",
+                    "Non-MSA Counties < 10,000",
                     "Non-MSA State Police",
                     "MSA Counties 100,000+", "MSA Counties 25,000-99,999",
                     "MSA Counties 10,000-24,999", "MSA Counties < 10,000",

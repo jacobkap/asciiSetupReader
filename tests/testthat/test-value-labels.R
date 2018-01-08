@@ -91,7 +91,8 @@ test_that("Correct labels are assigned - SPSS", {
 
   expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "Possessions"), 39)
   expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "New England States"), 309)
-  expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "West North Central States"), 921)
+  expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "West North Central States"),
+               921)
   expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "Pacific States"), 2323)
 
   expect_equal(sum(SHR$MONTH_OF_OFFENSE %in% "January"), 1083)
@@ -100,9 +101,11 @@ test_that("Correct labels are assigned - SPSS", {
   expect_equal(sum(SHR$MONTH_OF_OFFENSE %in% "December"), 1232)
 
   expect_equal(sum(SHR$SITUATION %in% "Single victim/single offender"), 7075)
-  expect_equal(sum(SHR$SITUATION %in% "Single victim/unknown offender(s)"), 4236)
+  expect_equal(sum(SHR$SITUATION %in% "Single victim/unknown offender(s)"),
+               4236)
   expect_equal(sum(SHR$SITUATION %in% "Multiple victims/single offender"), 374)
-  expect_equal(sum(SHR$SITUATION %in% "Multiple victims/unknown offender(s)"), 203)
+  expect_equal(sum(SHR$SITUATION %in% "Multiple victims/unknown offender(s)"),
+               203)
 
   expect_equal(sum(SHR$IDENTIFIER_CODE %in% "SHR master file"), 13844)
 
@@ -113,10 +116,13 @@ test_that("Correct labels are assigned - SPSS", {
   expect_equal(sum(UCR$NUMERIC_STATE_CODE %in% "Texas"), 567)
   expect_equal(sum(UCR$NUMERIC_STATE_CODE %in% "Wyoming"), 44)
   expect_equal(sum(UCR$JAN_MONTH_INCLUDED_IN %in% "Jan not w oth month"), 1101)
-  expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "No months reported"), 1406)
+  expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "No months reported"),
+               1406)
   expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "May last reported"), 106)
-  expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "August last reported"), 58)
-  expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "Dec last reported"), 5933)
+  expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "August last reported"),
+               58)
+  expect_equal(sum(UCR$NUMBER_OF_MONTHS_REPORTED %in% "Dec last reported"),
+               5933)
   expect_equal(sum(UCR$JAN_CARD_0_TYPE %in% "Not updated"), 7046)
 
   expect_equal(sum(NIBRS$SEGMENT_LEVEL %in% "Batch header 1"), 19711)
@@ -134,7 +140,7 @@ test_that("Correct labels are assigned - SPSS", {
 })
 
 
-## SAS tests ----------------------------------------------------------------
+# SAS tests
 test_that("Correct number of labels - SAS", {
 
   expect_equal(length(unique(SHR_sas$GEOGRAPHIC_DIVISION)), 10)
@@ -175,7 +181,8 @@ test_that("Correct labels are assigned - SAS", {
 
   expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "Possessions"), 39)
   expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "New England States"), 309)
-  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "West North Central States"), 921)
+  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in%
+                     "West North Central States"), 921)
   expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "Pacific States"), 2323)
 
   expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "January"), 1083)
@@ -183,10 +190,14 @@ test_that("Correct labels are assigned - SAS", {
   expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "October"), 1187)
   expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "December"), 1232)
 
-  expect_equal(sum(SHR_sas$SITUATION %in% "Single victim/single offender"), 7075)
-  expect_equal(sum(SHR_sas$SITUATION %in% "Single victim/unknown offender(s)"), 4236)
-  expect_equal(sum(SHR_sas$SITUATION %in% "Multiple victims/single offender"), 374)
-  expect_equal(sum(SHR_sas$SITUATION %in% "Multiple victims/unknown offender(s)"), 203)
+  expect_equal(sum(SHR_sas$SITUATION %in% "Single victim/single offender"),
+               7075)
+  expect_equal(sum(SHR_sas$SITUATION %in% "Single victim/unknown offender(s)"),
+               4236)
+  expect_equal(sum(SHR_sas$SITUATION %in% "Multiple victims/single offender"),
+               374)
+  expect_equal(sum(SHR_sas$SITUATION %in%
+                     "Multiple victims/unknown offender(s)"), 203)
 
   expect_equal(sum(SHR_sas$IDENTIFIER_CODE %in% "SHR master file"), 13844)
 
@@ -196,11 +207,16 @@ test_that("Correct labels are assigned - SAS", {
   expect_equal(sum(UCR_sas$NUMERIC_STATE_CODE %in% "California"), 415)
   expect_equal(sum(UCR_sas$NUMERIC_STATE_CODE %in% "Texas"), 567)
   expect_equal(sum(UCR_sas$NUMERIC_STATE_CODE %in% "Wyoming"), 44)
-  expect_equal(sum(UCR_sas$JAN_MONTH_INCLUDED_IN %in% "Jan not w oth month"), 1101)
-  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "No months reported"), 1406)
-  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "May last reported"), 106)
-  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "August last reported"), 58)
-  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "Dec last reported"), 5933)
+  expect_equal(sum(UCR_sas$JAN_MONTH_INCLUDED_IN %in% "Jan not w oth month"),
+               1101)
+  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "No months reported"),
+               1406)
+  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "May last reported"),
+               106)
+  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in%
+                     "August last reported"), 58)
+  expect_equal(sum(UCR_sas$NUMBER_OF_MONTHS_REPORTED %in% "Dec last reported"),
+               5933)
   expect_equal(sum(UCR_sas$JAN_CARD_0_TYPE %in% "Not updated"), 7046)
 
   expect_equal(sum(NIBRS$SEGMENT_LEVEL %in% "Batch header 1"), 19711)
@@ -216,4 +232,3 @@ test_that("Correct labels are assigned - SAS", {
   expect_equal(sum(NIBRS$COUNTRY_REGION %in% "West"), 2534)
 
 })
-

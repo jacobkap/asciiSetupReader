@@ -3,7 +3,7 @@ value_label_matrixer <- function(value_label_section) {
   plus <- grep("^\\+", value_label_section)
   if (length(plus) > 0) {
   for (n in 1:length(plus)) {
-    value_label_section[n-1] <- paste(value_label_section[n-1],
+    value_label_section[n - 1] <- paste(value_label_section[n - 1],
                                       value_label_section[n],
                                       collapse = " ")
   }
@@ -27,15 +27,14 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- stringr::str_trim(value_label_section)
 
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
-  values <- value_label_section[,1]
-  names(values) <- value_label_section[,2]
+  values <- value_label_section[, 1]
+  names(values) <- value_label_section[, 2]
 
   return(values)
 }
 
 
 fix_variable_values <- function(dataset, value_label_section, column) {
-#  column <- as.integer(grep(paste0("^", column, "$"), names(dataset)))
 
   value_label_section <- single_digit(value_label_section)
   value_label_section <- double_digit(value_label_section)
@@ -44,7 +43,9 @@ fix_variable_values <- function(dataset, value_label_section, column) {
   data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   }
   if (length(value_label_section) < nrow(dataset) / 2) {
-  data.table::set(dataset, j = column,  value = haven::as_factor(haven::labelled(dataset[[column]], value_label_section)))
+  data.table::set(dataset, j = column,
+                  value = haven::as_factor(haven::labelled(dataset[[column]],
+                                                      value_label_section)))
   }
   return(dataset)
 }
@@ -81,7 +82,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
 
   end_row <- grep("^\\.$", codebook)
   end_row <- end_row[end_row > value_start][1] - 1
-  if (is.na(end_row)) { end_row <- length(codebook) }
+  if (is.na(end_row))  end_row <- length(codebook)
   value_labels <- codebook[value_start:end_row]
   value_labels <- stringr::str_trim(value_labels)
   value_labels <- gsub('\\s+\\"$', '"', value_labels)
@@ -108,7 +109,8 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
     value_labels$group[i] <- group
     value_labels$column[i] <- column
     if (grepl("\\' \\/$", value_labels$value_labels[i]) |
-        value_labels$value_labels[i + 1] %in% codebook_column_spaces$column_number |
+        value_labels$value_labels[i + 1] %in%
+        codebook_column_spaces$column_number |
         !grepl("\\'", value_labels$value_labels[i + 1])) {
       group <- group + 1
       column <- value_labels$value_labels[i + 1]
@@ -138,11 +140,12 @@ all_numeric <- function(column) {
 
 make_cols_numeric <- function(dataset) {
   times <- nrow(dataset) * .10
-  if (times < 100000 && nrow(dataset) > 100000) { times <- 100000 }
+  if (times < 100000 && nrow(dataset) > 100000)  times <- 100000
   times <- sample(nrow(dataset), times, replace = FALSE)
   for (i in seq_along(dataset)) {
-    if ((!is.factor(dataset[[i]]) && all_numeric(dataset[[i]][times]))) {
-      suppressWarnings(data.table::set(dataset, j = i, value = as.numeric(dataset[[i]])))
+    if ( (!is.factor(dataset[[i]]) && all_numeric(dataset[[i]][times])) ) {
+      suppressWarnings(data.table::set(dataset, j = i,
+                                       value = as.numeric(dataset[[i]])))
     }
   }
   return(dataset)
