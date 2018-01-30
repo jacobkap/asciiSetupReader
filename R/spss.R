@@ -107,7 +107,7 @@ spss_ascii_reader <- function(dataset_name,
       for (i in seq_along(value_labels)) {
         column <- value_labels[[i]][1, 1]
         if (column %in% column_spaces$column_number) {
-         value_label_section <- value_label_matrixer(value_labels[[i]])
+         value_label_section <- value_label_matrixer(value_labels[[i]][[1]])
          dataset <- fix_variable_values(dataset, value_label_section, column)
         }
       }

@@ -3,20 +3,24 @@ value_label_matrixer <- function(value_label_section) {
   plus <- grep("^\\+", value_label_section)
   if (length(plus) > 0) {
   for (n in 1:length(plus)) {
-    value_label_section[n - 1] <- paste(value_label_section[n - 1],
-                                      value_label_section[n],
+    value_label_section[plus[n] - 1] <- paste(value_label_section[plus[n] - 1],
+                                      value_label_section[plus[n]],
                                       collapse = " ")
+    value_label_section[plus[n] - 1] <- gsub("\\' *\\+ *\\'", "",
+                                             value_label_section[plus[n] - 1])
   }
     value_label_section <- value_label_section[-plus]
   }
 
-  value_label_section <- value_label_section[2:nrow(value_label_section), 1]
+  value_label_section <- value_label_section[2:length(value_label_section)]
 
   value_label_section <- gsub(" {2,}| /| /\\.", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
   value_label_section <- gsub("'$", "", value_label_section)
   value_label_section <- gsub("=", " ", value_label_section)
   value_label_section <- gsub("\\s+", " ", value_label_section)
+  value_label_section <- gsub("([[:alpha:]])\\'([[:alpha:]])", "\\1 \\2",
+                              value_label_section)
 
   value_label_section <- unlist(stringr::str_split(value_label_section, "' '"))
   if (all(grepl("\\s", value_label_section))) {

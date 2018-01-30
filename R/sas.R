@@ -134,7 +134,7 @@ sas_ascii_reader <- function(dataset_name,
       if (toupper(column) %in% toupper(column_spaces$f_name)) {
         column <- column_spaces$column_number[toupper(column_spaces$f_name) %in%
                                                 toupper(column)]
-        value_label_section <-  value_label_matrixer(value_labels[[i]])
+        value_label_section <-  value_label_matrixer(value_labels[[i]][[1]])
         if (length(column) > 1) {
           for (col in column) {
             dataset <- fix_variable_values(dataset, value_label_section, col)
