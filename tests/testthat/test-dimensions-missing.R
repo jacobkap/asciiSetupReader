@@ -74,7 +74,7 @@ test_that("number of columns is correct - SPSS", {
   expect_equal(ncol(SHR2), 5)
   expect_equal(ncol(SHR3), 31)
 
-  expect_equal(ncol(UCR), 1447)
+  expect_equal(ncol(UCR), 1448)
   expect_equal(ncol(UCR2), 5)
 
   expect_equal(ncol(NIBRS), 20)
