@@ -109,7 +109,7 @@ test_that("Fixed (real names) columns are correct - SPSS", {
                       "SEP_UNFOUND_KNIFE_ASSL",
                       "DEC_TOT_CLR_GUN_ROBBER"))
 
-  expect_named(weimar, c("WAHLKREISCODE", "LAND_REGIERUNGSBEZ_CODE",
+  expect_named(weimar[1:8], c("WAHLKREISCODE", "LAND_REGIERUNGSBEZ_CODE",
                              "DATA_TYPE_CODE", "UNIT_OF_ANALYSIS_NAME",
                              "X1919_RT_NR_ELIGIBLE_VTRS",
                              "X1919_RT_NR_VOTES_CAST",

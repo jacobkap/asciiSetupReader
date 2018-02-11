@@ -45,3 +45,36 @@ selected_columns <- function(keep_columns, column_spaces) {
 
 grep2 <- function(pattern, x) grep(pattern, x, ignore.case = TRUE)
 grepl2 <- function(pattern, x) grepl(pattern, x, ignore.case = TRUE)
+
+
+get_missing <- function(codebook, column_spaces) {
+    missing <- codebook[grep("MISSING VALUES$", codebook):length(codebook)]
+    missing <- unlist(strsplit(missing, ",|\\s{2,}"))
+
+    missing <- data.frame(variable = gsub(" .*", "", missing),
+                          values = gsub(".*\\(|\\).*", "", missing),
+                          stringsAsFactors = FALSE)
+    missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
+    missing$values <- gsub("\\.$", "", missing$values)
+    missing <- missing[missing$variable %in% column_spaces$column_number, ]
+    return(missing)
+}
+
+fix_missing <- function(dataset, missing) {
+
+  for (column in unique(missing$variable)) {
+    missing_values <- missing$values[missing$variable == column]
+    missing_values <- as.character(missing_values)
+    names(missing_values) <- NA
+
+  if (!is.character(dataset[[column]])) {
+    data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
+  }
+    data.table::set(dataset, j = column,
+                    value = haven::as_factor(haven::labelled(dataset[[column]],
+                                                             missing_values)))
+    data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
+
+  }
+  return(dataset)
+}

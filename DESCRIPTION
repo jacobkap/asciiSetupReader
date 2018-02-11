@@ -10,7 +10,8 @@ Imports:
     data.table,
     haven,
     readr,
-    stringr          
+    stringr,
+    zoo          
 License: GPL
 Encoding: UTF-8
 LazyData: true

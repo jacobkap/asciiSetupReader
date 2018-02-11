@@ -93,6 +93,12 @@ spss_ascii_reader <- function(dataset_name,
     dataset <- data.table::as.data.table(dataset)
     column_order <- names(dataset)
 
+    # Fixes missing values ----------------------------------------------------
+    if (any(grepl("MISSING VALUES", codebook))) {
+      missing <- get_missing(codebook, column_spaces)
+      dataset <- fix_missing(dataset, missing)
+    }
+
 
   # Value Labels ------------------------------------------------------------
       # Removes columns not asked for
@@ -113,6 +119,7 @@ spss_ascii_reader <- function(dataset_name,
       }
       data.table::setcolorder(dataset, column_order)
     }
+
 
 
 

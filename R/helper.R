@@ -146,8 +146,9 @@ make_cols_numeric <- function(dataset) {
   times <- nrow(dataset) * .10
   if (times < 100000 && nrow(dataset) > 100000)  times <- 100000
   times <- sample(nrow(dataset), times, replace = FALSE)
+  if (nrow(dataset) < 100000) times <- 1:nrow(dataset)
   for (i in seq_along(dataset)) {
-    if ( (!is.factor(dataset[[i]]) && all_numeric(dataset[[i]][times])) ) {
+    if ( (!is.factor(dataset[[i]][times]) && all_numeric(dataset[[i]][times])) ) {
       suppressWarnings(data.table::set(dataset, j = i,
                                        value = as.numeric(dataset[[i]])))
     }
