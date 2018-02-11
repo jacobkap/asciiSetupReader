@@ -54,8 +54,10 @@ get_missing <- function(codebook, column_spaces) {
     missing <- data.frame(variable = gsub(" .*", "", missing),
                           values = gsub(".*\\(|\\).*", "", missing),
                           stringsAsFactors = FALSE)
+    missing$variable[missing$variable == ""] <- NA
     missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
     missing$values <- gsub("\\.$", "", missing$values)
+    missing$values <- gsub('\\"', "\\'", missing$values)
     missing <- missing[missing$variable %in% column_spaces$column_number, ]
     return(missing)
 }
@@ -64,7 +66,8 @@ fix_missing <- function(dataset, missing) {
 
   for (column in unique(missing$variable)) {
     missing_values <- missing$values[missing$variable == column]
-    missing_values <- as.character(missing_values)
+    missing_values <- as.character(trimws(missing_values))
+    missing_values <- gsub("\\'", "", missing_values)
     names(missing_values) <- NA
 
   if (!is.character(dataset[[column]])) {
