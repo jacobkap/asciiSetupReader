@@ -110,4 +110,55 @@ test_that("location of missing values is correct - SPSS", {
   expect_true(all(is.na(crosswalk$FCMSA[c(1, 4, 1419, 2561, 2690, 2765, 3308, 4057, 4130)])))
 
 
+  expect_true(all(is.na(parole_survey$ENDISREL[c(9, 14, 28, 33)])))
+  expect_true(all(is.na(parole_survey$ENMANREL[c(5, 9, 12, 19, 28, 33, 35, 38,
+                                                 41, 44, 52)])))
+  expect_true(all(is.na(parole_survey$ENREINST[c(5, 7, 9, 11, 12, 14, 16, 27:29,
+                                                 33:35, 38, 44:45, 49, 52)])))
+  expect_true(all(is.na(parole_survey$OTHEN[c(9, 14, 19, 28, 33:34, 45, 52)])))
+  expect_true(all(is.na(parole_survey$TOTEN[c(14)])))
+  expect_true(all(is.na(parole_survey$EXCOM[c(9, 28)])))
+  expect_true(all(is.na(parole_survey$EXINCNEW[c(5, 9, 14, 23, 28:30, 33, 35, 44, 52)])))
+  expect_true(all(is.na(parole_survey$EXINCREV[c(9, 14, 28)])))
+  expect_true(all(is.na(parole_survey$EXINCOTH[c(7, 9, 11, 14, 15, 19:20, 28, 33:35, 39, 45, 52)])))
+  expect_true(all(is.na(parole_survey$EXTRANS[c(3, 9, 10, 13, 14, 18, 28, 30, 33:35, 38, 45)])))
+  expect_true(all(is.na(parole_survey$EXDTH[c(9, 14, 16, 28)])))
+  expect_true(all(is.na(parole_survey$EXOTH[c(9:10, 14, 28, 45)])))
+  expect_true(all(is.na(parole_survey$TOTEX[c(14)])))
+  expect_true(all(is.na(parole_survey$MALE[c(17, 19)])))
+  expect_true(all(is.na(parole_survey$FEML[c(17, 19)])))
+  expect_true(all(is.na(parole_survey$WHITE[c(8, 13, 16:17, 19)])))
+  expect_true(all(is.na(parole_survey$BLACK[c(8, 13, 16:17, 19)])))
+  expect_true(all(is.na(parole_survey$AMINALK[c(8, 10, 12:13, 16:17, 19, 26, 42, 44)])))
+  expect_true(all(is.na(parole_survey$ASHAWPAC[c(8, 10, 12:13, 16:17, 19, 26, 33, 42, 44)])))
+  expect_true(all(is.na(parole_survey$ADDRACE[c(8, 12:13, 16:17, 19, 44)])))
+  expect_true(all(is.na(parole_survey$HISP[c(1:2, 8, 10, 12:13, 16:17, 19:20, 22, 26:28, 35, 42, 44)])))
+  expect_true(all(is.na(parole_survey$NONHISP[c(1:2, 8, 10, 12:13, 16:17, 19:20,
+                                                22, 26:28, 35, 42, 44)])))
+  expect_true(all(is.na(parole_survey$MAXYEAR[c(7, 9, 10, 15:17, 19, 26, 28, 34, 35, 37, 40, 42, 52)])))
+  expect_true(all(is.na(parole_survey$MAXMORE[c(9:10, 16:17, 26, 28, 35, 37, 40, 42)])))
+  expect_true(all(is.na(parole_survey$ACTIVE[c(37)])))
+  expect_true(all(is.na(parole_survey$INACTIVE[c(6, 12, 14, 15, 19:20, 29:30, 37, 52)])))
+  expect_true(all(is.na(parole_survey$ABSND[c(12, 15, 19, 23, 27, 37)])))
+  expect_true(all(is.na(parole_survey$OUTSTATE[c(19, 37, 38)])))
+  expect_true(all(is.na(parole_survey$OTHSTAT[c(10, 15, 37)])))
+  expect_true(all(is.na(parole_survey$ISPNUM[c(1, 4, 6, 8, 16, 18, 21, 24, 26, 34,
+                                               36:37, 41, 47, 49:50)])))
+
+  expect_true(all(is.na(parole_survey$ISPIN[c(4, 9, 46)])))
+  expect_true(all(is.na(parole_survey$EMNUM[c(3, 5, 7, 9:10, 14, 16, 18:21, 23,
+                                              26, 29, 32, 36:38, 40, 43:44, 46:47, 49:50)])))
+  expect_true(all(is.na(parole_survey$EMIN[c(1:3, 30, 46)])))
+  expect_true(all(is.na(parole_survey$BOOTNUM[c(1:5, 7:18, 20:21, 23:52)])))
+  expect_true(all(is.na(parole_survey$BOOTIN[c(19)])))
+  expect_true(all(is.na(parole_survey$LOCJAIL[c(2, 18, 42)])))
+  expect_true(all(is.na(parole_survey$LOCJAILIN[c(2, 9:10, 18:19, 22:23, 27, 32, 35, 40, 42, 44)])))
+  expect_true(all(is.na(parole_survey$OTHPAR[c(2 ,47)])))
+  expect_true(all(is.na(parole_survey$ENDOFYEAR[c(2, 16)])))
+
+
+
+
+
+
 })
