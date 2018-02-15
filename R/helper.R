@@ -124,7 +124,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
 }
 
 fix_names <- function(names) {
-  names <- gsub('^.* = |^.* \\"|\\W', "_", names)
+  names <- gsub('^.* = |^.* \\"|\\W|#|\\/', "_", names)
   names <- gsub("_+", "_", names)
   names <- gsub("^_|_$", "", names)
   names <- gsub("^([0-9])", "X\\1", names)
