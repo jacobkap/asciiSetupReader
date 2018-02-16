@@ -60,59 +60,36 @@ spss_ascii_reader <- function(dataset_name,
               is.logical(value_label_fix), length(value_label_fix) == 1,
               is.logical(real_names), length(real_names) == 1)
 
-    codebook <- readr::read_lines(sps_name)
-    codebook <- stringr::str_trim(codebook)
-    codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]
-
-    # Get the column names
-    codebook_variables <- codebook[grep2("^variable labels$", codebook):
-                                     grep2("^value labels$|missing values",
-                                           codebook)[1]]
-    codebook_variables <- gsub("\\'\\'", "\\'", codebook_variables)
-    codebook_variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
-                               codebook_variables)
-    codebook_variables <- gsub("\'", "\"", codebook_variables)
-    codebook_variables <- data.frame(column_name = fix_names(codebook_variables),
-                                     column_number = gsub(" .*", "",
-                                                           codebook_variables),
-                                     stringsAsFactors = FALSE)
-
-    column_spaces <- codebook[grep2("DATA LIST", codebook):
-                                                        grep2("^variable labels$", codebook)]
-    column_spaces <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
-                                       column_spaces)
-    column_spaces <- get_column_spaces(column_spaces, codebook_variables)
-    column_spaces <- selected_columns(keep_columns, column_spaces)
-
+  setup <- parse_spss(sps_name, keep_columns = keep_columns)
 
     dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                               readr::fwf_positions(column_spaces$begin,
-                                                    column_spaces$end,
-                                                    column_spaces$column_number),
+                               readr::fwf_positions(setup$setup$begin,
+                                                    setup$setup$end,
+                                                    setup$setup$column_number),
                                col_types = readr::cols(.default = readr::col_character())))
     dataset <- data.table::as.data.table(dataset)
     column_order <- names(dataset)
 
     # Fixes missing values ----------------------------------------------------
-    if (any(grepl("MISSING VALUES", codebook))) {
-      missing <- get_missing(codebook, column_spaces)
+    missing <- setup$missing
+    if (!is.null(missing)) {
       dataset <- fix_missing(dataset, missing)
     }
 
 
   # Value Labels ------------------------------------------------------------
       # Removes columns not asked for
-    value_labels <- get_value_labels(codebook, column_spaces)
+    value_labels <- setup$value_labels
     if (!is.null(value_labels)) {
       value_labels <- value_labels[value_labels$column %in%
-                                     column_spaces$column_number, ]
+                                     setup$setup$column_number, ]
       value_labels <- split.data.frame(value_labels, value_labels$group)
     }
 
     if (value_label_fix && length(value_labels) > 0) {
       for (i in seq_along(value_labels)) {
         column <- value_labels[[i]][1, 1]
-        if (column %in% column_spaces$column_number) {
+        if (column %in% setup$setup$column_number) {
          value_label_section <- value_label_matrixer(value_labels[[i]][[1]])
          dataset <- fix_variable_values(dataset, value_label_section, column)
         }
@@ -125,7 +102,7 @@ spss_ascii_reader <- function(dataset_name,
 
     if (real_names) {
       # Fixes column names to real names
-      codebook_variables <- codebook_variables[codebook_variables$column_number
+      codebook_variables <- setup$setup[setup$setup$column_number
                                                %in% names(dataset), ]
       data.table::setnames(dataset, old = codebook_variables$column_number,
                            new = codebook_variables$column_name)

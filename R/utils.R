@@ -26,7 +26,7 @@ get_column_spaces <- function(column_spaces, codebook_variables) {
 
 selected_columns <- function(keep_columns, column_spaces) {
   if (is.null(keep_columns)) {
-    # Do nothing
+    return(column_spaces)
   } else if (is.numeric(keep_columns)) {
     column_spaces <- column_spaces[keep_columns, ]
   } else if (all(keep_columns %in% column_spaces$column_number)) {
@@ -47,20 +47,6 @@ grep2 <- function(pattern, x) grep(pattern, x, ignore.case = TRUE)
 grepl2 <- function(pattern, x) grepl(pattern, x, ignore.case = TRUE)
 
 
-get_missing <- function(codebook, column_spaces) {
-    missing <- codebook[grep("MISSING VALUES$", codebook):length(codebook)]
-    missing <- unlist(strsplit(missing, ",|\\s{2,}"))
-
-    missing <- data.frame(variable = gsub(" .*", "", missing),
-                          values = gsub(".*\\(|\\).*", "", missing),
-                          stringsAsFactors = FALSE)
-    missing$variable[missing$variable == ""] <- NA
-    missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
-    missing$values <- gsub("\\.$", "", missing$values)
-    missing$values <- gsub('\\"', "\\'", missing$values)
-    missing <- missing[missing$variable %in% column_spaces$column_number, ]
-    return(missing)
-}
 
 fix_missing <- function(dataset, missing) {
 
