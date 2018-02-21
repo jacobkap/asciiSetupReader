@@ -51,15 +51,15 @@ test_that("Right number of columns", {
 test_that("Right number of missing values", {
 
   expect_equal(nrow(crosswalk$missing), 12)
-  expect_equal(nrow(ucr1985$missing), 156)
-  expect_equal(nrow(sac$missing), 190)
+  expect_equal(nrow(ucr1985$missing), 166)
+  expect_equal(nrow(sac$missing), 261)
   expect_equal(nrow(sex_offender$missing), 18)
   expect_true(is.null(ucr1960$missing))
   expect_equal(nrow(weimar$missing), 19)
   expect_true(is.null(acs$missing))
   expect_true(is.null(nibrs$missing))
   expect_equal(nrow(parole$missing), 89)
-  expect_equal(nrow(prisoners$missing), 201)
+  expect_equal(nrow(prisoners$missing), 200)
 
 })
 
