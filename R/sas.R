@@ -156,6 +156,7 @@ sas_ascii_reader <- function(dataset_name,
 
   # Makes columns that should be numeric numeric
   dataset <- make_cols_numeric(dataset)
+  attributes(dataset)$spec <- NULL
   dataset <- as.data.frame(dataset)
   return(dataset)
 }

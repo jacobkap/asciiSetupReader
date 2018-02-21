@@ -133,30 +133,10 @@ fix_names <- function(names) {
 
 # Make numeric columns numeric
 all_numeric <- function(column) {
-    if (is.factor(column)) {
-      return(FALSE)
-    }
   column_NAs <- sum(is.na(column))
   column <- suppressWarnings(as.numeric(as.character(column)))
   return(is.numeric(column) && sum(is.na(column)) == column_NAs)
 }
-
-all_numeric2 <- function(column) {
-  column_NAs <- sum(is.na(column))
-#  if (is.factor(column) &
-#      sum(column_NAs) == sum(is.na(as.numeric(column)))) {
-#    return(FALSE)
-#  }
-
-  column <- suppressWarnings(as.numeric(as.character(column)))
-  return(is.numeric(column) && sum(is.na(column)) == column_NAs)
-}
-
-#column <- c(column, column)
-#column <- factor(column)
-#microbenchmark(all_numeric(column), all_numeric2(column))
-#is(all_numeric2(column))
-#microbenchmark(all_numeric(column[1:100000]), all_numeric(column[1:50000]))
 
 make_cols_numeric <- function(dataset) {
   times <- nrow(dataset) * .10
@@ -164,7 +144,7 @@ make_cols_numeric <- function(dataset) {
   times <- sample(nrow(dataset), times, replace = FALSE)
   if (nrow(dataset) < 50000) times <- 1:nrow(dataset)
   for (i in seq_along(dataset)) {
-    if ( (all_numeric2(dataset[[i]][times])) ) {
+    if ( (all_numeric(dataset[[i]][times])) ) {
       suppressWarnings(data.table::set(dataset, j = i,
                                        value = as.numeric(dataset[[i]])))
     }
