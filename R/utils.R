@@ -2,8 +2,8 @@ get_column_spaces <- function(column_spaces, codebook_variables) {
 
   column_spaces <- unlist(strsplit(column_spaces, "\\s{2,}"))
   column_spaces <- gsub("\\$|\\;|\\(.*|\\.[0-9]", "", column_spaces)
-  column_spaces <- stringr::str_trim(column_spaces)
   column_spaces <- gsub("\\.$", "", column_spaces)
+  column_spaces <- stringr::str_trim(column_spaces)
   column_spaces <- column_spaces[grep("[0-9]$", column_spaces)]
   column_spaces <- data.frame(column_number = column_spaces,
                               stringsAsFactors = FALSE)

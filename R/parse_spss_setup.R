@@ -14,6 +14,9 @@ parse_spss <- function(sps_name, keep_columns = NULL) {
                           column_number = gsub(" .*", "",
                                                variables),
                           stringsAsFactors = FALSE)
+  if (any(grepl("^$", variables$column_name))) {
+    variables <- variables[1:(grep("^$", variables$column_name)[1]), ]
+  }
 
   setup <- codebook[grep2("DATA LIST", codebook):
                       grep2("^variable labels$", codebook)]
@@ -41,7 +44,15 @@ parse_spss <- function(sps_name, keep_columns = NULL) {
 
 parse_missing <- function(codebook) {
 
-  missing <- codebook[grep("MISSING VALUES$", codebook):length(codebook)]
+  start <- grep("MISSING VALUES$", codebook)
+  end <- grep("EXECUTE|^\\*.*SPSS", codebook, ignore.case = TRUE)
+  if (length(end) == 0 | all(end <= start)) {
+    end <- length(codebook)
+  } else {
+    end <- min(end[end > start])
+  }
+  missing <- codebook[start:end]
+  missing <- gsub("(\\S),(\\S)", "\\1, \\2", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),

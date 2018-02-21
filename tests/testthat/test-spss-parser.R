@@ -58,7 +58,7 @@ test_that("Right number of missing values", {
   expect_equal(nrow(weimar$missing), 19)
   expect_true(is.null(acs$missing))
   expect_true(is.null(nibrs$missing))
-  expect_equal(nrow(parole$missing), 56)
+  expect_equal(nrow(parole$missing), 89)
   expect_equal(nrow(prisoners$missing), 201)
 
 })
