@@ -53,7 +53,8 @@ spss_ascii_reader <- function(dataset_name,
                               sps_name,
                               value_label_fix = TRUE,
                               real_names = TRUE,
-                              keep_columns = NULL) {
+                              keep_columns = NULL,
+                              ...) {
 
     stopifnot(is.character(dataset_name), length(dataset_name) == 1,
               is.character(sps_name), length(sps_name) == 1,
@@ -66,7 +67,7 @@ spss_ascii_reader <- function(dataset_name,
                                readr::fwf_positions(setup$setup$begin,
                                                     setup$setup$end,
                                                     setup$setup$column_number),
-                               col_types = readr::cols(.default = readr::col_character())))
+                               col_types = readr::cols(.default = readr::col_character()), ...))
     dataset <- data.table::as.data.table(dataset)
     column_order <- names(dataset)
 
