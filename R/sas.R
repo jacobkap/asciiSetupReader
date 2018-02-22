@@ -39,7 +39,8 @@ sas_ascii_reader <- function(dataset_name,
                              sas_name,
                              value_label_fix = TRUE,
                              real_names = TRUE,
-                             keep_columns = NULL) {
+                             keep_columns = NULL,
+                             ...) {
 
   stopifnot(is.character(dataset_name), length(dataset_name) == 1,
             is.character(sas_name), length(sas_name) == 1,
@@ -90,7 +91,8 @@ sas_ascii_reader <- function(dataset_name,
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                               readr::fwf_positions(column_spaces$begin,
                                                    column_spaces$end,
-                                                   column_spaces$column_number),
+                                                   column_spaces$column_number,
+                                                   ...),
                              col_types = readr::cols(.default =
                                                        readr::col_character())))
   dataset <- data.table::as.data.table(dataset)
