@@ -91,8 +91,7 @@ sas_ascii_reader <- function(dataset_name,
   dataset <- suppressMessages(readr::read_fwf(dataset_name,
                               readr::fwf_positions(column_spaces$begin,
                                                    column_spaces$end,
-                                                   column_spaces$column_number,
-                                                   ...),
+                                                   column_spaces$column_number),
                              col_types = readr::cols(.default =
                                                        readr::col_character()),
                              ...))
