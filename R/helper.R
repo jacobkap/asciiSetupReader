@@ -146,7 +146,7 @@ make_cols_numeric <- function(dataset) {
   for (i in seq_along(dataset)) {
     if ( (all_numeric(dataset[[i]][times])) ) {
       suppressWarnings(data.table::set(dataset, j = i,
-                                       value = as.numeric(dataset[[i]])))
+                                       value = as.numeric(as.character(dataset[[i]]))))
     }
   }
   return(dataset)
