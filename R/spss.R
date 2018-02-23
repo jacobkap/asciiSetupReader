@@ -24,6 +24,8 @@
 #'   NULL, will return all columns. Accepts the column number (e.g. 1:5),
 #'   column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 #'   etc.).
+#' @param ...
+#' further arguments passed to readr
 #' @return Data.frame of the data from the ASCII file
 #' @export
 #' @examples

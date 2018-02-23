@@ -33,7 +33,7 @@ parse_spss <- function(sps_name, keep_columns = NULL) {
   value_labels <- get_value_labels(codebook, setup)
 
 
-  setup <- setNames(list(setup, value_labels, missing), c("setup",
+  setup <- stats::setNames(list(setup, value_labels, missing), c("setup",
                                             "value_labels",
                                             "missing"))
 

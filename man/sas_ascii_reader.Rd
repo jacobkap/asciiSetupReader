@@ -5,7 +5,7 @@
 \title{Read ASCII file using SAS Setup file.}
 \usage{
 sas_ascii_reader(dataset_name, sas_name, value_label_fix = TRUE,
-  real_names = TRUE, keep_columns = NULL)
+  real_names = TRUE, keep_columns = NULL, ...)
 }
 \arguments{
 \item{dataset_name}{Name of the ASCII (.txt) file that contains the data.
@@ -26,6 +26,8 @@ SPSS setup file (e.g. V1, V2) to the name is says the column is called
 NULL, will return all columns. Accepts the column number (e.g. 1:5),
 column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 etc.).}
+
+\item{...}{further arguments passed to readr}
 }
 \description{
 sas_ascii_reader() and spss_ascii_reader() are used when you need to
