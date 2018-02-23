@@ -65,9 +65,7 @@ spss_ascii_reader <- function(dataset_name,
 
     dataset <- suppressMessages(readr::read_fwf(dataset_name,
                                readr::fwf_positions(setup$setup$begin,
-                                                    setup$setup$end,
-                                                    setup$setup$column_number),
-                               col_types = readr::cols(.default = readr::col_character()), ...))
+                                                    setup$setup$end)))
     dataset <- data.table::as.data.table(dataset)
     column_order <- names(dataset)
 
