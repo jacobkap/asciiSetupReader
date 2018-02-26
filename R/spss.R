@@ -65,21 +65,10 @@ spss_ascii_reader <- function(dataset_name,
 
   setup <- parse_spss(sps_name, keep_columns = keep_columns)
 
-  dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                              readr::fwf_positions(setup$setup$begin,
-                                                   setup$setup$end,
-                                                   setup$setup$column_number),
-                                              col_types = readr::cols(.default =
-                                                          readr::col_character()),
-                                              ...))
-    dataset <- data.table::as.data.table(dataset)
-    column_order <- names(dataset)
+  dataset <- read_data(dataset_name, setup)
+  dataset <- data.table::as.data.table(dataset)
+  column_order <- names(dataset)
 
-    # Fixes missing values ----------------------------------------------------
-    missing <- setup$missing
-    if (!is.null(missing)) {
-      dataset <- fix_missing(dataset, missing)
-    }
 
 
   # Value Labels ------------------------------------------------------------
@@ -103,7 +92,11 @@ spss_ascii_reader <- function(dataset_name,
     }
 
 
-
+    # Fixes missing values ----------------------------------------------------
+    missing <- setup$missing
+    if (!is.null(missing)) {
+      dataset <- fix_missing(dataset, missing)
+    }
 
     if (real_names) {
       # Fixes column names to real names

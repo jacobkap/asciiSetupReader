@@ -67,3 +67,17 @@ fix_missing <- function(dataset, missing) {
   }
   return(dataset)
 }
+
+
+read_data <- function(dataset_name, setup, ...) {
+  positions <- readr::fwf_positions(setup$setup$begin,
+                                    setup$setup$end,
+                                    setup$setup$column_number)
+  data <- suppressMessages(readr::read_fwf(dataset_name,
+                           col_positions = positions,
+                           col_types = readr::cols(.default =
+                                                     readr::col_character()),
+                                              ...))
+
+  return(data)
+}

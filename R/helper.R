@@ -16,7 +16,7 @@ value_label_matrixer <- function(value_label_section) {
 
   value_label_section <- gsub(" {2,}| /| /\\.", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
-  value_label_section <- gsub("'$", "", value_label_section)
+  value_label_section <- gsub("'$|''", "", value_label_section)
   value_label_section <- gsub("=", " ", value_label_section)
   value_label_section <- gsub("\\s+", " ", value_label_section)
   value_label_section <- gsub("([[:alpha:]])\\'([[:alpha:]])", "\\1 \\2",
@@ -97,6 +97,11 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
                        value_labels)
 
   value_labels <- gsub('^([0-9]+)\\s{2,}\\"', '\\1 \\"', value_labels)
+
+  add_spaces <- paste0(codebook_column_spaces$column_number, "   ")
+  names(add_spaces) <- paste0(codebook_column_spaces$column_number, "\\s")
+  value_labels <- stringr::str_replace_all(value_labels, add_spaces)
+
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]
@@ -105,7 +110,8 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- gsub('\\"', "\\'", value_labels)
   value_labels <- data.frame(value_labels,
                              group = 0,
-                             column = value_labels[1], stringsAsFactors = FALSE)
+                             column = value_labels[1],
+                             stringsAsFactors = FALSE)
 
   group <- 1
   column <- value_labels$value_labels[1]
