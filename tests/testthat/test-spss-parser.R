@@ -6,6 +6,10 @@ parole <- system.file("testdata", "parole_survey.sps",
                       package = "asciiSetupReader")
 ucr1985 <- system.file("testdata", "1985_UCR_offenses_known.sps",
                        package = "asciiSetupReader")
+ucr1986 <- system.file("testdata", "1986_UCR_offenses_known.sps",
+                       package = "asciiSetupReader")
+ucr2000 <- system.file("testdata", "2000_UCR_offenses_known.sps",
+                       package = "asciiSetupReader")
 sac <- system.file("testdata", "sacramento.sps",
                    package = "asciiSetupReader")
 sex_offender <- system.file("testdata", "sex_offender_notification.sps",
@@ -22,9 +26,26 @@ prisoners <- system.file("testdata", "prisoners.sps",
                      package = "asciiSetupReader")
 
 
+test_that("parse_spss is silent", {
+  parse_spss(crosswalk)
+  parse_spss(parole)
+  parse_spss(ucr1985)
+  parse_spss(ucr1986)
+  parse_spss(ucr2000)
+  parse_spss(sac)
+  parse_spss(sex_offender)
+  parse_spss(ucr1960)
+  parse_spss(weimar)
+  parse_spss(acs)
+  parse_spss(nibrs)
+  parse_spss(prisoners)
+})
+
 crosswalk <- parse_spss(crosswalk)
 parole <- parse_spss(parole)
 ucr1985 <- parse_spss(ucr1985)
+ucr1986 <- parse_spss(ucr1986)
+ucr2000 <- parse_spss(ucr2000)
 sac <- parse_spss(sac)
 sex_offender <- parse_spss(sex_offender)
 ucr1960 <- parse_spss(ucr1960)
@@ -37,6 +58,8 @@ test_that("Right number of columns", {
 
   expect_equal(nrow(crosswalk$setup), 29)
   expect_equal(nrow(ucr1985$setup), 1458)
+  expect_equal(nrow(ucr1986$setup), 1458)
+  expect_equal(nrow(ucr2000$setup), 1448)
   expect_equal(nrow(sac$setup), 197)
   expect_equal(nrow(sex_offender$setup), 34)
   expect_equal(nrow(ucr1960$setup), 1448)
@@ -52,6 +75,8 @@ test_that("Right number of missing values", {
 
   expect_equal(nrow(crosswalk$missing), 12)
   expect_equal(nrow(ucr1985$missing), 166)
+  expect_equal(nrow(ucr1986$missing), 160)
+  expect_true(is.null(ucr2000$missing))
   expect_equal(nrow(sac$missing), 261)
   expect_equal(nrow(sex_offender$missing), 18)
   expect_true(is.null(ucr1960$missing))
@@ -76,6 +101,24 @@ test_that("Starting number is correct", {
                                                  5329, 5330, 5331, 5332, 5335,
                                                  5338, 5341, 5344, 5347, 5350,
                                                  5353, 5356, 5359, 5362, 5365))
+
+  expect_equal(ucr1986$setup$begin[1:20], c(1, 5, 6, 8, 13, 15, 22, 23,
+                                            25, 26, 28, 33, 35, 36, 44,
+                                            50, 54, 56, 57, 65))
+  expect_equal(ucr1986$setup$begin[1439:1458], c(5207, 5208, 5209, 5210,
+                                                 5211, 5212, 5213, 5214,
+                                                 5215, 5218, 5222, 5225,
+                                                 5228, 5231, 5234, 5237,
+                                                 5240, 5243, 5246, 5249))
+  expect_equal(ucr2000$setup$begin[1:20], c(1, 2, 4, 11, 13, 14, 18, 23, 24,
+                                            31, 39, 43, 45, 46, 53, 56, 59,
+                                            64, 67, 70))
+  expect_equal(ucr2000$setup$begin[1429:1448], c(3710, 3712, 3716, 3718,
+                                                 3720, 3722, 3724, 3728,
+                                                 3731, 3734, 3736, 3738,
+                                                 3742, 3745, 3748, 3750,
+                                                 3752, 3756, 3757, 3758))
+
   expect_equal(sac$setup$begin[1:20], c(1, 3, 6, 10, 16, 17, 18, 19, 20, 21, 22,
                                         23, 24, 25, 27, 29, 31, 32, 33, 34))
   expect_equal(sac$setup$begin[178:197], c(219, 220, 222, 223, 224, 226, 227,
@@ -133,6 +176,29 @@ test_that("Ending number is correct", {
                                                1941, 1942, 1943, 1944,  1945, 1946,
                                                1947, 1948, 1949, 1950, 1951,
                                                1952, 1953, 1954, 1955))
+
+
+
+  expect_equal(ucr1986$setup$end[1:20], c(4, 5, 7, 12, 14, 21, 22, 24,
+                                          25, 27, 32, 34, 35, 43, 49,
+                                          53, 55, 56, 64, 67))
+  expect_equal(ucr1986$setup$end[1439:1458], c(5207, 5208, 5209, 5210,
+                                               5211, 5212, 5213, 5214,
+                                               5217, 5221, 5224, 5227,
+                                               5230, 5233, 5236, 5239,
+                                               5242, 5245, 5248, 5251))
+  expect_equal(ucr2000$setup$end[1:20], c(1, 3, 10, 12, 13, 17, 22, 23,
+                                          30, 38, 42, 44, 45, 52, 55,
+                                          58, 63, 66, 69, 74))
+  expect_equal(ucr2000$setup$end[1429:1448], c(3711, 3715, 3717, 3719,
+                                               3721, 3723, 3727, 3730,
+                                               3733, 3735, 3737, 3741,
+                                               3744, 3747, 3749, 3751,
+                                               3755, 3756, 3757, 3760))
+
+
+
+
   expect_equal(weimar$setup$end, c(2, 4, 5, 22, 29, 36, 43, 50, 57, 64, 71, 78,
                                    85, 92, 99, 106, 113, 120, 127, 134, 141, 148,
                                    155))

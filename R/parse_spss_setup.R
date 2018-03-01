@@ -10,6 +10,7 @@ parse_spss <- function(sps_name, keep_columns = NULL) {
   variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
                     variables)
   variables <- gsub("\'", "\"", variables)
+  variables <- unlist(strsplit(variables, '"\\s{3,}'))
   variables <- data.frame(column_name = fix_names(variables),
                           column_number = gsub(" .*", "",
                                                variables),
@@ -22,8 +23,10 @@ parse_spss <- function(sps_name, keep_columns = NULL) {
                       grep2("^variable labels$", codebook)]
   setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                 setup)
+  setup <- unlist(strsplit(setup, '"\\s{3,}'))
   setup <- get_column_spaces(setup, variables)
   setup <- selected_columns(keep_columns, setup)
+  setup <- setup[setup$column_number != "*", ]
 
   if (any(grepl("MISSING VALUES", codebook))) {
     missing <- parse_missing(codebook)

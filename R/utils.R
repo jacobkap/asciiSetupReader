@@ -40,7 +40,7 @@ selected_columns <- function(keep_columns, column_spaces) {
                 "Please check spelling"))
   }
 
-    return(column_spaces)
+  return(column_spaces)
 }
 
 grep2 <- function(pattern, x) grep(pattern, x, ignore.case = TRUE)
@@ -56,9 +56,9 @@ fix_missing <- function(dataset, missing) {
     missing_values <- gsub("\\'", "", missing_values)
     names(missing_values) <- NA
 
-  if (!is.character(dataset[[column]])) {
-    data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
-  }
+    if (!is.character(dataset[[column]])) {
+      data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
+    }
     data.table::set(dataset, j = column,
                     value = haven::as_factor(haven::labelled(dataset[[column]],
                                                              missing_values)))
@@ -74,10 +74,36 @@ read_data <- function(dataset_name, setup, ...) {
                                     setup$setup$end,
                                     setup$setup$column_number)
   data <- suppressMessages(readr::read_fwf(dataset_name,
-                           col_positions = positions,
-                           col_types = readr::cols(.default =
-                                                     readr::col_character()),
-                                              ...))
+                                           col_positions = positions,
+                                           col_types = readr::cols(.default =
+                                                                     readr::col_character()),
+                                           ...))
 
   return(data)
+}
+
+
+parse_value_labels <- function(setup) {
+
+  if (is.null(setup$value_labels)) {
+    return(NULL)
+  } else {
+
+    value_labels <- setup$value_labels
+    if (!is.null(value_labels)) {
+      value_labels <- value_labels[value_labels$column %in%
+                                     setup$setup$column_number, ]
+      value_labels <- split.data.frame(value_labels, value_labels$group)
+    }
+
+    value_label_cols <- c()
+    for (i in seq_along(value_labels)) {
+      column <- value_labels[[i]][1, 1]
+      if (column %in% setup$setup$column_number) {
+        value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]])
+        value_label_cols <- c(value_label_cols, column)
+      }
+    }
+    return(list(value_labels, value_label_cols))
+  }
 }

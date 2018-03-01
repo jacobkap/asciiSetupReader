@@ -69,24 +69,18 @@ spss_ascii_reader <- function(dataset_name,
   dataset <- data.table::as.data.table(dataset)
   column_order <- names(dataset)
 
-
-
   # Value Labels ------------------------------------------------------------
       # Removes columns not asked for
-    value_labels <- setup$value_labels
-    if (!is.null(value_labels)) {
-      value_labels <- value_labels[value_labels$column %in%
-                                     setup$setup$column_number, ]
-      value_labels <- split.data.frame(value_labels, value_labels$group)
-    }
+    value_labels <- parse_value_labels(setup)
+    value_label_cols <- value_labels[[2]]
+    value_labels <- value_labels[[1]]
+
 
     if (value_label_fix && length(value_labels) > 0) {
       for (i in seq_along(value_labels)) {
-        column <- value_labels[[i]][1, 1]
-        if (column %in% setup$setup$column_number) {
-         value_label_section <- value_label_matrixer(value_labels[[i]][[1]])
-         dataset <- fix_variable_values(dataset, value_label_section, column)
-        }
+        dataset <- fix_variable_values(dataset,
+                                       value_labels[[i]],
+                                       value_label_cols[i])
       }
       data.table::setcolorder(dataset, column_order)
     }
