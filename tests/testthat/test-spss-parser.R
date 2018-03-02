@@ -10,6 +10,8 @@ ucr1986 <- system.file("testdata", "1986_UCR_offenses_known.sps",
                        package = "asciiSetupReader")
 ucr2000 <- system.file("testdata", "2000_UCR_offenses_known.sps",
                        package = "asciiSetupReader")
+ucr2006 <- system.file("testdata", "2006_UCR_offenses_known.sps",
+                       package = "asciiSetupReader")
 sac <- system.file("testdata", "sacramento.sps",
                    package = "asciiSetupReader")
 sex_offender <- system.file("testdata", "sex_offender_notification.sps",
@@ -27,18 +29,21 @@ prisoners <- system.file("testdata", "prisoners.sps",
 
 
 test_that("parse_spss is silent", {
-  parse_spss(crosswalk)
-  parse_spss(parole)
-  parse_spss(ucr1985)
-  parse_spss(ucr1986)
-  parse_spss(ucr2000)
-  parse_spss(sac)
-  parse_spss(sex_offender)
-  parse_spss(ucr1960)
-  parse_spss(weimar)
-  parse_spss(acs)
-  parse_spss(nibrs)
-  parse_spss(prisoners)
+
+  expect_silent(parse_spss(crosswalk))
+  expect_silent(parse_spss(parole))
+  expect_silent(parse_spss(ucr1985))
+  expect_silent(parse_spss(ucr1986))
+  expect_silent(parse_spss(ucr2000))
+  expect_silent(parse_spss(ucr2006))
+  expect_silent(parse_spss(sac))
+  expect_silent(parse_spss(sex_offender))
+  expect_silent(parse_spss(ucr1960))
+  expect_silent(parse_spss(weimar))
+  expect_silent(parse_spss(acs))
+  expect_silent(parse_spss(nibrs))
+  expect_silent(parse_spss(prisoners))
+
 })
 
 crosswalk <- parse_spss(crosswalk)
@@ -46,6 +51,7 @@ parole <- parse_spss(parole)
 ucr1985 <- parse_spss(ucr1985)
 ucr1986 <- parse_spss(ucr1986)
 ucr2000 <- parse_spss(ucr2000)
+ucr2006 <- parse_spss(ucr2006)
 sac <- parse_spss(sac)
 sex_offender <- parse_spss(sex_offender)
 ucr1960 <- parse_spss(ucr1960)

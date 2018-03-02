@@ -17,6 +17,8 @@ value_label_matrixer <- function(value_label_section) {
 
   value_label_section <- gsub("^''", "'####BLANK####'",
                               value_label_section)
+  value_label_section <- gsub(" '' ", " '####BLANK####' ",
+                              value_label_section)
   value_label_section <- gsub(" {2,}| /| /\\.", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
   value_label_section <- gsub("'\\s+.$", "'", value_label_section)
@@ -115,11 +117,18 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- value_labels[-1]
   value_labels <- gsub('"', "'", value_labels)
   value_labels <- gsub('^/', "", value_labels)
+  value_labels <- gsub("''''", "''", value_labels)
   value_labels <- gsub('\\"', "\\'", value_labels)
   value_labels <- data.frame(value_labels,
                              group = 0,
                              column = value_labels[1],
                              stringsAsFactors = FALSE)
+
+  # value_labels$column[!value_labels$column %in%
+  #                       codebook_column_spaces$column_number] <- NA
+  # value_labels$column <- zoo::na.locf(value_labels$column)
+  # value_labels$group <- as.numeric(factor(value_labels$column,
+  #                                         levels = unique(value_labels$column)))
 
   group <- 1
   column <- value_labels$value_labels[1]
