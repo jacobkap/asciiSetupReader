@@ -65,7 +65,7 @@ spss_ascii_reader <- function(dataset_name,
 
   setup <- parse_spss(sps_name, keep_columns = keep_columns)
 
-  dataset <- read_data(dataset_name, setup)
+  dataset <- read_data(dataset_name, setup, ...)
   dataset <- data.table::as.data.table(dataset)
   column_order <- names(dataset)
 
