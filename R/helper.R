@@ -58,6 +58,7 @@ fix_variable_values <- function(dataset, value_label_section, column) {
     data.table::set(dataset, j = column,
                     value = haven::as_factor(haven::labelled(dataset[[column]],
                                                              value_label_section)))
+    data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   }
   return(dataset)
 }
