@@ -30,6 +30,8 @@ SHR1987 <- system.file("testdata", "1987_SHR.sps",
                        package = "asciiSetupReader")
 SHR1988 <- system.file("testdata", "1988_SHR.sps",
                        package = "asciiSetupReader")
+SHR1981 <- system.file("testdata", "1981_SHR.sps",
+                       package = "asciiSetupReader")
 
 
 

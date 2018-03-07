@@ -124,7 +124,7 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- gsub('\\"', "\\'", value_labels)
   value_labels <- data.frame(value_labels,
                              group = 0,
-                             column = value_labels[1],
+                             column = value_labels,
                              stringsAsFactors = FALSE)
 
   # value_labels$column[!value_labels$column %in%
@@ -141,7 +141,8 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
     if (grepl("\\' \\/$", value_labels$value_labels[i]) |
         value_labels$value_labels[i + 1] %in%
         codebook_column_spaces$column_number |
-        !grepl("\\'", value_labels$value_labels[i + 1])) {
+        (!grepl("\\'", value_labels$value_labels[i + 1]) &
+         !grepl("^[0-9]+$", value_labels$value_labels[i + 1]))) {
       group <- group + 1
       column <- value_labels$value_labels[i + 1]
     }
