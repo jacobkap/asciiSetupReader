@@ -112,6 +112,8 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   add_spaces <- add_spaces[!duplicated(add_spaces)]
   add_spaces <- add_spaces[!grepl("^\\*", add_spaces)]
   value_labels <- stringr::str_replace_all(value_labels, add_spaces)
+  value_labels <- gsub("\"([[:alnum:]]+)\\s+([0-9])", "\"\\1 \\2",
+                       value_labels)
 
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]

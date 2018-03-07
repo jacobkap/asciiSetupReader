@@ -26,6 +26,11 @@ nibrs <- system.file("testdata", "nibrs_2000_batch_header1.sps",
                      package = "asciiSetupReader")
 prisoners <- system.file("testdata", "prisoners.sps",
                          package = "asciiSetupReader")
+SHR1987 <- system.file("testdata", "1987_SHR.sps",
+                       package = "asciiSetupReader")
+SHR1988 <- system.file("testdata", "1988_SHR.sps",
+                       package = "asciiSetupReader")
+
 
 
 crosswalk <- parse_spss(crosswalk)
@@ -41,6 +46,8 @@ weimar <- parse_spss(weimar)
 acs <- parse_spss(acs)
 nibrs <- parse_spss(nibrs)
 prisoners <- parse_spss(prisoners)
+SHR1987 <- parse_spss(SHR1987)
+SHR1988 <- parse_spss(SHR1988)
 
 crosswalk_values <- parse_value_labels(crosswalk)
 parole_values <- parse_value_labels(parole)
@@ -90,5 +97,8 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(acs))
   expect_silent(parse_value_labels(nibrs))
   expect_silent(parse_value_labels(prisoners))
+
+  expect_silent(parse_value_labels(SHR1987))
+  expect_silent(parse_value_labels(SHR1987))
 
 })

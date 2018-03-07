@@ -26,6 +26,10 @@ nibrs <- system.file("testdata", "nibrs_2000_batch_header1.sps",
                      package = "asciiSetupReader")
 prisoners <- system.file("testdata", "prisoners.sps",
                      package = "asciiSetupReader")
+SHR1987 <- system.file("testdata", "1987_SHR.sps",
+                         package = "asciiSetupReader")
+SHR1988 <- system.file("testdata", "1988_SHR.sps",
+                         package = "asciiSetupReader")
 
 
 test_that("parse_spss is silent", {
@@ -43,6 +47,8 @@ test_that("parse_spss is silent", {
   expect_silent(parse_spss(acs))
   expect_silent(parse_spss(nibrs))
   expect_silent(parse_spss(prisoners))
+  expect_silent(parse_spss(SHR1987))
+  expect_silent(parse_spss(SHR1988))
 
 })
 
