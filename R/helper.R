@@ -17,9 +17,11 @@ value_label_matrixer <- function(value_label_section) {
 
   value_label_section <- gsub("^''", "'####BLANK####'",
                               value_label_section)
+  value_label_section <- gsub("^' '", "'####SPACE####'",
+                              value_label_section)
   value_label_section <- gsub(" '' ", " '####BLANK####' ",
                               value_label_section)
-  value_label_section <- gsub(" {2,}| /| /\\.", "", value_label_section)
+  value_label_section <- gsub(" {2,}| /\\.", "", value_label_section)
   value_label_section <- gsub('"', "'", value_label_section)
   value_label_section <- gsub("'\\s+.$", "'", value_label_section)
   value_label_section <- gsub("'$|''", "", value_label_section,
@@ -36,7 +38,8 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- gsub("'| =", "", value_label_section)
   value_label_section <- gsub("^\\(.*\\) ", "", value_label_section)
   value_label_section <- stringr::str_trim(value_label_section)
-  value_label_section <- gsub("####BLANK####", "''", value_label_section)
+  value_label_section <- gsub("####BLANK####", "", value_label_section)
+  value_label_section <- gsub("####SPACE####", " ", value_label_section)
 
   value_label_section <- matrix(value_label_section, ncol = 2, byrow = TRUE)
   values <- value_label_section[, 1]
