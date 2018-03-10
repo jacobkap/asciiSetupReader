@@ -74,3 +74,30 @@ parse_codebook <- function(sps_name) {
   codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]
   return(codebook)
 }
+
+
+parse_value_labels <- function(setup) {
+
+  if (is.null(setup$value_labels)) {
+    return(NULL)
+  } else {
+
+    value_labels <- setup$value_labels
+    if (!is.null(value_labels)) {
+      value_labels <- value_labels[value_labels$column %in%
+                                     setup$setup$column_number, ]
+      value_labels <- split.data.frame(value_labels, value_labels$group)
+    }
+
+    value_label_cols <- c()
+    for (i in seq_along(value_labels)) {
+      column <- value_labels[[i]][1, 1]
+      if (column %in% setup$setup$column_number) {
+        value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]])
+        value_label_cols <- c(value_label_cols, column)
+      }
+    }
+    names(value_labels) <- value_label_cols
+    return(value_labels)
+  }
+}

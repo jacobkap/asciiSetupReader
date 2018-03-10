@@ -72,15 +72,12 @@ spss_ascii_reader <- function(dataset_name,
   # Value Labels ------------------------------------------------------------
       # Removes columns not asked for
     value_labels <- parse_value_labels(setup)
-    value_label_cols <- value_labels[[2]]
-    value_labels <- value_labels[[1]]
-
 
     if (value_label_fix && length(value_labels) > 0) {
       for (i in seq_along(value_labels)) {
         dataset <- fix_variable_values(dataset,
                                        value_labels[[i]],
-                                       value_label_cols[i])
+                                       names(value_labels)[i])
       }
       data.table::setcolorder(dataset, column_order)
     }

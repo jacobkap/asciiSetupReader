@@ -54,12 +54,10 @@ fix_variable_values <- function(dataset, value_label_section, column) {
   if (!is.character(dataset[[column]])) {
     data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   }
-  if (length(value_label_section) < nrow(dataset) / 2) {
     data.table::set(dataset, j = column,
                     value = haven::as_factor(haven::labelled(dataset[[column]],
                                                              value_label_section)))
     data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
-  }
   return(dataset)
 }
 
@@ -106,6 +104,8 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
                        value_labels)
 
   value_labels <- gsub('^([0-9]+)\\s{2,}\\"', '\\1 \\"', value_labels)
+  value_labels <- gsub('(\\s{2,})([0-9]+)\\s{2,}\\"', '\\1\\2 \\"',
+                       value_labels)
 
   add_spaces <- paste0(codebook_column_spaces$column_number, "   ")
   names(add_spaces) <- paste0(codebook_column_spaces$column_number, "\\s")

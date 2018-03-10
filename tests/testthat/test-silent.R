@@ -1,4 +1,4 @@
-context("There is no warning or error messages")
+context("There are no warning or error messages")
 
 SHR_dataset_name <- system.file("extdata", "example_data.zip",
                                 package = "asciiSetupReader")
