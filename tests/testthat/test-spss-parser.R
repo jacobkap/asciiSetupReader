@@ -1,4 +1,4 @@
-context("Test SPSS setup parse")
+context("SPSS setup parse")
 
 crosswalk <- system.file("testdata", "crosswalk.sps",
                          package = "asciiSetupReader")
@@ -32,6 +32,8 @@ SHR1988 <- system.file("testdata", "1988_SHR.sps",
                          package = "asciiSetupReader")
 SHR1981 <- system.file("testdata", "1981_SHR.sps",
                        package = "asciiSetupReader")
+ca_vital <- system.file("testdata", "ca_vital.sps",
+                       package = "asciiSetupReader")
 
 
 test_that("parse_spss is silent", {
@@ -52,6 +54,7 @@ test_that("parse_spss is silent", {
   expect_silent(parse_spss(SHR1987))
   expect_silent(parse_spss(SHR1988))
   expect_silent(parse_spss(SHR1981))
+  expect_silent(parse_spss(ca_vital))
 
 })
 
@@ -68,6 +71,7 @@ weimar <- parse_spss(weimar)
 acs <- parse_spss(acs)
 nibrs <- parse_spss(nibrs)
 prisoners <- parse_spss(prisoners)
+ca_vital <- parse_spss(ca_vital)
 
 test_that("Right number of columns", {
 
@@ -83,6 +87,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(nibrs$setup), 20)
   expect_equal(nrow(parole$setup), 59)
   expect_equal(nrow(prisoners$setup), 201)
+  expect_equal(nrow(ca_vital$setup), 59)
 
 })
 
@@ -100,6 +105,7 @@ test_that("Right number of missing values", {
   expect_true(is.null(nibrs$missing))
   expect_equal(nrow(parole$missing), 89)
   expect_equal(nrow(prisoners$missing), 200)
+  expect_true(is.null(ca_vital$missing))
 
 })
 
@@ -161,6 +167,12 @@ test_that("Starting number is correct", {
   expect_equal(parole$setup$begin[40:59], c(222, 228, 230, 231, 237, 239, 240,
                                             246, 248, 250, 252, 254, 256, 262,
                                             268, 274, 280, 286, 292, 298))
+  expect_equal(ca_vital$setup$begin, c(1, 3, 7, 12, 14, 16, 17, 18,  19, 21, 23, 25,
+                                       27, 29, 30, 34, 36, 38, 40, 42, 44, 45, 46, 48, 49, 50,
+                                       52, 53, 54, 56, 57, 58, 60, 62, 64, 65,
+                                       67, 71, 74, 76, 81, 83, 87, 91, 102, 104,
+                                       115, 126, 137, 148, 159, 160, 171, 182,
+                                       184, 185, 187, 188, 189))
 
 })
 
@@ -226,11 +238,17 @@ test_that("Ending number is correct", {
   expect_equal(parole$setup$end[40:59], c(227, 229, 230, 236, 238, 239, 245,
                                           247, 249, 251, 253, 255, 261, 267,
                                           273, 279, 285, 291, 297, 301))
+  expect_equal(ca_vital$setup$end, c(2, 6, 11, 13, 15, 16, 17, 18, 20, 22, 24,
+                                     26, 28, 29, 33, 35, 37, 39, 41, 43, 44, 45,
+                                     47, 48, 49, 51, 52, 53, 55, 56, 57, 59, 61,
+                                     63, 64, 66, 70, 73, 75, 80, 82, 86, 90,
+                                     101, 103, 114, 125, 136, 147, 158, 159,
+                                     170, 181, 183, 184, 186, 187, 188, 189))
 
 })
 
 
-test_that("Originial names are correct", {
+test_that("Original names are correct", {
 
   expect_equal(crosswalk$setup$column_number, c("SOURCE", "STATE", "UORI",
                                                 "UAGENCY", "UCORI", "UMULTICO",
@@ -325,4 +343,28 @@ test_that("Originial names are correct", {
                                                     "UNKRACE2", "UNKHISP",
                                                     "UNKMAX", "UNKSTAT", "SUPVRATE"))
 
+  expect_equal(ca_vital$setup$column_number[1:20], c("CNTYJUR", "JURISDIC",
+                                                     "BCSNUM", "TOTVICT",
+                                                     "TOTOFFEN", "VICSEX",
+                                                     "VICRACE", "CRIMEST",
+                                                     "RELATN1", "RELATN2",
+                                                     "RELATN3", "RELATN4",
+                                                     "INCDTIME", "INCDDAY",
+                                                     "DEATHYR", "WEAPON",
+                                                     "LOCATION", "PRECIP1",
+                                                     "PRECIP2", "PRECIP3"))
+  expect_equal(ca_vital$setup$column_number[40:59], c("ZIPCODE", "AGEYEARS",
+                                                      "CENSUS", "ICD10",
+                                                      "DOB",  "VICAGE",
+                                                      "DOD", "ARRDATE1",
+                                                      "ARRDATE2", "ARRDATE3",
+                                                      "ARRDATE4",  "FLAG",
+                                                      "INCDDATE", "INJDATE",
+                                                      "RACE", "SEX",
+                                                      "STATERES", "MARSTAT",
+                                                      "HISPANIC", "MATCH"))
+
+})
+
+test_that("Fixed names are correct", {
 })

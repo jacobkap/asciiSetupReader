@@ -32,6 +32,8 @@ SHR1988 <- system.file("testdata", "1988_SHR.sps",
                        package = "asciiSetupReader")
 SHR1981 <- system.file("testdata", "1981_SHR.sps",
                        package = "asciiSetupReader")
+ca_vital <- system.file("testdata", "ca_vital.sps",
+                        package = "asciiSetupReader")
 
 
 
@@ -51,7 +53,7 @@ prisoners <- parse_spss(prisoners)
 SHR1987 <- parse_spss(SHR1987)
 SHR1988 <- parse_spss(SHR1988)
 SHR1981 <- parse_spss(SHR1981)
-
+ca_vital <- parse_spss(ca_vital)
 
 crosswalk_values <- parse_value_labels(crosswalk)
 parole_values <- parse_value_labels(parole)
@@ -69,6 +71,7 @@ prisoners_values <- parse_value_labels(prisoners)
 SHR1987_values <- parse_value_labels(SHR1987)
 SHR1988_values <- parse_value_labels(SHR1988)
 SHR1981_values <- parse_value_labels(SHR1981)
+ca_vital_values <- parse_value_labels(ca_vital)
 
 test_that("Number of value label columns are correct", {
 
@@ -85,6 +88,7 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(acs_values), 4)
   expect_equal(length(nibrs_values), 9)
 #  expect_equal(length(prisoners_values), )
+  expect_equal(length(ca_vital_values), 36)
 
 })
 
@@ -104,10 +108,10 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(acs))
   expect_silent(parse_value_labels(nibrs))
   expect_silent(parse_value_labels(prisoners))
-
   expect_silent(parse_value_labels(SHR1987))
   expect_silent(parse_value_labels(SHR1987))
   expect_silent(parse_value_labels(SHR1981))
+  expect_silent(parse_value_labels(ca_vital))
 
 })
 
@@ -1265,4 +1269,64 @@ test_that("Prisoners - parsed value labels are accurate", {
                                            "Item was asked, but only in the aggregate prison population, not by male or female" = "-2",
                                            "Item not asked in survey for this year" = "-1"))
 
+})
+
+
+test_that("CA vital - parsed value labels are accurate", {
+  expect_equal(ca_vital_values$VICSEX, c("Unknown" = "0",
+                                         "Male" = "1",
+                                         "Female" = "2"))
+  expect_equal(ca_vital_values$CRIMEST, c("Actual" = "1",
+                                          "Justifiable - private citizen" = "2",
+                                          "Manslaughter" = "3",
+                                          "Justifiable - peace officer" = "4"))
+  expect_equal(length(ca_vital_values$PRECIP2), 46)
+  expect_equal(ca_vital_values$SUS2RACE, c("Unknown" = "0",
+                                           "White (not Hispanic)" = "1",
+                                           "Hispanic" = "2",
+                                           "Black" = "3",
+                                           "American Indian" = "4",
+                                           "Chinese" = "5",
+                                           "Japanese" = "6",
+                                           "Filipino" = "7",
+                                           "Other" = "8",
+                                           "Pacific Islander" = "9",
+                                           "Other Asian" = "A",
+                                           "Black" = "B",
+                                           "Chinese" = "C",
+                                           "Cambodian" = "D",
+                                           "Filipino" = "F",
+                                           "Guamanian" = "G",
+                                           "Hispanic" = "H",
+                                           "American Indian" = "I",
+                                           "Japanese" = "J",
+                                           "Korean" = "K",
+                                           "Laotian" = "L",
+                                           "Other" = "O",
+                                           "Pacific Islander" = "P",
+                                           "Samoan" = "S",
+                                           "Hawaiian" = "U",
+                                           "Vietnamese" = "V",
+                                           "White" = "W",
+                                           "Unknown" = "X",
+                                           "Asian" = "Z"))
+  expect_equal(ca_vital_values$EDUCATN, c("1 year of college" = "13",
+                                          "2 years of college" = "14",
+                                          "3 years of college" = "15",
+                                          "4 years of college" = "16",
+                                          "5+ years of college" = "17",
+                                          "Unknown or not available" = "99"))
+  expect_equal(ca_vital_values$FLAG, c("No estimate (incident day as reported)" = "0",
+                                   "Estimate (incident day set to 01)" = "1"))
+  expect_equal(ca_vital_values$HISPANIC, c("Not Spanish/Hispanic" = "1",
+                                           "Mexican/Mexican-American/Chicano" = "2",
+                                           "Puerto Rican" = "3",
+                                           "Cuban" = "4",
+                                           "Central/So. American" = "5",
+                                           "(Born outside U.S.),other Spanish/Hispan" = "6",
+                                           "Code not used" = "7",
+                                           "(Born in the U.S.), other Spanish/Hispan" = "8",
+                                           "Unknown or unreported" = "9"))
+  expect_equal(ca_vital_values$MATCH, c("Death record did not match with homicide" = "0",
+                                   "Death record matched with homicide recor" = "1"))
 })
