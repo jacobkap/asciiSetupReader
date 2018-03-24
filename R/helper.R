@@ -99,6 +99,8 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   if (is.na(end_row))  end_row <- length(codebook)
   value_labels <- codebook[value_start:end_row]
   value_labels <- stringr::str_trim(value_labels)
+  # value_labels <- gsub("([[:alpha:]])''([[:alpha:]])", "\\1'\\2",
+  #                      value_labels)
   value_labels <- gsub('\\s+\\"$', '"', value_labels)
   value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels)
   value_labels <- gsub("\\s+\\(", " \\(", value_labels)
@@ -117,6 +119,15 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- stringr::str_replace_all(value_labels, add_spaces)
   value_labels <- gsub("\"([[:alnum:]]+)\\s+([0-9])", "\"\\1 \\2",
                        value_labels)
+
+  # multiple_values <- any(grepl("'[^']+' '[^']+' '[^']+' '[^']+'",
+  #                              value_labels))
+  # while (multiple_values) {
+  #   value_labels <- gsub("^('[^']+') ('[^']+') ", "\\1 \\2  ", value_labels)
+  #   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
+  #   multiple_values <- any(grepl("'.*'.*'.*'.*'", value_labels))
+  #   multiple_values
+  # }
 
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]

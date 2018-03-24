@@ -1,4 +1,4 @@
-parse_spss <- function(sps_name, keep_columns = NULL) {
+parse_spss <- function(sps_name, keep_columns = NULL, value_label_fix = TRUE) {
 
   codebook <- parse_codebook(sps_name)
 
@@ -33,12 +33,15 @@ parse_spss <- function(sps_name, keep_columns = NULL) {
     missing <- missing[missing$variable %in% setup$column_number, ]
   } else missing <- NULL
 
-  value_labels <- get_value_labels(codebook, setup)
-
+  if (value_label_fix) {
+    value_labels <- get_value_labels(codebook, setup)
+  } else {
+    value_labels <- NULL
+  }
 
   setup <- stats::setNames(list(setup, value_labels, missing), c("setup",
-                                            "value_labels",
-                                            "missing"))
+                                                                 "value_labels",
+                                                                 "missing"))
 
   return(setup)
 

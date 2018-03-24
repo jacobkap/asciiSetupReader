@@ -34,6 +34,8 @@ SHR1981 <- system.file("testdata", "1981_SHR.sps",
                        package = "asciiSetupReader")
 ca_vital <- system.file("testdata", "ca_vital.sps",
                         package = "asciiSetupReader")
+ASR <- system.file("testdata", "UCR_arrests_by_age_sex_race_2011.sps",
+                        package = "asciiSetupReader")
 
 
 
@@ -54,6 +56,7 @@ SHR1987 <- parse_spss(SHR1987)
 SHR1988 <- parse_spss(SHR1988)
 SHR1981 <- parse_spss(SHR1981)
 ca_vital <- parse_spss(ca_vital)
+ASR <- parse_spss(ASR)
 
 crosswalk_values <- parse_value_labels(crosswalk)
 parole_values <- parse_value_labels(parole)
@@ -72,6 +75,7 @@ SHR1987_values <- parse_value_labels(SHR1987)
 SHR1988_values <- parse_value_labels(SHR1988)
 SHR1981_values <- parse_value_labels(SHR1981)
 ca_vital_values <- parse_value_labels(ca_vital)
+ASR <- parse_value_labels(ASR)
 
 test_that("Number of value label columns are correct", {
 
@@ -89,6 +93,7 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(nibrs_values), 9)
 #  expect_equal(length(prisoners_values), )
   expect_equal(length(ca_vital_values), 36)
+  expect_equal(length(ASR), 36)
 
 })
 
@@ -112,6 +117,7 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(SHR1987))
   expect_silent(parse_value_labels(SHR1981))
   expect_silent(parse_value_labels(ca_vital))
+  expect_silent(parse_value_labels(ASR))
 
 })
 
