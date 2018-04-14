@@ -34,6 +34,8 @@ SHR1981 <- system.file("testdata", "1981_SHR.sps",
                        package = "asciiSetupReader")
 ca_vital <- system.file("testdata", "ca_vital.sps",
                         package = "asciiSetupReader")
+leoka1980 <- system.file("testdata", "1980_leoka.sps",
+                        package = "asciiSetupReader")
 #ASR <- system.file("testdata", "UCR_arrests_by_age_sex_race_2012.sps",
 #                        package = "asciiSetupReader")
 
@@ -56,6 +58,7 @@ SHR1987 <- parse_spss(SHR1987)
 SHR1988 <- parse_spss(SHR1988)
 SHR1981 <- parse_spss(SHR1981)
 ca_vital <- parse_spss(ca_vital)
+leoka1980 <- parse_spss(leoka1980)
 # ASR <- parse_spss(ASR)
 
 crosswalk_values <- parse_value_labels(crosswalk)
@@ -75,6 +78,7 @@ SHR1987_values <- parse_value_labels(SHR1987)
 SHR1988_values <- parse_value_labels(SHR1988)
 SHR1981_values <- parse_value_labels(SHR1981)
 ca_vital_values <- parse_value_labels(ca_vital)
+leoka1980_values <- parse_value_labels(leoka1980)
 # ASR <- parse_value_labels(ASR)
 
 test_that("Number of value label columns are correct", {
@@ -1335,4 +1339,54 @@ test_that("CA vital - parsed value labels are accurate", {
                                            "Unknown or unreported" = "9"))
   expect_equal(ca_vital_values$MATCH, c("Death record did not match with homicide" = "0",
                                    "Death record matched with homicide recor" = "1"))
+})
+
+
+test_that("LEOKA 1980 - parsed value labels are accurate", {
+
+  expect_equal(leoka1980_values$V7, c("ALL CITIE 250K+"  = "1",
+                                      "CIT BET 100-249K" = "2",
+                                      "CIT BET 50-99.9K" = "3",
+                                      "CIT BET 25-49.9K" = "4",
+                                      "CIT BET 10-24.9K" = "5",
+                                      "CIT BET 2.5-9.9K" = "6",
+                                      "CITIE UNDER 2.5K" = "7",
+                                      "NON-SMSA COUNTIE" = "8",
+                                      "SMSA COUNTIES"    = "9"))
+  expect_equal(leoka1980_values$V8, c("POSSESS GUAM ETC"      = "0",
+                                      "ALL CITIES 1M+"        = "11",
+                                      "CIT BET 500-999K"      = "12",
+                                      "CIT BET 250-499K"      = "13",
+                                      "CIT BET 100-249K"      = "20",
+                                      "CIT BET 50-99.9K"      = "30",
+                                      "CIT BET 25-49.9K"      = "40",
+                                      "CIT BET 10-24.9K"      = "50",
+                                      "CIT BET 2.5-9.9K"      = "60",
+                                      "CITIE UNDER 2.5K"      = "70",
+                                      "NON-SMSA 100K+"        = "81",
+                                      "NON-SMSA 25-99K"       = "82",
+                                      "NON-SMSA 10-24K"       = "83",
+                                      "NON-SMSA <10K"         = "84",
+                                      "NON-SMSA STATE POLICE" = "85",
+                                      "SMSA COUNT 10K+"       = "91",
+                                      "SMSA 25-99.9K"         = "92",
+                                      "SMSA 100K+"            = "93",
+                                      "SMSA COUNT <10K"       = "94",
+                                      "SMSA STATE POLICE"     = "95"))
+  expect_equal(leoka1980_values$V11, c("GROUPS 8 AND 9" = "0"))
+  expect_equal(leoka1980_values$V55, c("FOR ALL REPORTS" = "0",
+                                       "CITY LIST ASSAUL" = "1",
+                                       "CITY LIST ONLY" = "2"))
+  expect_equal(leoka1980_values$V56, c("POL EMPLOY DA" = "0",
+                                       "NOT UPDATED,NONE" = "1",
+                                       "CONTAINS POL DA" = "2"))
+  expect_equal(leoka1980_values$V72, c("NORMAL" = "0",
+                                       "NO BREAKDOWNS. A" = "1"))
+  expect_equal(leoka1980_values$V73, c("INFORMAT COMPLET" = "0",
+                                       "ASSAULTS NOT REP" = "1",
+                                       "ASSAULTS REPORTE" = "2"))
+  expect_equal(leoka1980_values$V96,  c("INFORMAT COMPLET" = "0",
+                                        "ASSAULTS NOT REP" = "1",
+                                        "ASSAULTS REPORTE" = "2"))
+
 })

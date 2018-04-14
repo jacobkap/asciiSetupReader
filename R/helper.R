@@ -129,6 +129,11 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   #   multiple_values
   # }
 
+  value_labels <- gsub("([[:alpha:]])\\s\\s([0-9])",
+                       "\\1 \\2", value_labels)
+  value_labels <- gsub("([[:alpha:]])\\s\\s([[:punct:]])",
+                       "\\1 \\2", value_labels)
+
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]
