@@ -1,4 +1,6 @@
 value_label_matrixer <- function(value_label_section) {
+  value_label_section <- gsub("'\\.$", "'", value_label_section)
+  value_label_section <- gsub('"\\.$', '"', value_label_section)
   # In case some labels are on multiple lines
   plus <- grep("^\\+", value_label_section)
   if (length(plus) > 0) {

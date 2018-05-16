@@ -34,8 +34,10 @@ SHR1981 <- system.file("testdata", "1981_SHR.sps",
                        package = "asciiSetupReader")
 ca_vital <- system.file("testdata", "ca_vital.sps",
                         package = "asciiSetupReader")
-leoka1980 <- system.file("testdata", "1980_leoka.sps",
+leoka1980 <- system.file("testdata", "1980_leoka.zip",
                         package = "asciiSetupReader")
+property_stolen <- system.file("testdata", "ucr_property_stolen_1998.sps",
+                         package = "asciiSetupReader")
 #ASR <- system.file("testdata", "UCR_arrests_by_age_sex_race_2012.sps",
 #                        package = "asciiSetupReader")
 
@@ -59,6 +61,7 @@ SHR1988 <- parse_spss(SHR1988)
 SHR1981 <- parse_spss(SHR1981)
 ca_vital <- parse_spss(ca_vital)
 leoka1980 <- parse_spss(leoka1980)
+property_stolen <- parse_spss(property_stolen)
 # ASR <- parse_spss(ASR)
 
 crosswalk_values <- parse_value_labels(crosswalk)
@@ -79,6 +82,7 @@ SHR1988_values <- parse_value_labels(SHR1988)
 SHR1981_values <- parse_value_labels(SHR1981)
 ca_vital_values <- parse_value_labels(ca_vital)
 leoka1980_values <- parse_value_labels(leoka1980)
+property_stolen_values <- parse_value_labels(property_stolen)
 # ASR <- parse_value_labels(ASR)
 
 test_that("Number of value label columns are correct", {
@@ -97,6 +101,7 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(nibrs_values), 9)
 #  expect_equal(length(prisoners_values), )
   expect_equal(length(ca_vital_values), 36)
+  expect_equal(length(property_stolen_values), 15)
 #  expect_equal(length(ASR), 36)
 
 })
@@ -121,6 +126,7 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(SHR1987))
   expect_silent(parse_value_labels(SHR1981))
   expect_silent(parse_value_labels(ca_vital))
+  expect_silent(parse_value_labels(property_stolen_values))
 #  expect_silent(parse_value_labels(ASR))
 
 })
@@ -1388,5 +1394,124 @@ test_that("LEOKA 1980 - parsed value labels are accurate", {
   expect_equal(leoka1980_values$V96,  c("INFORMAT COMPLET" = "0",
                                         "ASSAULTS NOT REP" = "1",
                                         "ASSAULTS REPORTE" = "2"))
+
+})
+
+
+test_that("Property stolen - parsed value labels are accurate", {
+
+  expect_equal(property_stolen_values$V2, c("Alabama" = "1",
+                                           "Arizona" = "2",
+                                           "Arkansas" = "3",
+                                           "California" = "4",
+                                           "Colorado" = "5",
+                                           "Connecticut" = "6",
+                                           "Delaware" = "7",
+                                           "District of Columbia" = "8",
+                                           "Florida" = "9",
+                                           "Georgia" = "10",
+                                           "Idaho" = "11",
+                                           "Illinois" = "12",
+                                           "Indiana" = "13",
+                                           "Iowa" = "14",
+                                           "Kansas" = "15",
+                                           "Kentucky" = "16",
+                                           "Louisiana" = "17",
+                                           "Maine" = "18",
+                                           "Maryland" = "19",
+                                           "Massachusetts" = "20",
+                                           "Michigan" = "21",
+                                           "Minnesota" = "22",
+                                           "Mississippi" = "23",
+                                           "Missouri" = "24",
+                                           "Montana" = "25",
+                                           "Nebraska" = "26",
+                                           "Nevada" = "27",
+                                           "New Hampshire" = "28",
+                                           "New Jersey" = "29",
+                                           "New Mexico" = "30",
+                                           "New York" = "31",
+                                           "North Carolina" = "32",
+                                           "North Dakota" = "33",
+                                           "Ohio" = "34",
+                                           "Oklahoma" = "35",
+                                           "Oregon" = "36",
+                                           "Pennsylvania" = "37",
+                                           "Rhode Island" = "38",
+                                           "South Carolina" = "39",
+                                           "South Dakota" = "40",
+                                           "Tennessee" = "41",
+                                           "Texas" = "42",
+                                           "Utah" = "43",
+                                           "Vermont" = "44",
+                                           "Virginia" = "45",
+                                           "Washington" = "46",
+                                           "West Virginia" = "47",
+                                           "Wisconsin" = "48",
+                                           "Wyoming" = "49",
+                                           "Alaska" = "50",
+                                           "Hawaii" = "51",
+                                           "Canal Zone" = "52",
+                                           "Puerto Rico" = "53",
+                                           "American Samoa" = "54",
+                                           "Guam" = "55",
+                                           "Virgin Islands" = "62"))
+  expect_equal(property_stolen_values$V4, c("Possessions as Puerto Rico, Guam" = "0",
+                                            "All cities 250,000 +" = "1",
+                                            "Cit 1,000,000 +" = "1A",
+                                            "Cit 500,000-999,999" = "1B",
+                                            "Cit 250,000-499,999" = "1C",
+                                            "Cit 100,000-249,999" = "2",
+                                            "Cit 50,000-99,999" = "3",
+                                            "Cit 25,000-49,999" = "4",
+                                            "Cit 10,000-24,999" = "5",
+                                            "Cit 2,500-9,999" = "6",
+                                            "Cit < 2,500" = "7",
+                                            "Non-MSA counties" = "8",
+                                            "Non-MSA co. 100,000 +" = "8A",
+                                            "Non-MSA co. 25,000-99,999" = "8B",
+                                            "Non-MSA co. 10,000-24,999" = "8C",
+                                            "Non-MSA co. < 10,000" = "8D",
+                                            "Non-MSA state police" = "8E",
+                                            "MSA counties" = "9",
+                                            "MSA co. 100,000 +" = "9A",
+                                            "MSA co. 25,000-99,999" = "9B",
+                                            "MSA co. 10,000-24,999" = "9C",
+                                            "MSA co. < 10,000" = "9D",
+                                            "MSA state police" = "9E"))
+  expect_equal(property_stolen_values$V5, c("Possessions" = "0",
+                                            "New England" = "1",
+                                            "Middle Atlantic" = "2",
+                                            "East North Central" = "3",
+                                            "West North Central" = "4",
+                                            "South Atlantic" = "5",
+                                            "East South Central" = "6",
+                                            "West South Central" = "7",
+                                            "Mountain" = "8",
+                                            "Pacific" = "9"))
+  expect_equal(property_stolen_values$V11, c("Not reported" = "0",
+                                             "Regular"      = "1"))
+  expect_equal(property_stolen_values$V104, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V197, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V290, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V383, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V476, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V569, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V662, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V755, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V848, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V941, c("Not reported" = "0",
+                                              "Regular"      = "1"))
+  expect_equal(property_stolen_values$V1034, c("Not reported" = "0",
+                                           "Regular"      = "1"))
 
 })
