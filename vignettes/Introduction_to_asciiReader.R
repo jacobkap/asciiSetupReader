@@ -1,7 +1,7 @@
 ## ------------------------------------------------------------------------
 dataset_name <- system.file("extdata", "example_data.zip",
              package = "asciiSetupReader")
-sps_name <- system.file("extdata", "example_setup.sps",
+sps_name <- system.file("extdata", "example_setup_sps.zip",
              package = "asciiSetupReader")
 
 example <- asciiSetupReader::spss_ascii_reader(dataset_name = dataset_name,

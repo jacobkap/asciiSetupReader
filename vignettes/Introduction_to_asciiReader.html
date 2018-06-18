@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jacob Kaplan" />
 
-<meta name="date" content="2018-02-15" />
+<meta name="date" content="2018-06-17" />
 
 <title>Introduction to asciiReader</title>
 
@@ -280,7 +280,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to asciiReader</h1>
 <h4 class="author"><em>Jacob Kaplan</em></h4>
-<h4 class="date"><em>2018-02-15</em></h4>
+<h4 class="date"><em>2018-06-17</em></h4>
 
 
 
@@ -288,7 +288,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>To use the spss_ascii_reader function, all that is needed is to provide a string with the name of the dataset (the .txt) file and a string with the name of the SPSS setup file (the .sps) including the file extention. The files must be in the working directory. Below is an example of reading in the example dataset - the original can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">dataset_name &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_data.zip&quot;</span>,</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">             <span class="dt">package =</span> <span class="st">&quot;asciiSetupReader&quot;</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">sps_name &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_setup.sps&quot;</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">sps_name &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_setup_sps.zip&quot;</span>,</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">             <span class="dt">package =</span> <span class="st">&quot;asciiSetupReader&quot;</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw">spss_ascii_reader</span>(<span class="dt">dataset_name =</span> dataset_name,</a>
@@ -302,7 +302,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 5 SHR master file            Arizona  AZ00189       Cit &lt; 2,500
 ## 6 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</code></pre>
 <p>There are two optional parameters: value_label_fix and real_names. The default for both is TRUE.</p>
-<section id="value_label_fix" class="level2">
+<div id="value_label_fix" class="section level2">
 <h2>value_label_fix</h2>
 <p>Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing “male” or “female” in a column about gender, it will be “A” or “B” (or more commonly 0 or 1). The SPSS setup file gives the actual value of these repesentations. The parameter “value_label_fix” will give the real values if TRUE, otherwise it will keep the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw">spss_ascii_reader</span>(<span class="dt">dataset_name =</span> dataset_name,</a>
@@ -316,8 +316,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 4               6                  2  AZ00189     7
 ## 5               6                  2  AZ00189     7
 ## 6               6                  2  AZ00189     7</code></pre>
-</section>
-<section id="real_names" class="level2">
+</div>
+<div id="real_names" class="section level2">
 <h2>real_names</h2>
 <p>Column names are similar to how there are both value representations and value labels for values in a column. The columns may have an undescriptive name (e.g. V1, V2) or a descriptive one (e.g. CITY, GENDER). When real_names is FALSE (which is the default), the undescriptive is given. When real_names is TRUE, the descriptive name is given.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw">spss_ascii_reader</span>(<span class="dt">dataset_name =</span> dataset_name,</a>
@@ -331,8 +331,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 4 SHR master file Arizona AZ00189       Cit &lt; 2,500
 ## 5 SHR master file Arizona AZ00189       Cit &lt; 2,500
 ## 6 SHR master file Arizona AZ00189       Cit &lt; 2,500</code></pre>
-</section>
-<section id="keep_columns" class="level2">
+</div>
+<div id="keep_columns" class="section level2">
 <h2>keep_columns</h2>
 <p>When reading a file of this type into SPSS, you can specify which columns (if you don’t want every column) to include. This has the same ability by allowing you to specify the columns you want. This parameter can accept the column number, the undescriptive column name (see above) or the descriptive column name. You cannot mix and match. To get the column names, please consult with the data’s documentation.</p>
 <p>This gets only the first two columns of data and specifies the columns by number.</p>
@@ -359,7 +359,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 4 SHR master file            Arizona
 ## 5 SHR master file            Arizona
 ## 6 SHR master file            Arizona</code></pre>
-</section>
+</div>
 
 
 

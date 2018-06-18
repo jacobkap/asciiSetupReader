@@ -14,7 +14,7 @@ To use the spss_ascii_reader function, all that is needed is to provide a string
 ```{r}
 data_name <- system.file("extdata", "example_data.zip",
              package = "asciiSetupReader")
-sps_name <- system.file("extdata", "example_setup.sps",
+sps_name <- system.file("extdata", "example_setup_sps.zip",
              package = "asciiSetupReader")
 
 example <- asciiSetupReader::spss_ascii_reader(dataset_name = data_name,

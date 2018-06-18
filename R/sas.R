@@ -16,7 +16,7 @@
 #' # Text file is zipped to save space.
 #' dataset_name <- system.file("extdata", "example_data.zip",
 #'   package = "asciiSetupReader")
-#' sas_name <- system.file("extdata", "example_setup.sas",
+#' sas_name <- system.file("extdata", "example_setup_sas.zip",
 #'   package = "asciiSetupReader")
 #'
 #' \dontrun{

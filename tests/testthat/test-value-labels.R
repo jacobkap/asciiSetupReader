@@ -2,21 +2,21 @@ context("That value labels are properly assigned")
 
 SHR_dataset_name <- system.file("extdata", "example_data.zip",
                                 package = "asciiSetupReader")
-SHR_sps_name <- system.file("extdata", "example_setup.sps",
+SHR_sps_name <- system.file("extdata", "example_setup_sps.zip",
                             package = "asciiSetupReader")
-SHR_sas_name <- system.file("extdata", "example_setup.sas",
+SHR_sas_name <- system.file("extdata", "example_setup_sas.zip",
                             package = "asciiSetupReader")
 UCR_dataset_name <- system.file("testdata", "ucr1960.zip",
                                 package = "asciiSetupReader")
-UCR_sps_name <- system.file("testdata", "ucr1960.sps",
+UCR_sps_name <- system.file("testdata", "ucr1960_sps.zip",
                             package = "asciiSetupReader")
-UCR_sas_name <- system.file("testdata", "ucr1960.sas",
+UCR_sas_name <- system.file("testdata", "ucr1960_sas.zip",
                             package = "asciiSetupReader")
 NIBRS_dataset_name <- system.file("testdata", "nibrs_2000_batch_header1.zip",
                                   package = "asciiSetupReader")
-NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1.sps",
+NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1_sps.zip",
                               package = "asciiSetupReader")
-NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1.sas",
+NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1_sas.zip",
                               package = "asciiSetupReader")
 
 
