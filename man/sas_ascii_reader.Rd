@@ -9,7 +9,7 @@ sas_ascii_reader(dataset_name, sas_name, value_label_fix = TRUE,
 }
 \arguments{
 \item{dataset_name}{Name of the ASCII (.txt) file that contains the data.
-This file may be zipped with a file extention of .zip.}
+This file may be zipped with a file extension of .zip.}
 
 \item{sas_name}{Name of the SAS Setup file - should be a .sps or .txt file.}
 

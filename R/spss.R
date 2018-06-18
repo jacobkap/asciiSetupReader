@@ -10,7 +10,7 @@
 #' @seealso \code{\link{sas_ascii_reader}} For using an SAS setup file
 #'
 #' @param dataset_name Name of the ASCII (.txt) file that contains the data.
-#'   This file may be zipped with a file extention of .zip.
+#'   This file may be zipped with a file extension of .zip.
 #' @param sps_name Name of the SPSS Setup file - should be a .sps or .txt
 #'   (zipped text files also work) file.
 #' @param value_label_fix If TRUE, fixes value labels of the data. e.g. If a
