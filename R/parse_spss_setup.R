@@ -71,7 +71,7 @@ parse_missing <- function(codebook) {
   return(missing)
 }
 
-parse_codebook <- function(sps_name) {
+  parse_codebook <- function(sps_name) {
   codebook <- readr::read_lines(sps_name)
   codebook <- stringr::str_trim(codebook)
   codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]

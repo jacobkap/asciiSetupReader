@@ -1,56 +1,5 @@
 context("That value labels are properly assigned")
 
-SHR_dataset_name <- system.file("extdata", "example_data.zip",
-                                package = "asciiSetupReader")
-SHR_sps_name <- system.file("extdata", "example_setup_sps.zip",
-                            package = "asciiSetupReader")
-SHR_sas_name <- system.file("extdata", "example_setup_sas.zip",
-                            package = "asciiSetupReader")
-UCR_dataset_name <- system.file("testdata", "ucr1960.zip",
-                                package = "asciiSetupReader")
-UCR_sps_name <- system.file("testdata", "ucr1960_sps.zip",
-                            package = "asciiSetupReader")
-UCR_sas_name <- system.file("testdata", "ucr1960_sas.zip",
-                            package = "asciiSetupReader")
-NIBRS_dataset_name <- system.file("testdata", "nibrs_2000_batch_header1.zip",
-                                  package = "asciiSetupReader")
-NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1_sps.zip",
-                              package = "asciiSetupReader")
-NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1_sas.zip",
-                              package = "asciiSetupReader")
-
-
-SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
-                             sps_name = SHR_sps_name)
-UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
-                         sps_name = UCR_sps_name,
-                         keep_columns = c("ID_CODE", "NUMERIC_STATE_CODE",
-                                          "ORI_CODE", "CORE_CITY_INDICATION",
-                                          "DIVISION",
-                                          "NUMBER_OF_MONTHS_REPORTED",
-                                          "FOLLOW_UP_INDICATION",
-                                          "SPECIAL_MAILING_GROUP",
-                                          "JAN_MONTH_INCLUDED_IN",
-                                          "JAN_CARD_0_TYPE"))
-NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sps_name = NIBRS_sps_name)
-
-# Read SAS =============================================================
-SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                         sas_name = SHR_sas_name)
-UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
-                         sas_name = UCR_sas_name,
-                         keep_columns = c("ID_CODE", "NUMERIC_STATE_CODE",
-                                          "ORI_CODE", "CORE_CITY_INDICATION",
-                                          "DIVISION",
-                                          "NUMBER_OF_MONTHS_REPORTED",
-                                          "FOLLOW_UP_INDICATION",
-                                          "SPECIAL_MAILING_GROUP",
-                                          "JAN_MONTH_INCLUDED_IN",
-                                          "JAN_CARD_0_TYPE"))
-NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sas_name = NIBRS_sas_name)
-
 test_that("Correct number of labels - SPSS", {
   expect_equal(length(unique(SHR$GEOGRAPHIC_DIVISION)), 10)
   expect_equal(length(unique(SHR$MONTH_OF_OFFENSE)), 12)
@@ -88,7 +37,6 @@ test_that("Correct number of labels - SPSS", {
 })
 
 test_that("Correct labels are assigned - SPSS", {
-
   expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "Possessions"), 39)
   expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "New England States"), 309)
   expect_equal(sum(SHR$GEOGRAPHIC_DIVISION %in% "West North Central States"),

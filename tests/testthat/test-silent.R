@@ -1,39 +1,8 @@
 context("There are no warning or error messages")
 
-SHR_dataset_name <- system.file("extdata", "example_data.zip",
-                                package = "asciiSetupReader")
-
-SHR_sps_name <- system.file("extdata", "example_setup_sps.zip",
-                            package = "asciiSetupReader")
-SHR_sas_name <- system.file("extdata", "example_setup_sas.zip",
-                            package = "asciiSetupReader")
-UCR_dataset_name <- system.file("testdata", "ucr1960.zip",
-                                package = "asciiSetupReader")
-UCR_sps_name <- system.file("testdata", "ucr1960_sps.zip",
-                            package = "asciiSetupReader")
-UCR_sas_name <- system.file("testdata", "ucr1960_sas.zip",
-                            package = "asciiSetupReader")
-NIBRS_dataset_name <- system.file("testdata", "nibrs_2000_batch_header1.zip",
-                                  package = "asciiSetupReader")
-NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1_sps.zip",
-                              package = "asciiSetupReader")
-NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1_sas.zip",
-                              package = "asciiSetupReader")
-
-weimar_dataset_name <- system.file("testdata", "weimar.txt",
-                                   package = "asciiSetupReader")
-weimar_sps_name <- system.file("testdata", "weimar_sps.zip",
-                               package = "asciiSetupReader")
-weimar_sas_name <- system.file("testdata", "weimar_sas.zip",
-                               package = "asciiSetupReader")
-parole_survey_dataset_name <- system.file("testdata", "parole_survey.txt",
-                                          package = "asciiSetupReader")
-parole_survey_sps_name <- system.file("testdata", "parole_survey_sps.zip",
-                                      package = "asciiSetupReader")
 
 test_that("No messages or warnings or errors for file loads - SPSS", {
-  expect_silent(spss_ascii_reader(dataset_name = SHR_dataset_name,
-                                  sps_name = SHR_sps_name))
+  skip_on_cran()
   expect_silent(spss_ascii_reader(dataset_name = SHR_dataset_name,
                                   sps_name = SHR_sps_name,
                                   keep_columns = 3))
@@ -43,6 +12,7 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
   expect_silent(spss_ascii_reader(dataset_name = SHR_dataset_name,
                                   sps_name = SHR_sps_name,
                                   keep_columns = c(3, 10, 100)))
+
 
   expect_silent(spss_ascii_reader(dataset_name = UCR_dataset_name,
                                   sps_name = UCR_sps_name,
@@ -64,8 +34,8 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                                    "JAN_CARD_0_TYPE")))
 
   expect_silent(spss_ascii_reader(dataset_name = NIBRS_dataset_name,
-                    sps_name = NIBRS_sps_name,
-                    keep_columns = 1))
+                                  sps_name = NIBRS_sps_name,
+                                  keep_columns = 1))
   expect_silent(spss_ascii_reader(dataset_name = NIBRS_dataset_name,
                                   sps_name = NIBRS_sps_name,
                                   keep_columns = 1:3))
@@ -83,9 +53,15 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                   keep_columns = 3))
 
 
+  expect_silent(spss_ascii_reader(dataset_name = crosswalk_dataset_name,
+                                  sps_name = crosswalk_sps_name,
+                                  keep_columns = 4))
+  expect_silent(spss_ascii_reader(dataset_name = crosswalk_dataset_name,
+                                  sps_name = crosswalk_sps_name,
+                                  real_names = FALSE))
 
-  expect_silent(spss_ascii_reader(dataset_name = parole_survey_dataset_name,
-                                  sps_name = parole_survey_sps_name))
+
+
   expect_silent(spss_ascii_reader(dataset_name = parole_survey_dataset_name,
                                   sps_name = parole_survey_sps_name,
                                   keep_columns = 4))
@@ -93,14 +69,19 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                   sps_name = parole_survey_sps_name,
                                   real_names = FALSE))
 
-
-
+  expect_silent(spss_ascii_reader(dataset_name = UCR_dataset_name,
+                                  sps_name = UCR_sps_name))
+  expect_silent(spss_ascii_reader(dataset_name = crosswalk_dataset_name,
+                                  sps_name = crosswalk_sps_name))
+  expect_silent(spss_ascii_reader(dataset_name = parole_survey_dataset_name,
+                                  sps_name = parole_survey_sps_name))
+  expect_silent(spss_ascii_reader(dataset_name = SHR_dataset_name,
+                                  sps_name = SHR_sps_name))
 })
 
 test_that("No messages or warnings or errors for file loads - SAS", {
+  skip_on_cran()
 
-  expect_silent(sas_ascii_reader(dataset_name = SHR_dataset_name,
-                                 sas_name = SHR_sas_name))
   expect_silent(sas_ascii_reader(dataset_name = SHR_dataset_name,
                                  sas_name = SHR_sas_name,
                                  keep_columns = 3))
@@ -111,6 +92,10 @@ test_that("No messages or warnings or errors for file loads - SAS", {
                                  sas_name = SHR_sas_name,
                                  keep_columns = c(3, 10, 100)))
 
+
+  expect_silent(sas_ascii_reader(dataset_name = UCR_dataset_name,
+                                 sas_name = UCR_sas_name,
+                                 keep_columns = 1))
   expect_silent(sas_ascii_reader(dataset_name = UCR_dataset_name,
                                  sas_name = UCR_sas_name,
                                  keep_columns = 1200))
@@ -146,4 +131,10 @@ test_that("No messages or warnings or errors for file loads - SAS", {
                                  sas_name = weimar_sas_name,
                                  keep_columns = 3))
 
+  expect_silent(sas_ascii_reader(dataset_name = NIBRS_dataset_name,
+                                 sas_name = NIBRS_sas_name))
+  expect_silent(sas_ascii_reader(dataset_name = UCR_dataset_name,
+                                 sas_name = UCR_sas_name))
+  expect_silent(sas_ascii_reader(dataset_name = SHR_dataset_name,
+                                 sas_name = SHR_sas_name))
 })

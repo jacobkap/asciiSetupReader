@@ -1,78 +1,5 @@
 context("Columns are the correct type/class")
 
-SHR_dataset_name <- system.file("extdata", "example_data.zip",
-                                package = "asciiSetupReader")
-
-SHR_sps_name <- system.file("extdata", "example_setup_sps.zip",
-                            package = "asciiSetupReader")
-SHR_sas_name <- system.file("extdata", "example_setup_sas.zip",
-                            package = "asciiSetupReader")
-UCR_dataset_name <- system.file("testdata", "ucr1960.zip",
-                                package = "asciiSetupReader")
-UCR_sps_name <- system.file("testdata", "ucr1960_sps.zip",
-                            package = "asciiSetupReader")
-UCR_sas_name <- system.file("testdata", "ucr1960_sas.zip",
-                            package = "asciiSetupReader")
-NIBRS_dataset_name <- system.file("testdata", "nibrs_2000_batch_header1.zip",
-                                  package = "asciiSetupReader")
-NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1_sps.zip",
-                              package = "asciiSetupReader")
-NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1_sas.zip",
-                              package = "asciiSetupReader")
-
-weimar_dataset_name <- system.file("testdata", "weimar.txt",
-                                   package = "asciiSetupReader")
-weimar_sps_name <- system.file("testdata", "weimar_sps.zip",
-                               package = "asciiSetupReader")
-weimar_sas_name <- system.file("testdata", "weimar_sas.zip",
-                               package = "asciiSetupReader")
-
-
-SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
-                             sps_name = SHR_sps_name)
-UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
-                         sps_name = UCR_sps_name,
-                         keep_columns = c("ORI_CODE", "AGENCY_NAME",
-                                          "AGENCY_STATE_NAME",
-                                          "MAILING_ADDRESS_LINE_1",
-                                          "MAILING_ADDRESS_LINE_2",
-                                          "MAILING_ADDRESS_LINE_3",
-                                          "POPULATION_1",
-                                          "POPULATION_3",
-                                          "DEC_ACT_VHC_THEFT_TO",
-                                          "AUG_ACT_AUTO_THEFT", "ID_CODE",
-                                          "NUMERIC_STATE_CODE", "GROUP_NUMBER",
-                                          "DIVISION",
-                                          "NUMBER_OF_MONTHS_REPORTED",
-                                          "DEC_CLR_18_ALL_FIELDS"))
-NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sps_name = NIBRS_sps_name)
-
-weimar <- spss_ascii_reader(dataset_name = weimar_dataset_name,
-                            sps_name = weimar_sps_name)
-
-
-SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                         sas_name = SHR_sas_name)
-UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
-                         sas_name = UCR_sas_name,
-                         keep_columns = c("ORI_CODE", "AGENCY_NAME",
-                                          "AGENCY_STATE_NAME",
-                                          "MAILING_ADDRESS_LINE_1",
-                                          "MAILING_ADDRESS_LINE_2",
-                                          "MAILING_ADDRESS_LINE_3",
-                                          "POPULATION_1",
-                                          "POPULATION_3",
-                                          "DEC_ACT_VHC_THEFT_TO",
-                                          "AUG_ACT_AUTO_THEFT", "ID_CODE",
-                                          "NUMERIC_STATE_CODE", "GROUP_NUMBER",
-                                          "DIVISION",
-                                          "NUMBER_OF_MONTHS_REPORTED",
-                                          "DEC_CLR_18_ALL_FIELDS"))
-NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sas_name = NIBRS_sas_name)
-weimar_sas <- sas_ascii_reader(dataset_name = weimar_dataset_name,
-                                sas_name = weimar_sas_name)
 
 test_that("Character columns are character - SPSS", {
   expect_is(SHR$ORI_CODE, "character")
@@ -117,9 +44,9 @@ test_that("Numeric columns are Numeric - SPSS", {
 
   expect_is(UCR$POPULATION_1, "numeric")
   expect_is(UCR$POPULATION_3, "numeric")
-  expect_is(UCR$DEC_CLR_18_ALL_FIELDS, "numeric")
-  expect_is(UCR$DEC_ACT_VHC_THEFT_TO, "numeric")
-  expect_is(UCR$AUG_ACT_AUTO_THEFT, "numeric")
+  expect_is(UCR$JAN_CLR_18_ALL_FIELDS, "numeric")
+  expect_is(UCR$JAN_ACT_VHC_THEFT_TO, "numeric")
+  expect_is(UCR$JAN_ACT_AUTO_THEFT, "numeric")
 
   expect_is(NIBRS$N_RECORDS_PER_ORI_INCIDENT_NUMBER, "numeric")
   expect_is(NIBRS$DATE_ORI_WAS_ADDED, "numeric")
@@ -182,9 +109,9 @@ test_that("Numeric columns are Numeric - SAS", {
 
   expect_is(UCR_sas$POPULATION_1, "numeric")
   expect_is(UCR_sas$POPULATION_3, "numeric")
-  expect_is(UCR_sas$DEC_CLR_18_ALL_FIELDS, "numeric")
-  expect_is(UCR_sas$DEC_ACT_VHC_THEFT_TO, "numeric")
-  expect_is(UCR_sas$AUG_ACT_AUTO_THEFT, "numeric")
+  expect_is(UCR_sas$JAN_CLR_18_ALL_FIELDS, "numeric")
+  expect_is(UCR_sas$JAN_ACT_VHC_THEFT_TO, "numeric")
+  expect_is(UCR_sas$JAN_ACT_AUTO_THEFT, "numeric")
 
   expect_is(NIBRS_sas$N_RECORDS_PER_ORI_INCIDENT_NUMBER, "numeric")
   expect_is(NIBRS_sas$DATE_ORI_WAS_ADDED, "numeric")

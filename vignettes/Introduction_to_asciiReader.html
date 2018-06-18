@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jacob Kaplan" />
 
-<meta name="date" content="2018-06-17" />
+<meta name="date" content="2018-06-18" />
 
 <title>Introduction to asciiReader</title>
 
@@ -280,7 +280,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to asciiReader</h1>
 <h4 class="author"><em>Jacob Kaplan</em></h4>
-<h4 class="date"><em>2018-06-17</em></h4>
+<h4 class="date"><em>2018-06-18</em></h4>
 
 
 
@@ -288,7 +288,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>To use the spss_ascii_reader function, all that is needed is to provide a string with the name of the dataset (the .txt) file and a string with the name of the SPSS setup file (the .sps) including the file extention. The files must be in the working directory. Below is an example of reading in the example dataset - the original can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">dataset_name &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_data.zip&quot;</span>,</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">             <span class="dt">package =</span> <span class="st">&quot;asciiSetupReader&quot;</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">sps_name &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_setup_sps.zip&quot;</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">sps_name &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_setup.sps&quot;</span>,</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">             <span class="dt">package =</span> <span class="st">&quot;asciiSetupReader&quot;</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw">spss_ascii_reader</span>(<span class="dt">dataset_name =</span> dataset_name,</a>

@@ -44,7 +44,7 @@ in government data, particular data produced before 2010.
 # Text file is zipped to save space.
 dataset_name <- system.file("extdata", "example_data.zip",
   package = "asciiSetupReader")
-sps_name <- system.file("extdata", "example_setup_sps.zip",
+sps_name <- system.file("extdata", "example_setup.sps",
   package = "asciiSetupReader")
 
 \dontrun{

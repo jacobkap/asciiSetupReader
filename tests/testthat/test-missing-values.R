@@ -1,28 +1,14 @@
 context("Make sure missing values are removed")
 
 
-weimar_dataset_name <- system.file("testdata", "weimar.txt",
-                                   package = "asciiSetupReader")
-weimar_sps_name <- system.file("testdata", "weimar_sps.zip",
-                               package = "asciiSetupReader")
-weimar <- spss_ascii_reader(dataset_name = weimar_dataset_name,
-                         sps_name = weimar_sps_name)
-
-
-parole_dataset_name <- system.file("testdata", "parole_survey.txt",
-                                   package = "asciiSetupReader")
-parole_sps_name <- system.file("testdata", "parole_survey_sps.zip",
-                               package = "asciiSetupReader")
-parole <- spss_ascii_reader(dataset_name = parole_dataset_name,
-                             sps_name = parole_sps_name,
-                             real_names = FALSE)
+crosswalk_setup <- parse_spss(crosswalk_sps_name)
+crosswalk_raw <- read_data(crosswalk_dataset_name, crosswalk_setup)
 parole_setup <- parse_spss(parole_sps_name)
-parole_raw <- read_data(parole_dataset_name, parole_setup)
+parole_raw <- read_data(parole_survey_dataset_name, parole_setup)
 
 
 test_that("number of missing values is correct - SPSS", {
   expect_equal(sum(is.na(weimar$X1919_RT_NR_ELIGIBLE_VTRS)), 3)
-
 
   expect_equal(sum(is.na(parole$TOTBEG)),      0)
   expect_equal(sum(parole$ENDISREL %in% "Not known/Dont know"),    4)
@@ -88,13 +74,26 @@ test_that("number of missing values is correct - SPSS", {
   expect_equal(sum(parole$OTHPAR %in% "Not known/Dont know"),      2)
   expect_equal(sum(parole$ENDOFYEAR %in% "Not known/Dont know"),   2)
 
-  })
+
+  expect_equal(sum(is.na(crosswalk$UORI)),         1205)
+  expect_equal(sum(crosswalk$UMSA %in% "Unknown/ not an MSA"),    13630)
+  expect_equal(sum(crosswalk$UADD5 %in% "Unknown"),        5634)
+  expect_equal(sum(crosswalk$CGOVTYPE %in% "Unknown"),      137)
+  expect_equal(sum(crosswalk$FCOUNTY %in% "Unknown"),        65)
+  expect_equal(sum(crosswalk$FMSA %in% "Unknown/ no MSA"),        13793)
+  expect_equal(sum(crosswalk$UCOUNTY %in% "Unknown"),        61)
+  expect_equal(sum(is.na(crosswalk$UPOPGRP)),      4636)
+  expect_equal(sum(crosswalk$CGOVIDNU %in% "Unknown"),      449)
+  expect_equal(sum(crosswalk$FSTATE %in% "Unknown"),          1)
+  expect_equal(sum(crosswalk$FPLACE %in% "Unknown"),        424)
+  expect_equal(sum(crosswalk$FCMSA %in% "Unknown"),        4190)
+
+})
 
 
 
 test_that("location of missing values is correct - SPSS", {
   expect_true(all(is.na(weimar$X1919_RT_NR_ELIGIBLE_VTRS[c(13, 14, 36)])))
-
 
   expect_true(all(which(is.na(parole$ENDISREL)) %in%
                     which(is.na(parole_raw$ENDISREL))))
@@ -175,5 +174,30 @@ test_that("location of missing values is correct - SPSS", {
                     which(is.na(parole_raw$OTHPAR))))
   expect_true(all(which(is.na(parole$ENDOFYEAR)) %in%
                     which(is.na(parole_raw$ENDOFYEAR))))
+
+  expect_true(all(which(is.na(crosswalk$UORI)) %in%
+                    which(is.na(crosswalk_raw$UORI))))
+  expect_true(all(which(is.na(crosswalk$UMSA)) %in%
+                    which(is.na(crosswalk_raw$UMSA))))
+  expect_true(all(which(is.na(crosswalk$UADD5)) %in%
+                    which(is.na(crosswalk_raw$UADD5))))
+  expect_true(all(which(is.na(crosswalk$CGOVTYPE)) %in%
+                    which(is.na(crosswalk_raw$CGOVTYPE))))
+  expect_true(all(which(is.na(crosswalk$FCOUNTY)) %in%
+                    which(is.na(crosswalk_raw$FCOUNTY))))
+  expect_true(all(which(is.na(crosswalk$FMSA)) %in%
+                    which(is.na(crosswalk_raw$FMSA))))
+  expect_true(all(which(is.na(crosswalk$UCOUNTY)) %in%
+                    which(is.na(crosswalk_raw$UCOUNTY))))
+  expect_true(all(which(is.na(crosswalk$UPOPGRP)) %in%
+                    which(is.na(crosswalk_raw$UPOPGRP))))
+  expect_true(all(which(is.na(crosswalk$CGOVIDNU)) %in%
+                    which(is.na(crosswalk_raw$CGOVIDNU))))
+  expect_true(all(which(is.na(crosswalk$FSTATE)) %in%
+                    which(is.na(crosswalk_raw$FSTATE))))
+  expect_true(all(which(is.na(crosswalk$FPLACE)) %in%
+                    which(is.na(crosswalk_raw$FPLACE))))
+  expect_true(all(which(is.na(crosswalk$FCMSA)) %in%
+                    which(is.na(crosswalk_raw$FCMSA))))
 
 })

@@ -1,50 +1,5 @@
 context("All value labels are present")
 
-SHR_dataset_name <- system.file("extdata", "example_data.zip",
-                                package = "asciiSetupReader")
-SHR_sps_name <- system.file("extdata", "example_setup_sps.zip",
-                            package = "asciiSetupReader")
-SHR_sas_name <- system.file("extdata", "example_setup_sas.zip",
-                            package = "asciiSetupReader")
-UCR_dataset_name <- system.file("testdata", "ucr1960.zip",
-                                package = "asciiSetupReader")
-UCR_sps_name <- system.file("testdata", "ucr1960_sps.zip",
-                            package = "asciiSetupReader")
-UCR_sas_name <- system.file("testdata", "ucr1960_sas.zip",
-                            package = "asciiSetupReader")
-NIBRS_dataset_name <- system.file("testdata", "nibrs_2000_batch_header1.zip",
-                                  package = "asciiSetupReader")
-NIBRS_sps_name <- system.file("testdata", "nibrs_2000_batch_header1_sps.zip",
-                              package = "asciiSetupReader")
-NIBRS_sas_name <- system.file("testdata", "nibrs_2000_batch_header1_sas.zip",
-                              package = "asciiSetupReader")
-
-SHR <- spss_ascii_reader(dataset_name = SHR_dataset_name,
-                             sps_name = SHR_sps_name)
-UCR <- spss_ascii_reader(dataset_name = UCR_dataset_name,
-                         sps_name = UCR_sps_name,
-                         keep_columns = c("NUMERIC_STATE_CODE",
-                                          "GROUP_NUMBER", "AGENCY_COUNT",
-                                          "SPECIAL_MAILING_ADDRESS",
-                                          "JAN_MONTH_INCLUDED_IN",
-                                          "NUMBER_OF_MONTHS_REPORTED"))
-NIBRS <- spss_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sps_name = NIBRS_sps_name)
-
-# Read SAS ==========================================================
-SHR_sas <- sas_ascii_reader(dataset_name = SHR_dataset_name,
-                         sas_name = SHR_sas_name)
-UCR_sas <- sas_ascii_reader(dataset_name = UCR_dataset_name,
-                         sas_name = UCR_sas_name,
-                         keep_columns = c("NUMERIC_STATE_CODE",
-                                          "GROUP_NUMBER", "AGENCY_COUNT",
-                                          "SPECIAL_MAILING_ADDRESS",
-                                          "JAN_MONTH_INCLUDED_IN",
-                                          "NUMBER_OF_MONTHS_REPORTED"))
-NIBRS_sas <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
-                           sas_name = NIBRS_sas_name)
-
-
 test_that("All labels are assigned correctly - SPSS", {
 
   expect_true(all(c("Single victim/single offender",
