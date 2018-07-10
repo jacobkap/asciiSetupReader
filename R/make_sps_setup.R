@@ -62,7 +62,7 @@ make_sps_setup <- function(file_name,
                tibble::is.tibble(missing_values)))
 
 
-  intro <- paste0("This setup file was automatically created using the R package asciiSetupReader",
+  intro <- paste0("This setup file was created using the R package asciiSetupReader",
                   "(version ", packageVersion("asciiSetupReader"), ") on ",
              Sys.Date(), ".")
   intro <- c(intro, "", "")
