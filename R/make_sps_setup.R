@@ -62,8 +62,12 @@ make_sps_setup <- function(file_name,
                tibble::is.tibble(missing_values)))
 
 
+  intro <- paste0("This setup file was automatically created using the R package asciiSetupReader",
+                  "(version ", packageVersion("asciiSetupReader"), ") on ",
+             Sys.Date(), ".")
+  intro <- c(intro, "", "")
   line_break <- c(".", "")
-  file_name <- gsub(".sps$", "", file_name)
+  file_name <- gsub(".sps$", "", file_name, "")
 
   # Takes the input of column widths and makes the column position strings
   if (is.numeric(col_positions)) {
@@ -122,6 +126,7 @@ make_sps_setup <- function(file_name,
   sink(paste0(file_name, ".sps"))
   writeLines(file_name)
   writeLines("")
+  writeLines(intro)
   writeLines(data_list)
   writeLines(variable_labels)
   writeLines(value_labels)
