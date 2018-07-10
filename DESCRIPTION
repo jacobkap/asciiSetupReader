@@ -11,7 +11,8 @@ Imports:
     haven,
     readr,
     stringr,
-    zoo          
+    zoo,
+    tibble
 License: GPL
 Encoding: UTF-8
 LazyData: true
