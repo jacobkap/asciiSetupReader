@@ -67,7 +67,7 @@ make_sps_setup <- function(file_name,
                   "(version ",
                   packageVersion("asciiSetupReader"),
                   ") on ",
-             Sys.Date(), ".")
+                  Sys.time(), ".")
   intro <- c(intro, "", "")
   line_break <- c(".", "")
   file_name <- gsub(".sps$", "", file_name, "")
@@ -109,8 +109,6 @@ make_sps_setup <- function(file_name,
     labels[labels == '""'] <- ""
     value_labels <- paste(values, labels)
     value_labels <- c("value labels", value_labels, line_break)
-  } else {
-    value_labels <- c("value labels", line_break)
   }
 
 
@@ -129,9 +127,7 @@ make_sps_setup <- function(file_name,
     labels   <- paste0('"', missing_values[, 2], '"')
     labels[labels == '""'] <- ""
     missing_values <- paste(values, labels)
-    missing_values <- c("missing labels", missing_values, line_break)
-  } else {
-    missing_values <- c("missing labels", line_break)
+    missing_values <- c("missing values", missing_values, line_break)
   }
 
   if (!is.null(col_labels)) {

@@ -4,7 +4,7 @@ parse_spss <- function(sps_name, keep_columns = NULL, value_label_fix = TRUE) {
 
   # Get the column names
   variables <- codebook[grep2("^variable labels$", codebook):
-                          grep2("^value labels$|missing values",
+                          grep2("^value labels$|missing values|^execute$",
                                 codebook)[1]]
   variables <- gsub("\\'\\'", "\\'", variables)
   variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
