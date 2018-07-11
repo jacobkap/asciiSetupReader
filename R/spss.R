@@ -24,6 +24,9 @@
 #'   NULL, will return all columns. Accepts the column number (e.g. 1:5),
 #'   column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 #'   etc.).
+#' @param coerce_numeric
+#' If TRUE (default) will make oclumns where all values can be made numeric
+#' into numeric columns.
 #' @param ...
 #' further arguments passed to readr
 #' @return Data.frame of the data from the ASCII file
@@ -56,6 +59,7 @@ spss_ascii_reader <- function(dataset_name,
                               value_label_fix = TRUE,
                               real_names = TRUE,
                               keep_columns = NULL,
+                              coerce_numeric = TRUE,
                               ...) {
 
     stopifnot(is.character(dataset_name), length(dataset_name) == 1,
@@ -102,7 +106,9 @@ spss_ascii_reader <- function(dataset_name,
 
 
     # Makes columns that should be numeric numeric
+  if (coerce_numeric) {
     dataset <- make_cols_numeric(dataset)
+  }
     attributes(dataset)$spec <- NULL
     dataset <- as.data.frame(dataset)
   return(dataset)

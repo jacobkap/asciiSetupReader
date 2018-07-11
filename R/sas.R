@@ -40,6 +40,7 @@ sas_ascii_reader <- function(dataset_name,
                              value_label_fix = TRUE,
                              real_names = TRUE,
                              keep_columns = NULL,
+                             coerce_numeric = TRUE,
                              ...) {
 
   stopifnot(is.character(dataset_name), length(dataset_name) == 1,
@@ -157,7 +158,9 @@ sas_ascii_reader <- function(dataset_name,
   }
 
   # Makes columns that should be numeric numeric
-  dataset <- make_cols_numeric(dataset)
+  if (coerce_numeric) {
+    dataset <- make_cols_numeric(dataset)
+  }
   attributes(dataset)$spec <- NULL
   dataset <- as.data.frame(dataset)
   return(dataset)

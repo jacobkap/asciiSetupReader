@@ -62,8 +62,11 @@ make_sps_setup <- function(file_name,
                tibble::is.tibble(missing_values)))
 
 
+
   intro <- paste0("This setup file was created using the R package asciiSetupReader",
-                  "(version ", packageVersion("asciiSetupReader"), ") on ",
+                  "(version ",
+                  packageVersion("asciiSetupReader"),
+                  ") on ",
              Sys.Date(), ".")
   intro <- c(intro, "", "")
   line_break <- c(".", "")
@@ -73,7 +76,9 @@ make_sps_setup <- function(file_name,
   if (is.numeric(col_positions)) {
     col_positions       <- readr::fwf_widths(col_positions)
     col_positions$begin <- col_positions$begin + 1
-    col_positions       <- paste0(col_positions$begin, "-", col_positions$end)
+    col_positions       <- paste0(col_positions$begin,
+                                  "-",
+                                  col_positions$end)
   }
 
 
@@ -100,6 +105,15 @@ make_sps_setup <- function(file_name,
   }
 
   if (!is.null(value_labels)) {
+    val_labels_columns <- as.character(value_labels[, 1][value_labels[, 2] == ""])
+    val_name_columns   <- col_names[match(val_labels_columns, col_labels)]
+    val_labels_columns <- paste0("^", val_labels_columns, "$")
+    if (!is.na(val_name_columns)) {
+    names(val_name_columns) <- val_labels_columns
+    value_labels[, 1] <-
+      stringr::str_replace_all(value_labels[, 1], val_name_columns)
+    }
+
     values <- format(value_labels[, 1],
                      width = max(nchar(as.character(value_labels[, 1]))) + 5)
     labels   <- paste0('"', value_labels[, 2], '"')
@@ -112,6 +126,15 @@ make_sps_setup <- function(file_name,
 
 
   if (!is.null(missing_values)) {
+    missing_labels_columns <- as.character(missing_values[, 1][missing_values[, 2] == ""])
+    missing_name_columns <- col_names[match(missing_labels_columns, col_labels)]
+    missing_labels_columns <- paste0("^", missing_labels_columns, "$")
+    if (!is.na(missing_name_columns)) {
+    names(missing_name_columns) <- missing_labels_columns
+    missing_values[, 1] <-
+      stringr::str_replace_all(missing_values[, 1], missing_name_columns)
+  }
+
     values <- format(missing_values[, 1],
                      width = max(nchar(as.character(missing_values[, 1]))) + 5)
     labels   <- paste0('"', missing_values[, 2], '"')

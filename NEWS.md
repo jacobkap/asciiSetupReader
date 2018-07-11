@@ -2,6 +2,7 @@
 
 # 1.5.0
 + Adds function to create sps setup files.
++ Adds option to not coerce potentially numeric columns into numeric type.
 
 # 1.4.0
 + Adds capacity to the SPSS reader to handle Missing Values    
