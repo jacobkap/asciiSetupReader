@@ -93,22 +93,11 @@ make_sps_setup <- function(file_name,
   data_list <- paste(data_list, col_positions)
   data_list <- c("data list", data_list, line_break)
 
-
-  if (!is.null(col_labels)) {
-    variable_labels <- format(col_names,
-                              width = max(nchar(col_names)) + 5)
-    col_labels      <- paste0('"', col_labels, '"')
-    variable_labels <- paste(variable_labels, col_labels)
-    variable_labels <- c("variable labels", variable_labels, line_break)
-
-
-  }
-
   if (!is.null(value_labels)) {
     val_labels_columns <- as.character(value_labels[, 1][value_labels[, 2] == ""])
     val_name_columns   <- col_names[match(val_labels_columns, col_labels)]
     val_labels_columns <- paste0("^", val_labels_columns, "$")
-    if (!is.na(val_name_columns)) {
+    if (all(!is.na(val_name_columns))) {
     names(val_name_columns) <- val_labels_columns
     value_labels[, 1] <-
       stringr::str_replace_all(value_labels[, 1], val_name_columns)
@@ -129,7 +118,7 @@ make_sps_setup <- function(file_name,
     missing_labels_columns <- as.character(missing_values[, 1][missing_values[, 2] == ""])
     missing_name_columns <- col_names[match(missing_labels_columns, col_labels)]
     missing_labels_columns <- paste0("^", missing_labels_columns, "$")
-    if (!is.na(missing_name_columns)) {
+    if (all(!is.na(missing_name_columns))) {
     names(missing_name_columns) <- missing_labels_columns
     missing_values[, 1] <-
       stringr::str_replace_all(missing_values[, 1], missing_name_columns)
@@ -143,6 +132,14 @@ make_sps_setup <- function(file_name,
     missing_values <- c("missing labels", missing_values, line_break)
   } else {
     missing_values <- c("missing labels", line_break)
+  }
+
+  if (!is.null(col_labels)) {
+    variable_labels <- format(col_names,
+                              width = max(nchar(col_names)) + 5)
+    col_labels      <- paste0('"', col_labels, '"')
+    variable_labels <- paste(variable_labels, col_labels)
+    variable_labels <- c("variable labels", variable_labels, line_break)
   }
 
 
