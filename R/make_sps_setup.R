@@ -109,6 +109,8 @@ make_sps_setup <- function(file_name,
     labels[labels == '""'] <- ""
     value_labels <- paste(values, labels)
     value_labels <- c("value labels", value_labels, line_break)
+  } else {
+    value_labels <- ""
   }
 
 
@@ -128,6 +130,8 @@ make_sps_setup <- function(file_name,
     labels[labels == '""'] <- ""
     missing_values <- paste(values, labels)
     missing_values <- c("missing values", missing_values, line_break)
+  } else {
+    missing_values <- ""
   }
 
   if (!is.null(col_labels)) {
