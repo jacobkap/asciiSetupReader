@@ -12,7 +12,8 @@ Imports:
     readr,
     stringr,
     zoo,
-    tibble
+    tibble,
+    utils
 License: GPL
 Encoding: UTF-8
 LazyData: true

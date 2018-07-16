@@ -65,7 +65,7 @@ make_sps_setup <- function(file_name,
 
   intro <- paste0("This setup file was created using the R package asciiSetupReader",
                   "(version ",
-                  packageVersion("asciiSetupReader"),
+                  utils::packageVersion("asciiSetupReader"),
                   ") on ",
                   Sys.time(), ".")
   intro <- c(intro, "", "")
