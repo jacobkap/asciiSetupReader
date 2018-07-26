@@ -1,4 +1,6 @@
-parse_spss <- function(sps_name, keep_columns = NULL, value_label_fix = TRUE) {
+parse_spss <- function(sps_name,
+                       keep_columns = NULL,
+                       value_label_fix = TRUE) {
 
   codebook <- parse_codebook(sps_name)
 
@@ -28,7 +30,7 @@ parse_spss <- function(sps_name, keep_columns = NULL, value_label_fix = TRUE) {
   setup <- selected_columns(keep_columns, setup)
   setup <- setup[setup$column_number != "*", ]
 
-  if (any(grepl("MISSING VALUES", codebook))) {
+  if (any(grepl2("MISSING VALUES", codebook))) {
     missing <- parse_missing(codebook)
     missing <- missing[missing$variable %in% setup$column_number, ]
   } else missing <- NULL
@@ -50,8 +52,8 @@ parse_spss <- function(sps_name, keep_columns = NULL, value_label_fix = TRUE) {
 
 parse_missing <- function(codebook) {
 
-  start <- grep("MISSING VALUES$", codebook)
-  end <- grep("EXECUTE|^\\*.*SPSS", codebook, ignore.case = TRUE)
+  start <- grep2("MISSING VALUES$", codebook)
+  end <- grep2("EXECUTE|^\\*.*SPSS", codebook)
   if (length(end) == 0 | all(end <= start)) {
     end <- length(codebook)
   } else {
@@ -59,6 +61,7 @@ parse_missing <- function(codebook) {
   }
   missing <- codebook[start:end]
   missing <- gsub("(\\S),(\\S)", "\\1, \\2", missing)
+  missing <- gsub("\\s{3,}\\(", " \\(", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
