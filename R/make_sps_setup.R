@@ -24,9 +24,8 @@
 #' column being the labels. The column name should go in the row above
 #' the values and the column for that row should be an empty string.
 #' @param missing_values
-#' A data.frame or tibble with the first column being the missing values and the second
-#' column being the replacement. The column name should go in the row above
-#' the values and the column for that row should be an empty string.
+#' A vector of strings with the column name followed by the values to be
+#' replaced by NA.
 #' @return
 #' Does not return any object. Saves the .sps file that is created.
 #' @export
@@ -40,12 +39,14 @@
 #'       "label 3",
 #'       "label 4",
 #'       "label 5"))
+#' missing_values <- c("state name", "9", "-8", "county", "-8")
 #' make_sps_setup(file_name     = "example_name",
 #'                col_positions = c(1, 3, 4, 2),
 #'                col_names     = c("var1", "var2", "var3", "var4"),
 #'                col_labels    = c("state name", "county",
 #'                               "population", "census region code"),
-#'                value_labels  = value_labels)
+#'                value_labels  = value_labels,
+#'                missing_values = missing_values)
 #' }
 make_sps_setup <- function(file_name,
                            col_positions,
@@ -58,8 +59,7 @@ make_sps_setup <- function(file_name,
             (is.character(col_positions) | is.numeric(col_positions)),
             (is.null(value_labels) | is.data.frame(value_labels) |
                tibble::is.tibble(value_labels)),
-            (is.null(missing_values) | is.data.frame(missing_values) |
-               tibble::is.tibble(missing_values)))
+            (is.null(missing_values) | is.vector(missing_values)))
 
 
 
@@ -98,9 +98,9 @@ make_sps_setup <- function(file_name,
     val_name_columns   <- col_names[match(val_labels_columns, col_labels)]
     val_labels_columns <- paste0("^", val_labels_columns, "$")
     if (all(!is.na(val_name_columns))) {
-    names(val_name_columns) <- val_labels_columns
-    value_labels[, 1] <-
-      stringr::str_replace_all(value_labels[, 1], val_name_columns)
+      names(val_name_columns) <- val_labels_columns
+      value_labels[, 1] <-
+        stringr::str_replace_all(value_labels[, 1], val_name_columns)
     }
 
     values <- format(value_labels[, 1],
@@ -115,20 +115,28 @@ make_sps_setup <- function(file_name,
 
 
   if (!is.null(missing_values)) {
-    missing_labels_columns <- as.character(missing_values[, 1][missing_values[, 2] == ""])
-    missing_name_columns <- col_names[match(missing_labels_columns, col_labels)]
-    missing_labels_columns <- paste0("^", missing_labels_columns, "$")
-    if (all(!is.na(missing_name_columns))) {
-    names(missing_name_columns) <- missing_labels_columns
-    missing_values[, 1] <-
-      stringr::str_replace_all(missing_values[, 1], missing_name_columns)
-  }
 
-    values <- format(missing_values[, 1],
-                     width = max(nchar(as.character(missing_values[, 1]))) + 5)
-    labels   <- paste0('"', missing_values[, 2], '"')
-    labels[labels == '""'] <- ""
-    missing_values <- paste(values, labels)
+    temp <- rep(0, length(missing_values))
+    counter <- 0
+    for (i in 1:length(temp)) {
+      if (missing_values[i] %in% col_labels) {
+        counter <- counter + 1
+        missing_values[i] <- col_names[col_labels %in% missing_values[i]]
+      }
+      temp[i] <- counter
+    }
+    split_missing <- split(missing_values, as.factor(temp))
+    missing_values <- c()
+    for (i in 1:length(split_missing)) {
+      temp <- paste(unlist(split_missing[i]), collapse = ", ")
+      temp <- stringr::str_replace(temp, ", ", "      (")
+      temp <- paste0(temp, ")")
+      missing_values <- c(missing_values, temp)
+    }
+
+    # Formats to make all same number of characters (so it looks better)
+    missing_values <- format(missing_values,
+                        width = max(nchar(missing_values)) + 5)
     missing_values <- c("missing values", missing_values, line_break)
   } else {
     missing_values <- ""
