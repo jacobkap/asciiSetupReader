@@ -30,7 +30,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' value_labels <- data.frame(x = c("var1", 1:5),
 #'   value_labels <- c("var1 = ",
 #'                      "1 = label 1",
 #'                      "2 = label 2",
@@ -38,11 +37,11 @@
 #'                      "4 = label 4",
 #'                      "5 = label 5",
 #'                      "var3 = ",
-#'                      "A = alpha",
-#'                      "B = bravo",
-#'                      "C = cat")
+#'                      "1A = alpha",
+#'                      "1B = bravo",
+#'                      "1C = cat")
 #' missing_values <- c("state name", "9", "-8", "county", "-8")
-#' make_sps_setup(file_name     = "example_name2",
+#' make_sps_setup(file_name     = "example_name",
 #'                col_positions = c(1, 3, 4, 2),
 #'                col_names     = c("var1", "var2", "var3", "var4"),
 #'                col_labels    = c("state name", "county",
@@ -101,8 +100,6 @@ make_sps_setup <- function(file_name,
 
 
 # Make value labels -------------------------------------------------------
-
-
   if (!is.null(value_labels)) {
     value_labels       <- stringr::str_split_fixed(value_labels, pattern = " = ", n = 2)
     val_labels_columns <- as.character(value_labels[, 1][value_labels[, 2] == ""])
@@ -113,8 +110,9 @@ make_sps_setup <- function(file_name,
       value_labels[, 1] <-
         stringr::str_replace_all(value_labels[, 1], val_name_columns)
     }
-
-    values <- format(value_labels[, 1],
+    values <- value_labels[, 1]
+    values[value_labels[, 2] != ""] <- paste0("'", values[value_labels[, 2] != ""] , "'")
+    values <- format(values,
                      width = max(nchar(as.character(value_labels[, 1]))) + 5)
     labels   <- paste0('"', value_labels[, 2], '"')
     labels[labels == '""'] <- ""
