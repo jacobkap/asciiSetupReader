@@ -20,9 +20,7 @@
 #' than the col_names. These are the values used as column names if
 #' real_names = TRUE in reading in the data.
 #' @param value_labels
-#' A data.frame or tibble with the first column being the values and the second
-#' column being the labels. The column name should go in the row above
-#' the values and the column for that row should be an empty string.
+#' A  named vector with the value first, then an ' = ' then the label.
 #' @param missing_values
 #' A vector of strings with the column name followed by the values to be
 #' replaced by NA.
@@ -33,14 +31,18 @@
 #' @examples
 #' \dontrun{
 #' value_labels <- data.frame(x = c("var1", 1:5),
-#' y = c("",
-#'       "label 1",
-#'       "label 2",
-#'       "label 3",
-#'       "label 4",
-#'       "label 5"))
+#'   value_labels <- c("var1 = ",
+#'                      "1 = label 1",
+#'                      "2 = label 2",
+#'                      "3 = label 3",
+#'                      "4 = label 4",
+#'                      "5 = label 5",
+#'                      "var3 = ",
+#'                      "A = alpha",
+#'                      "B = bravo",
+#'                      "C = cat")
 #' missing_values <- c("state name", "9", "-8", "county", "-8")
-#' make_sps_setup(file_name     = "example_name",
+#' make_sps_setup(file_name     = "example_name2",
 #'                col_positions = c(1, 3, 4, 2),
 #'                col_names     = c("var1", "var2", "var3", "var4"),
 #'                col_labels    = c("state name", "county",
@@ -57,9 +59,10 @@ make_sps_setup <- function(file_name,
 
   stopifnot(is.character(file_name),
             (is.character(col_positions) | is.numeric(col_positions)),
-            (is.null(value_labels) | is.data.frame(value_labels) |
-               tibble::is.tibble(value_labels)),
+            (is.null(value_labels) | is.vector(value_labels)),
             (is.null(missing_values) | is.vector(missing_values)))
+
+
 
 
 
@@ -84,6 +87,9 @@ make_sps_setup <- function(file_name,
 
 
 
+# Make column names if none provided --------------------------------------
+
+
   if (is.null(col_names)) {
     col_names <- paste0("V", 1:length(col_positions))
   }
@@ -93,7 +99,12 @@ make_sps_setup <- function(file_name,
   data_list <- paste(data_list, col_positions)
   data_list <- c("data list", data_list, line_break)
 
+
+# Make value labels -------------------------------------------------------
+
+
   if (!is.null(value_labels)) {
+    value_labels       <- stringr::str_split_fixed(value_labels, pattern = " = ", n = 2)
     val_labels_columns <- as.character(value_labels[, 1][value_labels[, 2] == ""])
     val_name_columns   <- col_names[match(val_labels_columns, col_labels)]
     val_labels_columns <- paste0("^", val_labels_columns, "$")
