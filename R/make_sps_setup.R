@@ -113,7 +113,7 @@ make_sps_setup <- function(file_name,
     values <- value_labels[, 1]
     values[value_labels[, 2] != ""] <- paste0("'", values[value_labels[, 2] != ""] , "'")
     values <- format(values,
-                     width = max(nchar(as.character(value_labels[, 1]))) + 5)
+                     width = max(nchar(as.character(values))) + 5)
     labels   <- paste0('"', value_labels[, 2], '"')
     labels[labels == '""'] <- ""
     value_labels <- paste(values, labels)
