@@ -18,25 +18,29 @@ SHR1981_values         <- parse_value_labels(SHR1981_parsed)
 ca_vital_values        <- parse_value_labels(ca_vital_parsed)
 leoka1980_values       <- parse_value_labels(leoka1980_parsed)
 property_stolen_values <- parse_value_labels(property_stolen_parsed)
+ncvs_values            <- parse_value_labels(ncvs_parsed)
+jail_1987_values        <- parse_value_labels(jail_1987_parsed)
+
+
 
 test_that("Number of value label columns are correct", {
 
   expect_equal(length(crosswalk_values), 19)
   expect_equal(length(parole_values), 51)
-#  expect_equal(length(ucr1985_values), )
-#  expect_equal(length(ucr1986_values), )
-#  expect_equal(length(ucr2000_values), )
+  #  expect_equal(length(ucr1985_values), )
+  #  expect_equal(length(ucr1986_values), )
+  #  expect_equal(length(ucr2000_values), )
   #  expect_equal(length(ucr2006_values), )
-#  expect_equal(length(sac_values), )
+  #  expect_equal(length(sac_values), )
   expect_equal(length(sex_offender_values), 32)
-#  expect_equal(length(ucr1960_values), )
+  #  expect_equal(length(ucr1960_values), )
   expect_equal(length(weimar_values), 0)
   expect_equal(length(acs_values), 4)
   expect_equal(length(nibrs_values), 9)
-#  expect_equal(length(prisoners_values), )
+  #  expect_equal(length(prisoners_values), )
   expect_equal(length(ca_vital_values), 36)
   expect_equal(length(property_stolen_values), 15)
-#  expect_equal(length(ASR), 36)
+  #  expect_equal(length(ASR), 36)
 
 })
 
@@ -48,7 +52,7 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(ucr1985_parsed))
   expect_silent(parse_value_labels(ucr1986_parsed))
   expect_silent(parse_value_labels(ucr2000_parsed))
-#  expect_silent(parse_value_labels(ucr2006_parsed))
+  #  expect_silent(parse_value_labels(ucr2006_parsed))
   expect_silent(parse_value_labels(sac_parsed))
   expect_silent(parse_value_labels(sex_offender_parsed))
   expect_silent(parse_value_labels(ucr1960_parsed))
@@ -61,7 +65,7 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(SHR1981_parsed))
   expect_silent(parse_value_labels(ca_vital_parsed))
   expect_silent(parse_value_labels(property_stolen_values))
-#  expect_silent(parse_value_labels(ASR))
+  #  expect_silent(parse_value_labels(ASR))
 
 })
 
@@ -72,249 +76,249 @@ test_that("SHR1981 - parsed value labels are accurate", {
   expect_equal(SHR1981_values$V3, c("Part 7: SHR 1981" = "7"))
   expect_equal(SHR1981_values$V5, c("SHR master file" = "6"))
   expect_equal(SHR1981_values$V6, c("Alabama" = "01",
-                                           "Arizona" = "02",
-                                           "Arkansas" = "03",
-                                           "California" = "04",
-                                           "Colorado" = "05",
-                                           "Connecticut" = "06",
-                                           "Delaware" = "07",
-                                           "Washington, D.C" = "08",
-                                           "Florida" = "09",
-                                           "Georgia" = "10",
-                                           "Idaho" = "11",
-                                           "Illinois" = "12",
-                                           "Indiana" = "13",
-                                           "Iowa" = "14",
-                                           "Kansas" = "15",
-                                           "Kentucky" = "16",
-                                           "Louisiana" = "17",
-                                           "Maine" = "18",
-                                           "Maryland" = "19",
-                                           "Massachusetts" = "20",
-                                           "Michigan" = "21",
-                                           "Minnesota" = "22",
-                                           "Mississippi" = "23",
-                                           "Missouri" = "24",
-                                           "Montana" = "25",
-                                           "Nebraska" = "26",
-                                           "Nevada" = "27",
-                                           "New Hampshire" = "28",
-                                           "New Jersey" = "29",
-                                           "New Mexico" = "30",
-                                           "New York" = "31",
-                                           "North Carolina" = "32",
-                                           "North Dakota" = "33",
-                                           "Ohio" = "34",
-                                           "Oklahoma" = "35",
-                                           "Oregon" = "36",
-                                           "Pennsylvania" = "37",
-                                           "Rhode Island" = "38",
-                                           "South Carolina" = "39",
-                                           "South Dakota" = "40",
-                                           "Tennessee" = "41",
-                                           "Texas" = "42",
-                                           "Utah" = "43",
-                                           "Vermont" = "44",
-                                           "Virginia" = "45",
-                                           "Washington" = "46",
-                                           "West Virginia" = "47",
-                                           "Wisconsin" = "48",
-                                           "Wyoming" = "49",
-                                           "Alaska" = "50",
-                                           "Hawaii" = "51",
-                                           "Canal Zone" = "52",
-                                           "Puerto Rico" = "53",
-                                           "American Samoa" = "54",
-                                           "Guam" = "55",
-                                           "Virgin Islands" = "62"))
+                                    "Arizona" = "02",
+                                    "Arkansas" = "03",
+                                    "California" = "04",
+                                    "Colorado" = "05",
+                                    "Connecticut" = "06",
+                                    "Delaware" = "07",
+                                    "Washington, D.C" = "08",
+                                    "Florida" = "09",
+                                    "Georgia" = "10",
+                                    "Idaho" = "11",
+                                    "Illinois" = "12",
+                                    "Indiana" = "13",
+                                    "Iowa" = "14",
+                                    "Kansas" = "15",
+                                    "Kentucky" = "16",
+                                    "Louisiana" = "17",
+                                    "Maine" = "18",
+                                    "Maryland" = "19",
+                                    "Massachusetts" = "20",
+                                    "Michigan" = "21",
+                                    "Minnesota" = "22",
+                                    "Mississippi" = "23",
+                                    "Missouri" = "24",
+                                    "Montana" = "25",
+                                    "Nebraska" = "26",
+                                    "Nevada" = "27",
+                                    "New Hampshire" = "28",
+                                    "New Jersey" = "29",
+                                    "New Mexico" = "30",
+                                    "New York" = "31",
+                                    "North Carolina" = "32",
+                                    "North Dakota" = "33",
+                                    "Ohio" = "34",
+                                    "Oklahoma" = "35",
+                                    "Oregon" = "36",
+                                    "Pennsylvania" = "37",
+                                    "Rhode Island" = "38",
+                                    "South Carolina" = "39",
+                                    "South Dakota" = "40",
+                                    "Tennessee" = "41",
+                                    "Texas" = "42",
+                                    "Utah" = "43",
+                                    "Vermont" = "44",
+                                    "Virginia" = "45",
+                                    "Washington" = "46",
+                                    "West Virginia" = "47",
+                                    "Wisconsin" = "48",
+                                    "Wyoming" = "49",
+                                    "Alaska" = "50",
+                                    "Hawaii" = "51",
+                                    "Canal Zone" = "52",
+                                    "Puerto Rico" = "53",
+                                    "American Samoa" = "54",
+                                    "Guam" = "55",
+                                    "Virgin Islands" = "62"))
   expect_equal(SHR1981_values$V8, c("Possessions" = "0",
-                                           "All cities 1,000,000 or over" = "11",
-                                           "Cities 500,000 thru 999,999" = "12",
-                                           "Cities 250,000 thru 499,999" = "13",
-                                           "Cities 100,000 thru 249,999" = "20",
-                                           "Cities 50,000 thru 99,999" = "30",
-                                           "Cities 25,000 thru 49,999" = "40",
-                                           "Cities 10,000 thru 24,999" = "50",
-                                           "Cities 2,500 thru 9,999" = "60",
-                                           "Cities under 2,500" = "70",
-                                           "Non-MSA counties 100,000 or over" = "81",
-                                           "Non-MSA counties 25,000 thru 99,999" = "82",
-                                           "Non-MSA counties 10,000 thru 24,999" = "83",
-                                           "Non-MSA counties under 10,000" = "84",
-                                           "Non-MSA State Police" = "85",
-                                           "MSA counties 100,000 or over" = "91",
-                                           "MSA counties 25,000 thru 99,999" = "92",
-                                           "MSA counties 10,000 thru 24,999" = "93",
-                                           "MSA counties under 10,000" = "94",
-                                           "MSA State Police" = "95"))
+                                    "All cities 1,000,000 or over" = "11",
+                                    "Cities 500,000 thru 999,999" = "12",
+                                    "Cities 250,000 thru 499,999" = "13",
+                                    "Cities 100,000 thru 249,999" = "20",
+                                    "Cities 50,000 thru 99,999" = "30",
+                                    "Cities 25,000 thru 49,999" = "40",
+                                    "Cities 10,000 thru 24,999" = "50",
+                                    "Cities 2,500 thru 9,999" = "60",
+                                    "Cities under 2,500" = "70",
+                                    "Non-MSA counties 100,000 or over" = "81",
+                                    "Non-MSA counties 25,000 thru 99,999" = "82",
+                                    "Non-MSA counties 10,000 thru 24,999" = "83",
+                                    "Non-MSA counties under 10,000" = "84",
+                                    "Non-MSA State Police" = "85",
+                                    "MSA counties 100,000 or over" = "91",
+                                    "MSA counties 25,000 thru 99,999" = "92",
+                                    "MSA counties 10,000 thru 24,999" = "93",
+                                    "MSA counties under 10,000" = "94",
+                                    "MSA State Police" = "95"))
   expect_equal(SHR1981_values$V9, c("Possessions" = "0",
-                                           "New England States" = "1",
-                                           "Middle Atlantic States" = "2",
-                                           "East North Central States" = "3",
-                                           "West North Central States" = "4",
-                                           "South Atlantic States" = "5",
-                                           "East South Central States" = "6",
-                                           "West South Central States" = "7",
-                                           "Mountain States" = "8",
-                                           "Pacific States" = "9"))
+                                    "New England States" = "1",
+                                    "Middle Atlantic States" = "2",
+                                    "East North Central States" = "3",
+                                    "West North Central States" = "4",
+                                    "South Atlantic States" = "5",
+                                    "East South Central States" = "6",
+                                    "West South Central States" = "7",
+                                    "Mountain States" = "8",
+                                    "Pacific States" = "9"))
   expect_equal(SHR1981_values$V10, c("1981" = "81"))
   expect_equal(SHR1981_values$V11, c("Unknown or not reported" = "0"))
   expect_equal(SHR1981_values$V12, c("Inapplicable" = "0"))
   expect_equal(SHR1981_values$V13, c("Inapplicable" = "0"))
   expect_equal(SHR1981_values$V14, c("Non-suburban" = "0",
-                                            "Suburban" = "1"))
+                                     "Suburban" = "1"))
   expect_equal(SHR1981_values$V17, c("January" = "1",
-                                            "February" = "2",
-                                            "March" = "3",
-                                            "April" = "4",
-                                            "May" = "5",
-                                            "June" = "6",
-                                            "July" = "7",
-                                            "August" = "8",
-                                            "September" = "9",
-                                            "October" = "10",
-                                            "November" = "11",
-                                            "December" = "12"))
+                                     "February" = "2",
+                                     "March" = "3",
+                                     "April" = "4",
+                                     "May" = "5",
+                                     "June" = "6",
+                                     "July" = "7",
+                                     "August" = "8",
+                                     "September" = "9",
+                                     "October" = "10",
+                                     "November" = "11",
+                                     "December" = "12"))
   expect_equal(SHR1981_values$V20, c("Murder and non-negligent manslaughter" = "1",
-                                            "Manslaughter by negligence" = "2"))
+                                     "Manslaughter by negligence" = "2"))
   expect_equal(SHR1981_values$V22, c("Single victim/single offender" = "1",
-                                            "Single victim/unknown offender(s)" = "2",
-                                            "Single victim/multiple offenders" = "3",
-                                            "Multiple victims/single offender" = "4",
-                                            "Multiple victims/multiple offenders" = "5",
-                                            "Multiple victims/unknown offender(s)" = "6"))
+                                     "Single victim/unknown offender(s)" = "2",
+                                     "Single victim/multiple offenders" = "3",
+                                     "Multiple victims/single offender" = "4",
+                                     "Multiple victims/multiple offenders" = "5",
+                                     "Multiple victims/unknown offender(s)" = "6"))
   expect_equal(SHR1981_values$V25, c("Birth to 6 days old" = "100",
-                                            "7 days old to 364 days old" = "101",
-                                            "1 year old" = "1",
-                                            "99 years old or more" = "99",
-                                            "Unknown" = "999",
-                                            "Out of Universe" = "900"))
+                                     "7 days old to 364 days old" = "101",
+                                     "1 year old" = "1",
+                                     "99 years old or more" = "99",
+                                     "Unknown" = "999",
+                                     "Out of Universe" = "900"))
   expect_equal(SHR1981_values$V26, c("Male" = "1",
-                                            "Female" = "2",
-                                            "Unknown" = "9"))
+                                     "Female" = "2",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V27, c("White" = "1",
-                                            "Black" = "2",
-                                            "American Indian or Alaskan Native" = "3",
-                                            "Asian or Pacific Islander" = "4",
-                                            "Unknown" = "9"))
+                                     "Black" = "2",
+                                     "American Indian or Alaskan Native" = "3",
+                                     "Asian or Pacific Islander" = "4",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V28, c("Hispanic origin" = "1",
-                                            "Not of Hispanic origin" = "2",
-                                            "Unknown" = "9"))
+                                     "Not of Hispanic origin" = "2",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V29, c("Birth to 6 days old" = "100",
-                                            "7 days old to 364 days old" = "101",
-                                            "1 year old" = "001",
-                                            "99 years old or more" = "099",
-                                            "Inap, only one victim" = "998",
-                                            "Unknown" = "999"))
+                                     "7 days old to 364 days old" = "101",
+                                     "1 year old" = "001",
+                                     "99 years old or more" = "099",
+                                     "Inap, only one victim" = "998",
+                                     "Unknown" = "999"))
   expect_equal(SHR1981_values$V30, c("Male" = "1",
-                                            "Female" = "2",
-                                            "Inap, only one victim" = "8",
-                                            "Unknown" = "9"))
+                                     "Female" = "2",
+                                     "Inap, only one victim" = "8",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V31, c("White" = "1",
-                                            "Black" = "2",
-                                            "American Indian or Alaskan Native" = "3",
-                                            "Asian or Pacific Islander" = "4",
-                                            "Inap, only one victim" = "8",
-                                            "Unknown" = "9"))
+                                     "Black" = "2",
+                                     "American Indian or Alaskan Native" = "3",
+                                     "Asian or Pacific Islander" = "4",
+                                     "Inap, only one victim" = "8",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V32, c("Hispanic origin" = "1",
-                                            "Not of Hispanic origin" = "2",
-                                            "Inap, only one victim" = "8",
-                                            "Unknown" = "9"))
+                                     "Not of Hispanic origin" = "2",
+                                     "Inap, only one victim" = "8",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V33, c("Birth to 6 days old" = "100",
-                                            "7 days old to 364 days old" = "101",
-                                            "1 year old" = "001",
-                                            "99 years old or more" = "099",
-                                            "Inap, less than 3 victims" = "998",
-                                            "Unknown" = "999"))
+                                     "7 days old to 364 days old" = "101",
+                                     "1 year old" = "001",
+                                     "99 years old or more" = "099",
+                                     "Inap, less than 3 victims" = "998",
+                                     "Unknown" = "999"))
   expect_equal(SHR1981_values$V34, c("Male" = "1",
-                                              "Female" = "2",
-                                              "Inap, less than 3 victims" = "8",
-                                              "Unknown" = "9"))
+                                     "Female" = "2",
+                                     "Inap, less than 3 victims" = "8",
+                                     "Unknown" = "9"))
   expect_equal(SHR1981_values$V69, c("Age unknown" = "999"))
   expect_equal(SHR1981_values$V73, c("Firearm, type not stated" = "11",
-                                       "Handgun - pistol, revolver, etc" = "12",
-                                       "Rifle" = "13",
-                                       "Shotgun" = "14",
-                                       "Other gun" = "15",
-                                       "Knife or cutting instrument" = "20",
-                                       "Blunt object" = "30",
-                                       "Personal weapons" = "40",
-                                       "Poison - does not include gas" = "50",
-                                       "Pushed or thrown out window" = "55",
-                                       "Explosives" = "60",
-                                       "Fire" = "65",
-                                       "Narcotics or drugs" = "70",
-                                       "Drowning" = "75",
-                                       "Strangulation - hanging" = "80",
-                                       "Asphyxiation - includes death by gas" = "85",
-                                       "Other - type of weapon not designated" = "90"))
+                                     "Handgun - pistol, revolver, etc" = "12",
+                                     "Rifle" = "13",
+                                     "Shotgun" = "14",
+                                     "Other gun" = "15",
+                                     "Knife or cutting instrument" = "20",
+                                     "Blunt object" = "30",
+                                     "Personal weapons" = "40",
+                                     "Poison - does not include gas" = "50",
+                                     "Pushed or thrown out window" = "55",
+                                     "Explosives" = "60",
+                                     "Fire" = "65",
+                                     "Narcotics or drugs" = "70",
+                                     "Drowning" = "75",
+                                     "Strangulation - hanging" = "80",
+                                     "Asphyxiation - includes death by gas" = "85",
+                                     "Other - type of weapon not designated" = "90"))
   expect_equal(SHR1981_values$V74, c("Husband" = "01",
-                                       "Wife" = "02",
-                                       "Common-law husband" = "03",
-                                       "Common-law wife" = "04",
-                                       "Mother" = "05",
-                                       "Father" = "06",
-                                       "Son" = "07",
-                                       "Daughter" = "08",
-                                       "Brother" = "09",
-                                       "Sister" = "10",
-                                       "In-law" = "11",
-                                       "Stepfather" = "12",
-                                       "Stepmother" = "13",
-                                       "Stepson" = "14",
-                                       "Stepdaughter" = "15",
-                                       "Other family" = "16",
-                                       "Neighbor" = "17",
-                                       "Acquaintance" = "18",
-                                       "Boyfriend" = "19",
-                                       "Girlfriend" = "20",
-                                       "Ex-husband" = "21",
-                                       "Ex-wife" = "22",
-                                       "Employee" = "23",
-                                       "Employer" = "24",
-                                       "Friend" = "25",
-                                       "Homosexual relationship" = "26",
-                                       "Other - known to victim" = "27",
-                                       "Stranger" = "28",
-                                       "Relationship not determined" = "99"))
+                                     "Wife" = "02",
+                                     "Common-law husband" = "03",
+                                     "Common-law wife" = "04",
+                                     "Mother" = "05",
+                                     "Father" = "06",
+                                     "Son" = "07",
+                                     "Daughter" = "08",
+                                     "Brother" = "09",
+                                     "Sister" = "10",
+                                     "In-law" = "11",
+                                     "Stepfather" = "12",
+                                     "Stepmother" = "13",
+                                     "Stepson" = "14",
+                                     "Stepdaughter" = "15",
+                                     "Other family" = "16",
+                                     "Neighbor" = "17",
+                                     "Acquaintance" = "18",
+                                     "Boyfriend" = "19",
+                                     "Girlfriend" = "20",
+                                     "Ex-husband" = "21",
+                                     "Ex-wife" = "22",
+                                     "Employee" = "23",
+                                     "Employer" = "24",
+                                     "Friend" = "25",
+                                     "Homosexual relationship" = "26",
+                                     "Other - known to victim" = "27",
+                                     "Stranger" = "28",
+                                     "Relationship not determined" = "99"))
   expect_equal(SHR1981_values$V75, c("Rape" = "02",
-                                       "Robbery" = "03",
-                                       "Burglary" = "05",
-                                       "Larceny" = "06",
-                                       "Motor vehicle theft" = "07",
-                                       "Arson" = "09",
-                                       "Prostitution and commercialized vice" = "10",
-                                       "Other sex offense" = "17",
-                                       "Abortion" = "32",
-                                       "Narcotic drug laws" = "18",
-                                       "Gambling" = "19",
-                                       "Other - not specified" = "26",
-                                       "Lover s triangle" = "40",
-                                       "Child killed by babysitter" = "41",
-                                       "Brawl due to influence of alcohol" = "42",
-                                       "Brawl due to influence of narcotics" = "43",
-                                       "Argument over money or property" = "44",
-                                       "Other arguments" = "45",
-                                       "Gangland killings" = "46",
-                                       "Juvenile gang killings" = "47",
-                                       "Institutional killings" = "48",
-                                       "Sniper attack" = "49",
-                                       "Other" = "60",
-                                       "All suspected felony type" = "70",
-                                       "Felon killed by private citizen" = "80",
-                                       "Felon killed by police" = "81",
-                                       "Circumstances undetermined" = "99"))
+                                     "Robbery" = "03",
+                                     "Burglary" = "05",
+                                     "Larceny" = "06",
+                                     "Motor vehicle theft" = "07",
+                                     "Arson" = "09",
+                                     "Prostitution and commercialized vice" = "10",
+                                     "Other sex offense" = "17",
+                                     "Abortion" = "32",
+                                     "Narcotic drug laws" = "18",
+                                     "Gambling" = "19",
+                                     "Other - not specified" = "26",
+                                     "Lover s triangle" = "40",
+                                     "Child killed by babysitter" = "41",
+                                     "Brawl due to influence of alcohol" = "42",
+                                     "Brawl due to influence of narcotics" = "43",
+                                     "Argument over money or property" = "44",
+                                     "Other arguments" = "45",
+                                     "Gangland killings" = "46",
+                                     "Juvenile gang killings" = "47",
+                                     "Institutional killings" = "48",
+                                     "Sniper attack" = "49",
+                                     "Other" = "60",
+                                     "All suspected felony type" = "70",
+                                     "Felon killed by private citizen" = "80",
+                                     "Felon killed by police" = "81",
+                                     "Circumstances undetermined" = "99"))
   expect_equal(SHR1981_values$V76, c("Felon attacked police officer" = "1",
-                                       "Felon attacked fellow police officer" = "2",
-                                       "Felon attacked a civilian" = "3",
-                                       "Felon attempted flight from a crime" = "4",
-                                       "Felon killed in commission of a crime" = "5",
-                                       "Felon resisted arrest" = "6",
-                                       "Not enough information to determine" = "7",
-                                       "Inap, not a justifiable homicide" = "9"))
+                                     "Felon attacked fellow police officer" = "2",
+                                     "Felon attacked a civilian" = "3",
+                                     "Felon attempted flight from a crime" = "4",
+                                     "Felon killed in commission of a crime" = "5",
+                                     "Felon resisted arrest" = "6",
+                                     "Not enough information to determine" = "7",
+                                     "Inap, not a justifiable homicide" = "9"))
   expect_equal(SHR1981_values$V77, c("Inap, only one offender" = "998",
-                                       "Unknown" = "999"))
-  })
+                                     "Unknown" = "999"))
+})
 
 
 test_that("ACS - parsed value labels are accurate", {
@@ -534,7 +538,7 @@ test_that("crosswalk - parsed value labels are accurate", {
   expect_equal(crosswalk_values$UCOUNTY, c("Inap" = "0",
                                            "Unknown" = "999"))
   expect_equal(crosswalk_values$UMSA, c("Inap" = "0",
-                                    "Unknown/ not an MSA" = "999"))
+                                        "Unknown/ not an MSA" = "999"))
   expect_equal(crosswalk_values$UPOPGRP, c("Unknown" = "M",
                                            "Possessions" = "0",
                                            "All cities 250,000 or over" = "1",
@@ -733,22 +737,22 @@ test_that("UCR1960 - parsed value labels are accurate", {
   expect_equal(ucr1960_values$V8, c("No, not core city of MSA" = "N",
                                     "Yes, core city of MSA" = "Y"))
   expect_equal(ucr1960_values$V12, c("No months reported" = "0",
-                                  "Jan last reported" = "1",
-                                  "Feb last reported" = "2",
-                                  "March last reported" = "3",
-                                  "April last reported" = "4",
-                                  "May last reported" = "5",
-                                  "June last reported" = "6",
-                                  "July last reported" = "7",
-                                  "August last reported" = "8",
-                                  "Sep last reported" = "9",
-                                  "Oct last reported" = "10",
-                                  "Nov last reported" = "11",
-                                  "Dec last reported" = "12"))
+                                     "Jan last reported" = "1",
+                                     "Feb last reported" = "2",
+                                     "March last reported" = "3",
+                                     "April last reported" = "4",
+                                     "May last reported" = "5",
+                                     "June last reported" = "6",
+                                     "July last reported" = "7",
+                                     "August last reported" = "8",
+                                     "Sep last reported" = "9",
+                                     "Oct last reported" = "10",
+                                     "Nov last reported" = "11",
+                                     "Dec last reported" = "12"))
   expect_equal(ucr1960_values$V13, c("US Park & State Police" = "0",
-                                  "All other agencies" = "1"))
+                                     "All other agencies" = "1"))
   expect_equal(ucr1960_values$V23, c("No, do not send a follow-up" = "N",
-                                  "Yes, send a follow-up" = "Y"))
+                                     "Yes, send a follow-up" = "Y"))
   expect_equal(ucr1960_values$V24, c("Not special mail group agency" = "0",
                                      "Return sent to another agency" = "1",
                                      "Small city sent a large city form" = "2",
@@ -789,13 +793,13 @@ test_that("UCR1960 - parsed value labels are accurate", {
                                       "Not available" = "4",
                                       "Normal return" = "5"))
   expect_equal(ucr1960_values$V512, c("No return received" = " ",
-                                  "Missing" = "0",
-                                  "Breakdown offenses" = "P",
-                                  "Totals only" = "T"))
-  expect_equal(ucr1960_values$V1341, c("No return received" = " ",
                                       "Missing" = "0",
                                       "Breakdown offenses" = "P",
                                       "Totals only" = "T"))
+  expect_equal(ucr1960_values$V1341, c("No return received" = " ",
+                                       "Missing" = "0",
+                                       "Breakdown offenses" = "P",
+                                       "Totals only" = "T"))
 
 })
 
@@ -963,9 +967,9 @@ test_that("Sex offenders - parsed value labels are accurate", {
                                           "Multiple response" = "9",
                                           "Blank" = "99"))
   expect_equal(sex_offender_values$INDEX, c("More concerned" = "1",
-                                          "Neutral" = "2",
-                                          "Less concerned" = "3",
-                                          "Blank" = "9"))
+                                            "Neutral" = "2",
+                                            "Less concerned" = "3",
+                                            "Blank" = "9"))
   expect_equal(sex_offender_values$NEWQ9G, c("Inadequate" = "1",
                                              "Adequate +" = "2",
                                              "Blank" = "9"))
@@ -984,18 +988,18 @@ test_that("Sac - parsed value labels are accurate", {
                                     "61-70 yrs" = "5",
                                     "Over 70" = "6"))
   expect_equal(sac_values$Q3JETH, c("African American" = "1",
-                              "Asian American" = "2",
-                              "Caucasian" = "3",
-                              "Hispanic/Latino" = "4",
-                              "Other" = "5",
-                              "Unknown" = "9"))
+                                    "Asian American" = "2",
+                                    "Caucasian" = "3",
+                                    "Hispanic/Latino" = "4",
+                                    "Other" = "5",
+                                    "Unknown" = "9"))
   expect_equal(sac_values$Q4JEDUC, c("H.S. or less / GED" = "1",
-                              "College no degree" = "2",
-                              "Associate degree" = "3",
-                              "Bachelors" = "4",
-                              "Graduate no degree" = "5",
-                              "Graduate degree etc" = "6",
-                              "Other" = "7"))
+                                     "College no degree" = "2",
+                                     "Associate degree" = "3",
+                                     "Bachelors" = "4",
+                                     "Graduate no degree" = "5",
+                                     "Graduate degree etc" = "6",
+                                     "Other" = "7"))
   expect_equal(length(sac_values$Q20TPEV3), 107)
   expect_equal(sac_values$KAGE, c("12 or younger at time of trial" = "1",
                                   "13 or older at time of trial" = "2",
@@ -1267,7 +1271,7 @@ test_that("CA vital - parsed value labels are accurate", {
                                           "5+ years of college" = "17",
                                           "Unknown or not available" = "99"))
   expect_equal(ca_vital_values$FLAG, c("No estimate (incident day as reported)" = "0",
-                                   "Estimate (incident day set to 01)" = "1"))
+                                       "Estimate (incident day set to 01)" = "1"))
   expect_equal(ca_vital_values$HISPANIC, c("Not Spanish/Hispanic" = "1",
                                            "Mexican/Mexican-American/Chicano" = "2",
                                            "Puerto Rican" = "3",
@@ -1278,7 +1282,7 @@ test_that("CA vital - parsed value labels are accurate", {
                                            "(Born in the U.S.), other Spanish/Hispan" = "8",
                                            "Unknown or unreported" = "9"))
   expect_equal(ca_vital_values$MATCH, c("Death record did not match with homicide" = "0",
-                                   "Death record matched with homicide recor" = "1"))
+                                        "Death record matched with homicide recor" = "1"))
 })
 
 
@@ -1335,61 +1339,61 @@ test_that("LEOKA 1980 - parsed value labels are accurate", {
 test_that("Property stolen - parsed value labels are accurate", {
 
   expect_equal(property_stolen_values$V2, c("Alabama" = "1",
-                                           "Arizona" = "2",
-                                           "Arkansas" = "3",
-                                           "California" = "4",
-                                           "Colorado" = "5",
-                                           "Connecticut" = "6",
-                                           "Delaware" = "7",
-                                           "District of Columbia" = "8",
-                                           "Florida" = "9",
-                                           "Georgia" = "10",
-                                           "Idaho" = "11",
-                                           "Illinois" = "12",
-                                           "Indiana" = "13",
-                                           "Iowa" = "14",
-                                           "Kansas" = "15",
-                                           "Kentucky" = "16",
-                                           "Louisiana" = "17",
-                                           "Maine" = "18",
-                                           "Maryland" = "19",
-                                           "Massachusetts" = "20",
-                                           "Michigan" = "21",
-                                           "Minnesota" = "22",
-                                           "Mississippi" = "23",
-                                           "Missouri" = "24",
-                                           "Montana" = "25",
-                                           "Nebraska" = "26",
-                                           "Nevada" = "27",
-                                           "New Hampshire" = "28",
-                                           "New Jersey" = "29",
-                                           "New Mexico" = "30",
-                                           "New York" = "31",
-                                           "North Carolina" = "32",
-                                           "North Dakota" = "33",
-                                           "Ohio" = "34",
-                                           "Oklahoma" = "35",
-                                           "Oregon" = "36",
-                                           "Pennsylvania" = "37",
-                                           "Rhode Island" = "38",
-                                           "South Carolina" = "39",
-                                           "South Dakota" = "40",
-                                           "Tennessee" = "41",
-                                           "Texas" = "42",
-                                           "Utah" = "43",
-                                           "Vermont" = "44",
-                                           "Virginia" = "45",
-                                           "Washington" = "46",
-                                           "West Virginia" = "47",
-                                           "Wisconsin" = "48",
-                                           "Wyoming" = "49",
-                                           "Alaska" = "50",
-                                           "Hawaii" = "51",
-                                           "Canal Zone" = "52",
-                                           "Puerto Rico" = "53",
-                                           "American Samoa" = "54",
-                                           "Guam" = "55",
-                                           "Virgin Islands" = "62"))
+                                            "Arizona" = "2",
+                                            "Arkansas" = "3",
+                                            "California" = "4",
+                                            "Colorado" = "5",
+                                            "Connecticut" = "6",
+                                            "Delaware" = "7",
+                                            "District of Columbia" = "8",
+                                            "Florida" = "9",
+                                            "Georgia" = "10",
+                                            "Idaho" = "11",
+                                            "Illinois" = "12",
+                                            "Indiana" = "13",
+                                            "Iowa" = "14",
+                                            "Kansas" = "15",
+                                            "Kentucky" = "16",
+                                            "Louisiana" = "17",
+                                            "Maine" = "18",
+                                            "Maryland" = "19",
+                                            "Massachusetts" = "20",
+                                            "Michigan" = "21",
+                                            "Minnesota" = "22",
+                                            "Mississippi" = "23",
+                                            "Missouri" = "24",
+                                            "Montana" = "25",
+                                            "Nebraska" = "26",
+                                            "Nevada" = "27",
+                                            "New Hampshire" = "28",
+                                            "New Jersey" = "29",
+                                            "New Mexico" = "30",
+                                            "New York" = "31",
+                                            "North Carolina" = "32",
+                                            "North Dakota" = "33",
+                                            "Ohio" = "34",
+                                            "Oklahoma" = "35",
+                                            "Oregon" = "36",
+                                            "Pennsylvania" = "37",
+                                            "Rhode Island" = "38",
+                                            "South Carolina" = "39",
+                                            "South Dakota" = "40",
+                                            "Tennessee" = "41",
+                                            "Texas" = "42",
+                                            "Utah" = "43",
+                                            "Vermont" = "44",
+                                            "Virginia" = "45",
+                                            "Washington" = "46",
+                                            "West Virginia" = "47",
+                                            "Wisconsin" = "48",
+                                            "Wyoming" = "49",
+                                            "Alaska" = "50",
+                                            "Hawaii" = "51",
+                                            "Canal Zone" = "52",
+                                            "Puerto Rico" = "53",
+                                            "American Samoa" = "54",
+                                            "Guam" = "55",
+                                            "Virgin Islands" = "62"))
   expect_equal(property_stolen_values$V4, c("Possessions as Puerto Rico, Guam" = "0",
                                             "All cities 250,000 +" = "1",
                                             "Cit 1,000,000 +" = "1A",
@@ -1446,6 +1450,138 @@ test_that("Property stolen - parsed value labels are accurate", {
   expect_equal(property_stolen_values$V941, c("Not reported" = "0",
                                               "Regular"      = "1"))
   expect_equal(property_stolen_values$V1034, c("Not reported" = "0",
-                                           "Regular"      = "1"))
+                                               "Regular"      = "1"))
+
+})
+
+test_that("NCVS - parsed value labels are accurate", {
+
+
+  expect_equal(ncvs_values$V2009, c("Residue" = "9998",
+                                    "Out of universe" = "9999"))
+  expect_equal(ncvs_values$V2016, c("Urban" = "1",
+                                    "Rural - 10 acres or more" = "2",
+                                    "Rural - less than 10 acres" = "3",
+                                    "Residue" = "8",
+                                    "Out of universe" = "9"))
+
+  expect_equal(ncvs_values$V4116, c("No" = "0",
+                                    "Yes" = "1",
+                                    "Not applicable" = "8",
+                                    "Out of universe" = "9"))
+  expect_equal(ncvs_values$V4117, c("No" = "0",
+                                    "Yes" = "1",
+                                    "Not applicable" = "8",
+                                    "Out of universe" = "9"))
+  expect_equal(ncvs_values$V4118, c("No" = "0",
+                                    "Yes" = "1",
+                                    "Not applicable" = "8",
+                                    "Out of universe" = "9"))
+  expect_equal(ncvs_values$V4119, c("No" = "0",
+                                    "Yes" = "1",
+                                    "Not applicable" = "8",
+                                    "Out of universe" = "9"))
+  expect_equal(ncvs_values$V4121, c("Yes" = "1",
+                                    "No" = "2",
+                                    "Don t know" = "3",
+                                    "Residue" = "8",
+                                    "Out of universe" = "9"))
+  expect_equal(ncvs_values$V4122, c("Yes" = "1",
+                                    "Part" = "2",
+                                    "Not yet settled" = "3",
+                                    "None" = "4",
+                                    "Residue" = "8",
+                                    "Out of universe" = "9"))
+  expect_equal(ncvs_values$V4322, c("Score obtained by adding elements" = "9999.00"))
+  expect_equal(ncvs_values$V4323, c("Score obtained by adding elements" = "99"))
+  expect_equal(ncvs_values$V4327, c("Stranger" = "1",
+                                    "Nonstranger" = "2",
+                                    "Out of universe" = "9"))
+
+})
+
+
+test_that("Jail survey 1987 - parsed value labels are accurate", {
+
+
+  expect_equal(jail_1987_values$V1, c("ICPSR NUMBER" = "9074"))
+  expect_equal(jail_1987_values$V2, c("SPRING,1989" = "1"))
+  expect_equal(jail_1987_values$V6, c("ALABAMA" = "1",
+                                      "ALASKA" = "2",
+                                      "ARIZONA" = "3",
+                                      "ARKANSAS" = "4",
+                                      "CALIFORNIA" = "5",
+                                      "COLORADO" = "6",
+                                      "CONNECTICUT" = "7",
+                                      "DELAWARE" = "8",
+                                      "DIST OF COLUMBIA" = "9",
+                                      "FLORIDA" = "10",
+                                      "GEORGIA" = "11",
+                                      "HAWAII" = "12",
+                                      "IDAHO" = "13",
+                                      "ILLINOIS" = "14",
+                                      "INDIANA" = "15",
+                                      "IOWA" = "16",
+                                      "KANSAS" = "17",
+                                      "KENTUCKY" = "18",
+                                      "LOUISIANA" = "19",
+                                      "MAINE" = "20",
+                                      "MARYLAND" = "21",
+                                      "MASSACHUSETTS" = "22",
+                                      "MICHIGAN" = "23",
+                                      "MINNESOTA" = "24",
+                                      "MISSISSIPPI" = "25",
+                                      "MISSOURI" = "26",
+                                      "MONTANA" = "27",
+                                      "NORTH CAROLINA" = "28",
+                                      "NORTH DAKOTA" = "29",
+                                      "NEBRASKA" = "30",
+                                      "NEVADA" = "31",
+                                      "NEW HAMPSHIRE" = "32",
+                                      "NEW JERSEY" = "33",
+                                      "NEW MEXICO" = "34",
+                                      "NEW YORK" = "35",
+                                      "OHIO" = "36",
+                                      "OKLAHOMA" = "37",
+                                      "OREGON" = "38",
+                                      "PENNSYLVANIA" = "39",
+                                      "RHODE ISLAND" = "40",
+                                      "SOUTH CAROLINA" = "41",
+                                      "SOUTH DAKOTA" = "42",
+                                      "TENNESSEE" = "43",
+                                      "TEXAS" = "44",
+                                      "UTAH" = "45",
+                                      "VIRGINIA" = "46",
+                                      "VERMONT" = "47",
+                                      "WASHINGTON" = "48",
+                                      "WISCONSIN" = "49",
+                                      "WEST VIRGINIA" = "50",
+                                      "WYOMING" = "51"))
+  expect_equal(jail_1987_values$V7, c("COUNTY LEVEL" = "1",
+                                      "CITY LEVEL" = "2"))
+  expect_equal(jail_1987_values$V13, c("CERTAINTY UNIT" = "1",
+                                       "SAMPLE UNIT" = "2",
+                                       "SAMPLE UNIT" = "3",
+                                       "SAMPLE UNIT" = "4"))
+  expect_equal(jail_1987_values$V156, c("YES" = "1",
+                                        "NO" = "2"))
+  expect_equal(jail_1987_values$V162, c("YES" = "1",
+                                        "NO" = "2"))
+  expect_equal(jail_1987_values$V163, c("YES" = "1"))
+  expect_equal(jail_1987_values$V164, c("YES" = "2"))
+  expect_equal(jail_1987_values$V165, c("YES" = "3"))
+  expect_equal(jail_1987_values$V166, c("YES" = "4"))
+  expect_equal(jail_1987_values$V167, c("YES" = "5"))
+  expect_equal(jail_1987_values$V168, c("YES" = "6"))
+  expect_equal(jail_1987_values$V169, c("YES" = "7"))
+  expect_equal(jail_1987_values$V170, c("YES" = "8"))
+  expect_equal(jail_1987_values$V171, c("YES" = "9"))
+  expect_equal(jail_1987_values$V172, c("YES" = "10"))
+  expect_equal(jail_1987_values$V173, c("YES" = "11"))
+  expect_equal(jail_1987_values$V174, c("YES" = "12"))
+  expect_equal(jail_1987_values$V175, c("YES" = "13"))
+  expect_equal(jail_1987_values$V176, c("CENSUS CODE" = "0"))
+
+
 
 })

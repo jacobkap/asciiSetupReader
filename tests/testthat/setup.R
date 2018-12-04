@@ -1,4 +1,3 @@
-x <- Sys.time()
 SHR_dataset_name      <- system.file("extdata", "example_data.zip",
                                      package = "asciiSetupReader")
 SHR_sps_name          <- system.file("extdata", "example_setup.sps",
@@ -71,6 +70,13 @@ leoka1980_sps_name         <- system.file("testdata", "1980_leoka.zip",
                                         package = "asciiSetupReader")
 property_stolen_sps_name   <- system.file("testdata", "ucr_property_stolen_1998_sps.zip",
                                         package = "asciiSetupReader")
+
+ncvs_sps_name   <- system.file("testdata", "ncvs_1979_sps.zip",
+                                          package = "asciiSetupReader")
+jail_1987_sps_name   <- system.file("testdata", "jail_survey_1987.sps",
+                               package = "asciiSetupReader")
+jail_1987_dataset_name   <- system.file("testdata", "jail_survey_1987.zip",
+                                    package = "asciiSetupReader")
 
 
 parole <- spss_ascii_reader(dataset_name = parole_survey_dataset_name,
@@ -211,5 +217,7 @@ SHR1988_parsed         <- parse_spss(SHR1988_sps_name)
 SHR1981_parsed         <- parse_spss(SHR1981_sps_name)
 leoka1980_parsed       <- parse_spss(leoka1980_sps_name)
 property_stolen_parsed <- parse_spss(property_stolen_sps_name)
-y <- Sys.time()
-y - x
+
+ncvs_parsed            <- parse_spss(ncvs_sps_name)
+jail_1987_parsed       <- parse_spss(jail_1987_sps_name)
+

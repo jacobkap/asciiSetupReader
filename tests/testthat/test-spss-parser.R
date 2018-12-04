@@ -9,7 +9,7 @@ test_that("parse_spss is silent", {
   expect_silent(parse_spss(ucr1985_sps_name))
   expect_silent(parse_spss(ucr1986_sps_name))
   expect_silent(parse_spss(ucr2000_sps_name))
-#  expect_silent(parse_spss(ucr2006_sps_name))
+  #  expect_silent(parse_spss(ucr2006_sps_name))
   expect_silent(parse_spss(sac_sps_name))
   expect_silent(parse_spss(sex_offender_sps_name))
   expect_silent(parse_spss(ucr1960_sps_name))
@@ -21,6 +21,9 @@ test_that("parse_spss is silent", {
   expect_silent(parse_spss(SHR1988_sps_name))
   expect_silent(parse_spss(SHR1981_sps_name))
   expect_silent(parse_spss(ca_vital_sps_name))
+
+  expect_silent(parse_spss(ncvs_sps_name))
+  expect_silent(parse_spss(jail_1987_sps_name))
 
 })
 
@@ -42,6 +45,9 @@ test_that("Right number of columns", {
   expect_equal(nrow(ucr1986_parsed$setup), 1458)
   expect_equal(nrow(ucr2000_parsed$setup), 1448)
 
+  expect_equal(nrow(jail_1987_parsed$setup), 176)
+
+
 })
 
 test_that("Right number of missing values", {
@@ -59,6 +65,8 @@ test_that("Right number of missing values", {
   expect_equal(nrow(ucr1985_parsed$missing), 166)
   expect_equal(nrow(ucr1986_parsed$missing), 160)
   expect_true(is.null(ucr2000_parsed$missing))
+  expect_equal(nrow(ncvs_parsed$missing), 80)
+  expect_true(is.null(jail_1987_parsed$missing))
 
 })
 
@@ -129,6 +137,14 @@ test_that("Starting number is correct", {
                                                         3742, 3745, 3748, 3750,
                                                         3752, 3756, 3757, 3758))
 
+  expect_equal(head(ncvs_parsed$setup$begin), c(1, 7, 10, 12, 15, 19))
+  expect_equal(tail(ncvs_parsed$setup$begin), c(713, 717, 719, 727, 729, 731))
+
+
+  expect_equal(head(jail_1987_parsed$setup$begin), c(1, 5, 6, 7, 10, 13))
+  expect_equal(tail(jail_1987_parsed$setup$begin), c(633, 634, 636, 638, 640, 642))
+
+
 })
 
 test_that("Ending number is correct", {
@@ -198,6 +214,12 @@ test_that("Ending number is correct", {
                                                       3733, 3735, 3737, 3741,
                                                       3744, 3747, 3749, 3751,
                                                       3755, 3756, 3757, 3760))
+
+  expect_equal(head(ncvs_parsed$setup$end), c(6, 9, 11, 14, 18, 19))
+  expect_equal(tail(ncvs_parsed$setup$end), c(716, 718, 726, 728, 730, 731))
+
+  expect_equal(head(jail_1987_parsed$setup$end), c(4, 5, 6, 9, 12, 14))
+  expect_equal(tail(jail_1987_parsed$setup$end), c(633, 635, 637, 639, 641, 642))
 
 })
 
@@ -320,5 +342,41 @@ test_that("Original names are correct", {
                                                                 "V1443", "V1444",
                                                                 "V1445", "V1446",
                                                                 "V1447", "V1448"))
+
+  expect_equal(head(ncvs_parsed$setup$column_number), c("V2001", "V2002", "V2003",
+                                                        "V2004", "V2005", "V2006"))
+  expect_equal(tail(ncvs_parsed$setup$column_number), c("V4322", "V4323", "V4324",
+                                                        "V4325", "V4326", "V4327"))
+
+  expect_equal(head(ncvs_parsed$setup$column_name), c("ICPSR_HOUSEHOLD_NUMBER",
+                                                      "YEAR_AND_QUARTER",
+                                                      "CENSUS_SAMPLE_NUMBER",
+                                                      "PRIMARY_SAMPLING_UNIT",
+                                                      "SEGMENT_NUMBER",
+                                                      "CHECK_DIGIT"))
+  expect_equal(tail(ncvs_parsed$setup$column_name), c("SERIOUSNESS_SCORE",
+                                                      "SERIOUSNESS_OLD_SCORE",
+                                                      "INCIDENT_WEIGHT",
+                                                      "CRIME_SEQUENCE_NO",
+                                                      "RECODED_TYPE_OF_CRIME",
+                                                      "RELATION_TO_VICTIM"))
+
+  expect_equal(head(jail_1987_parsed$setup$column_number), c("V1", "V2", "V3",
+                                                             "V4", "V5", "V6"))
+  expect_equal(tail(jail_1987_parsed$setup$column_number), c("V171", "V172", "V173",
+                                                             "V174", "V175", "V176"))
+
+  expect_equal(head(jail_1987_parsed$setup$column_name), c("ICPSR_STUDY_NUMBER_9074",
+                                                           "ICPSR_EDITION_NUMBER_1",
+                                                           "ICPSR_PART_NUMBER_1",
+                                                           "ICPSR_SEQUENCE_NUMBER",
+                                                           "FORM_NUMBER",
+                                                           "STATE_CODE"))
+  expect_equal(tail(jail_1987_parsed$setup$column_name), c("COURT_ORDER_STAFF_PATTRN",
+                                                           "COURT_ORDER_ED_TRAINING",
+                                                           "COURT_ORDER_COUNSELLING",
+                                                           "COURT_ORDER_FOOD_SERVICE",
+                                                           "COURT_ORDER_OTHER",
+                                                           "CENSUS_USE_BOX"))
 
 })
