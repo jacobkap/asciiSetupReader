@@ -25,6 +25,8 @@ parse_spss <- function(sps_name,
                       grep2("^variable labels$", codebook)]
   setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                 setup)
+
+
   setup <- unlist(strsplit(setup, '"\\s{3,}'))
   setup <- get_column_spaces(setup, variables)
   setup <- selected_columns(keep_columns, setup)

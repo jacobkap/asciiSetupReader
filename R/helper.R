@@ -28,7 +28,7 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- gsub("'\\s+.$", "'", value_label_section)
   value_label_section <- gsub("'$|''", "", value_label_section,
                               perl = TRUE)
-  value_label_section <- gsub("=", " ", value_label_section)
+  value_label_section <- gsub("(?<![<>])=", " ", value_label_section, perl = TRUE)
   value_label_section <- gsub("\\s+", " ", value_label_section)
   value_label_section <- gsub("([[:alpha:]])\\'([[:alpha:]])", "\\1 \\2",
                               value_label_section)

@@ -21,13 +21,10 @@ create names based on column number (e.g. V1, V2, V3).}
 than the col_names. These are the values used as column names if
 real_names = TRUE in reading in the data.}
 
-\item{value_labels}{A data.frame or tibble with the first column being the values and the second
-column being the labels. The column name should go in the row above
-the values and the column for that row should be an empty string.}
+\item{value_labels}{A  named vector with the value first, then an ' = ' then the label.}
 
-\item{missing_values}{A data.frame or tibble with the first column being the missing values and the second
-column being the replacement. The column name should go in the row above
-the values and the column for that row should be an empty string.}
+\item{missing_values}{A vector of strings with the column name followed by the values to be
+replaced by NA.}
 }
 \value{
 Does not return any object. Saves the .sps file that is created.
@@ -40,18 +37,23 @@ the setup file yourself.
 }
 \examples{
 \dontrun{
-value_labels <- data.frame(x = c("var1", 1:5),
-y = c("",
-      "label 1",
-      "label 2",
-      "label 3",
-      "label 4",
-      "label 5"))
+  value_labels <- c("var1 = ",
+                     "1 = label 1",
+                     "2 = label 2",
+                     "3 = label 3",
+                     "4 = label 4",
+                     "5 = label 5",
+                     "var3 = ",
+                     "1A = alpha",
+                     "1B = bravo",
+                     "1C = cat")
+missing_values <- c("state name", "9", "-8", "county", "-8")
 make_sps_setup(file_name     = "example_name",
                col_positions = c(1, 3, 4, 2),
                col_names     = c("var1", "var2", "var3", "var4"),
                col_labels    = c("state name", "county",
                               "population", "census region code"),
-               value_labels  = value_labels)
+               value_labels  = value_labels,
+               missing_values = missing_values)
 }
 }

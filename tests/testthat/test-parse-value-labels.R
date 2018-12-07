@@ -19,7 +19,8 @@ ca_vital_values        <- parse_value_labels(ca_vital_parsed)
 leoka1980_values       <- parse_value_labels(leoka1980_parsed)
 property_stolen_values <- parse_value_labels(property_stolen_parsed)
 ncvs_values            <- parse_value_labels(ncvs_parsed)
-jail_1987_values        <- parse_value_labels(jail_1987_parsed)
+jail_1987_values       <- parse_value_labels(jail_1987_parsed)
+corrections_values     <- parse_value_labels(corrections_parsed)
 
 
 
@@ -41,6 +42,7 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(ca_vital_values), 36)
   expect_equal(length(property_stolen_values), 15)
   #  expect_equal(length(ASR), 36)
+  expect_equal(length(corrections_values), 9)
 
 })
 
@@ -66,6 +68,7 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(ca_vital_parsed))
   expect_silent(parse_value_labels(property_stolen_values))
   #  expect_silent(parse_value_labels(ASR))
+  expect_silent(parse_value_labels(corrections_values))
 
 })
 
@@ -1581,6 +1584,68 @@ test_that("Jail survey 1987 - parsed value labels are accurate", {
   expect_equal(jail_1987_values$V174, c("YES" = "12"))
   expect_equal(jail_1987_values$V175, c("YES" = "13"))
   expect_equal(jail_1987_values$V176, c("CENSUS CODE" = "0"))
+
+
+
+})
+
+test_that("Corrections - parsed value labels are accurate", {
+
+
+  expect_equal(corrections_values$SEX, c("Male" = "1",
+                                         "Female" = "2"))
+  expect_equal(corrections_values$EDUCATION,
+               c("<HS diploma/GED" = "1",
+                 "HS diploma/GED" = "2",
+                 "Any college" = "3",
+                 "Ungraded/unknown" = "9"))
+  expect_equal(corrections_values$ADMTYPE,
+               c("New court commitment" = "1",
+                 "Parole return/revocation" = "2",
+                 "Other admission (including unsentenced, transfer, AWOL/escapee return)" = "3",
+                 "Missing" = "9"))
+  expect_equal(corrections_values$OFFGENERAL, c("Violent" = "1",
+                                                "Property" = "2",
+                                                "Drugs" = "3",
+                                                "Public order" = "4",
+                                                "Other/unspecified" = "5",
+                                                "Missing" = "9"))
+  expect_equal(corrections_values$SENTLGTH,
+               c("< 1 year" = "0",
+                 "1-1.9 years" = "1",
+                 "2-4.9 years" = "2",
+                 "5-9.9 years" = "3",
+                 "10-24.9 years" = "4",
+                 ">=25 years" = "5",
+                 "Life, LWOP, Life plus additional years, Death" = "6",
+                 "Missing" = "9"))
+  expect_equal(corrections_values$OFFDETAIL,
+               c("Murder (including non-negligent manslaughter)" = "1",
+                 "Negligent manslaughter" = "2",
+                 "Rape/sexual assault" = "3",
+                 "Robbery" = "4",
+                 "Aggravated or simple assault" = "5",
+                 "Other violent offenses" = "6",
+                 "Burglary" = "7",
+                 "Larceny" = "8",
+                 "Motor vehicle theft" = "9",
+                 "Fraud" = "10",
+                 "Other property offenses" = "11",
+                 "Drugs (includes possession, distribution, trafficking, other)" = "12",
+                 "Public order" = "13",
+                 "Other/unspecified" = "14",
+                 "Missing" = "99"))
+  expect_equal(corrections_values$RACE, c("White, non-Hispanic" = "1",
+                                          "Black, non-Hispanic" = "2",
+                                          "Hispanic, any race" = "3",
+                                          "Other race(s), non-Hispanic" = "4",
+                                          "Missing" = "9"))
+  expect_equal(corrections_values$AGEADMIT, c("18-24 years" = "1",
+                                              "25-34 years" = "2",
+                                              "35-44 years" = "3",
+                                              "45-54 years" = "4",
+                                              "55+ years" = "5",
+                                              "Missing" = "9"))
 
 
 

@@ -77,6 +77,8 @@ jail_1987_sps_name   <- system.file("testdata", "jail_survey_1987.sps",
                                package = "asciiSetupReader")
 jail_1987_dataset_name   <- system.file("testdata", "jail_survey_1987.zip",
                                     package = "asciiSetupReader")
+corrections_sps_name   <- system.file("testdata", "corrections_prison_admissions_1991_2016.sps",
+                                        package = "asciiSetupReader")
 
 
 parole <- spss_ascii_reader(dataset_name = parole_survey_dataset_name,
@@ -220,4 +222,5 @@ property_stolen_parsed <- parse_spss(property_stolen_sps_name)
 
 ncvs_parsed            <- parse_spss(ncvs_sps_name)
 jail_1987_parsed       <- parse_spss(jail_1987_sps_name)
+corrections_parsed     <- parse_spss(corrections_sps_name)
 

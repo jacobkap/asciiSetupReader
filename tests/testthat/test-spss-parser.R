@@ -24,6 +24,7 @@ test_that("parse_spss is silent", {
 
   expect_silent(parse_spss(ncvs_sps_name))
   expect_silent(parse_spss(jail_1987_sps_name))
+  expect_silent(parse_spss(corrections_sps_name))
 
 })
 
@@ -46,6 +47,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(ucr2000_parsed$setup), 1448)
 
   expect_equal(nrow(jail_1987_parsed$setup), 176)
+  expect_equal(nrow(corrections_parsed$setup), 14)
 
 
 })
@@ -67,6 +69,7 @@ test_that("Right number of missing values", {
   expect_true(is.null(ucr2000_parsed$missing))
   expect_equal(nrow(ncvs_parsed$missing), 80)
   expect_true(is.null(jail_1987_parsed$missing))
+  expect_equal(nrow(corrections_parsed$missing), 7)
 
 })
 
@@ -143,6 +146,8 @@ test_that("Starting number is correct", {
 
   expect_equal(head(jail_1987_parsed$setup$begin), c(1, 5, 6, 7, 10, 13))
   expect_equal(tail(jail_1987_parsed$setup$begin), c(633, 634, 636, 638, 640, 642))
+
+  expect_equal(corrections_parsed$setup$begin, c(1, 2, 6, 8, 9, 10, 11,15, 19, 23, 27, 28, 30, 31))
 
 
 })
@@ -221,6 +226,7 @@ test_that("Ending number is correct", {
   expect_equal(head(jail_1987_parsed$setup$end), c(4, 5, 6, 9, 12, 14))
   expect_equal(tail(jail_1987_parsed$setup$end), c(633, 635, 637, 639, 641, 642))
 
+  expect_equal(corrections_parsed$setup$end, c(1, 5, 7, 8, 9, 10, 14, 18, 22, 26, 27, 29, 30, 31))
 })
 
 
@@ -378,5 +384,36 @@ test_that("Original names are correct", {
                                                            "COURT_ORDER_FOOD_SERVICE",
                                                            "COURT_ORDER_OTHER",
                                                            "CENSUS_USE_BOX"))
+
+
+  expect_equal(corrections_parsed$setup$column_number, c("SEX",
+                                                         "RPTYEAR",
+                                                         "STATE",
+                                                         "EDUCATION",
+                                                         "ADMTYPE",
+                                                         "OFFGENERAL",
+                                                         "MAND_PRISREL_YEAR",
+                                                         "PROJ_PRISREL_YEAR",
+                                                         "PARELIG_YEAR",
+                                                         "ADMITYR",
+                                                         "SENTLGTH",
+                                                         "OFFDETAIL",
+                                                         "RACE",
+                                                         "AGEADMIT"))
+  expect_equal(corrections_parsed$setup$column_name,
+               c("SEX_OF_INMATE",
+                 "YEAR_DATA_WERE_SUBMITTED_TO_NCRP",
+                 "STATE_WITH_CUSTODY_OF_INMATE",
+                 "HIGHEST_LEVEL_OF_EDUCATION_OF_INMATE",
+                 "TYPE_OF_PRISON_ADMISSION",
+                 "X5_LEVEL_CATEGORIZATION_OF_MOST_SERIOUS_SENTENCED_OFFENSE",
+                 "YEAR_OF_MANDATORY_PRISON_RELEASE",
+                 "YEAR_OF_PROJECTED_PRISON_RELEASE",
+                 "YEAR_OF_PAROLE_ELIGIBILITY",
+                 "YEAR_INMATE_WAS_ADMITTED_TO_PRISON",
+                 "MAXIMUM_SENTENCE_LENGTH_FOR_INMATE",
+                 "DETAILED_CATEGORIZATION_OF_MOST_SERIOUS_SENTENCED_OFFENSE",
+                 "RACE_HISPANIC_ETHNICITY_OF_INMATE",
+                 "AGE_AT_ADMISSION"))
 
 })
