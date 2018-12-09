@@ -19,8 +19,10 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jacobkap/asciiSetupReader
 BugReports: https://github.com/jacobkap/asciiSetupReader/issues
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown,
-    testthat
+    testthat,
+    covr
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
