@@ -1,7 +1,11 @@
-[![Build
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader.png)
+[![Travis-CI Build
 Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&svg=true)](https://ci.appveyor.com/project/jacobkap/asciiSetupReader)
+[![Coverage
+status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://codecov.io/github/jacobkap/asciiSetupReader?branch=master)
+[![](https://cranlogs.r-pkg.org/badges/asciiSetupReader)](https://cran.rstudio.com/web/packages/asciiSetupReader/index.html)
 
 Introduction to asciiSetupReader
 ================================
@@ -24,7 +28,7 @@ example of reading in the example dataset - the original can be found
 ``` r
 data_name <- system.file("extdata", "example_data.zip",
              package = "asciiSetupReader")
-sps_name <- system.file("extdata", "example_setup_sps.zip",
+sps_name <- system.file("extdata", "example_setup.sps",
              package = "asciiSetupReader")
 
 example <- asciiSetupReader::spss_ascii_reader(dataset_name = data_name,
