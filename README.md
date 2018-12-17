@@ -10,7 +10,7 @@ status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badg
 Introduction to asciiSetupReader
 ================================
 
-Some datasets are only available in fixed-width delimited (this means
+Some data sets are only available in fixed-width delimited (this means
 the each row has the same number of characters) text files (.txt) that
 have an SPSS setup file (.sps) that tells the SPSS software how to read
 in the data. This package allows R to read in this type of data by
@@ -19,10 +19,10 @@ and the corresponding SPSS setup file. SPSS setup files come with the
 file extention .sps but changing it to .txt will work the same.
 
 To use the spss\_ascii\_reader function, all that is needed is to
-provide a string with the name of the dataset (the .txt) file and a
+provide a string with the name of the data set (the .txt) file and a
 string with the name of the SPSS setup file (the .sps) including the
 file extention. The files must be in the working directory. Below is an
-example of reading in the example dataset - the original can be found
+example of reading in the example data set - the original can be found
 [here](https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&restrictionType%5B0%5D=Public+Use&classification%5B0%5D=NACJD.IX.*&dataFormat%5B0%5D=SPSS).
 
 ``` r
@@ -57,7 +57,7 @@ about gender, it will be “A” or “B” (or more commonly 0 or 1). The SPSS
 setup file gives the actual value of these repesentations. The parameter
 “value\_label\_fix” will give the real values if TRUE, otherwise it will
 keep the representation. This parameter is the most time consuming part
-of the function so if you have a very large dataset but only a few
+of the function so if you have a very large data set but only a few
 variables you are interested in, it may be wise to set it as FALSE.
 
 ``` r
