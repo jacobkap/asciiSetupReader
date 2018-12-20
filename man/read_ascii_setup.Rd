@@ -54,14 +54,14 @@ example <- read_ascii_setup(data = dataset_name,
 }
 
 # Does not fix value labels
-example2 <- read_ascii_reader(data = dataset_name,
+example2 <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name, use_value_labels = FALSE)
 
 # Keeps original column names
-example3 <- read_ascii_reader(data = dataset_name,
+example3 <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name, use_clean_names = FALSE)
 
 # Only returns the first 5 columns
-example4 <- read_ascii_reader(data = dataset_name,
+example4 <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name, select_columns = 1:5)
 }

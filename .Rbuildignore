@@ -7,3 +7,4 @@
 ^\.Rprofile$
 README.Rmd
 cran-comments.md
+^docs$
