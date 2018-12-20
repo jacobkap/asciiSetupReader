@@ -61,24 +61,24 @@ parole_survey_dataset_name <- system.file("testdata", "parole_survey.txt",
 parole_survey_sps_name     <- system.file("testdata", "parole_survey_sps.zip",
                                           package = "asciiSetupReader")
 SHR1987_sps_name           <- system.file("testdata", "1987_SHR_sps.zip",
-                                        package = "asciiSetupReader")
+                                          package = "asciiSetupReader")
 SHR1988_sps_name           <- system.file("testdata", "1988_SHR_sps.zip",
-                                        package = "asciiSetupReader")
+                                          package = "asciiSetupReader")
 SHR1981_sps_name           <- system.file("testdata", "1981_SHR_sps.zip",
-                                        package = "asciiSetupReader")
+                                          package = "asciiSetupReader")
 leoka1980_sps_name         <- system.file("testdata", "1980_leoka.zip",
-                                        package = "asciiSetupReader")
+                                          package = "asciiSetupReader")
 property_stolen_sps_name   <- system.file("testdata", "ucr_property_stolen_1998_sps.zip",
-                                        package = "asciiSetupReader")
+                                          package = "asciiSetupReader")
 
 ncvs_sps_name   <- system.file("testdata", "ncvs_1979_sps.zip",
-                                          package = "asciiSetupReader")
-jail_1987_sps_name   <- system.file("testdata", "jail_survey_1987.sps",
                                package = "asciiSetupReader")
-jail_1987_dataset_name   <- system.file("testdata", "jail_survey_1987.zip",
+jail_1987_sps_name   <- system.file("testdata", "jail_survey_1987.sps",
                                     package = "asciiSetupReader")
-corrections_sps_name   <- system.file("testdata", "corrections_prison_admissions_1991_2016.sps",
+jail_1987_dataset_name   <- system.file("testdata", "jail_survey_1987.zip",
                                         package = "asciiSetupReader")
+corrections_sps_name   <- system.file("testdata", "corrections_prison_admissions_1991_2016.sps",
+                                      package = "asciiSetupReader")
 
 
 parole <- spss_ascii_reader(dataset_name = parole_survey_dataset_name,

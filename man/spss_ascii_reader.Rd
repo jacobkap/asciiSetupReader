@@ -72,3 +72,4 @@ example4 <- spss_ascii_reader(dataset_name = dataset_name,
 
 Other ASCII Reader functions: \code{\link{sas_ascii_reader}}
 }
+\concept{ASCII Reader functions}

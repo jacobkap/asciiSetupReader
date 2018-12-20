@@ -1,6 +1,6 @@
 parse_spss <- function(sps_name,
-                       keep_columns = NULL,
-                       value_label_fix = TRUE) {
+                       select_columns = NULL,
+                       use_value_labels = TRUE) {
 
   codebook <- parse_codebook(sps_name)
 
@@ -29,7 +29,7 @@ parse_spss <- function(sps_name,
 
   setup <- unlist(strsplit(setup, '"\\s{3,}'))
   setup <- get_column_spaces(setup, variables)
-  setup <- selected_columns(keep_columns, setup)
+  setup <- selected_columns(select_columns, setup)
   setup <- setup[setup$column_number != "*", ]
 
   if (any(grepl2("MISSING VALUES", codebook))) {
@@ -37,7 +37,7 @@ parse_spss <- function(sps_name,
     missing <- missing[missing$variable %in% setup$column_number, ]
   } else missing <- NULL
 
-  if (value_label_fix) {
+  if (use_value_labels) {
     value_labels <- get_value_labels(codebook, setup)
   } else {
     value_labels <- NULL
@@ -76,7 +76,7 @@ parse_missing <- function(codebook) {
   return(missing)
 }
 
-  parse_codebook <- function(sps_name) {
+parse_codebook <- function(sps_name) {
   codebook <- readr::read_lines(sps_name)
   codebook <- stringr::str_trim(codebook)
   codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]

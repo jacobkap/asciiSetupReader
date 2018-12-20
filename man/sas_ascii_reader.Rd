@@ -68,3 +68,4 @@ example <- sas_ascii_reader(dataset_name = dataset_name,
 
 Other ASCII Reader functions: \code{\link{spss_ascii_reader}}
 }
+\concept{ASCII Reader functions}

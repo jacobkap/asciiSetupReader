@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • asciiSetupReader</title>
+<title>Title — parse_spss • asciiSetupReader</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Title — parse_spss" />
+
+<meta property="og:description" content="Title" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -86,10 +89,7 @@
       <a href="../articles/Introduction_to_asciiSetupReader.html">Introduction to asciiSetupReader</a>
     </li>
     <li>
-      <a href="../articles/making_a_sps_setup_file.html">Making an .sps Setup File</a>
-    </li>
-    <li>
-      <a href="../articles/parsing_a_sps_setup_file.html">Parsing a .sps Setup File</a>
+      <a href="../articles/making_an_sps_setup_file.html">Making an .sps Setup File</a>
     </li>
   </ul>
 </li>
@@ -117,60 +117,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Title</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/R/parse_spss_setup.R'><code>R/parse_spss_setup.R</code></a></small>
+    <div class="hidden name"><code>parse_spss.Rd</code></div>
     </div>
 
-    <div id="asciisetupreader-2-0-0" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-2-0-0" class="anchor"></a>asciiSetupReader 2.0.0<small> Unreleased </small>
-</h1>
-<div id="major-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major Changes</h2>
-<ul>
-<li>Adds function to create sps setup files.</li>
-</ul>
-</div>
-<div id="minor-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor Changes</h2>
-<ul>
-<li>Adds option to not coerce potentially numeric columns into numeric type.</li>
-<li>Miscellaneous bug fixes</li>
-</ul>
-</div>
-</div>
-    <div id="asciisetupreader-1-4-0" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-1-4-0" class="anchor"></a>asciiSetupReader 1.4.0<small> 2018-06-18 </small>
-</h1>
-<ul>
-<li>Adds capacity to the SPSS reader to handle Missing Values<br>
-</li>
-<li>Fixes bug where function fails if no value-labels are detected
-<ul>
-<li>Applies both when setup file has no value-labels and if only select columns that have no value-labels<br>
-</li>
-</ul>
-</li>
-<li>Adds a huge number of tests<br>
-</li>
-<li>Changes factor column to character columns</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    
+    <p>Title</p>
+    
+    </div>
 
+    <pre class="usage"><span class='fu'>parse_spss</span>(<span class='no'>sps_name</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>value_label_fix</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>value_label_fix</th>
+      <td></td>
+    </tr>
+    </table>
+    
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#asciisetupreader-2-0-0">2.0.0</a></li>
-        <li><a href="#asciisetupreader-1-4-0">1.4.0</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
 
+  </div>
 </div>
 
       <footer>

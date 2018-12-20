@@ -122,15 +122,6 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- gsub("\"([[:alnum:]]+)\\s+([0-9])", "\"\\1 \\2",
                        value_labels)
 
-  # multiple_values <- any(grepl("'[^']+' '[^']+' '[^']+' '[^']+'",
-  #                              value_labels))
-  # while (multiple_values) {
-  #   value_labels <- gsub("^('[^']+') ('[^']+') ", "\\1 \\2  ", value_labels)
-  #   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
-  #   multiple_values <- any(grepl("'.*'.*'.*'.*'", value_labels))
-  #   multiple_values
-  # }
-
   value_labels <- gsub("([[:alpha:]])\\s\\s([0-9])",
                        "\\1 \\2", value_labels)
   value_labels <- gsub("([[:alpha:]])\\s\\s([[:punct:]])",
@@ -148,11 +139,6 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
                              column = value_labels,
                              stringsAsFactors = FALSE)
 
-  # value_labels$column[!value_labels$column %in%
-  #                       codebook_column_spaces$column_number] <- NA
-  # value_labels$column <- zoo::na.locf(value_labels$column)
-  # value_labels$group <- as.numeric(factor(value_labels$column,
-  #                                         levels = unique(value_labels$column)))
 
   group <- 1
   column <- value_labels$value_labels[1]

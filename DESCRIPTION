@@ -1,9 +1,13 @@
 Package: asciiSetupReader
 Type: Package
-Title: Reads 'SPSS' and 'SAS' Files from ASCII Data Files (.txt) and Setup Files (.sps or .sas)
-Version: 1.5.0
+Title: Reads Fixed-Width ASCII Data Files (.txt or .dat) that have Accompanying Setup Files (.sps or .sas)
+Version: 2.0.0
 Authors@R: person("Jacob", "Kaplan", email = "jkkaplan6@gmail.com", role = c("aut", "cre"))
-Description: Lets you open an 'SPSS' or 'SAS' data file using a .txt file that has the data and a .sps or .sas file with setup instructions. This will only run in a txt-sps or txt-sas pair in which the setup file contains instructions to open that text file. It will NOT open other text files, .sav, .por, or 'SAS' files. 
+Description: Lets you open a fixed-wdith ASCII file (.txt or .dat) that has
+             an accompanying setup file (.sps or .sas).
+             This will only run in a txt-sps or txt-sas pair in which the setup file contains instructions 
+              to open that text file. It will NOT open other text files, .sav, .sas, or .por data files. 
+              Fixed-width ASCII files with setup files are common in older (pre-2000) government data. 
 Depends:
     R (>= 3.1.0)
 Imports:
@@ -11,9 +15,7 @@ Imports:
     haven,
     readr,
     stringr,
-    zoo,
-    tibble,
-    utils
+    zoo
 License: GPL
 Encoding: UTF-8
 LazyData: true
@@ -25,4 +27,4 @@ Suggests:
     testthat,
     covr
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

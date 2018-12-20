@@ -43,6 +43,8 @@ sas_ascii_reader <- function(dataset_name,
                              coerce_numeric = TRUE,
                              ...) {
 
+#  .Deprecated("read_ascii_setup")
+
   stopifnot(is.character(dataset_name), length(dataset_name) == 1,
             is.character(sas_name), length(sas_name) == 1,
             is.logical(value_label_fix), length(value_label_fix) == 1,
@@ -56,16 +58,14 @@ sas_ascii_reader <- function(dataset_name,
   # Get column name - both undescriptive and descriptive =====================
   codebook_variables <- codebook[grep2("^LABEL$", codebook):
                                    grep("^$", codebook)[grep("^$", codebook) >
-                                                             grep2("^LABEL$",
-                                                                   codebook)][1]]
+                                                          grep2("^LABEL$",
+                                                                codebook)][1]]
   codebook_variables <- codebook_variables[grep("=", codebook_variables)]
   codebook_variables <- gsub("\\S=", " =", codebook_variables)
   codebook_variables <- data.frame(column_name = fix_names(codebook_variables),
                                    column_number = gsub(" .*", "",
                                                         codebook_variables),
                                    stringsAsFactors = FALSE)
-
-
 
   # Get column spacing ==================================================
   column_spaces <- codebook[grep2("INPUT STATEMENTS", codebook) : grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
@@ -81,87 +81,84 @@ sas_ascii_reader <- function(dataset_name,
     format <- stringr::str_trim(format)
     format <- data.frame(column_name = gsub(" .*", "", format),
                          f_name      = gsub(".* ", "", format))
-  column_spaces <- merge(column_spaces, format, by.x = "column_number",
-                         by.y = "column_name", all.x = TRUE)
+    column_spaces <- merge(column_spaces, format, by.x = "column_number",
+                           by.y = "column_name", all.x = TRUE)
   }
   column_spaces <- column_spaces[order(column_spaces$begin), ]
 
 
-# Reads in Data File ------------------------------------------------------
+  # Reads in Data File ------------------------------------------------------
 
-  dataset <- suppressMessages(readr::read_fwf(dataset_name,
-                              readr::fwf_positions(column_spaces$begin,
-                                                   column_spaces$end,
-                                                   column_spaces$column_number),
-                             col_types = readr::cols(.default =
-                                                       readr::col_character()),
-                             ...))
-  dataset <- data.table::as.data.table(dataset)
-  column_order <- names(dataset)
+
+  data <- suppressMessages(readr::read_fwf(dataset_name,
+                                              readr::fwf_positions(column_spaces$begin,
+                                                                   column_spaces$end,
+                                                                   column_spaces$column_number),
+                                              col_types = readr::cols(.default =
+                                                                        readr::col_character()),
+                                              ...))
+  data <- data.table::as.data.table(data)
+  column_order <- names(data)
 
   if (any(grepl2("^FORMAT$", codebook))) {
-  # Gets value labels
-  value_position <- grep("^VALUE ", codebook)
-  value_labels <- codebook[value_position[1] : grep("\\*/$", codebook)[grep("\\*/$", codebook) > value_position[length(value_position)]][1]]
-  value_labels <- gsub(";\\*\\/", "", value_labels)
-  value_labels <- unlist(strsplit(value_labels, ";"))
-  value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels)
-  value_labels <- gsub("^VALUE ", "", value_labels)
-  value_labels <- stringr::str_trim(value_labels)
-  value_labels <- gsub("&\\s+", "& ", value_labels)
-  value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
+    # Gets value labels
+    value_position <- grep("^VALUE ", codebook)
+    value_labels <- codebook[value_position[1] : grep("\\*/$", codebook)[grep("\\*/$", codebook) > value_position[length(value_position)]][1]]
+    value_labels <- gsub(";\\*\\/", "", value_labels)
+    value_labels <- unlist(strsplit(value_labels, ";"))
+    value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels)
+    value_labels <- gsub("^VALUE ", "", value_labels)
+    value_labels <- stringr::str_trim(value_labels)
+    value_labels <- gsub("&\\s+", "& ", value_labels)
+    value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
 
 
-  value_labels <- data.frame(value_labels,
-                             group = 0,
-                             column = value_labels[1],
-                             stringsAsFactors = FALSE)
+    value_labels <- data.frame(value_labels,
+                               group = 0,
+                               column = value_labels[1],
+                               stringsAsFactors = FALSE)
 
-  group <- 1
-  column <- value_labels$value_labels[1]
-  for (i in 1:nrow(value_labels)) {
-    value_labels$group[i] <- group
-    value_labels$column[i] <- column
-    if (value_labels$value_labels[i + 1] %in% format$f_name) {
-      group <- group + 1
-      column <- value_labels$value_labels[i + 1]
-    }
-  }
-  value_labels <- value_labels[value_labels$column %in% column_spaces$f_name, ]
-  value_labels <- split.data.frame(value_labels, value_labels$group)
-
-
-  if (value_label_fix && length(value_labels) > 0) {
-    for (i in seq_along(value_labels)) {
-      column <- value_labels[[i]][1, 1]
-      if (toupper(column) %in% toupper(column_spaces$f_name)) {
-        column <- column_spaces$column_number[toupper(column_spaces$f_name) %in%
-                                                toupper(column)]
-        value_label_section <-  value_label_matrixer(value_labels[[i]][[1]])
-        if (length(column) > 1) {
-          for (col in column) {
-            dataset <- fix_variable_values(dataset, value_label_section, col)
-          }
-        } else {
-          dataset <- fix_variable_values(dataset, value_label_section, column)
-        }
+    group <- 1
+    column <- value_labels$value_labels[1]
+    for (i in 1:nrow(value_labels)) {
+      value_labels$group[i] <- group
+      value_labels$column[i] <- column
+      if (value_labels$value_labels[i + 1] %in% format$f_name) {
+        group <- group + 1
+        column <- value_labels$value_labels[i + 1]
       }
     }
-      data.table::setcolorder(dataset, column_order)
-  }
+    value_labels <- value_labels[value_labels$column %in% column_spaces$f_name, ]
+    value_labels <- split.data.frame(value_labels, value_labels$group)
+
+
+    if (value_label_fix && length(value_labels) > 0) {
+      for (i in seq_along(value_labels)) {
+        column <- value_labels[[i]][1, 1]
+        if (toupper(column) %in% toupper(column_spaces$f_name)) {
+          column <- column_spaces$column_number[toupper(column_spaces$f_name) %in%
+                                                  toupper(column)]
+          value_label_section <-  value_label_matrixer(value_labels[[i]][[1]])
+            for (col in column) {
+              data <- fix_variable_values(data, value_label_section, col)
+            }
+        }
+      }
+      data.table::setcolorder(data, column_order)
+    }
   }
 
   if (real_names) {
-    codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(dataset), ]
-    data.table::setnames(dataset, old = codebook_variables$column_number,
+    codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(data), ]
+    data.table::setnames(data, old = codebook_variables$column_number,
                          new = codebook_variables$column_name)
   }
 
   # Makes columns that should be numeric numeric
   if (coerce_numeric) {
-    dataset <- make_cols_numeric(dataset)
+    data <- make_cols_numeric(data)
   }
-  attributes(dataset)$spec <- NULL
-  dataset <- as.data.frame(dataset)
-  return(dataset)
+  attributes(data)$spec <- NULL
+  data <- as.data.frame(data)
+  return(data)
 }

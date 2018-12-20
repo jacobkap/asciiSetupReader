@@ -78,6 +78,7 @@ read_data <- function(dataset_name, setup, ...) {
                                            col_types = readr::cols(.default =
                                                                      readr::col_character()),
                                            ...))
+  data <- data.table::as.data.table(data)
 
   return(data)
 }
