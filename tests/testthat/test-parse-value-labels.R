@@ -20,6 +20,7 @@ leoka1980_values       <- parse_value_labels(leoka1980_parsed)
 property_stolen_values <- parse_value_labels(property_stolen_parsed)
 ncvs_values            <- parse_value_labels(ncvs_parsed)
 jail_1987_values       <- parse_value_labels(jail_1987_parsed)
+jail_2010_values       <- parse_value_labels(jail_2010_parsed)
 corrections_values     <- parse_value_labels(corrections_parsed)
 
 
@@ -43,6 +44,8 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(property_stolen_values), 15)
   #  expect_equal(length(ASR), 36)
   expect_equal(length(corrections_values), 9)
+
+  expect_equal(length(jail_2010_values), 123)
 
 })
 
@@ -69,6 +72,7 @@ test_that("parse value labels is silent", {
   expect_silent(parse_value_labels(property_stolen_values))
   #  expect_silent(parse_value_labels(ASR))
   expect_silent(parse_value_labels(corrections_values))
+  expect_silent(parse_value_labels(jail_2010_parsed))
 
 })
 
@@ -1646,6 +1650,78 @@ test_that("Corrections - parsed value labels are accurate", {
                                               "45-54 years" = "4",
                                               "55+ years" = "5",
                                               "Missing" = "9"))
+
+})
+
+
+test_that("Jail survey 2010 - parsed value labels are accurate", {
+
+
+  expect_equal(jail_2010_values$CONFPOPF, c("Actual" = "0",
+                                            "Estimated" = "1",
+                                            "Not applicable" = "8",
+                                            "Dont know" = "9"))
+  expect_equal(jail_2010_values$NCONPOPF, c("Actual" = "0",
+                                            "Estimated" = "1",
+                                            "Not applicable" = "8",
+                                            "Dont know" = "9"))
+  expect_equal(jail_2010_values$PRETRIALF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$TREATMENTF, c("Actual" = "0",
+                                              "Estimated" = "1",
+                                              "Not applicable" = "8",
+                                              "Dont know" = "9"))
+  expect_equal(jail_2010_values$NONCONFDF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$ADFMNCNFF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$JVFMNCNFF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$CONVNCNFF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$UNCNVNCFF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$UNCNVNCFF, c("Actual" = "0",
+                                             "Estimated" = "1",
+                                             "Not applicable" = "8",
+                                             "Dont know" = "9"))
+  expect_equal(jail_2010_values$ASIANF, c("Actual" = "0",
+                                          "Estimated" = "1",
+                                          "Not applicable" = "8",
+                                          "Dont know" = "9"))
+  expect_equal(jail_2010_values$BLACKF, c("Actual" = "0",
+                                          "Estimated" = "1",
+                                          "Not applicable" = "8",
+                                          "Dont know" = "9"))
+  expect_equal(jail_2010_values$OTHERMAJVIO, c("Blank" = "-9"))
+  expect_equal(jail_2010_values$ESCAPE, c("Blank" = "-9"))
+  expect_equal(jail_2010_values$STOLENPROPF, c("Blank" = "-9",
+                                               "Actual" = "0",
+                                               "Estimated" = "1",
+                                               "Not applicable" = "8",
+                                               "Dont know" = "9"))
+  expect_equal(jail_2010_values$ESCAPEF, c("Blank" = "-9",
+                                           "Actual" = "0",
+                                           "Estimated" = "1",
+                                           "Not applicable" = "8",
+                                           "Dont know" = "9"))
+  expect_equal(jail_2010_values$OTHERMAJVIOF, c("Blank" = "-9",
+                                                "Actual" = "0",
+                                                "Estimated" = "1",
+                                                "Not applicable" = "8",
+                                                "Dont know" = "9"))
 
 
 

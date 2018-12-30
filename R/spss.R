@@ -69,9 +69,8 @@ spss_ascii_reader <- function(dataset_name,
             is.logical(value_label_fix), length(value_label_fix) == 1,
             is.logical(real_names), length(real_names) == 1)
 
-  setup <- parse_spss(sps_name,
-                      select_columns = keep_columns,
-                      use_value_labels = value_label_fix)
+  setup <- parse_spss(sps_name)
+  setup$setup <- selected_columns(keep_columns, setup$setup)
 
   data <- read_data(dataset_name, setup, ...)
   column_order <- names(data)

@@ -1,6 +1,25 @@
-parse_spss <- function(sps_name,
-                       select_columns = NULL,
-                       use_value_labels = TRUE) {
+#' Paese the SPSS setup file (.sps file)
+#'
+#' @param sps_name
+#' String of the name of the sps setup file.
+#' @param select_columns
+#'
+#' @param use_value_labels
+#' If TRUE (default) returns a data.frame of three columns.
+#' Column 1 shows the value
+#' else returns NULL
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' sps_name <- system.file("extdata", "example_setup.sps",
+#'   package = "asciiSetupReader")
+#'
+#' \dontrun{
+#' example  <- parse_spss(sps_name = sps_name)
+#' }
+parse_spss <- function(sps_name) {
 
   codebook <- parse_codebook(sps_name)
 
@@ -12,6 +31,20 @@ parse_spss <- function(sps_name,
   variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
                     variables)
   variables <- gsub("\'", "\"", variables)
+
+  # In case some variables are on multiple lines
+  plus <- grep('\\"\\+$', variables)
+  if (length(plus) > 0) {
+    for (n in 1:length(plus)) {
+      variables[plus[n] + 1] <- paste(variables[plus[n]],
+                                      variables[plus[n] + 1],
+                                                collapse = " ")
+      variables[plus[n] + 1] <- gsub('\\"\\+ *\\"', "",
+                                     variables[plus[n] + 1])
+    }
+    variables <- variables[-plus]
+  }
+
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
   variables <- data.frame(column_name = fix_names(variables),
                           column_number = gsub(" .*", "",
@@ -25,11 +58,15 @@ parse_spss <- function(sps_name,
                       grep2("^variable labels$", codebook)]
   setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                 setup)
+  setup <- gsub(" ([0-9]+-[0-9]+) ([[:alpha:]])", " \\1   \\2",
+                setup)
+  setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",
+                setup)
+
 
 
   setup <- unlist(strsplit(setup, '"\\s{3,}'))
   setup <- get_column_spaces(setup, variables)
-  setup <- selected_columns(select_columns, setup)
   setup <- setup[setup$column_number != "*", ]
 
   if (any(grepl2("MISSING VALUES", codebook))) {
@@ -37,11 +74,8 @@ parse_spss <- function(sps_name,
     missing <- missing[missing$variable %in% setup$column_number, ]
   } else missing <- NULL
 
-  if (use_value_labels) {
+
     value_labels <- get_value_labels(codebook, setup)
-  } else {
-    value_labels <- NULL
-  }
 
   setup <- stats::setNames(list(setup, value_labels, missing), c("setup",
                                                                  "value_labels",

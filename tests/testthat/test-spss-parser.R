@@ -24,6 +24,7 @@ test_that("parse_spss is silent", {
 
   expect_silent(parse_spss(ncvs_sps_name))
   expect_silent(parse_spss(jail_1987_sps_name))
+  expect_silent(parse_spss(jail_2010_sps_name))
   expect_silent(parse_spss(corrections_sps_name))
 
 })
@@ -47,6 +48,9 @@ test_that("Right number of columns", {
   expect_equal(nrow(ucr2000_parsed$setup), 1448)
 
   expect_equal(nrow(jail_1987_parsed$setup), 176)
+
+  expect_equal(nrow(jail_2010_parsed$setup), 200)
+
   expect_equal(nrow(corrections_parsed$setup), 14)
 
 
@@ -69,6 +73,7 @@ test_that("Right number of missing values", {
   expect_true(is.null(ucr2000_parsed$missing))
   expect_equal(nrow(ncvs_parsed$missing), 80)
   expect_true(is.null(jail_1987_parsed$missing))
+  expect_equal(nrow(jail_2010_parsed$missing), 60)
   expect_equal(nrow(corrections_parsed$missing), 7)
 
 })
@@ -146,6 +151,10 @@ test_that("Starting number is correct", {
 
   expect_equal(head(jail_1987_parsed$setup$begin), c(1, 5, 6, 7, 10, 13))
   expect_equal(tail(jail_1987_parsed$setup$begin), c(633, 634, 636, 638, 640, 642))
+
+
+  expect_equal(head(jail_2010_parsed$setup$begin), c(1, 22, 31, 33, 78, 123))
+  expect_equal(tail(jail_2010_parsed$setup$begin), c(1125, 1127, 1133, 1135, 1141, 1143))
 
   expect_equal(corrections_parsed$setup$begin, c(1, 2, 6, 8, 9, 10, 11,15, 19, 23, 27, 28, 30, 31))
 
@@ -225,6 +234,10 @@ test_that("Ending number is correct", {
 
   expect_equal(head(jail_1987_parsed$setup$end), c(4, 5, 6, 9, 12, 14))
   expect_equal(tail(jail_1987_parsed$setup$end), c(633, 635, 637, 639, 641, 642))
+
+
+  expect_equal(head(jail_2010_parsed$setup$end), c(21, 30, 32, 77, 122, 154))
+  expect_equal(tail(jail_2010_parsed$setup$end), c(1126, 1132, 1134, 1140, 1142, 1150))
 
   expect_equal(corrections_parsed$setup$end, c(1, 5, 7, 8, 9, 10, 14, 18, 22, 26, 27, 29, 30, 31))
 })
@@ -384,6 +397,30 @@ test_that("Original names are correct", {
                                                            "COURT_ORDER_FOOD_SERVICE",
                                                            "COURT_ORDER_OTHER",
                                                            "CENSUS_USE_BOX"))
+
+
+  expect_equal(head(jail_2010_parsed$setup$column_number), c("FACLID21", "JURDID", "STATE",
+                                                             "COUNTY", "FACLNAME", "CITY"))
+  expect_equal(tail(jail_2010_parsed$setup$column_number), c("STOLENPROPF",
+                                                             "ESCAPE",
+                                                             "ESCAPEF",
+                                                             "OTHERMAJVIO",
+                                                             "OTHERMAJVIOF",
+                                                             "NCONPOP2"))
+
+  expect_equal(head(jail_2010_parsed$setup$column_name), c("AGENCY_ID",
+                                                           "JURISDICTION_ID",
+                                                           "STATE",
+                                                           "COUNTY_NAME",
+                                                           "FACILITY_NAME",
+                                                           "CITY"))
+  expect_equal(tail(jail_2010_parsed$setup$column_name),
+               c("POSSESSION_OF_STOLEN_PROPERTY_FLAG",
+                 "S4QIV_4_1F_ESCAPE_OR_ATTEMPTED_ESCAPE",
+                 "ESCAPE_OR_ATTEMPTED_ESCAPE_FLAG",
+                 "S4QIV_4_1G_ANY_OTHER_MAJOR_VIOLATION_INCLUDING_WORK_SLOWDOWNS_FOOD_STRIKES_SETTING_FIRE_RIOTING_ETC",
+                 "ANY_OTHER_MAJOR_VIOLATION_INCLUDING_WORK_SLOWDOWNS_FOOD_STRIKES_SETTING_FIRE_RIOTING_ETC_FLAG",
+                 "NONCONFINED_POPULATION_CALCULATED"))
 
 
   expect_equal(corrections_parsed$setup$column_number, c("SEX",

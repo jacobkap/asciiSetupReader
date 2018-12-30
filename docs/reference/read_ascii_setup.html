@@ -199,14 +199,16 @@ into numeric columns.</p></td>
   <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>)
 <span class='co'># }</span><div class='input'>
 <span class='co'># Does not fix value labels</span>
-<span class='no'>example2</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_reader</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>use_value_labels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in read_ascii_reader(data = dataset_name, setup_file = sps_name,     use_value_labels = FALSE): could not find function "read_ascii_reader"</span></div><div class='input'>
+<span class='no'>example2</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
+  <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>use_value_labels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
 <span class='co'># Keeps original column names</span>
-<span class='no'>example3</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_reader</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>use_clean_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in read_ascii_reader(data = dataset_name, setup_file = sps_name,     use_clean_names = FALSE): could not find function "read_ascii_reader"</span></div><div class='input'>
+<span class='no'>example3</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
+  <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>use_clean_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
 <span class='co'># Only returns the first 5 columns</span>
-<span class='no'>example4</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_reader</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>select_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div><div class='output co'>#&gt; <span class='error'>Error in read_ascii_reader(data = dataset_name, setup_file = sps_name,     select_columns = 1:5): could not find function "read_ascii_reader"</span></div></pre>
+<span class='no'>example4</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
+  <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>select_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

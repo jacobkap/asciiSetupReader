@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — parse_spss • asciiSetupReader</title>
+<title>Paese the SPSS setup file (.sps file) — parse_spss • asciiSetupReader</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Title — parse_spss" />
+<meta property="og:title" content="Paese the SPSS setup file (.sps file) — parse_spss" />
 
-<meta property="og:description" content="Title" />
+<meta property="og:description" content="Paese the SPSS setup file (.sps file)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -89,7 +89,10 @@
       <a href="../articles/Introduction_to_asciiSetupReader.html">Introduction to asciiSetupReader</a>
     </li>
     <li>
-      <a href="../articles/making_an_sps_setup_file.html">Making an .sps Setup File</a>
+      <a href="../articles/making_a_sps_setup_file.html">Making an .sps Setup File</a>
+    </li>
+    <li>
+      <a href="../articles/parsing_a_sps_setup_file.html">Parsing a .sps Setup File</a>
     </li>
   </ul>
 </li>
@@ -117,35 +120,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Paese the SPSS setup file (.sps file)</h1>
     <small class="dont-index">Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/R/parse_spss_setup.R'><code>R/parse_spss_setup.R</code></a></small>
     <div class="hidden name"><code>parse_spss.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Title</p>
+    <p>Paese the SPSS setup file (.sps file)</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>parse_spss</span>(<span class='no'>sps_name</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>value_label_fix</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>parse_spss</span>(<span class='no'>sps_name</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>value_label_fix</th>
+      <th>sps_name</th>
+      <td><p>String of the name of the sps setup file.</p></td>
+    </tr>
+    <tr>
+      <th>select_columns</th>
       <td></td>
+    </tr>
+    <tr>
+      <th>use_value_labels</th>
+      <td><p>If TRUE (default) returns a data.frame of three columns.
+Column 1 shows the value
+else returns NULL</p></td>
     </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>sps_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_setup.sps"</span>,
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>example</span>  <span class='kw'>&lt;-</span> <span class='fu'>parse_spss</span>(<span class='kw'>sps_name</span> <span class='kw'>=</span> <span class='no'>sps_name</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
