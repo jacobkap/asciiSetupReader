@@ -8,12 +8,6 @@ parse_spss(sps_name)
 }
 \arguments{
 \item{sps_name}{String of the name of the sps setup file.}
-
-\item{select_columns}{}
-
-\item{use_value_labels}{If TRUE (default) returns a data.frame of three columns.
-Column 1 shows the value
-else returns NULL}
 }
 \description{
 Paese the SPSS setup file (.sps file)

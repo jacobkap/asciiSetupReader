@@ -2,12 +2,6 @@
 #'
 #' @param sps_name
 #' String of the name of the sps setup file.
-#' @param select_columns
-#'
-#' @param use_value_labels
-#' If TRUE (default) returns a data.frame of three columns.
-#' Column 1 shows the value
-#' else returns NULL
 #'
 #' @return
 #' @export
