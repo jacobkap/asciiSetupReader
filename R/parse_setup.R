@@ -1,8 +1,15 @@
-parse_spss <- function(sps_name) {
+parse_setup <- function(setup_file) {
 
-  codebook  <- parse_codebook(sps_name, type = "sps")
-  variables <- parse_column_names(codebook, type = "sps")
+  if (grepl(".sps(\\.zip)?$", setup_file)) {
+    type <- "sps"
+  } else {
+    type <- "sas"
+  }
 
+  codebook  <- parse_codebook(setup_file, type = type)
+  variables <- parse_column_names(codebook, type = type)
+
+  if (type == "sps") {
   setup <- codebook[grep2("DATA LIST", codebook):
                       grep2("^variable labels$", codebook)]
   setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
@@ -12,10 +19,12 @@ parse_spss <- function(sps_name) {
   setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",
                 setup)
   setup <- unlist(strsplit(setup, '"\\s{3,}'))
+  } else {
+    setup <- codebook[grep2("INPUT STATEMENTS", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
+  }
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
-
-  if (any(grepl2("MISSING VALUES", codebook))) {
+  if (any(grepl2("MISSING VALUES", codebook)) && type != "sas") {
     missing <- parse_missing(codebook)
     missing <- missing[missing$variable %in% setup$column_number, ]
   } else {
@@ -23,13 +32,12 @@ parse_spss <- function(sps_name) {
   }
 
 
-  value_labels <- get_value_labels(codebook, setup, type = "sps")
-
+  value_labels <- get_value_labels(codebook, setup, type = type)
   setup <- stats::setNames(list(setup, value_labels, missing),
                            c("setup",
                              "value_labels",
                              "missing"))
-  setup$value_labels <- parse_value_labels(setup, type = "sps")
+  setup$value_labels <- parse_value_labels(setup, type = type)
 
   return(setup)
 
@@ -60,8 +68,8 @@ parse_missing <- function(codebook) {
   return(missing)
 }
 
-parse_codebook <- function(setup_name, type) {
-  codebook <- readr::read_lines(setup_name)
+parse_codebook <- function(setup_file, type) {
+  codebook <- readr::read_lines(setup_file)
   codebook <- stringr::str_trim(codebook)
   if (type == "sps") {
     codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]

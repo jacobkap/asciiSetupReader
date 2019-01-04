@@ -5,7 +5,7 @@
 \title{Read ASCII file using SPSS Setup file.}
 \usage{
 spss_ascii_reader(dataset_name, sps_name, value_label_fix = TRUE,
-  real_names = TRUE, keep_columns = NULL, coerce_numeric = TRUE, ...)
+  real_names = TRUE, keep_columns = NULL, coerce_numeric = TRUE)
 }
 \arguments{
 \item{dataset_name}{Name of the ASCII (.txt) file that contains the data.

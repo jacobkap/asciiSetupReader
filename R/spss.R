@@ -25,8 +25,9 @@
 #'   column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 #'   etc.).
 #' @param coerce_numeric
-#' If TRUE (default) will make oclumns where all values can be made numeric
-#' into numeric columns.
+#' If TRUE (default) will make columns where all values can be made numeric
+#' into numeric columns.Useful as FALSE if variables have leading zeros - such
+#' as US Census FIPS codes.
 #'
 #' @return Data.frame of the data from the ASCII file
 #' @export
@@ -58,8 +59,7 @@ spss_ascii_reader <- function(dataset_name,
                               value_label_fix = TRUE,
                               real_names = TRUE,
                               keep_columns = NULL,
-                              coerce_numeric = TRUE,
-                              ...) {
+                              coerce_numeric = TRUE) {
 
   #  .Deprecated("read_ascii_setup")
 
@@ -68,7 +68,7 @@ spss_ascii_reader <- function(dataset_name,
             is.logical(value_label_fix), length(value_label_fix) == 1,
             is.logical(real_names), length(real_names) == 1)
 
-  setup <- parse_spss(sps_name)
+  setup <- parse_setup(sps_name)
   setup$setup <- selected_columns(keep_columns, setup$setup)
 
   data <- read_data(dataset_name, setup)

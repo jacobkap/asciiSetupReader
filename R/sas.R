@@ -9,7 +9,7 @@
 #' @family ASCII Reader functions
 #' @seealso \code{\link{spss_ascii_reader}} For using an SPSS setup file
 #'
-#' @param sas_name Name of the SAS Setup file - should be a .sps or .txt file.
+#' @param sas_name Name of the SAS Setup file - should be a .sas or .txt file.
 #' @inheritParams spss_ascii_reader
 #' @export
 #' @examples
@@ -51,20 +51,7 @@ sas_ascii_reader <- function(dataset_name,
 
 
   # SAS setup
-  codebook <- parse_codebook(sas_name, type = "sas")
-  variables <- parse_column_names(codebook, type = "sas")
-
-  # Get column spacing ==================================================
-  column_spaces <- codebook[grep2("INPUT STATEMENTS", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
-
-  column_spaces <- get_column_spaces(column_spaces, variables, codebook)
-  value_labels <- get_value_labels(codebook, column_spaces, type = "sas")
-  missing <- NULL
-  setup <- stats::setNames(list(column_spaces, value_labels, missing),
-                           c("setup",
-                             "value_labels",
-                             "missing"))
-  setup$value_labels <- parse_value_labels(setup, type = "sas")
+  setup <- parse_setup(sas_name)
   setup$setup <- selected_columns(keep_columns, setup$setup)
 
 

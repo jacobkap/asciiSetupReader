@@ -11,7 +11,7 @@ sas_ascii_reader(dataset_name, sas_name, value_label_fix = TRUE,
 \item{dataset_name}{Name of the ASCII (.txt) file that contains the data.
 This file may be zipped with a file extension of .zip.}
 
-\item{sas_name}{Name of the SAS Setup file - should be a .sps or .txt file.}
+\item{sas_name}{Name of the SAS Setup file - should be a .sas or .txt file.}
 
 \item{value_label_fix}{If TRUE, fixes value labels of the data. e.g. If a
 column is "sex" and has values of 0 or 1, and the setup file says 0 = male

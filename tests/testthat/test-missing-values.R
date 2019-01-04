@@ -1,9 +1,9 @@
 context("Make sure missing values are removed")
 
 
-crosswalk_setup <- parse_spss(crosswalk_sps_name)
+crosswalk_setup <- parse_setup(crosswalk_sps_name)
 crosswalk_raw <- read_data(crosswalk_dataset_name, crosswalk_setup)
-parole_setup <- parse_spss(parole_sps_name)
+parole_setup <- parse_setup(parole_sps_name)
 parole_raw <- read_data(parole_survey_dataset_name, parole_setup)
 
 

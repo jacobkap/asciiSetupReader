@@ -53,8 +53,7 @@ read_ascii_setup <- function(data,
                              use_value_labels = TRUE,
                              use_clean_names  = TRUE,
                              select_columns   = NULL,
-                             coerce_numeric   = TRUE,
-                             ...) {
+                             coerce_numeric   = TRUE) {
 
   if (grepl(".sps(\\.zip)?$", setup_file)) {
 
@@ -63,8 +62,7 @@ read_ascii_setup <- function(data,
                              value_label_fix = use_value_labels,
                              real_names      = use_clean_names,
                              keep_columns    = select_columns,
-                             coerce_numeric  = coerce_numeric,
-                             ...)
+                             coerce_numeric  = coerce_numeric)
   } else {
 
     data <- sas_ascii_reader(dataset_name    = data,
@@ -72,8 +70,7 @@ read_ascii_setup <- function(data,
                              value_label_fix = use_value_labels,
                              real_names      = use_clean_names,
                              keep_columns    = select_columns,
-                             coerce_numeric  = coerce_numeric,
-                             ...)
+                             coerce_numeric  = coerce_numeric)
   }
 
   return(data)
