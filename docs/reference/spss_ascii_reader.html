@@ -92,12 +92,6 @@ in government data, particular data produced before 2010." />
     <li>
       <a href="../articles/Introduction_to_asciiSetupReader.html">Introduction to asciiSetupReader</a>
     </li>
-    <li>
-      <a href="../articles/making_a_sps_setup_file.html">Making an .sps Setup File</a>
-    </li>
-    <li>
-      <a href="../articles/parsing_a_sps_setup_file.html">Parsing a .sps Setup File</a>
-    </li>
   </ul>
 </li>
 <li>
@@ -140,7 +134,7 @@ in government data, particular data produced before 2010.</p>
     </div>
 
     <pre class="usage"><span class='fu'>spss_ascii_reader</span>(<span class='no'>dataset_name</span>, <span class='no'>sps_name</span>, <span class='kw'>value_label_fix</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>real_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>coerce_numeric</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>real_names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>coerce_numeric</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,12 +171,9 @@ etc.).</p></td>
     </tr>
     <tr>
       <th>coerce_numeric</th>
-      <td><p>If TRUE (default) will make oclumns where all values can be made numeric
-into numeric columns.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>further arguments passed to readr</p></td>
+      <td><p>If TRUE (default) will make columns where all values can be made numeric
+into numeric columns.Useful as FALSE if variables have leading zeros - such
+as US Census FIPS codes.</p></td>
     </tr>
     </table>
     

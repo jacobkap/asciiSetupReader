@@ -27,8 +27,9 @@ NULL, will return all columns. Accepts the column number (e.g. 1:5),
 column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 etc.).}
 
-\item{coerce_numeric}{If TRUE (default) will make oclumns where all values can be made numeric
-into numeric columns.}
+\item{coerce_numeric}{If TRUE (default) will make columns where all values can be made numeric
+into numeric columns.Useful as FALSE if variables have leading zeros - such
+as US Census FIPS codes.}
 }
 \description{
 sas_ascii_reader() and spss_ascii_reader() are used when you need to
