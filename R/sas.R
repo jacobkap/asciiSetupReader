@@ -40,10 +40,9 @@ sas_ascii_reader <- function(dataset_name,
                              value_label_fix = TRUE,
                              real_names = TRUE,
                              keep_columns = NULL,
-                             coerce_numeric = TRUE,
-                             ...) {
+                             coerce_numeric = TRUE) {
 
-#  .Deprecated("read_ascii_setup")
+  #  .Deprecated("read_ascii_setup")
 
   stopifnot(is.character(dataset_name), length(dataset_name) == 1,
             is.character(sas_name), length(sas_name) == 1,
@@ -52,113 +51,52 @@ sas_ascii_reader <- function(dataset_name,
 
 
   # SAS setup
-  codebook <- readr::read_lines(sas_name)
-  codebook <- stringr::str_trim(codebook)
-
-  # Get column name - both undescriptive and descriptive =====================
-  codebook_variables <- codebook[grep2("^LABEL$", codebook):
-                                   grep("^$", codebook)[grep("^$", codebook) >
-                                                          grep2("^LABEL$",
-                                                                codebook)][1]]
-  codebook_variables <- codebook_variables[grep("=", codebook_variables)]
-  codebook_variables <- gsub("\\S=", " =", codebook_variables)
-  codebook_variables <- data.frame(column_name = fix_names(codebook_variables),
-                                   column_number = gsub(" .*", "",
-                                                        codebook_variables),
-                                   stringsAsFactors = FALSE)
+  codebook <- parse_codebook(sas_name, type = "sas")
+  variables <- parse_column_names(codebook, type = "sas")
 
   # Get column spacing ==================================================
-  column_spaces <- codebook[grep2("INPUT STATEMENTS", codebook) : grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
+  column_spaces <- codebook[grep2("INPUT STATEMENTS", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
 
-  column_spaces <- get_column_spaces(column_spaces, codebook_variables)
-  column_spaces <- selected_columns(keep_columns, column_spaces)
+  column_spaces <- get_column_spaces(column_spaces, variables, codebook)
+  value_labels <- get_value_labels(codebook, column_spaces, type = "sas")
+  missing <- NULL
+  setup <- stats::setNames(list(column_spaces, value_labels, missing),
+                           c("setup",
+                             "value_labels",
+                             "missing"))
+  setup$value_labels <- parse_value_labels(setup, type = "sas")
+  setup$setup <- selected_columns(keep_columns, setup$setup)
 
 
-  if (any(grepl2("^FORMAT$", codebook))) {
-    # Get format - column names and column names with f ====================
-    format <- codebook[grep2("^FORMAT$", codebook) : length(codebook)]
-    format <- unlist(strsplit(format, "\\."))
-    format <- stringr::str_trim(format)
-    format <- data.frame(column_name = gsub(" .*", "", format),
-                         f_name      = gsub(".* ", "", format))
-    column_spaces <- merge(column_spaces, format, by.x = "column_number",
-                           by.y = "column_name", all.x = TRUE)
-  }
-  column_spaces <- column_spaces[order(column_spaces$begin), ]
 
 
   # Reads in Data File ------------------------------------------------------
-
-
-  data <- suppressMessages(readr::read_fwf(dataset_name,
-                                              readr::fwf_positions(column_spaces$begin,
-                                                                   column_spaces$end,
-                                                                   column_spaces$column_number),
-                                              col_types = readr::cols(.default =
-                                                                        readr::col_character()),
-                                              ...))
-  data <- data.table::as.data.table(data)
+  data <- read_data(dataset_name, setup)
   column_order <- names(data)
 
-  if (any(grepl2("^FORMAT$", codebook))) {
-    # Gets value labels
-    value_position <- grep("^VALUE ", codebook)
-    value_labels <- codebook[value_position[1] : grep("\\*/$", codebook)[grep("\\*/$", codebook) > value_position[length(value_position)]][1]]
-    value_labels <- gsub(";\\*\\/", "", value_labels)
-    value_labels <- unlist(strsplit(value_labels, ";"))
-    value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels)
-    value_labels <- gsub("^VALUE ", "", value_labels)
-    value_labels <- stringr::str_trim(value_labels)
-    value_labels <- gsub("&\\s+", "& ", value_labels)
-    value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
 
+  value_labels <- setup$value_labels
+  if (!is.null(value_labels)) {
+    value_labels <- value_labels[names(value_labels) %in%
+                                   setup$setup$f_name]
+  }
 
-    value_labels <- data.frame(value_labels,
-                               group = 0,
-                               column = value_labels[1],
-                               stringsAsFactors = FALSE)
-
-    group <- 1
-    column <- value_labels$value_labels[1]
-    for (i in 1:nrow(value_labels)) {
-      value_labels$group[i] <- group
-      value_labels$column[i] <- column
-      if (value_labels$value_labels[i + 1] %in% format$f_name) {
-        group <- group + 1
-        column <- value_labels$value_labels[i + 1]
+  if (value_label_fix && length(value_labels) > 0) {
+    for (i in seq_along(value_labels)) {
+      columns <- names(value_labels)[i]
+      columns <- setup$setup$column_number[setup$setup$f_name %in% columns]
+      for (col in columns) {
+        data <- fix_variable_values(data, value_labels[[i]], col)
       }
     }
-    value_labels <- value_labels[value_labels$column %in% column_spaces$f_name, ]
-    value_labels <- split.data.frame(value_labels, value_labels$group)
-
-
-    if (value_label_fix && length(value_labels) > 0) {
-      for (i in seq_along(value_labels)) {
-        column <- value_labels[[i]][1, 1]
-        if (toupper(column) %in% toupper(column_spaces$f_name)) {
-          column <- column_spaces$column_number[toupper(column_spaces$f_name) %in%
-                                                  toupper(column)]
-          value_label_section <-  value_label_matrixer(value_labels[[i]][[1]])
-            for (col in column) {
-              data <- fix_variable_values(data, value_label_section, col)
-            }
-        }
-      }
-      data.table::setcolorder(data, column_order)
-    }
+    data.table::setcolorder(data, column_order)
   }
 
-  if (real_names) {
-    codebook_variables <- codebook_variables[codebook_variables$column_number %in% names(data), ]
-    data.table::setnames(data, old = codebook_variables$column_number,
-                         new = codebook_variables$column_name)
-  }
 
-  # Makes columns that should be numeric numeric
-  if (coerce_numeric) {
-    data <- make_cols_numeric(data)
-  }
-  attributes(data)$spec <- NULL
-  data <- as.data.frame(data)
+  data <- fix_names_missing_numeric(data,
+                                    setup,
+                                    missing,
+                                    real_names,
+                                    coerce_numeric)
   return(data)
 }

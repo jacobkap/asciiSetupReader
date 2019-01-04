@@ -19,10 +19,10 @@
 #'   column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 #'   etc.).
 #' @param coerce_numeric
-#' If TRUE (default) will make oclumns where all values can be made numeric
-#' into numeric columns.
-#' @param ...
-#' further arguments passed to readr
+#' If TRUE (default) will make columns where all values can be made numeric
+#' into numeric columns.Useful as FALSE if variables have leading zeros - such
+#' as US Census FIPS codes.
+#'
 #' @return data.frame of the data from the ASCII file
 #' @export
 #' @examples

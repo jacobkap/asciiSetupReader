@@ -5,7 +5,7 @@
 \title{Read ASCII file using SAS Setup file.}
 \usage{
 sas_ascii_reader(dataset_name, sas_name, value_label_fix = TRUE,
-  real_names = TRUE, keep_columns = NULL, coerce_numeric = TRUE, ...)
+  real_names = TRUE, keep_columns = NULL, coerce_numeric = TRUE)
 }
 \arguments{
 \item{dataset_name}{Name of the ASCII (.txt) file that contains the data.
@@ -29,8 +29,6 @@ etc.).}
 
 \item{coerce_numeric}{If TRUE (default) will make oclumns where all values can be made numeric
 into numeric columns.}
-
-\item{...}{further arguments passed to readr}
 }
 \description{
 sas_ascii_reader() and spss_ascii_reader() are used when you need to

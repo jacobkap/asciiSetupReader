@@ -27,8 +27,7 @@
 #' @param coerce_numeric
 #' If TRUE (default) will make oclumns where all values can be made numeric
 #' into numeric columns.
-#' @param ...
-#' further arguments passed to readr
+#'
 #' @return Data.frame of the data from the ASCII file
 #' @export
 #' @examples
@@ -62,7 +61,7 @@ spss_ascii_reader <- function(dataset_name,
                               coerce_numeric = TRUE,
                               ...) {
 
-#  .Deprecated("read_ascii_setup")
+  #  .Deprecated("read_ascii_setup")
 
   stopifnot(is.character(dataset_name), length(dataset_name) == 1,
             is.character(sps_name), length(sps_name) == 1,
@@ -72,43 +71,17 @@ spss_ascii_reader <- function(dataset_name,
   setup <- parse_spss(sps_name)
   setup$setup <- selected_columns(keep_columns, setup$setup)
 
-  data <- read_data(dataset_name, setup, ...)
-  column_order <- names(data)
-
-  # Value Labels ------------------------------------------------------------
-  # Removes columns not asked for
-  value_labels <- parse_value_labels(setup)
-
-  if (value_label_fix && length(value_labels) > 0) {
-    for (i in seq_along(value_labels)) {
-      data <- fix_variable_values(data,
-                                     value_labels[[i]],
-                                     names(value_labels)[i])
-    }
-    data.table::setcolorder(data, column_order)
-  }
+  data <- read_data(dataset_name, setup)
 
 
-  # Fixes missing values ----------------------------------------------------
-  missing <- setup$missing
-  if (!is.null(missing)) {
-    data <- fix_missing(data, missing)
-  }
-
-  if (real_names) {
-    # Fixes column names to real names
-    codebook_variables <- setup$setup[setup$setup$column_number
-                                      %in% names(data), ]
-    data.table::setnames(data, old = codebook_variables$column_number,
-                         new = codebook_variables$column_name)
-  }
+  data <- fix_value_labels(data, setup, value_label_fix)
 
 
-  # Makes columns that should be numeric numeric
-  if (coerce_numeric) {
-    data <- make_cols_numeric(data)
-  }
-  attributes(data)$spec <- NULL
-  data <- as.data.frame(data)
+  data <- fix_names_missing_numeric(data,
+                                    setup,
+                                    missing,
+                                    real_names,
+                                    coerce_numeric)
+
   return(data)
 }

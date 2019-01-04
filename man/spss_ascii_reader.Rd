@@ -30,8 +30,6 @@ etc.).}
 
 \item{coerce_numeric}{If TRUE (default) will make oclumns where all values can be made numeric
 into numeric columns.}
-
-\item{...}{further arguments passed to readr}
 }
 \value{
 Data.frame of the data from the ASCII file

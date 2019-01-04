@@ -87,15 +87,52 @@ double_digit <- function(value_label_section) {
   }
   return(value_label_section)
 }
-
-get_value_labels <- function(codebook, codebook_column_spaces) {
-  if (!any(grepl2("^value labels$",
+#value_labels <- get_value_labels(codebook, setup, type = "sps")
+get_value_labels <- function(codebook, column_spaces, type) {
+  if (!any(grepl2("^value labels$|^FORMAT$",
                   codebook))) {
     return(NULL)
   }
+
+  if (type == "sps") {
+    value_labels <- get_value_labels_sps(codebook, column_spaces)
+  } else if (type == "sas") {
+    value_labels <- get_value_labels_sas(codebook, column_spaces)
+  }
+
+  return(value_labels)
+}
+
+get_value_labels_sas <- function(codebook, column_spaces) {
+  # Gets value labels
+  value_position <- grep("^VALUE ", codebook)
+  value_labels <- codebook[(value_position[1]+1) : grep("\\*/$", codebook)[grep("\\*/$", codebook) > value_position[length(value_position)]][1]-1]
+  value_labels <- gsub(";\\*\\/", "", value_labels)
+  value_labels <- unlist(strsplit(value_labels, ";"))
+  value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels)
+  value_labels <- gsub("^VALUE ", "", value_labels)
+  value_labels <- stringr::str_trim(value_labels)
+  value_labels <- gsub("&\\s+", "& ", value_labels)
+  value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
+
+  value_labels <- data.frame(value_labels,
+                             column = value_labels[1],
+                             stringsAsFactors = FALSE)
+
+  column <- value_labels$value_labels[1]
+  for (i in 1:nrow(value_labels)) {
+    value_labels$column[i] <- column
+    if (value_labels$value_labels[i + 1] %in% column_spaces$f_name) {
+      column <- value_labels$value_labels[i + 1]
+    }
+  }
+
+  return(value_labels)
+}
+
+get_value_labels_sps <- function(codebook, codebook_column_spaces) {
   value_start <- grep2("^value labels$",
                        codebook)
-
   end_row <- grep("^\\.$|^$", codebook)
   end_row <- end_row[end_row > value_start][1] - 1
   if (is.na(end_row))  end_row <- length(codebook)
@@ -135,22 +172,18 @@ get_value_labels <- function(codebook, codebook_column_spaces) {
   value_labels <- gsub("''''", "''", value_labels)
   value_labels <- gsub('\\"', "\\'", value_labels)
   value_labels <- data.frame(value_labels,
-                             group = 0,
                              column = value_labels,
                              stringsAsFactors = FALSE)
 
 
-  group <- 1
   column <- value_labels$value_labels[1]
   for (i in 1:nrow(value_labels)) {
-    value_labels$group[i] <- group
     value_labels$column[i] <- column
     if (grepl("\\' \\/$", value_labels$value_labels[i]) |
         value_labels$value_labels[i + 1] %in%
         codebook_column_spaces$column_number |
         (!grepl("\\'", value_labels$value_labels[i + 1]) &
          !grepl("^[0-9]+$", value_labels$value_labels[i + 1]))) {
-      group <- group + 1
       column <- value_labels$value_labels[i + 1]
     }
   }

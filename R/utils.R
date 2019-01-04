@@ -1,4 +1,4 @@
-get_column_spaces <- function(column_spaces, codebook_variables) {
+get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
 
   column_spaces <- unlist(strsplit(column_spaces, "\\s{2,}"))
   column_spaces <- gsub("\\$|\\;|\\(.*|\\.[0-9]", "", column_spaces)
@@ -19,6 +19,18 @@ get_column_spaces <- function(column_spaces, codebook_variables) {
                          by = "column_number", all.x = TRUE)
   column_spaces$begin <- suppressMessages(as.numeric(column_spaces$begin))
   column_spaces$end <- suppressMessages(as.numeric(column_spaces$end))
+
+  if (any(grepl2("^FORMAT$", codebook))) {
+    # Get format - column names and column names with f ====================
+    format <- codebook[grep2("^FORMAT$", codebook):length(codebook)]
+    format <- unlist(strsplit(format, "\\."))
+    format <- stringr::str_trim(format)
+    format <- data.frame(column_name = gsub(" .*", "", format),
+                         f_name      = gsub(".* ", "", format))
+    column_spaces <- merge(column_spaces, format, by.x = "column_number",
+                           by.y = "column_name", all.x = TRUE)
+  }
+
   column_spaces <- column_spaces[order(column_spaces$begin), ]
   return(column_spaces)
 }
@@ -83,4 +95,51 @@ read_data <- function(dataset_name, setup, ...) {
   return(data)
 }
 
+fix_names_missing_numeric <- function(data,
+                                      setup,
+                                      missing,
+                                      real_names,
+                                      coerce_numeric) {
+  # Fixes missing values ----------------------------------------------------
+  missing <- setup$missing
+  if (!is.null(missing)) {
+    data <- fix_missing(data, missing)
+  }
+  if (real_names) {
+    # Fixes column names to real names
+    codebook_variables <- setup$setup[setup$setup$column_number
+                                      %in% names(data), ]
+    data.table::setnames(data, old = codebook_variables$column_number,
+                         new = codebook_variables$column_name)
+  }
 
+
+  # Makes columns that should be numeric numeric
+  if (coerce_numeric) {
+    data <- make_cols_numeric(data)
+  }
+  attributes(data)$spec <- NULL
+  data <- as.data.frame(data)
+  return(data)
+}
+
+fix_value_labels <- function(data, setup, value_label_fix) {
+  # Value Labels ------------------------------------------------------------
+  # Removes columns not asked for
+  value_labels <- setup$value_labels
+  if (!is.null(value_labels)) {
+    value_labels <- value_labels[names(value_labels) %in%
+                                   setup$setup$column_number]
+  }
+
+  if (value_label_fix && length(value_labels) > 0) {
+    column_order <- names(data)
+    for (i in seq_along(value_labels)) {
+      data <- fix_variable_values(data,
+                                  value_labels[[i]],
+                                  names(value_labels)[i])
+      data.table::setcolorder(data, column_order)
+    }
+  }
+  return(data)
+}
