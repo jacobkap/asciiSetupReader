@@ -20,7 +20,11 @@ parse_setup <- function(setup_file) {
                 setup)
   setup <- unlist(strsplit(setup, '"\\s{3,}'))
   } else {
-    setup <- codebook[grep2("INPUT STATEMENTS", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("INPUT STATEMENTS", codebook) + 5][1]]
+    setup <- codebook[grep2("^INPUT$", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("^INPUT$", codebook) + 5][1]]
+    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+) ", "\\1 \\2 ", setup)
+    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+)$", "\\1 \\2", setup)
+    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+) ", "\\1 \\2 ", setup)
+    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+)$", "\\1 \\2", setup)
   }
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
@@ -93,7 +97,7 @@ parse_value_labels <- function(setup, type) {
     value_label_cols <- c()
     for (i in seq_along(value_labels)) {
       column <- unique(value_labels[[i]]$column)
-
+ #     message(column)
       value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]])
       value_label_cols <- c(value_label_cols, column)
     }
@@ -125,8 +129,6 @@ parse_column_names <- function(codebook, type) {
       }
       variables <- variables[-plus]
     }
-
-    variables <- unlist(strsplit(variables, '"\\s{3,}'))
   } else if (type == "sas") {
     variables <- codebook[grep2("^LABEL$", codebook):
                             grep("^$", codebook)[grep("^$", codebook) >
@@ -135,6 +137,7 @@ parse_column_names <- function(codebook, type) {
     variables <- variables[grep("=", variables)]
     variables <- gsub("\\S=", " =", variables)
   }
+  variables <- unlist(strsplit(variables, '"\\s{3,}'))
 
 
   variables <- data.frame(column_name = fix_names(variables),

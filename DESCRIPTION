@@ -1,9 +1,9 @@
 Package: asciiSetupReader
 Type: Package
-Title: Reads Fixed-Width ASCII Data Files (.txt or .dat) that have Accompanying Setup Files (.sps or .sas)
+Title: Reads Fixed-Width ASCII Data Files (.txt or .dat) that Have Accompanying Setup Files (.sps or .sas)
 Version: 2.0.0
 Authors@R: person("Jacob", "Kaplan", email = "jkkaplan6@gmail.com", role = c("aut", "cre"))
-Description: Lets you open a fixed-wdith ASCII file (.txt or .dat) that has
+Description: Lets you open a fixed-width ASCII file (.txt or .dat) that has
              an accompanying setup file (.sps or .sas).
              This will only run in a txt-sps or txt-sas pair in which the setup file contains instructions 
               to open that text file. It will NOT open other text files, .sav, .sas, or .por data files. 

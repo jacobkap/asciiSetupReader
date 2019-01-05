@@ -9,7 +9,7 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
                               stringsAsFactors = FALSE)
 
   column_spaces$begin <- gsub(".* ", "", column_spaces$column_number)
-  column_spaces$end <- gsub(".*-", "", column_spaces$begin)
+  column_spaces$end   <- gsub(".*-", "", column_spaces$begin)
   column_spaces$begin <- gsub("-.*", "", column_spaces$begin)
 
   column_spaces$column_number <- gsub(" .*", "", column_spaces$column_number)
@@ -18,11 +18,15 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
   column_spaces <- merge(column_spaces, codebook_variables,
                          by = "column_number", all.x = TRUE)
   column_spaces$begin <- suppressMessages(as.numeric(column_spaces$begin))
-  column_spaces$end <- suppressMessages(as.numeric(column_spaces$end))
+  column_spaces$end   <- suppressMessages(as.numeric(column_spaces$end))
 
   if (any(grepl2("^FORMAT$", codebook))) {
     # Get format - column names and column names with f ====================
-    format <- codebook[grep2("^FORMAT$", codebook):length(codebook)]
+    end_num <- length(codebook)
+    if (length(grep2("^FORMAT$", codebook)) > 1) {
+      end_num <- grep2("^FORMAT$", codebook)[2] - 1
+    }
+    format <- codebook[grep2("^FORMAT$", codebook)[1]:end_num]
     format <- unlist(strsplit(format, "\\."))
     format <- stringr::str_trim(format)
     format <- data.frame(column_name = gsub(" .*", "", format),

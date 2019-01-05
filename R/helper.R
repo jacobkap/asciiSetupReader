@@ -105,14 +105,27 @@ get_value_labels <- function(codebook, column_spaces, type) {
 
 get_value_labels_sas <- function(codebook, column_spaces) {
   # Gets value labels
-  value_position <- grep("^VALUE ", codebook)
-  value_labels <- codebook[(value_position[1]+1) : grep("\\*/$", codebook)[grep("\\*/$", codebook) > value_position[length(value_position)]][1]-1]
+  value_position <- grep2("^VALUE ", codebook)
+  value_labels <- codebook[(value_position[1]+1) : grep("\\*/$|^;$", codebook)[grep("\\*/$|^;$", codebook) > value_position[length(value_position)]][1]-1]
   value_labels <- gsub(";\\*\\/", "", value_labels)
+  value_labels <- gsub("([[:alpha:]]+);", "\\1", value_labels)
   value_labels <- unlist(strsplit(value_labels, ";"))
-  value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels)
-  value_labels <- gsub("^VALUE ", "", value_labels)
+  value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels,
+                       ignore.case = TRUE)
+  value_labels <- gsub("^VALUE ", "", value_labels,
+                       ignore.case = TRUE)
   value_labels <- stringr::str_trim(value_labels)
   value_labels <- gsub("&\\s+", "& ", value_labels)
+
+
+
+  value_labels <- gsub("([[:alpha:]]+)\\s+(<?[0-9]+)", "\\1 \\2",
+                       value_labels)
+  value_labels <- gsub("([[:alpha:]]+)\\s+([[:alpha:]]+)", "\\1 \\2",
+                       value_labels)
+  value_labels <- gsub("([[:alnum:]]+=)", "      \\1",
+                       value_labels)
+  value_labels <- trimws(value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
 
   value_labels <- data.frame(value_labels,

@@ -73,10 +73,10 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
 
 
   expect_silent(read_ascii_setup(data = parole_survey_dataset_name,
-                                 setup_file = parole_survey_sps_name,
+                                 setup_file = parole_sps_name,
                                  select_columns = 4))
   expect_silent(read_ascii_setup(data = parole_survey_dataset_name,
-                                 setup_file = parole_survey_sps_name,
+                                 setup_file = parole_sps_name,
                                  use_clean_names = FALSE))
 
   expect_silent(read_ascii_setup(data = UCR_dataset_name,
@@ -84,7 +84,7 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
   expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
                                  setup_file = crosswalk_sps_name))
   expect_silent(read_ascii_setup(data = parole_survey_dataset_name,
-                                 setup_file = parole_survey_sps_name))
+                                 setup_file = parole_sps_name))
   expect_silent(read_ascii_setup(data = SHR_dataset_name,
                                  setup_file = SHR_sps_name))
 })
