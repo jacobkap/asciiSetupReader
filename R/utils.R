@@ -1,5 +1,9 @@
 get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
 
+  column_spaces <- gsub("([0-9]+-[0-9]+) ([[:alpha:]]+)", "\\1   \\2",
+                        column_spaces)
+  column_spaces <- gsub("\\s{2,}\\$ ([0-9]+)", " \\1",
+                        column_spaces)
   column_spaces <- unlist(strsplit(column_spaces, "\\s{2,}"))
   column_spaces <- gsub("\\$|\\;|\\(.*|\\.[0-9]", "", column_spaces)
   column_spaces <- gsub("\\.$", "", column_spaces)

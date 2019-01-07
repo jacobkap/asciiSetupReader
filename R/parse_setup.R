@@ -28,6 +28,7 @@ parse_setup <- function(setup_file) {
   }
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
+  rownames(setup) <- 1:nrow(setup)
   if (any(grepl2("MISSING VALUES", codebook)) && type != "sas") {
     missing <- parse_missing(codebook)
     missing <- missing[missing$variable %in% setup$column_number, ]
@@ -135,7 +136,8 @@ parse_column_names <- function(codebook, type) {
                                                    grep2("^LABEL$",
                                                          codebook)][1]]
     variables <- variables[grep("=", variables)]
-    variables <- gsub("\\S=", " =", variables)
+    variables <- gsub("(\\S)=", "\\1 =", variables)
+    variables <- gsub('([[:alpha:]]+\\") ', '\\1   ', variables)
   }
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
 

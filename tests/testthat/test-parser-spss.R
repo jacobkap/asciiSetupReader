@@ -21,7 +21,6 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(SHR1988_sps_name))
   expect_silent(parse_setup(SHR1981_sps_name))
   expect_silent(parse_setup(ca_vital_sps_name))
-
   expect_silent(parse_setup(ncvs_sps_name))
   expect_silent(parse_setup(jail_1987_sps_name))
   expect_silent(parse_setup(jail_2010_sps_name))
@@ -46,11 +45,8 @@ test_that("Right number of columns", {
   expect_equal(nrow(ucr1985_parsed_sps$setup), 1458)
   expect_equal(nrow(ucr1986_parsed_sps$setup), 1458)
   expect_equal(nrow(ucr2000_parsed_sps$setup), 1448)
-
   expect_equal(nrow(jail_1987_parsed_sps$setup), 176)
-
   expect_equal(nrow(jail_2010_parsed_sps$setup), 200)
-
   expect_equal(nrow(corrections_parsed_sps$setup), 14)
 
 
