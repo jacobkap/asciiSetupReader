@@ -174,7 +174,7 @@ get_value_labels_sas <- function(codebook, column_spaces) {
       temp <- single_value_label
       temp$value_labels[1] <- real_name
       temp$column <- real_name
-      final_value_labels <- dplyr::bind_rows(final_value_labels, temp)
+      final_value_labels <- rbind(final_value_labels, temp)
     }
   }
 
