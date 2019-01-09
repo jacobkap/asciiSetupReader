@@ -17,6 +17,8 @@ value_label_matrixer <- function(value_label_section) {
   value_label_section <- value_label_section[2:length(value_label_section)]
 
 
+  value_label_section <- gsub('\\"', "\\'",
+                              value_label_section)
   value_label_section <- gsub("^''", "'####BLANK####'",
                               value_label_section)
   value_label_section <- gsub("^' '", "'####SPACE####'",
@@ -59,10 +61,10 @@ fix_variable_values <- function(dataset, value_label_section, column) {
   if (!is.character(dataset[[column]])) {
     data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   }
-    data.table::set(dataset, j = column,
-                    value = haven::as_factor(haven::labelled(dataset[[column]],
-                                                             value_label_section)))
-    data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
+  data.table::set(dataset, j = column,
+                  value = haven::as_factor(haven::labelled(dataset[[column]],
+                                                           value_label_section)))
+  data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   return(dataset)
 }
 
@@ -87,9 +89,9 @@ double_digit <- function(value_label_section) {
   }
   return(value_label_section)
 }
-#value_labels <- get_value_labels(codebook, setup, type = "sps")
+
 get_value_labels <- function(codebook, column_spaces, type) {
-  if (!any(grepl2("^value labels$|^FORMAT$",
+  if (!any(grepl2("^value labels$|SAS FORMAT STATEMENT|^format$|\\/\\* format$",
                   codebook))) {
     return(NULL)
   }
@@ -105,13 +107,37 @@ get_value_labels <- function(codebook, column_spaces, type) {
 
 get_value_labels_sas <- function(codebook, column_spaces) {
   # Gets value labels
+  f_names <- as.character(column_spaces$f_name[!is.na(column_spaces$f_name)])
+  starting <- c()
+  for (f_name in f_names) {
+    result <- grep(paste("VALUE", f_name),
+                   codebook, fixed = TRUE)
+    if (length(result) < 1) {
+      result <- grep(paste("value", f_name),
+                     codebook, fixed = TRUE)
+    }
+    starting <- c(starting, result)
+  }
+  starting <- min(starting)
+
   value_position <- grep2("^VALUE ", codebook)
-  value_labels <- codebook[(value_position[1]+1) : grep("\\*/$|^;$", codebook)[grep("\\*/$|^;$", codebook) > value_position[length(value_position)]][1]-1]
+  next_section <- grep2("^$|\\.|^\\*/$|^;$|^; ?\\*/$", codebook)
+  value_position <- value_position[value_position >= starting]
+  value_labels <- codebook[(value_position[1]):(next_section[next_section >= max(value_position)][1]-1)]
   value_labels <- gsub(";\\*\\/", "", value_labels)
   value_labels <- gsub("([[:alpha:]]+);", "\\1", value_labels)
   value_labels <- unlist(strsplit(value_labels, ";"))
-  value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels,
-                       ignore.case = TRUE)
+
+
+  for (f_name in f_names) {
+    value_labels <- gsub(paste0("^VALUE ", f_name, " \\(\\S*\\)"),
+                   paste0("VALUE ", f_name), value_labels,
+                   ignore.case = TRUE)
+    }
+  # value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels,
+  #                      ignore.case = TRUE)
+
+
   value_labels <- gsub("^VALUE ", "", value_labels,
                        ignore.case = TRUE)
   value_labels <- stringr::str_trim(value_labels)
@@ -123,7 +149,7 @@ get_value_labels_sas <- function(codebook, column_spaces) {
                        value_labels)
   value_labels <- gsub("([[:alpha:]]+)\\s+([[:alpha:]]+)", "\\1 \\2",
                        value_labels)
-  value_labels <- gsub("([[:alnum:]]+=)", "      \\1",
+  value_labels <- gsub("(-?[[:alnum:]]+=)", "      \\1",
                        value_labels)
   value_labels <- trimws(value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
@@ -140,7 +166,19 @@ get_value_labels_sas <- function(codebook, column_spaces) {
     }
   }
 
-  return(value_labels)
+  final_value_labels <- data.frame(stringsAsFactors = FALSE)
+  for (col in unique(value_labels$column)) {
+    single_value_label <- value_labels[value_labels$column %in% col, ]
+    real_names <- unique(column_spaces$column_number[column_spaces$f_name %in% col])
+    for (real_name in real_names) {
+      temp <- single_value_label
+      temp$value_labels[1] <- real_name
+      temp$column <- real_name
+      final_value_labels <- dplyr::bind_rows(final_value_labels, temp)
+    }
+  }
+
+  return(final_value_labels)
 }
 
 get_value_labels_sps <- function(codebook, codebook_column_spaces) {

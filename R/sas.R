@@ -61,23 +61,23 @@ sas_ascii_reader <- function(dataset_name,
   data <- read_data(dataset_name, setup)
   column_order <- names(data)
 
-
-  value_labels <- setup$value_labels
-  if (!is.null(value_labels)) {
-    value_labels <- value_labels[names(value_labels) %in%
-                                   setup$setup$f_name]
-  }
-
-  if (value_label_fix && length(value_labels) > 0) {
-    for (i in seq_along(value_labels)) {
-      columns <- names(value_labels)[i]
-      columns <- setup$setup$column_number[setup$setup$f_name %in% columns]
-      for (col in columns) {
-        data <- fix_variable_values(data, value_labels[[i]], col)
-      }
-    }
-    data.table::setcolorder(data, column_order)
-  }
+  data <- fix_value_labels(data, setup, value_label_fix)
+  # value_labels <- setup$value_labels
+  # if (!is.null(value_labels)) {
+  #   value_labels <- value_labels[names(value_labels) %in%
+  #                                  setup$setup$f_name]
+  # }
+  #
+  # if (value_label_fix && length(value_labels) > 0) {
+  #   for (i in seq_along(value_labels)) {
+  #     columns <- names(value_labels)[i]
+  #     columns <- setup$setup$column_number[setup$setup$f_name %in% columns]
+  #     for (col in columns) {
+  #       data <- fix_variable_values(data, value_labels[[i]], col)
+  #     }
+  #   }
+  #   data.table::setcolorder(data, column_order)
+  # }
 
 
   data <- fix_names_missing_numeric(data,

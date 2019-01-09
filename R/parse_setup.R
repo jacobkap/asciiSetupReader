@@ -92,13 +92,12 @@ parse_value_labels <- function(setup, type) {
     if (type == "sps") {
       value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
     } else if (type == "sas") {
-      value_labels <- value_labels[value_labels$column %in% setup$setup$f_name, ]
+      value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
     }
     value_labels <- split.data.frame(value_labels, value_labels$column)
     value_label_cols <- c()
     for (i in seq_along(value_labels)) {
       column <- unique(value_labels[[i]]$column)
- #     message(column)
       value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]])
       value_label_cols <- c(value_label_cols, column)
     }

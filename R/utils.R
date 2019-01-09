@@ -21,16 +21,17 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
                                    codebook_variables$column_number, ]
   column_spaces <- merge(column_spaces, codebook_variables,
                          by = "column_number", all.x = TRUE)
-  column_spaces$begin <- suppressMessages(as.numeric(column_spaces$begin))
-  column_spaces$end   <- suppressMessages(as.numeric(column_spaces$end))
+  column_spaces$begin <- as.numeric(column_spaces$begin)
+  column_spaces$end   <- as.numeric(column_spaces$end)
 
-  if (any(grepl2("^FORMAT$", codebook))) {
+
+  format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
+  if (any(grepl2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook))) {
     # Get format - column names and column names with f ====================
-    end_num <- length(codebook)
-    if (length(grep2("^FORMAT$", codebook)) > 1) {
-      end_num <- grep2("^FORMAT$", codebook)[2] - 1
-    }
-    format <- codebook[grep2("^FORMAT$", codebook)[1]:end_num]
+     format_section = grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
+
+    format <- codebook[format_section[1]:length(codebook)]
+    format <- gsub("^FORMAT ", "", format, ignore.case = TRUE)
     format <- unlist(strsplit(format, "\\."))
     format <- stringr::str_trim(format)
     format <- data.frame(column_name = gsub(" .*", "", format),
