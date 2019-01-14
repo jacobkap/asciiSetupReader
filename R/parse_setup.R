@@ -30,8 +30,7 @@ parse_setup <- function(setup_file) {
   setup <- setup[setup$column_number != "*", ]
   rownames(setup) <- 1:nrow(setup)
   if (any(grepl2("MISSING VALUES", codebook)) && type != "sas") {
-    missing <- parse_missing(codebook)
-    missing <- missing[missing$variable %in% setup$column_number, ]
+    missing <- parse_missing(codebook, setup)
   } else {
     missing <- NULL
   }
@@ -49,7 +48,7 @@ parse_setup <- function(setup_file) {
 }
 
 
-parse_missing <- function(codebook) {
+parse_missing <- function(codebook, setup) {
 
   start <- grep2("MISSING VALUES$", codebook)
   end <- grep2("EXECUTE|^\\*.*SPSS", codebook)
@@ -68,8 +67,34 @@ parse_missing <- function(codebook) {
                         stringsAsFactors = FALSE)
   missing$variable[missing$variable == ""] <- NA
   missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
-  missing$values <- gsub("\\.$", "", missing$values)
+ # missing$values <- gsub("\\.$", "", missing$values)
   missing$values <- gsub('\\"', "\\'", missing$values)
+  missing$values <- gsub("\\'", "", missing$values)
+  missing$values <- trimws(missing$values)
+  missing <- missing[missing$variable %in% setup$column_number, ]
+  missing <- make_thru_missing_rows(missing)
+
+  return(missing)
+}
+
+make_thru_missing_rows <- function(missing) {
+  thru_rows <- missing[grep("thru -?[0-9]", missing$values, ignore.case = TRUE), ]
+  # thru_highest_rows <- missing[grep("thru hi", missing$values, ignore.case = TRUE), ]
+
+  if (nrow(thru_rows) < 1) return(missing)
+
+  for (i in 1:nrow(thru_rows)) {
+    temp <- thru_rows$values[i]
+    temp <- strsplit(temp, " thru | THRU ")[[1]]
+    values <- temp[1]:temp[2]
+    temp <- data.frame(variable = rep(thru_rows$variable[i], length(values)),
+                       values = values,
+                       stringsAsFactors = FALSE)
+    missing <- rbind(missing, temp)
+  }
+
+  # Removes all rows with "thru"
+  missing <- missing[-grep("thru -?[0-9]", missing$values, ignore.case = TRUE), ]
   return(missing)
 }
 

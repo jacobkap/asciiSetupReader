@@ -294,13 +294,16 @@ SHR_sas_names     <- sas_ascii_reader(dataset_name = SHR_dataset_name,
 SHR2_sas_names    <- sas_ascii_reader(dataset_name = SHR_dataset_name,
                                       sas_name = SHR_sas_name,
                                       real_names = FALSE,
-                                      keep_columns = c(1, 33, 45, 72, 100, 152))
+                                      keep_columns = c(1, 33, 45,
+                                                       72, 100, 152))
 UCR_sas_names     <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                                       sas_name = UCR_sas_name,
-                                      keep_columns = c(1, 33, 345, 572, 1000, 1400))
+                                      keep_columns = c(1, 33, 345,
+                                                       572, 1000, 1400))
 UCR2_sas_names    <- sas_ascii_reader(dataset_name = UCR_dataset_name,
                                       sas_name = UCR_sas_name,
-                                      keep_columns = c(1, 33, 345, 572, 1000, 1400),
+                                      keep_columns = c(1, 33, 345,
+                                                       572, 1000, 1400),
                                       real_names = FALSE)
 NIBRS_sas_names   <- sas_ascii_reader(dataset_name = NIBRS_dataset_name,
                                       sas_name = NIBRS_sas_name,

@@ -127,27 +127,27 @@ test_that("Correct number of labels - SAS", {
 
 test_that("Correct labels are assigned - SAS", {
 
-  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "Possessions"), 39)
-  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "New England States"), 309)
+  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "(0) Possessions"), 39)
+  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "(1) New England States"), 309)
   expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in%
-                     "West North Central States"), 921)
-  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "Pacific States"), 2323)
+                     "(4) West North Central States"), 921)
+  expect_equal(sum(SHR_sas$GEOGRAPHIC_DIVISION %in% "(9) Pacific States"), 2323)
 
-  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "January"), 1083)
-  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "February"), 850)
-  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "October"), 1187)
-  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "December"), 1232)
+  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "(01) January"), 1083)
+  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "(02) February"), 850)
+  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "(10) October"), 1187)
+  expect_equal(sum(SHR_sas$MONTH_OF_OFFENSE %in% "(12) December"), 1232)
 
-  expect_equal(sum(SHR_sas$SITUATION %in% "Single victim/single offender"),
+  expect_equal(sum(SHR_sas$SITUATION %in% "(A) Single victim/single offender"),
                7075)
-  expect_equal(sum(SHR_sas$SITUATION %in% "Single victim/unknown offender(s)"),
+  expect_equal(sum(SHR_sas$SITUATION %in% "(B) Single victim/unknown offender(s)"),
                4236)
-  expect_equal(sum(SHR_sas$SITUATION %in% "Multiple victims/single offender"),
+  expect_equal(sum(SHR_sas$SITUATION %in% "(D) Multiple victims/single offender"),
                374)
   expect_equal(sum(SHR_sas$SITUATION %in%
-                     "Multiple victims/unknown offender(s)"), 203)
+                     "(F) Multiple victims/unknown offender(s)"), 203)
 
-  expect_equal(sum(SHR_sas$IDENTIFIER_CODE %in% "SHR master file"), 13844)
+  expect_equal(sum(SHR_sas$IDENTIFIER_CODE %in% "(6) SHR master file"), 13844)
 
   expect_equal(sum(UCR_sas$ID_CODE %in% "Offenses known"), 8452)
   expect_equal(sum(UCR_sas$NUMERIC_STATE_CODE %in% "Alabama"), 174)

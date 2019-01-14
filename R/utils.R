@@ -77,12 +77,15 @@ fix_missing <- function(dataset, missing) {
     missing_values <- gsub("\\'", "", missing_values)
     names(missing_values) <- NA
 
+    # Sets character to column type in case it isn't already.
     if (!is.character(dataset[[column]])) {
       data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
     }
+
     data.table::set(dataset, j = column,
                     value = haven::as_factor(haven::labelled(dataset[[column]],
                                                              missing_values)))
+    # Resaves as character type instead of factor type
     data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
 
   }

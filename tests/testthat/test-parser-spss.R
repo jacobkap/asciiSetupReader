@@ -61,7 +61,7 @@ test_that("Right number of missing values", {
   expect_true(is.null(acs_parsed_sps$missing))
   expect_true(is.null(nibrs_parsed_sps$missing))
   expect_equal(nrow(parole_parsed_sps$missing), 89)
-  expect_equal(nrow(prisoners_parsed_sps$missing), 200)
+  expect_equal(nrow(prisoners_parsed_sps$missing), 1800)
   expect_true(is.null(ca_vital_parsed_sps$missing))
   expect_equal(nrow(crosswalk_parsed_sps$missing), 12)
   expect_equal(nrow(ucr1985_parsed_sps$missing), 166)
@@ -75,8 +75,6 @@ test_that("Right number of missing values", {
 })
 
 test_that("Starting number is correct", {
-
-
 
   expect_equal(sac_parsed_sps$setup$begin[1:20], c(1, 3, 6, 10, 16, 17, 18, 19, 20, 21, 22,
                                                23, 24, 25, 27, 29, 31, 32, 33, 34))
