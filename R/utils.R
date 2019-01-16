@@ -71,6 +71,18 @@ grepl2 <- function(pattern, x) grepl(pattern, x, ignore.case = TRUE)
 
 fix_missing <- function(dataset, missing) {
 
+  # z = as.data.table(mtcars)
+  # head(z)
+  # column = "cyl"
+  # value_thru_max <- 5
+  # rows_to_fix <- z[get(column) >= value_thru_max, which = TRUE]
+  # data.table::set(z,rows_to_fix, j = column,
+  #                 value = NA)
+  # head(z)
+  #
+  #
+  #
+
   for (column in unique(missing$variable)) {
     missing_values <- missing$values[missing$variable == column]
     missing_values <- as.character(trimws(missing_values))
