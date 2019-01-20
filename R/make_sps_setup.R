@@ -69,7 +69,10 @@ make_sps_setup <- function(file_name,
                   "(version ",
                   utils::packageVersion("asciiSetupReader"),
                   ") on ",
-                  Sys.time(), ".")
+                  Sys.time(), ".",
+                  " For any feedback or problems (or if the file looks odd), ",
+                  "please make a report on https://github.com/jacobkap/asciiSetupReader/issues.",
+                  " For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.")
   intro <- c(intro, "", "")
   line_break <- c(".", "")
   file_name <- gsub(".sps$", "", file_name, "")

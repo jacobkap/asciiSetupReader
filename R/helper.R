@@ -40,7 +40,6 @@ value_label_matrixer <- function(value_label_section) {
     value_label_section <- unlist(stringr::str_split(value_label_section, "'"))
   }
   value_label_section <- gsub("'| =", "", value_label_section)
-#  value_label_section <- gsub("^\\(.*\\) ", "", value_label_section)
   value_label_section <- stringr::str_trim(value_label_section)
   value_label_section <- gsub("####BLANK####", "", value_label_section)
   value_label_section <- gsub("####SPACE####", " ", value_label_section)

@@ -20,7 +20,7 @@
 #'   etc.).
 #' @param coerce_numeric
 #' If TRUE (default) will make columns where all values can be made numeric
-#' into numeric columns.Useful as FALSE if variables have leading zeros - such
+#' into numeric columns. Useful as FALSE if variables have leading zeros - such
 #' as US Census FIPS codes.
 #'
 #' @return data.frame of the data from the ASCII file
