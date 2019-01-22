@@ -27,7 +27,7 @@ column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 etc.).}
 
 \item{coerce_numeric}{If TRUE (default) will make columns where all values can be made numeric
-into numeric columns.Useful as FALSE if variables have leading zeros - such
+into numeric columns. Useful as FALSE if variables have leading zeros - such
 as US Census FIPS codes.}
 }
 \value{

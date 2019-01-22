@@ -14,7 +14,7 @@ Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](http
 
 ## Overview
 
-Some (usually older) data sets are only available in fixed-width ASCII files (.txt or .dat) that have an .sps (SPSS) or .sas (SAS) setup file explaining to the software how to read that file. This package allows you to read in the data if you have both the fixed-width file and its accompanying setup file. 
+Some (usually older) data sets are only available in fixed-width ASCII files (.txt or .dat) that have an .sps (SPSS) or .sas (SAS) setup file explaining to the software how to read that file. These file combinations are sometimes referred to as .txt+.sps, .txt+.sas, .dat+.sps, .dat+.sas. This package allows you to read in the data if you have both the fixed-width file and its accompanying setup file. 
 
 ## Installation
 
