@@ -101,6 +101,13 @@ get_value_labels <- function(codebook, column_spaces, type) {
     value_labels <- get_value_labels_sas(codebook, column_spaces)
   }
 
+  for (i in 1:nrow(value_labels)) {
+    if (tolower(value_labels$column[i]) %in% tolower(column_spaces$column_number)) {
+      value_labels$column[i] <-
+        column_spaces$column_number[tolower(column_spaces$column_number) %in% tolower(value_labels$column[i])]
+    }
+  }
+
   return(value_labels)
 }
 
@@ -202,7 +209,7 @@ get_value_labels_sps <- function(codebook, codebook_column_spaces) {
                        value_labels)
 
   add_spaces <- paste0(codebook_column_spaces$column_number, "   ")
-  names(add_spaces) <- paste0(codebook_column_spaces$column_number, "\\s")
+  names(add_spaces) <- paste0('^', codebook_column_spaces$column_number, " ")
   add_spaces <- add_spaces[!duplicated(add_spaces)]
   add_spaces <- add_spaces[!grepl("^\\*", add_spaces)]
   value_labels <- stringr::str_replace_all(value_labels, add_spaces)

@@ -23,7 +23,7 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(corrections_parsed_sps$value_labels), 9)
 
   expect_equal(length(jail_2010_parsed_sps$value_labels), 123)
-
+  expect_equal(length(sadc_parsed_sps$value_labels), 135)
 })
 
 
@@ -1856,6 +1856,120 @@ test_that("Jail survey 2010 - parsed value labels are accurate", {
                  "Not applicable" = "8",
                  "Dont know" = "9"))
 
+})
 
+
+test_that("SADC - parsed value labels are accurate", {
+
+
+  expect_equal(sadc_parsed_sps$value_labels$Q8,
+               c("Never"            = "1",
+                 "Rarely"           = "2",
+                 "Sometimes"        = "3",
+                 "Most of the time" = "4",
+                 "Always"           = "5"))
+  expect_equal(sadc_parsed_sps$value_labels$Q9,
+               c("0 times"         = "1",
+                 "1 time"          = "2",
+                 "2 or 3 times"    = "3",
+                 "4 or 5 times"    = "4",
+                 "6 or more times" = "5"))
+  expect_equal(sadc_parsed_sps$value_labels$Q10,
+               c("Did not drive"   = "1",
+                 "0 times"         = "2",
+                 "1 time"          = "3",
+                 "2 or 3 times"    = "4",
+                 "4 or 5 times"    = "5",
+                 "6 or more times" = "6"))
+  expect_equal(sadc_parsed_sps$value_labels$Q11,
+               c("Did not drive" = "1",
+                 "0 days"        = "2",
+                 "1 or 2 days"   = "3",
+                 "3 to 5 days"   = "4",
+                 "6 to 9 days"   = "5",
+                 "10 to 19 days" = "6",
+                 "20 to 29 days" = "7",
+                 "All 30 days"   = "8"))
+  expect_equal(sadc_parsed_sps$value_labels$Q12,
+               c("0 days"         = "1",
+                 "1 day"          = "2",
+                 "2 or 3 days"    = "3",
+                 "4 or 5 days"    = "4",
+                 "6 or more days" = "5"))
+  expect_equal(sadc_parsed_sps$value_labels$Q13,
+               c("0 days"         = "1",
+                 "1 day"          = "2",
+                 "2 or 3 days"    = "3",
+                 "4 or 5 days"    = "4",
+                 "6 or more days" = "5"))
+  expect_equal(sadc_parsed_sps$value_labels$Q14,
+               c("0 days"         = "1",
+                 "1 day"          = "2",
+                 "2 or 3 days"    = "3",
+                 "4 or 5 days"    = "4",
+                 "6 or more days" = "5"))
+  expect_equal(sadc_parsed_sps$value_labels$Q15,
+               c("0 days"         = "1",
+                 "1 day"          = "2",
+                 "2 or 3 days"    = "3",
+                 "4 or 5 days"    = "4",
+                 "6 or more days" = "5"))
+  expect_equal(sadc_parsed_sps$value_labels$Q16,
+               c("0 times"          = "1",
+                 "1 time"           = "2",
+                 "2 or 3 times"     = "3",
+                 "4 or 5 times"     = "4",
+                 "6 or 7 times"     = "5",
+                 "8 or 9 times"     = "6",
+                 "10 or 11 times"   = "7",
+                 "12 or more times" = "8"))
+  expect_equal(sadc_parsed_sps$value_labels$Q58,
+               c("Yes" = "1",
+                 "No"  = "2"))
+  expect_equal(sadc_parsed_sps$value_labels$Q77,
+               c("Did not drink milk"        = "1",
+                 "1 to 3 glasses"            = "2",
+                 "4 to 6 glasses"            = "3",
+                 "1 glass per day"           = "4",
+                 "2 glasses per day"         = "5",
+                 "3 glasses per day"         = "6",
+                 "4 or more glasses per day" = "7"))
+  expect_equal(sadc_parsed_sps$value_labels$qchewtobschool,
+               c("0 days"        = "1",
+                 "1 or 2 days"   = "2",
+                 "3 to 5 days"   = "3",
+                 "6 to 9 days"   = "4",
+                 "10 to 19 days" = "5",
+                 "20 to 29 days" = "6",
+                 "All 30 days"   = "7"))
+  expect_equal(sadc_parsed_sps$value_labels$age,
+               c("12 years old or younger" = "1",
+                 "13 years old"            = "2",
+                 "14 years old"            = "3",
+                 "15 years old"            = "4",
+                 "16 years old"            = "5",
+                 "17 years old"            = "6",
+                 "18 years old or older"   = "7"))
+  expect_equal(sadc_parsed_sps$value_labels$race7,
+               c("Am Indian / Alaska Native" = "1",
+                 "Asian"                     = "2",
+                 "Black or African American" = "3",
+                 "Hispanic/Latino"           = "4",
+                 "Native Hawaiian/other PI"  = "5",
+                 "White"                     = "6",
+                 "Multiple - Non-Hispanic"   = "7"))
+  expect_equal(sadc_parsed_sps$value_labels$sexid2,
+               c("Heterosexual"    = "1",
+                 "Sexual Minority" = "2",
+                 "Unsure"          = "3"))
+  expect_equal(sadc_parsed_sps$value_labels$sexpart,
+               c("Never had sex"     = "1",
+                 "Opposite sex only" = "2",
+                 "Same sex only"     = "3",
+                 "Both Sexes"        = "4"))
+  expect_equal(sadc_parsed_sps$value_labels$sexpart2,
+               c("Never had sex"               = "1",
+                 "Opposite sex only"           = "2",
+                 "Same sex only or both sexes" = "3"))
 
 })

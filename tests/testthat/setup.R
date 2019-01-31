@@ -119,6 +119,9 @@ jail_1987_dataset_name     <- system.file("testdata",
 corrections_sps_name       <- system.file("testdata",
                                           "corrections_prison_admissions_1991_2016.sps",
                                           package = "asciiSetupReader")
+sadc_sps_name              <- system.file("testdata",
+                                          "2017_sadc_spss_input_program.sps",
+                                          package = "asciiSetupReader")
 
 
 crosswalk_sas_name         <- system.file("testdata",
@@ -346,6 +349,7 @@ ncvs_parsed_sps            <- parse_setup(ncvs_sps_name)
 jail_1987_parsed_sps       <- parse_setup(jail_1987_sps_name)
 jail_2010_parsed_sps       <- parse_setup(jail_2010_sps_name)
 corrections_parsed_sps     <- parse_setup(corrections_sps_name)
+sadc_parsed_sps            <- parse_setup(sadc_sps_name)
 
 parole_parsed_sas          <- parse_setup(parole_sas_name)
 sac_parsed_sas             <- parse_setup(sac_sas_name)

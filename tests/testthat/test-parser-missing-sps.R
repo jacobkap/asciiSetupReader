@@ -1,5 +1,28 @@
 context("test-parser-missing-sps")
 
+test_that("Right number of missing values", {
+
+  expect_equal(nrow(sac_parsed_sps$missing), 261)
+  expect_equal(nrow(sex_offender_parsed_sps$missing), 18)
+  expect_true(is.null(ucr1960_parsed_sps$missing))
+  expect_equal(nrow(weimar_parsed_sps$missing), 19)
+  expect_true(is.null(acs_parsed_sps$missing))
+  expect_true(is.null(nibrs_parsed_sps$missing))
+  expect_equal(nrow(parole_parsed_sps$missing), 89)
+  expect_equal(nrow(prisoners_parsed_sps$missing), 1800)
+  expect_true(is.null(ca_vital_parsed_sps$missing))
+  expect_equal(nrow(crosswalk_parsed_sps$missing), 12)
+  expect_equal(nrow(ucr1985_parsed_sps$missing), 166)
+  expect_equal(nrow(ucr1986_parsed_sps$missing), 160)
+  expect_true(is.null(ucr2000_parsed_sps$missing))
+  expect_equal(nrow(ncvs_parsed_sps$missing), 80)
+  expect_true(is.null(jail_1987_parsed_sps$missing))
+  expect_equal(nrow(jail_2010_parsed_sps$missing), 60)
+  expect_equal(nrow(corrections_parsed_sps$missing), 7)
+  expect_equal(nrow(sadc_parsed_sps$missing), 312)
+
+})
+
 test_that("Sac has right missing values", {
   expect_equal(head(sac_parsed_sps$missing$variable),
                c("TODDATYR", "DATSTAR", "CONSTATE",
@@ -20,6 +43,28 @@ test_that("Sac has right missing values", {
   expect_equal(tail(unique(sac_parsed_sps$missing$variable)),
                c("Q126PN3", "Q126OTH3", "KAGE",
                  "VERDICT", "DURAT", "DURAT2"))
+})
+
+test_that("SADC has right missing values", {
+  expect_equal(head(sadc_parsed_sps$missing$variable),
+               c("sitecode", "sitetypenum", "year",
+                 "survyear", "weight", "stratum"))
+  expect_equal(head(sadc_parsed_sps$missing$values),
+               c("", "", "",
+                 "", "", ""))
+  expect_equal(tail(sadc_parsed_sps$missing$variable),
+               c("qnsunburn", "qnconcentrating", "qncurrentasthma",
+                 "qnwheresleep", "qnspeakenglish", "qntransgender"))
+  expect_equal(tail(sadc_parsed_sps$missing$values),
+               c("", "", "",
+                 "", "", ""))
+
+  expect_equal(head(unique(sadc_parsed_sps$missing$variable)),
+               c("sitecode", "sitetypenum", "year",
+                 "survyear", "weight", "stratum"))
+  expect_equal(tail(unique(sadc_parsed_sps$missing$variable)),
+               c("qnsunburn", "qnconcentrating", "qncurrentasthma",
+                 "qnwheresleep", "qnspeakenglish", "qntransgender"))
 })
 
 test_that("Sex offender has right missing values", {

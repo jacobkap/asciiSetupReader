@@ -17,8 +17,19 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
   column_spaces$begin <- gsub("-.*", "", column_spaces$begin)
 
   column_spaces$column_number <- gsub(" .*", "", column_spaces$column_number)
-  column_spaces <- column_spaces[column_spaces$column_number %in%
-                                   codebook_variables$column_number, ]
+  column_spaces <- column_spaces[tolower(column_spaces$column_number) %in%
+                                   tolower(codebook_variables$column_number), ]
+
+  # In the CDC SADC data set, the column number changes from lowercase
+  # to uppercase depending on section of setup file.
+  for (i in 1:nrow(column_spaces)) {
+    if (tolower(column_spaces$column_number[i]) %in% tolower(codebook_variables$column_number)) {
+    column_spaces$column_number[i] <-
+      codebook_variables$column_number[tolower(codebook_variables$column_number) %in% tolower(column_spaces$column_number[i])]
+    }
+  }
+
+
   column_spaces <- merge(column_spaces, codebook_variables,
                          by = "column_number", all.x = TRUE)
   column_spaces$begin <- as.numeric(column_spaces$begin)

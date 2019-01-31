@@ -10,15 +10,16 @@ parse_setup <- function(setup_file) {
   variables <- parse_column_names(codebook, type = type)
 
   if (type == "sps") {
-  setup <- codebook[grep2("DATA LIST", codebook):
-                      grep2("^variable labels$", codebook)]
-  setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
-                setup)
-  setup <- gsub(" ([0-9]+-[0-9]+) ([[:alpha:]])", " \\1   \\2",
-                setup)
-  setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",
-                setup)
-  setup <- unlist(strsplit(setup, '"\\s{3,}'))
+    setup <- codebook[grep2("DATA LIST", codebook):
+                        grep2("^variable labels$", codebook)]
+    setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
+                  setup)
+    setup <- gsub(" \\(A\\) ", " ", setup)
+    setup <- gsub(" ([0-9]+-[0-9]+) ([[:alpha:]])", " \\1   \\2",
+                  setup)
+    setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",
+                  setup)
+    setup <- unlist(strsplit(setup, '"\\s{3,}'))
   } else {
     setup <- codebook[grep2("^INPUT$", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("^INPUT$", codebook) + 5][1]]
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+) ", "\\1 \\2 ", setup)
@@ -58,8 +59,10 @@ parse_missing <- function(codebook, setup) {
     end <- min(end[end > start])
   }
   missing <- codebook[start:end]
+  missing <- gsub('\\"\\s+\\"', '""', missing)
   missing <- gsub("(\\S),(\\S)", "\\1, \\2", missing)
   missing <- gsub("\\s{3,}\\(", " \\(", missing)
+  missing <- gsub("\\) ", "\\)   ", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
@@ -67,10 +70,18 @@ parse_missing <- function(codebook, setup) {
                         stringsAsFactors = FALSE)
   missing$variable[missing$variable == ""] <- NA
   missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
- # missing$values <- gsub("\\.$", "", missing$values)
+  # missing$values <- gsub("\\.$", "", missing$values)
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
+
+  for (i in 1:nrow(missing)) {
+    if (tolower(missing$variable[i]) %in% tolower(setup$column_number)) {
+      missing$variable[i] <-
+        setup$column_number[tolower(setup$column_number) %in% tolower(missing$variable[i])]
+    }
+  }
+
   missing <- missing[missing$variable %in% setup$column_number, ]
   missing <- make_thru_missing_rows(missing)
 
@@ -173,5 +184,6 @@ parse_column_names <- function(codebook, type) {
   if (any(grepl("^$", variables$column_name))) {
     variables <- variables[1:(grep("^$", variables$column_name)[1]), ]
   }
+  variables <- variables[!variables$column_number %in% "*", ]
   return(variables)
 }
