@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • asciiSetupReader</title>
+<title>Parse the setup file (.sps or .sas). — parse_setup • asciiSetupReader</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Parse the setup file (.sps or .sas). — parse_setup" />
+
+<meta property="og:description" content="Parse the setup file (.sps or .sas)." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -111,61 +114,61 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Parse the setup file (.sps or .sas).</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/R/parse_setup.R'><code>R/parse_setup.R</code></a></small>
+    <div class="hidden name"><code>parse_setup.Rd</code></div>
     </div>
 
-    <div id="asciisetupreader-2-0-0" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-2-0-0" class="anchor"></a>asciiSetupReader 2.0.0<small> Unreleased </small>
-</h1>
-<div id="major-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major Changes</h2>
-<ul>
-<li>Adds function to create sps setup files.</li>
-<li>Adds capacity for .sas reader to handle missing values.</li>
-<li>Adds a function for users to parse the setup file (.sps or .sas) and get results. An accompanying vignette explains this function.</li>
-<li>Adds a function to make your own .sps files (not .sas yet).</li>
-</ul>
-</div>
-<div id="minor-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor Changes</h2>
-<ul>
-<li>Adds option to not coerce potentially numeric columns into numeric type.</li>
-<li>Miscellaneous bug fixes.</li>
-<li>Fixes bug when missing values are an interval (e.g. -1 thru -8).</li>
-</ul>
-</div>
-</div>
-    <div id="asciisetupreader-1-4-0" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-1-4-0" class="anchor"></a>asciiSetupReader 1.4.0<small> 2018-06-18 </small>
-</h1>
-<ul>
-<li>Adds capacity to the SPSS reader to handle Missing Values.</li>
-<li>Fixes bug where function fails if no value-labels are detected.
-<ul>
-<li>Applies both when setup file has no value-labels and if only select columns that have no value-labels.</li>
-</ul>
-</li>
-<li>Adds a huge number of tests.</li>
-<li>Changes factor column to character columns.</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    
+    <p>Parse the setup file (.sps or .sas).</p>
+    
+    </div>
 
+    <pre class="usage"><span class='fu'>parse_setup</span>(<span class='no'>setup_file</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>setup_file</th>
+      <td><p>Name of the SPSS or SAS setup file - should be a .sps or .sas (.txt also accepted as are these files in zipped format)</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list of length 3. The first object is a data frame containing 4 columns: first the
+nondescriptive name of each column, columns two and three and the beginning and ending number
+of the column (used to determine the columns location in the fixed-with data file). The fourth
+column is the descriptive name of the column.</p>
+<p>The second object in the list is list of named vectors for the value labels. The
+list has a length equal to the number of columns with value labels. If there are
+no value labels, this will be NULL.</p>
+<p>The third object in the list is the same format as the value labels but is for missing
+values. If there are no missing values, this will be NULL.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>sas_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_setup.sas"</span>,
+                         <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)
+<span class='no'>sas_example</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_setup</span>(<span class='no'>sas_name</span>)
+
+<span class='no'>sps_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_setup.sps"</span>,
+                         <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)
+<span class='no'>sps_example</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_setup</span>(<span class='no'>sps_name</span>)</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#asciisetupreader-2-0-0">2.0.0</a></li>
-        <li><a href="#asciisetupreader-1-4-0">1.4.0</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
+  </div>
 </div>
 
       <footer>
