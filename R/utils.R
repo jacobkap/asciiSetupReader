@@ -52,11 +52,7 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
   }
 
   column_spaces <- column_spaces[order(column_spaces$begin), ]
-  column_spaces <- dplyr::select(column_spaces, column_number,
-                                 column_name,
-                                 begin,
-                                 end,
-                                 dplyr::everything())
+
   return(column_spaces)
 }
 
