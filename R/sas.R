@@ -38,7 +38,7 @@
 #' # Only returns the first 5 columns
 #' example <- sas_ascii_reader(dataset_name = dataset_name,
 #'   sas_name = sas_name, keep_columns = 1:5)
-#'}
+#' }
 sas_ascii_reader <- function(dataset_name,
                              sas_name,
                              value_label_fix = TRUE,
