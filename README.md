@@ -1,4 +1,4 @@
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader.png)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader.png)
 [![Travis-CI Build
 Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)
 [![AppVeyor Build
