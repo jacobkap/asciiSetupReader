@@ -35,12 +35,12 @@
 #' @export
 #' @examples
 #' # Text file is zipped to save space.
-#' #' \dontrun{
 #' dataset_name <- system.file("extdata", "example_data.zip",
 #'   package = "asciiSetupReader")
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #'   package = "asciiSetupReader")
 #'
+#' \dontrun{
 #' example <- spss_ascii_reader(dataset_name = dataset_name,
 #'   sps_name = sps_name)
 #'
@@ -53,10 +53,11 @@
 #' example3 <- spss_ascii_reader(dataset_name = dataset_name,
 #'   sps_name = sps_name, real_names = FALSE)
 #'
+#' }
 #' # Only returns the first 5 columns
 #' example4 <- spss_ascii_reader(dataset_name = dataset_name,
 #'   sps_name = sps_name, keep_columns = 1:5)
-#' }
+#'
 spss_ascii_reader <- function(dataset_name,
                               sps_name,
                               value_label_fix = TRUE,
