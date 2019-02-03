@@ -198,25 +198,33 @@ as US Census FIPS codes.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Text file is zipped to save space.</span>
-<span class='no'>dataset_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_data.zip"</span>,
-  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)
-<span class='no'>sps_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_setup.sps"</span>,
-  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)</div><span class='co'># NOT RUN {</span>
-<span class='no'>example</span> <span class='kw'>&lt;-</span> <span class='fu'>spss_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>sps_name</span> <span class='kw'>=</span> <span class='no'>sps_name</span>)
+    <pre class="examples"><div class='input'># Text file is zipped to save space.
+#' \dontrun{
+dataset_name <- system.file("extdata", "example_data.zip",
+  package = "asciiSetupReader")
+sps_name <- system.file("extdata", "example_setup.sps",
+  package = "asciiSetupReader")
+
+example <- spss_ascii_reader(dataset_name = dataset_name,
+  sps_name = sps_name)
 
 
-<span class='co'># Does not fix value labels</span>
-<span class='no'>example2</span> <span class='kw'>&lt;-</span> <span class='fu'>spss_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>sps_name</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>value_label_fix</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+# Does not fix value labels
+example2 <- spss_ascii_reader(dataset_name = dataset_name,
+  sps_name = sps_name, value_label_fix = FALSE)
 
-<span class='co'># Keeps original column names</span>
-<span class='no'>example3</span> <span class='kw'>&lt;-</span> <span class='fu'>spss_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>sps_name</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>real_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='co'># }</span><div class='input'><span class='co'># Only returns the first 5 columns</span>
-<span class='no'>example4</span> <span class='kw'>&lt;-</span> <span class='fu'>spss_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>sps_name</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div></pre>
+# Keeps original column names
+example3 <- spss_ascii_reader(dataset_name = dataset_name,
+  sps_name = sps_name, real_names = FALSE)
+
+# Only returns the first 5 columns
+example4 <- spss_ascii_reader(dataset_name = dataset_name,
+  sps_name = sps_name, keep_columns = 1:5)
+}
+</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:23:1: unexpected '}'</span>
+#&gt; <span class='error'>22:   sps_name = sps_name, keep_columns = 1:5)</span>
+#&gt; <span class='error'>23: }</span>
+#&gt; <span class='error'>    ^</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

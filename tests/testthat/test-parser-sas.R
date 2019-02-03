@@ -62,25 +62,50 @@ test_that("Starting number is correct", {
   skip_on_cran()
 
 
-  expect_equal(sac_parsed_sas$setup$begin[1:20], c(1, 3, 6, 10, 16, 17, 18, 19, 20, 21, 22,
-                                                   23, 24, 25, 27, 29, 31, 32, 33, 34))
-  expect_equal(sac_parsed_sas$setup$begin[178:197], c(219, 220, 222, 223, 224, 226, 227,
-                                                      229, 230, 232, 233, 234, 236, 237,
-                                                      239, 240, 242, 243, 244, 246))
-  expect_equal(sex_offender_parsed_sas$setup$begin, c(1, 4, 6, 13, 27, 29, 30, 31, 32, 33,
-                                                      34, 35, 36, 38, 40, 42, 43, 44, 45,
-                                                      46, 47, 48, 50, 52, 54, 56, 58, 60,
-                                                      62, 64, 66, 68, 70, 71))
-  expect_equal(ucr1960_parsed_sas$setup$begin[1:20], c(1, 2, 4, 11, 13, 14, 18, 23, 24, 31,
-                                                       38, 42, 44, 45, 52, 55, 58, 63, 66, 69))
-  expect_equal(ucr1960_parsed_sas$setup$begin[1429:1448], c(1936, 1937, 1938, 1939, 1940,
-                                                            1941, 1942, 1943, 1944,  1945, 1946,
-                                                            1947, 1948, 1949, 1950, 1951,
-                                                            1952, 1953, 1954, 1955))
+  expect_equal(sac_parsed_sas$setup$begin[1:20], c(1, 3, 6,
+                                                   10, 16, 17,
+                                                   18, 19, 20,
+                                                   21, 22, 23,
+                                                   24, 25, 27,
+                                                   29, 31, 32,
+                                                   33, 34))
+  expect_equal(sac_parsed_sas$setup$begin[178:197], c(219, 220, 222,
+                                                      223, 224, 226,
+                                                      227,  229, 230,
+                                                      232, 233, 234,
+                                                      236, 237, 239,
+                                                      240, 242, 243,
+                                                      244, 246))
+  expect_equal(sex_offender_parsed_sas$setup$begin, c(1, 4, 6, 13,
+                                                      27, 29, 30,
+                                                      31, 32, 33,
+                                                      34, 35, 36,
+                                                      38, 40, 42,
+                                                      43, 44, 45,
+                                                      46, 47, 48,
+                                                      50, 52, 54,
+                                                      56, 58, 60,
+                                                      62, 64, 66,
+                                                      68, 70, 71))
+  expect_equal(ucr1960_parsed_sas$setup$begin[1:20], c(1, 2, 4,
+                                                       11, 13, 14,
+                                                       18, 23, 24,
+                                                       31, 38, 42,
+                                                       44, 45, 52,
+                                                       55, 58, 63,
+                                                       66, 69))
+  expect_equal(ucr1960_parsed_sas$setup$begin[1429:1448], c(1936, 1937, 1938,
+                                                            1939, 1940, 1941,
+                                                            1942, 1943, 1944,
+                                                            1945, 1946, 1947,
+                                                            1948, 1949, 1950,
+                                                            1951, 1952, 1953,
+                                                            1954, 1955))
   expect_equal(weimar_parsed_sas$setup$begin, c(1, 3, 5, 6, 23, 30, 37, 44, 51, 58, 65, 72,
                                                 79, 86, 93, 100, 107, 114, 121, 128, 135,
                                                 142, 149))
-  expect_equal(acs_parsed_sas$setup$begin, c(1, 3, 4, 8, 18, 19))
+  expect_equal(acs_parsed_sas$setup$begin, c(1, 3, 4,
+                                             8, 18, 19))
   expect_equal(nibrs_parsed_sas$setup$begin, c(1, 3, 5, 14, 26, 34, 42, 72, 74, 76, 77, 78,
                                                79, 80, 89, 93, 97, 98, 106, 133))
   expect_equal(parole_parsed_sas$setup$begin[1:20], c(1, 3, 5, 11, 17, 23, 29, 35, 41, 47,
@@ -96,34 +121,51 @@ test_that("Starting number is correct", {
                                                   115, 126, 137, 148, 159, 160, 171, 182,
                                                   184, 185, 187, 188, 189))
 
-  expect_equal(crosswalk_parsed_sas$setup$begin, c(1, 2, 4, 12, 60, 61, 62, 64, 67, 98, 101,
-                                                   103, 112, 142, 172, 202, 232, 237, 239,
-                                                   248, 257, 259,
-                                                   323, 331, 333, 336, 342, 346, 391))
-  expect_equal(ucr1985_parsed_sas$setup$begin[1:20], c(1, 5, 6, 8, 13, 15, 22, 23, 25, 26,
-                                                       28, 33, 35, 36, 44, 50, 54, 56, 57,
-                                                       65))
-  expect_equal(ucr1985_parsed_sas$setup$begin[1439:1458], c(5324, 5325, 5326, 5327, 5328,
-                                                            5329, 5330, 5331, 5332, 5335,
-                                                            5338, 5341, 5344, 5347, 5350,
-                                                            5353, 5356, 5359, 5362, 5365))
+  expect_equal(crosswalk_parsed_sas$setup$begin, c(1, 2, 4,
+                                                   12, 60, 61,
+                                                   62, 64, 67,
+                                                   98, 101, 103,
+                                                   112, 142, 172,
+                                                   202, 232, 237,
+                                                   239, 248, 257,
+                                                   259, 323, 331,
+                                                   333, 336, 342,
+                                                   346, 391))
+  expect_equal(ucr1985_parsed_sas$setup$begin[1:20], c(1, 5, 6,
+                                                       8, 13, 15,
+                                                       22, 23, 25,
+                                                       26, 28, 33,
+                                                       35, 36, 44,
+                                                       50, 54, 56,
+                                                       57, 65))
+  expect_equal(ucr1985_parsed_sas$setup$begin[1439:1458], c(5324, 5325, 5326,
+                                                            5327, 5328, 5329,
+                                                            5330, 5331, 5332,
+                                                            5335, 5338, 5341,
+                                                            5344, 5347, 5350,
+                                                            5353, 5356, 5359,
+                                                            5362, 5365))
 
   expect_equal(ucr1986_parsed_sas$setup$begin[1:20], c(1, 5, 6, 8, 13, 15, 22, 23,
                                                        25, 26, 28, 33, 35, 36, 44,
                                                        50, 54, 56, 57, 65))
-  expect_equal(ucr1986_parsed_sas$setup$begin[1439:1458], c(5207, 5208, 5209, 5210,
-                                                            5211, 5212, 5213, 5214,
-                                                            5215, 5218, 5222, 5225,
-                                                            5228, 5231, 5234, 5237,
-                                                            5240, 5243, 5246, 5249))
+  expect_equal(ucr1986_parsed_sas$setup$begin[1439:1458], c(5207, 5208, 5209,
+                                                            5210, 5211, 5212,
+                                                            5213, 5214, 5215,
+                                                            5218, 5222, 5225,
+                                                            5228, 5231, 5234,
+                                                            5237, 5240, 5243,
+                                                            5246, 5249))
   expect_equal(ucr2000_parsed_sas$setup$begin[1:20], c(1, 2, 4, 11, 13, 14, 18, 23, 24,
                                                        31, 39, 43, 45, 46, 53, 56, 59,
                                                        64, 67, 70))
-  expect_equal(ucr2000_parsed_sas$setup$begin[1429:1448], c(3710, 3712, 3716, 3718,
-                                                            3720, 3722, 3724, 3728,
-                                                            3731, 3734, 3736, 3738,
-                                                            3742, 3745, 3748, 3750,
-                                                            3752, 3756, 3757, 3758))
+  expect_equal(ucr2000_parsed_sas$setup$begin[1429:1448], c(3710, 3712, 3716,
+                                                            3718, 3720, 3722,
+                                                            3724, 3728, 3731,
+                                                            3734, 3736, 3738,
+                                                            3742, 3745, 3748,
+                                                            3750, 3752, 3756,
+                                                            3757, 3758))
 
   expect_equal(head(ncvs_parsed_sas$setup$begin), c(1, 7, 10, 12,
                                                     15, 19))
@@ -263,16 +305,22 @@ test_that("Original names are correct", {
                                                               "Q8B", "Q9A", "Q9B", "Q9C",
                                                               "Q9D", "Q9E", "Q9F", "Q9G",
                                                               "Q10", "INDEX", "NEWQ9G"))
-  expect_equal(ucr1960_parsed_sas$setup$column_number[1:20],  c("V1", "V2", "V3", "V4", "V5", "V6",
-                                                                "V7", "V8", "V9", "V10", "V11", "V12",
-                                                                "V13", "V14", "V15", "V16", "V17",
-                                                                "V18", "V19", "V20"))
+  expect_equal(ucr1960_parsed_sas$setup$column_number[1:20],  c("V1", "V2", "V3",
+                                                                "V4", "V5", "V6",
+                                                                "V7", "V8", "V9",
+                                                                "V10", "V11", "V12",
+                                                                "V13", "V14", "V15",
+                                                                "V16", "V17", "V18",
+                                                                "V19", "V20"))
 
-  expect_equal(weimar_parsed_sas$setup$column_number, c("V1", "V2", "V3", "V4", "V5", "V6",
-                                                        "V7", "V8", "V9", "V10", "V11", "V12",
-                                                        "V13", "V14", "V15", "V16", "V17",
-                                                        "V18", "V19", "V20", "V21", "V22",
-                                                        "V23"))
+  expect_equal(weimar_parsed_sas$setup$column_number, c("V1", "V2", "V3",
+                                                        "V4", "V5", "V6",
+                                                        "V7", "V8", "V9",
+                                                        "V10", "V11", "V12",
+                                                        "V13", "V14", "V15",
+                                                        "V16", "V17", "V18",
+                                                        "V19", "V20", "V21",
+                                                        "V22", "V23"))
   expect_equal(acs_parsed_sas$setup$column_number, c("STATEFIP", "GQ", "PERNUM",
                                                      "PERWT", "SEX", "AGE"))
   expect_equal(nibrs_parsed_sas$setup$column_number, c("B1001", "B1002", "B1003", "B1004",
@@ -328,10 +376,13 @@ test_that("Original names are correct", {
                                                            "CPOP94", "FSTATE", "FCOUNTY",
                                                            "FPLACE", "FMSA", "FMSANAME",
                                                            "FCMSA"))
-  expect_equal(ucr1985_parsed_sas$setup$column_number[1:20], c("V1", "V2", "V3", "V4", "V5", "V6",
-                                                               "V7", "V8", "V9", "V10", "V11", "V12",
-                                                               "V13", "V14", "V15", "V16", "V17",
-                                                               "V18", "V19", "V20"))
+  expect_equal(ucr1985_parsed_sas$setup$column_number[1:20], c("V1", "V2", "V3",
+                                                               "V4", "V5", "V6",
+                                                               "V7", "V8", "V9",
+                                                               "V10", "V11", "V12",
+                                                               "V13", "V14", "V15",
+                                                               "V16", "V17", "V18",
+                                                               "V19", "V20"))
   expect_equal(ucr1985_parsed_sas$setup$column_number[1439:1458], c("V1439", "V1440",
                                                                     "V1441", "V1442",
                                                                     "V1443", "V1444",

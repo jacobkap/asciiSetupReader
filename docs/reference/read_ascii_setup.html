@@ -194,7 +194,8 @@ as US Census FIPS codes.</p></td>
   <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)</div><span class='co'># NOT RUN {</span>
 <span class='no'>example</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>)
-<span class='co'># }</span><div class='input'>
+
+
 <span class='co'># Does not fix value labels</span>
 <span class='no'>example2</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>use_value_labels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
@@ -202,7 +203,7 @@ as US Census FIPS codes.</p></td>
 <span class='co'># Keeps original column names</span>
 <span class='no'>example3</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>use_clean_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
+<span class='co'># }</span><div class='input'>
 <span class='co'># Only returns the first 5 columns</span>
 <span class='no'>example4</span> <span class='kw'>&lt;-</span> <span class='fu'>read_ascii_setup</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>setup_file</span> <span class='kw'>=</span> <span class='no'>sps_name</span>, <span class='kw'>select_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div></pre>

@@ -18,6 +18,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' sas_name <- system.file("extdata", "example_setup.sas",
 #'                          package = "asciiSetupReader")
 #' sas_example <- parse_setup(sas_name)
@@ -25,6 +26,7 @@
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #'                          package = "asciiSetupReader")
 #' sps_example <- parse_setup(sps_name)
+#' }
 parse_setup <- function(setup_file) {
 
   if (grepl(".sps(\\.zip)?$", setup_file)) {

@@ -28,6 +28,7 @@ and will be replaced with NA.
 Parse the setup file (.sps or .sas).
 }
 \examples{
+\dontrun{
 sas_name <- system.file("extdata", "example_setup.sas",
                          package = "asciiSetupReader")
 sas_example <- parse_setup(sas_name)
@@ -35,4 +36,5 @@ sas_example <- parse_setup(sas_name)
 sps_name <- system.file("extdata", "example_setup.sps",
                          package = "asciiSetupReader")
 sps_example <- parse_setup(sps_name)
+}
 }

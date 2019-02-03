@@ -193,11 +193,13 @@ as US Census FIPS codes.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Text file is zipped to save space.</span>
+    <pre class="examples"><div class='input'># Text file is zipped to save space.
+</div><span class='co'># NOT RUN {</span>
 <span class='no'>dataset_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_data.zip"</span>,
   <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)
 <span class='no'>sas_name</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example_setup.sas"</span>,
-  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)</div><span class='co'># NOT RUN {</span>
+  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)
+
 <span class='no'>example</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>)
 
@@ -209,10 +211,12 @@ as US Census FIPS codes.</p></td>
 <span class='co'># Keeps original column names</span>
 <span class='no'>example3</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>, <span class='kw'>real_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='co'># }</span><div class='input'>
+
+
 <span class='co'># Only returns the first 5 columns</span>
 <span class='no'>example</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
-  <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div></pre>
+  <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

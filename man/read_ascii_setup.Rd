@@ -50,7 +50,7 @@ sps_name <- system.file("extdata", "example_setup.sps",
 \dontrun{
 example <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name)
-}
+
 
 # Does not fix value labels
 example2 <- read_ascii_setup(data = dataset_name,
@@ -59,6 +59,7 @@ example2 <- read_ascii_setup(data = dataset_name,
 # Keeps original column names
 example3 <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name, use_clean_names = FALSE)
+}
 
 # Only returns the first 5 columns
 example4 <- read_ascii_setup(data = dataset_name,
