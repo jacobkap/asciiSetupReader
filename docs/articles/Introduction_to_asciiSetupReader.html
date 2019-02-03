@@ -122,7 +122,7 @@
 <h2 class="hasAnchor">
 <a href="#use_value_labels" class="anchor"></a><code>use_value_labels</code>
 </h2>
-<p>Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing “male” or “female” in a column about gender, it will be “0” or “1” (or “M” and “F”). The setup file gives the actual value of these repesentations. When the parameter <code>use_value_labels</code> is TRUE (which it is by default) it will give the value lables; otherwise it will give only the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE (or use the parameter <code>select_columns</code> to get only those columns).</p>
+<p>Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing “male” or “female” in a column about gender, it will be “0” or “1” (or “M” and “F”). The setup file gives the actual value of these representations. When the parameter <code>use_value_labels</code> is TRUE (which it is by default) it will give the value labels; otherwise it will give only the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE (or use the parameter <code>select_columns</code> to get only those columns).</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file,</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="dt">use_value_labels =</span> <span class="ot">FALSE</span>)</a>
@@ -139,7 +139,7 @@
 <h2 class="hasAnchor">
 <a href="#use_clean_names" class="anchor"></a><code>use_clean_names</code>
 </h2>
-<p>Column names are similar to how there are both value representations and value labels for values in a column. The columns may have an undescriptive name (e.g. V1, V2) or a descriptive one (e.g. CITY, GENDER). When <code>use_clean_names</code> is TRUE (which it is by), the descriptive name is given; otherwise the undescriptive name is given.</p>
+<p>Column names are similar to how there are both value representations and value labels for values in a column. The columns may have a non-descriptive name (e.g. V1, V2) or a descriptive one (e.g. CITY, GENDER). When <code>use_clean_names</code> is TRUE (which it is by), the descriptive name is given; otherwise the non-descriptive name is given.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file,</a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="dt">use_clean_names =</span> <span class="ot">FALSE</span>)</a>
@@ -156,7 +156,7 @@
 <h2 class="hasAnchor">
 <a href="#select_columns" class="anchor"></a><code>select_columns</code>
 </h2>
-<p>This parameter allows you to return only the specific columns you want. It is very useful when dealing with a large file which you only want part of. It accepts 3 inputs: column numbers, the undescriptive column names, or the descriptive column names - you can only choose one input type, cannot mix them togetherTo get the column names and numbers, consult with the data’s documentation.</p>
+<p>This parameter allows you to return only the specific columns you want. It is very useful when dealing with a large file which you only want part of. It accepts 3 inputs: column numbers, the non-descriptive column names, or the descriptive column names - you can only choose one input type, cannot mix them together. To get the column names and numbers, consult with the g documentation.</p>
 <p>This gets only the first two columns of data and specifies the columns by number.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file, </a>
@@ -181,7 +181,7 @@
 ## 4 SHR master file            Arizona
 ## 5 SHR master file            Arizona
 ## 6 SHR master file            Arizona</code></pre>
-<p>This gets only the first column of data and specifies the column by undescriptive names.</p>
+<p>This gets only the first column of data and specifies the column by non-descriptive names.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file, </a>
 <a class="sourceLine" id="cb11-3" data-line-number="3"><span class="dt">select_columns =</span> <span class="st">"V1"</span>) <span class="co"># Gets only the first columnss</span></a>

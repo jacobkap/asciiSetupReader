@@ -29,7 +29,7 @@ example[1:6, 1:4] # Look at first 6 rows and first 4 columns
 There are three optional parameters: `use_value_labels`, `use_clean_names`, and `select_columns`.
 
 ## `use_value_labels`
-Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing "male" or "female" in a column about gender, it will be "0" or "1" (or "M" and "F"). The setup file gives the actual value of these repesentations. When the parameter `use_value_labels` is TRUE (which it is by default) it will give the value lables; otherwise it will give only the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE (or use the parameter `select_columns` to get only those columns).
+Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing "male" or "female" in a column about gender, it will be "0" or "1" (or "M" and "F"). The setup file gives the actual value of these representations. When the parameter `use_value_labels` is TRUE (which it is by default) it will give the value labels; otherwise it will give only the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE (or use the parameter `select_columns` to get only those columns).
 
 ```{r}
 example <- asciiSetupReader::read_ascii_setup(data = data,
@@ -39,7 +39,7 @@ example[1:6, 1:4] # Look at first 6 rows and first 4 columns
 ```
 
 ## `use_clean_names`
-Column names are similar to how there are both value representations and value labels for values in a column. The columns may have an undescriptive name (e.g. V1, V2) or a descriptive one (e.g. CITY, GENDER). When `use_clean_names` is TRUE (which it is by), the descriptive name is given; otherwise the undescriptive name is given.
+Column names are similar to how there are both value representations and value labels for values in a column. The columns may have a non-descriptive name (e.g. V1, V2) or a descriptive one (e.g. CITY, GENDER). When `use_clean_names` is TRUE (which it is by), the descriptive name is given; otherwise the non-descriptive name is given.
 ```{r}
 example <- asciiSetupReader::read_ascii_setup(data = data,
 setup_file = setup_file,
@@ -48,7 +48,7 @@ example[1:6, 1:4] # Look at first 6 rows and first 4 columns
 ```
 
 ## `select_columns`
-This parameter allows you to return only the specific columns you want. It is very useful when dealing with a large file which you only want part of. It accepts 3 inputs: column numbers, the undescriptive column names, or the descriptive column names - you can only choose one input type, cannot mix them togetherTo get the column names and numbers, consult with the data's documentation. 
+This parameter allows you to return only the specific columns you want. It is very useful when dealing with a large file which you only want part of. It accepts 3 inputs: column numbers, the non-descriptive column names, or the descriptive column names - you can only choose one input type, cannot mix them together. To get the column names and numbers, consult with the g documentation. 
 
 This gets only the first two columns of data and specifies the columns by number. 
 ```{r}
@@ -67,7 +67,7 @@ head(example)
 ```
 
  
-This gets only the first column of data and specifies the column by undescriptive names. 
+This gets only the first column of data and specifies the column by non-descriptive names. 
 ```{r}
 example <- asciiSetupReader::read_ascii_setup(data = data,
 setup_file = setup_file, 

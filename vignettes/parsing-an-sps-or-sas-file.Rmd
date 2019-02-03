@@ -31,7 +31,7 @@ example <- asciiSetupReader::parse_setup(sps_name)
 
 ## setup
 
-The first object in the returned list is a data.frame with 4 columns and as many rows as there are columns in the data. The "column_number" column is the nondescriptive name of the column while the "column_name" is the descritive name of the column. In `read_ascii_setup`, setting `use_clean_names` to TRUE will set the data column names to the "column_name" names, otherwise it will remain as the "column_number" names. Since the data is in fixed-width format, you need to know the location of each column. The "begin" and "end" columns in this object provide that location for each column in the data.
+The first object in the returned list is a data.frame with 4 columns and as many rows as there are columns in the data. The "column_number" column is the non-descriptive name of the column while the "column_name" is the descriptive name of the column. In `read_ascii_setup`, setting `use_clean_names` to TRUE will set the data column names to the "column_name" names, otherwise it will remain as the "column_number" names. Since the data is in fixed-width format, you need to know the location of each column. The "begin" and "end" columns in this object provide that location for each column in the data.
 
 ```{r}
 head(example$setup)
@@ -53,7 +53,7 @@ length(example$value_labels)
 
 ## missing
 
-The final object in the list a data.frame with two columns and as many rows as there are missing values in the data. The column "variable" indicates the column in the data and the column "values" says that the value in that row is to be replaced with NA. For example, if there are 10 columns in the data with missing values and each column has two mising values (e.g. -8 and -9) there will be 20 rows in this data.frame. A missing value is when the data includes a value that should be replaced with NA. For example, data often includes negative values such as -8 or -9 mean that that value is missing and should be NA. If there are no missing values this object will be NULL.
+The final object in the list a data.frame with two columns and as many rows as there are missing values in the data. The column "variable" indicates the column in the data and the column "values" says that the value in that row is to be replaced with NA. For example, if there are 10 columns in the data with missing values and each column has two missing values (e.g. -8 and -9) there will be 20 rows in this data.frame. A missing value is when the data includes a value that should be replaced with NA. For example, data often includes negative values such as -8 or -9 mean that that value is missing and should be NA. If there are no missing values this object will be NULL.
 
 
 ```{r}

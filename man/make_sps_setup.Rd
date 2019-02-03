@@ -9,7 +9,7 @@ make_sps_setup(file_name, col_positions, col_names = NULL,
 }
 \arguments{
 \item{file_name}{Name of the file to be saved (e.g. "setup_file1"). There is no need to put
-the .sps extention in the file name.}
+the .sps extension in the file name.}
 
 \item{col_positions}{Either a vector of strings indicating the start and end position of each column
 (e.g. "1-3", "4-5") or a vector of the widths of the columns (e.g. 3, 2).}

@@ -20,7 +20,7 @@ section. It will create a .sps setup file and save it in your working directory.
 There are two parameters absolutely needed - `file_name` and `col_positions` - as 
 well as four optional parameters. 
   
-* `file_name` - Name of the file to be saved (e.g. "setup_file1"). There is no need to put the .sps extention in the file name.
+* `file_name` - Name of the file to be saved (e.g. "setup_file1"). There is no need to put the .sps extension in the file name.
 * `col_positions` - Either a vector of strings indicating the start and end position of each column (e.g. "1-3", "4-5") or a vector of the widths of the columns (e.g. 3, 2).
 * `col_names` - A vector of names for the columns. If none are provided, will automatically  create names based on column number (e.g. V1, V2, V3).
 * `col_labels` - A vector of labels for the columns. These are often longer and more descriptive than the col_names. These are the values used as column names if real_names = TRUE in reading in the data.
@@ -78,7 +78,7 @@ value_labels <- c("victim_sex = ",
 
 ## missing_values
 
-This is a vector of strings with the column name (can be either the name in col_names or col_labels but musy be consistent) followed by all the values that represent missing values, each in its own string. 
+This is a vector of strings with the column name (can be either the name in col_names or col_labels but must be consistent) followed by all the values that represent missing values, each in its own string. 
 
 ```{r}
 missing_values <- c("victim_sex", 

@@ -11,7 +11,7 @@ parse_setup(setup_file)
 }
 \value{
 A list of length 3. The first object ("setup") is a data frame
-containing 4 columns: first the nondescriptive name of each column,
+containing 4 columns: first the non-descriptive name of each column,
 The second column is the descriptive name of the column. Columns three
 and four and the beginning and ending number of the column (used to
 determine the columns location in the fixed-with data file).
