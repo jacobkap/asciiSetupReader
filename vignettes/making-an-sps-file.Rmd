@@ -8,58 +8,82 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+  
+Most times you will deal with a .dat+.sps file pair, you will be given
+the .sps file already made. However, in rare cases - such as working with
+FBI data - you need to make you own based on a PDF guide provided. 
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+The function `make_sps_setup` makes that a bit easier by doing all the 
+formatting needed, meaning you just need to provide the info for each
+section. It will create a .sps setup file and save it in your working directory.
+
+There are two parameters absolutely needed - `file_name` and `col_positions` - as 
+well as four optional parameters. 
+  
+* `file_name` - Name of the file to be saved (e.g. "setup_file1"). There is no need to put the .sps extention in the file name.
+* `col_positions` - Either a vector of strings indicating the start and end position of each column (e.g. "1-3", "4-5") or a vector of the widths of the columns (e.g. 3, 2).
+* `col_names` - A vector of names for the columns. If none are provided, will automatically  create names based on column number (e.g. V1, V2, V3).
+* `col_labels` - A vector of labels for the columns. These are often longer and more descriptive than the col_names. These are the values used as column names if real_names = TRUE in reading in the data.
+* `value_labels` - A named vector with the value first, then an ' = ' then the label. Each
+  new column should have the column named followed by ' ='.
+* `missing_values` - A vector of strings with the column name followed by the values to be
+  replaced by NA.
+  
+  
+## file_name
+`file_name` is simply the string of the name you want the file to be saved as, such as "setup_file_example". Including the ".sps" to the end is not required.
+  
+## col_positions
+  
+```{r}
+col_positions <- c("1-1", "2-3", "4-5", "6-11")
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## col_names
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r}
+col_names <- c("var1", "var2", "var3", "var4")
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+## col_labels
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r}
+col_labels <- c("version_number", "victim_sex", "victim_race", "state")
 ```
 
-Also a quote using `>`:
+## value_labels
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r}
+value_labels <- c("victim_sex = ",
+                  "MA = male",
+                  "FE = female",
+                  "UN = unknown",
+                  "victim_race = ",
+                  "WH = white",
+                  "BL = black",
+                  "IA = american indian or alaskan native",
+                  "AS = asian",
+                  "UN = unknown")
+```
+
+## missing_values
+
+```{r}
+missing_values <- c("victim_sex", 
+                    "-9", 
+                    "-8", 
+                    "victim_race",
+                    "-8")
+```
+
+## Putting it all together
+
+```{r eval = FALSE}
+asciiSetupReader::make_sps_setup(file_name = "setup_file_example",
+                                 col_positions  = col_positions,
+                                 col_names      = col_names,
+                                 col_labels     = col_labels,
+                                 value_labels   = value_labels,
+                                 missing_values = missing_values)
+```
+

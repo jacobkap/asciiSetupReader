@@ -2,10 +2,11 @@
 #'
 #' @param setup_file Name of the SPSS or SAS setup file - should be a .sps or .sas (.txt also accepted as are these files in zipped format)
 #'
-#' @return A list of length 3. The first object ("setup") is a data frame containing 4 columns: first the
-#' nondescriptive name of each column, columns two and three and the beginning and ending number
-#' of the column (used to determine the columns location in the fixed-with data file). The fourth
-#' column is the descriptive name of the column.
+#' @return A list of length 3. The first object ("setup") is a data frame
+#' containing 4 columns: first the nondescriptive name of each column,
+#' The second column is the descriptive name of the column. Columns three
+#' and four and the beginning and ending number of the column (used to
+#' determine the columns location in the fixed-with data file).
 #'
 #' The second object ("value_labels") in the list is list of named vectors for the value labels. The
 #' list has a length equal to the number of columns with value labels. If there are

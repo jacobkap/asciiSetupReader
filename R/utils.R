@@ -24,8 +24,8 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
   # to uppercase depending on section of setup file.
   for (i in 1:nrow(column_spaces)) {
     if (tolower(column_spaces$column_number[i]) %in% tolower(codebook_variables$column_number)) {
-    column_spaces$column_number[i] <-
-      codebook_variables$column_number[tolower(codebook_variables$column_number) %in% tolower(column_spaces$column_number[i])]
+      column_spaces$column_number[i] <-
+        codebook_variables$column_number[tolower(codebook_variables$column_number) %in% tolower(column_spaces$column_number[i])]
     }
   }
 
@@ -39,7 +39,7 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
   format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
   if (any(grepl2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook))) {
     # Get format - column names and column names with f ====================
-     format_section = grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
+    format_section = grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
 
     format <- codebook[format_section[1]:length(codebook)]
     format <- gsub("^FORMAT ", "", format, ignore.case = TRUE)
@@ -52,6 +52,11 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
   }
 
   column_spaces <- column_spaces[order(column_spaces$begin), ]
+  column_spaces <- dplyr::select(column_spaces, column_number,
+                                 column_name,
+                                 begin,
+                                 end,
+                                 dplyr::everything())
   return(column_spaces)
 }
 

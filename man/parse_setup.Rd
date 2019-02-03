@@ -10,17 +10,19 @@ parse_setup(setup_file)
 \item{setup_file}{Name of the SPSS or SAS setup file - should be a .sps or .sas (.txt also accepted as are these files in zipped format)}
 }
 \value{
-A list of length 3. The first object ("setup") is a data frame containing 4 columns: first the
-nondescriptive name of each column, columns two and three and the beginning and ending number
-of the column (used to determine the columns location in the fixed-with data file). The fourth
-column is the descriptive name of the column.
+A list of length 3. The first object ("setup") is a data frame
+containing 4 columns: first the nondescriptive name of each column,
+The second column is the descriptive name of the column. Columns three
+and four and the beginning and ending number of the column (used to
+determine the columns location in the fixed-with data file).
 
 The second object ("value_labels") in the list is list of named vectors for the value labels. The
 list has a length equal to the number of columns with value labels. If there are
 no value labels, this will be NULL.
 
-The third object ("missing") in the list is the same format as the value labels but is for missing
-values. If there are no missing values, this will be NULL.
+The third object ("missing") in the list is a data.frame with two columns. The first
+column says the variable name and the second column says the value that is missing
+and will be replaced with NA.
 }
 \description{
 Parse the setup file (.sps or .sas).

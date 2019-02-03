@@ -4,7 +4,7 @@ author: "Jacob Kaplan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Making an .sps file}
+  %\VignetteIndexEntry{Parsing an .sps or .sas file}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,16 +19,19 @@ knitr::opts_chunk$set(
 
 The `parse_setup` function is what this packages uses to convert the .sps or .sas setup files into an usable format for R. 
 
+This will return a list of length 3 containing the objects "setup", "value_labels", and "missing".
+
+
 ```{r}
 # Using the example .sps setup file included with the package
-sps_name <- system.file("extdata", "example_setup.sps",
+sps_name <- system.file("extdata", "sacramento.sps",
                           package = "asciiSetupReader")
-example <- parse_setup(sps_name)
+example <- asciiSetupReader::parse_setup(sps_name)
 ```
 
 ## setup
 
-The first object in the returned list is a data.frame with 4 columns and as many rows as there are columns in the data. 
+The first object in the returned list is a data.frame with 4 columns and as many rows as there are columns in the data. The "column_number" column is the nondescriptive name of the column while the "column_name" is the descritive name of the column. In `read_ascii_setup`, setting `use_clean_names` to TRUE will set the data column names to the "column_name" names, otherwise it will remain as the "column_number" names. Since the data is in fixed-width format, you need to know the location of each column. The "begin" and "end" columns in this object provide that location for each column in the data.
 
 ```{r}
 head(example$setup)
@@ -36,6 +39,8 @@ head(example$setup)
 
 
 ## value_labels
+
+To make the data more compact, the data often provides values that represent a label. For example, in a column about participant's gender it may only include "M" and "F" which stands for "Male" and "Female". The setup file will say the M = Male and F = Female. The value labels tell us that we need to convert M to Male in the given column. This is a list of named vectors indicating the value and its corresponding label. If there are no value labels this object will be NULL.
 
 ```{r}
 example$value_labels[1:3]
@@ -48,7 +53,8 @@ length(example$value_labels)
 
 ## missing
 
-The final object in the list if a 
+The final object in the list a data.frame with two columns and as many rows as there are missing values in the data. The column "variable" indicates the column in the data and the column "values" says that the value in that row is to be replaced with NA. For example, if there are 10 columns in the data with missing values and each column has two mising values (e.g. -8 and -9) there will be 20 rows in this data.frame. A missing value is when the data includes a value that should be replaced with NA. For example, data often includes negative values such as -8 or -9 mean that that value is missing and should be NA. If there are no missing values this object will be NULL.
+
 
 ```{r}
 head(example$missing)
