@@ -42,12 +42,12 @@ in government data, particular data produced before 2010.
 }
 \examples{
 # Text file is zipped to save space.
-\dontrun{
 dataset_name <- system.file("extdata", "example_data.zip",
   package = "asciiSetupReader")
 sas_name <- system.file("extdata", "example_setup.sas",
   package = "asciiSetupReader")
 
+\dontrun{
 example <- sas_ascii_reader(dataset_name = dataset_name,
   sas_name = sas_name)
 
@@ -60,11 +60,11 @@ example2 <- sas_ascii_reader(dataset_name = dataset_name,
 example3 <- sas_ascii_reader(dataset_name = dataset_name,
   sas_name = sas_name, real_names = FALSE)
 
-
+}
 # Only returns the first 5 columns
 example <- sas_ascii_reader(dataset_name = dataset_name,
   sas_name = sas_name, keep_columns = 1:5)
-}
+
 }
 \seealso{
 \code{\link{spss_ascii_reader}} For using an SPSS setup file
