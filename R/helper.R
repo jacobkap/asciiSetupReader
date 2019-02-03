@@ -140,8 +140,6 @@ get_value_labels_sas <- function(codebook, column_spaces) {
                    paste0("VALUE ", f_name), value_labels,
                    ignore.case = TRUE)
     }
-  # value_labels <- gsub("(^VALUE.* )\\(.*\\)", "\\1", value_labels,
-  #                      ignore.case = TRUE)
 
 
   value_labels <- gsub("^VALUE ", "", value_labels,

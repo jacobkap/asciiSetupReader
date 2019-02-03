@@ -11,8 +11,9 @@
 #' list has a length equal to the number of columns with value labels. If there are
 #' no value labels, this will be NULL.
 #'
-#' The third object ("missing") in the list is the same format as the value labels but is for missing
-#' values. If there are no missing values, this will be NULL.
+#' The third object ("missing") in the list is a data.frame with two columns. The first
+#' column says the variable name and the second column says the value that is missing
+#' and will be replaced with NA.
 #' @export
 #'
 #' @examples
@@ -53,14 +54,18 @@ parse_setup <- function(setup_file) {
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+)$", "\\1 \\2", setup)
   }
   setup <- get_column_spaces(setup, variables, codebook)
+  if (type == "sps") setup$f_name <- NULL
   setup <- setup[setup$column_number != "*", ]
   rownames(setup) <- 1:nrow(setup)
-  if (any(grepl2("MISSING VALUES", codebook)) && type != "sas") {
-    missing <- parse_missing(codebook, setup)
+  if (any(grepl2("MISSING VALUE", codebook))) {
+    if (type == "sps") {
+      missing <- parse_missing_sps(codebook, setup)
+    } else {
+      missing <- parse_missing_sas(codebook, setup)
+    }
   } else {
     missing <- NULL
   }
-
 
   value_labels <- get_value_labels(codebook, setup, type = type)
   setup <- stats::setNames(list(setup, value_labels, missing),
@@ -74,7 +79,7 @@ parse_setup <- function(setup_file) {
 }
 
 
-parse_missing <- function(codebook, setup) {
+parse_missing_sps <- function(codebook, setup) {
 
   start <- grep2("MISSING VALUES$", codebook)
   end <- grep2("EXECUTE|^\\*.*SPSS", codebook)
@@ -109,9 +114,68 @@ parse_missing <- function(codebook, setup) {
 
   missing <- missing[missing$variable %in% setup$column_number, ]
   missing <- make_thru_missing_rows(missing)
-
+  rownames(missing) <- 1:nrow(missing)
   return(missing)
 }
+
+parse_missing_sas <- function(codebook, setup) {
+
+  start <- grep2("MISSING VALUE", codebook)
+  start <- grep2("^IF", codebook)[grep2("^IF", codebook) > max(start)][1]
+  # Some .sas files have "example" code at the beginnig which screws this up
+  if (is.na(start)) return (NULL)
+  end <- grep2("\\*/", codebook)[grep2("\\*/", codebook) > start][1]
+  if (length(end) == 0 | all(end <= start)) {
+    end <- length(codebook)
+  } else {
+    end <- min(end[end > start])
+  }
+  missing <- codebook[start:end]
+  missing <- unlist(strsplit(missing, ";"))
+  missing <- trimws(missing)
+  missing <- missing[grepl2("^IF", missing)]
+  missing <- gsub(" then.*= ?\\..*| then.*= ?\\''.*|^IF ", "", missing, ignore.case = TRUE)
+  missing <- gsub(" >= (.+) AND [[:alnum:]]+ <= (.*)", " \\1 thru \\2", missing,
+                  ignore.case = TRUE)
+  missing <- gsub(" (.*) thru ", " (\\1 thru ", missing,
+                  ignore.case = TRUE)
+  missing <- gsub("^\\(", "", missing,
+                  ignore.case = TRUE)
+
+  missing <- gsub("(\\S),(\\S)", "\\1, \\2", missing)
+  missing <- gsub(" = ", "=", missing)
+  missing <- gsub("=", " \\(", missing)
+  missing <- paste0(missing, ")")
+  missing <- gsub("\\)\\)$", "\\)", missing)
+  missing <- gsub(" in \\(", " \\(", missing, ignore.case = TRUE)
+  missing <- gsub(" GE ([0-9]+)(\\s|\\))", " \\(\\1 thru highest\\) ", missing, ignore.case = TRUE)
+  missing <- gsub(" OR ", "    ", missing, ignore.case = TRUE)
+  missing <- gsub('\\"', "\\'", missing)
+  missing <- gsub("\\' ", "\\') ", missing)
+  missing <- gsub("\\'", "", missing)
+
+
+  # missing <- data.frame(variable = gsub("=.*", "", missing),
+  #                       values = gsub(".*=", "", missing),
+  #                       stringsAsFactors = FALSE)  missing <- gsub("\\) ", "\\)   ", missing)
+  missing <- unlist(strsplit(missing, ",|\\s{2,}"))
+
+  missing <- data.frame(variable = gsub(" .*", "", missing),
+                        values = gsub(".*\\(|\\).*", "", missing),
+                        stringsAsFactors = FALSE)
+  missing$variable[missing$variable == ""] <- NA
+  missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
+  # missing$values <- gsub("\\.$", "", missing$values)
+  missing$values <- gsub('\\"', "\\'", missing$values)
+  missing$values <- gsub("\\'", "", missing$values)
+  missing$values <- trimws(missing$values)
+
+  missing <- missing[missing$variable %in% setup$column_number, ]
+  missing <- make_thru_missing_rows(missing)
+  rownames(missing) <- 1:nrow(missing)
+  return(missing)
+}
+
 
 make_thru_missing_rows <- function(missing) {
   thru_rows <- missing[grep("thru -?[0-9]", missing$values, ignore.case = TRUE), ]

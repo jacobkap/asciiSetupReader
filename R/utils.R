@@ -80,19 +80,8 @@ grepl2 <- function(pattern, x) grepl(pattern, x, ignore.case = TRUE)
 
 
 
-fix_missing <- function(dataset, missing) {
-
-  # z = as.data.table(mtcars)
-  # head(z)
-  # column = "cyl"
-  # value_thru_max <- 5
-  # rows_to_fix <- z[get(column) >= value_thru_max, which = TRUE]
-  # data.table::set(z,rows_to_fix, j = column,
-  #                 value = NA)
-  # head(z)
-  #
-  #
-  #
+fix_missing <- function(data, missing) {
+  missing <- missing[missing$variable %in% names(data), ]
 
   for (column in unique(missing$variable)) {
     missing_values <- missing$values[missing$variable == column]
@@ -101,30 +90,29 @@ fix_missing <- function(dataset, missing) {
     names(missing_values) <- NA
 
     # Sets character to column type in case it isn't already.
-    if (!is.character(dataset[[column]])) {
-      data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
+    if (!is.character(data[[column]])) {
+      data.table::set(data, j = column, value = as.character(data[[column]]))
     }
 
-    data.table::set(dataset, j = column,
-                    value = haven::as_factor(haven::labelled(dataset[[column]],
+    data.table::set(data, j = column,
+                    value = haven::as_factor(haven::labelled(data[[column]],
                                                              missing_values)))
     # Resaves as character type instead of factor type
-    data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
+    data.table::set(data, j = column, value = as.character(data[[column]]))
 
   }
-  return(dataset)
+  return(data)
 }
 
 
-read_data <- function(dataset_name, setup, ...) {
+read_data <- function(dataset_name, setup) {
   positions <- readr::fwf_positions(setup$setup$begin,
                                     setup$setup$end,
                                     setup$setup$column_number)
   data <- suppressMessages(readr::read_fwf(dataset_name,
                                            col_positions = positions,
                                            col_types = readr::cols(.default =
-                                                                     readr::col_character()),
-                                           ...))
+                                                                     readr::col_character())))
   data <- data.table::as.data.table(data)
 
   return(data)

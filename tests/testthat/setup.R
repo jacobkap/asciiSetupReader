@@ -202,7 +202,9 @@ jail_1987_dataset_name     <- system.file("testdata",
 corrections_sas_name       <- system.file("testdata",
                                           "corrections_prison_admissions_1991_2016.sas",
                                           package = "asciiSetupReader")
-
+sadc_sas_name              <- system.file("testdata",
+                                          "2017_sadc_sas_input_program.sas",
+                                          package = "asciiSetupReader")
 
 parole <- read_ascii_setup(data = parole_survey_dataset_name,
                             setup_file = parole_sps_name,
@@ -375,4 +377,4 @@ jail_1987_parsed_sas       <- parse_setup(jail_1987_sas_name)
 jail_2010_parsed_sas       <- parse_setup(jail_2010_sas_name)
 corrections_parsed_sas     <- parse_setup(corrections_sas_name)
 SHR_parsed_sas             <- parse_setup(SHR_sas_name)
-
+#sadc_parsed_sas            <- parse_setup(sadc_sas_name)
