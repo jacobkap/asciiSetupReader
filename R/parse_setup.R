@@ -55,7 +55,6 @@ parse_setup <- function(setup_file) {
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+)$", "\\1 \\2", setup)
   }
   setup <- get_column_spaces(setup, variables, codebook)
-  if (type == "sps") setup$f_name <- NULL
   setup <- setup[setup$column_number != "*", ]
   rownames(setup) <- 1:nrow(setup)
   if (any(grepl2("MISSING VALUE", codebook))) {
@@ -74,6 +73,10 @@ parse_setup <- function(setup_file) {
                              "value_labels",
                              "missing"))
   setup$value_labels <- parse_value_labels(setup, type = type)
+  setup$setup <- setup$setup[, c("column_number",
+                                 "column_name",
+                                 "begin",
+                                 "end")]
 
   return(setup)
 

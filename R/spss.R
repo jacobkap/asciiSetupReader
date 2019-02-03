@@ -1,7 +1,9 @@
-#' Read ASCII file using SPSS Setup file.
+#' Read fixed-width ASCII file using SPSS Setup file.
 #'
 #' spss_ascii_reader() and sas_ascii_reader() are used when you need to
 #' read an fixed-width ASCII (text) file that comes with a setup file.
+#' These file combinations are sometimes referred to as .txt+.sps, .txt+.sas,
+#' .dat+.sps, or .dat+.sas.
 #' The setup file provides instructions on how to create and name the columns,
 #' and fix the key-value pairs (sometimes called value labels). This is common
 #' in government data, particular data produced before 2010.
@@ -41,7 +43,7 @@
 #' \dontrun{
 #' example <- spss_ascii_reader(dataset_name = dataset_name,
 #'   sps_name = sps_name)
-#' }
+#'
 #'
 #' # Does not fix value labels
 #' example2 <- spss_ascii_reader(dataset_name = dataset_name,
@@ -50,7 +52,7 @@
 #' # Keeps original column names
 #' example3 <- spss_ascii_reader(dataset_name = dataset_name,
 #'   sps_name = sps_name, real_names = FALSE)
-#'
+#'}
 #' # Only returns the first 5 columns
 #' example4 <- spss_ascii_reader(dataset_name = dataset_name,
 #'   sps_name = sps_name, keep_columns = 1:5)

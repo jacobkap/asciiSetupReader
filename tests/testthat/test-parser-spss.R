@@ -33,6 +33,7 @@ test_that("parse_setup is silent", {
 
 
 test_that("Right number of columns", {
+  skip_on_cran()
   expect_equal(nrow(sac_parsed_sps$setup), 197)
   expect_equal(nrow(sex_offender_parsed_sps$setup), 34)
   expect_equal(nrow(ucr1960_parsed_sps$setup), 1448)
@@ -55,7 +56,7 @@ test_that("Right number of columns", {
 })
 
 test_that("Starting number is correct", {
-
+  skip_on_cran()
   expect_equal(sac_parsed_sps$setup$begin[1:20],
                c(1, 3, 6, 10, 16, 17, 18, 19, 20, 21, 22,
                  23, 24, 25, 27, 29, 31, 32, 33, 34))
@@ -172,7 +173,7 @@ test_that("Starting number is correct", {
 })
 
 test_that("Ending number is correct", {
-
+  skip_on_cran()
 
   expect_equal(weimar_parsed_sps$setup$end,
                c(2, 4, 5, 22, 29, 36, 43, 50, 57, 64, 71, 78,
@@ -286,7 +287,7 @@ test_that("Ending number is correct", {
 
 
 test_that("Original names are correct", {
-
+  skip_on_cran()
 
   expect_equal(sac_parsed_sps$setup$column_number[1:20],
                c("TRINUM", "SUBNO", "TODDATYR",

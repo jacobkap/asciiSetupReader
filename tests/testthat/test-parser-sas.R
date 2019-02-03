@@ -33,6 +33,7 @@ test_that("parse_setup is silent", {
 
 
 test_that("Right number of columns", {
+  skip_on_cran()
   expect_equal(nrow(sac_parsed_sas$setup), 197)
   expect_equal(nrow(sex_offender_parsed_sas$setup), 34)
   expect_equal(nrow(ucr1960_parsed_sas$setup), 1448)
@@ -56,30 +57,9 @@ test_that("Right number of columns", {
 
 })
 
-# test_that("Right number of missing values", {
-#
-#   expect_equal(nrow(sac_parsed_sas$missing), 261)
-#   expect_equal(nrow(sex_offender_parsed_sas$missing), 18)
-#   expect_true(is.null(ucr1960_parsed_sas$missing))
-#   expect_equal(nrow(weimar_parsed_sas$missing), 19)
-#   expect_true(is.null(acs_parsed_sas$missing))
-#   expect_true(is.null(nibrs_parsed_sas$missing))
-#   expect_equal(nrow(parole_parsed_sas$missing), 89)
-#   expect_equal(nrow(prisoners_parsed_sas$missing), 200)
-#   expect_true(is.null(ca_vital_parsed_sas$missing))
-#   expect_equal(nrow(crosswalk_parsed_sas$missing), 12)
-#   expect_equal(nrow(ucr1985_parsed_sas$missing), 166)
-#   expect_equal(nrow(ucr1986_parsed_sas$missing), 160)
-#   expect_true(is.null(ucr2000_parsed_sas$missing))
-#   expect_equal(nrow(ncvs_parsed_sas$missing), 80)
-#   expect_true(is.null(jail_1987_parsed_sas$missing))
-#   expect_equal(nrow(jail_2010_parsed_sas$missing), 60)
-#   expect_equal(nrow(corrections_parsed_sas$missing), 7)
-#
-# })
-#
-test_that("Starting number is correct", {
 
+test_that("Starting number is correct", {
+  skip_on_cran()
 
 
   expect_equal(sac_parsed_sas$setup$begin[1:20], c(1, 3, 6, 10, 16, 17, 18, 19, 20, 21, 22,
@@ -172,7 +152,7 @@ test_that("Starting number is correct", {
 })
 
 test_that("Ending number is correct", {
-
+  skip_on_cran()
 
   expect_equal(weimar_parsed_sas$setup$end, c(2, 4, 5,
                                               22, 29, 36, 43, 50, 57, 64, 71, 78,
@@ -255,7 +235,7 @@ test_that("Ending number is correct", {
 
 
 test_that("Original names are correct", {
-
+  skip_on_cran()
 
   expect_equal(sac_parsed_sas$setup$column_number[1:20], c("TRINUM", "SUBNO", "TODDATYR",
                                                            "DATSTAR", "CONSTATE", "Q1JSEX",

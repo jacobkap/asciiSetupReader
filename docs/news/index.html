@@ -129,6 +129,7 @@
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"></a>Major Changes</h2>
 <ul>
+<li>Adds a single function (<code>read_ascii_setup</code>) that will read in data for both .dat+.sps and .dat+.sas pairs. This is just a helper function that calls <code>spss_ascii_reader</code> or <code>sas_ascii_reader</code>.</li>
 <li>Adds function to create sps setup files.</li>
 <li>Adds capacity for .sas reader to handle missing values.</li>
 <li>Adds a function for users to parse the setup file (.sps or .sas) and get results. An accompanying vignette explains this function.</li>
@@ -139,7 +140,7 @@
 <h2 class="hasAnchor">
 <a href="#minor-changes" class="anchor"></a>Minor Changes</h2>
 <ul>
-<li>Adds option to not coerce potentially numeric columns into numeric type.</li>
+<li>Adds option to not coerce potentially numeric columns into numeric type. Useful in cases like dealing with Census FIPS codes that have leading zeros.</li>
 <li>Miscellaneous bug fixes.</li>
 <li>Fixes bug when missing values are an interval (e.g. -1 thru -8).</li>
 </ul>

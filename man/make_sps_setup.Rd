@@ -21,7 +21,7 @@ create names based on column number (e.g. V1, V2, V3).}
 than the col_names. These are the values used as column names if
 real_names = TRUE in reading in the data.}
 
-\item{value_labels}{A named vector with the value first, then an ' = ' then the label. Each
+\item{value_labels}{A vector with the value first, then an ' = ' then the label. Each
 new column should have the column named followed by ' ='.}
 
 \item{missing_values}{A vector of strings with the column name followed by the values to be

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read ASCII file using SAS Setup file. — sas_ascii_reader • asciiSetupReader</title>
+<title>Read fixed-width ASCII file using SAS Setup file. — sas_ascii_reader • asciiSetupReader</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,12 @@
 
 
 
-<meta property="og:title" content="Read ASCII file using SAS Setup file. — sas_ascii_reader" />
+<meta property="og:title" content="Read fixed-width ASCII file using SAS Setup file. — sas_ascii_reader" />
 
 <meta property="og:description" content="sas_ascii_reader() and spss_ascii_reader() are used when you need to
-read an fixed-width ASCII (text) file that comes with a setup file.
+read an fixed-width ASCII (text) file that comes with a setup file. These file
+combinations are sometimes referred to as .txt+.sps, .txt+.sas,
+.dat+.sps, or .dat+.sas.
 The setup file provides instructions on how to create and name the columns,
 and fix the key-value pairs (sometimes called value labels). This is common
 in government data, particular data produced before 2010." />
@@ -124,7 +126,7 @@ in government data, particular data produced before 2010." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read ASCII file using SAS Setup file.</h1>
+    <h1>Read fixed-width ASCII file using SAS Setup file.</h1>
     <small class="dont-index">Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/R/sas.R'><code>R/sas.R</code></a></small>
     <div class="hidden name"><code>sas_ascii_reader.Rd</code></div>
     </div>
@@ -132,7 +134,9 @@ in government data, particular data produced before 2010." />
     <div class="ref-description">
     
     <p>sas_ascii_reader() and spss_ascii_reader() are used when you need to
-read an fixed-width ASCII (text) file that comes with a setup file.
+read an fixed-width ASCII (text) file that comes with a setup file. These file
+combinations are sometimes referred to as .txt+.sps, .txt+.sas,
+.dat+.sps, or .dat+.sas.
 The setup file provides instructions on how to create and name the columns,
 and fix the key-value pairs (sometimes called value labels). This is common
 in government data, particular data produced before 2010.</p>
@@ -196,7 +200,8 @@ as US Census FIPS codes.</p></td>
   <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"asciiSetupReader"</span>)</div><span class='co'># NOT RUN {</span>
 <span class='no'>example</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>)
-<span class='co'># }</span><div class='input'>
+
+
 <span class='co'># Does not fix value labels</span>
 <span class='no'>example2</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>, <span class='kw'>value_label_fix</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
@@ -204,7 +209,7 @@ as US Census FIPS codes.</p></td>
 <span class='co'># Keeps original column names</span>
 <span class='no'>example3</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>, <span class='kw'>real_names</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
+<span class='co'># }</span><div class='input'>
 <span class='co'># Only returns the first 5 columns</span>
 <span class='no'>example</span> <span class='kw'>&lt;-</span> <span class='fu'>sas_ascii_reader</span>(<span class='kw'>dataset_name</span> <span class='kw'>=</span> <span class='no'>dataset_name</span>,
   <span class='kw'>sas_name</span> <span class='kw'>=</span> <span class='no'>sas_name</span>, <span class='kw'>keep_columns</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>)</div></pre>

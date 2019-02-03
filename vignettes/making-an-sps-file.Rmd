@@ -24,7 +24,7 @@ well as four optional parameters.
 * `col_positions` - Either a vector of strings indicating the start and end position of each column (e.g. "1-3", "4-5") or a vector of the widths of the columns (e.g. 3, 2).
 * `col_names` - A vector of names for the columns. If none are provided, will automatically  create names based on column number (e.g. V1, V2, V3).
 * `col_labels` - A vector of labels for the columns. These are often longer and more descriptive than the col_names. These are the values used as column names if real_names = TRUE in reading in the data.
-* `value_labels` - A named vector with the value first, then an ' = ' then the label. Each
+* `value_labels` - A vector with the value first, then an ' = ' then the label. Each
   new column should have the column named followed by ' ='.
 * `missing_values` - A vector of strings with the column name followed by the values to be
   replaced by NA.
@@ -34,6 +34,8 @@ well as four optional parameters.
 `file_name` is simply the string of the name you want the file to be saved as, such as "setup_file_example". Including the ".sps" to the end is not required.
   
 ## col_positions
+
+This is a vector either of strings indicating the width of each column (starting at 1) or the starting and ending point of that column with a "-" between the start and end number. 
   
 ```{r}
 col_positions <- c("1-1", "2-3", "4-5", "6-11")
@@ -41,17 +43,25 @@ col_positions <- c("1-1", "2-3", "4-5", "6-11")
 
 ## col_names
 
+This is a vector of strings with names for the column. Only useful if the guide you're following to make this .sps file includes these names and you want to be exact. If you don't include this, it will just name the columns V1:Vnumber_of_columns.
+
 ```{r}
 col_names <- c("var1", "var2", "var3", "var4")
 ```
 
 ## col_labels
 
+This is the same as col_names but each column name should be the descriptive name of the column. These names are the ones that will be used if real_names = TRUE in read_ascii_setup.
+
 ```{r}
 col_labels <- c("version_number", "victim_sex", "victim_race", "state")
 ```
 
 ## value_labels
+
+This is a named vector with the column name as its own string followed by a string for each value-label pair in that column. The syntax is 'value = label'. For the column name, the label is blank so it appears 'column = '. For example, if 'sex' is the column name as it has value labels for M = Male and F = Female, the value_labels parameter will be:
+
+value_labels = c("sex =", "M = Male", "F = Female")
 
 ```{r}
 value_labels <- c("victim_sex = ",
@@ -67,6 +77,8 @@ value_labels <- c("victim_sex = ",
 ```
 
 ## missing_values
+
+This is a vector of strings with the column name (can be either the name in col_names or col_labels but musy be consistent) followed by all the values that represent missing values, each in its own string. 
 
 ```{r}
 missing_values <- c("victim_sex", 
