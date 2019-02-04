@@ -1,11 +1,11 @@
-\[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)\]
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader)
 [![Travis-CI Build
 Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&svg=true)](https://ci.appveyor.com/project/jacobkap/asciiSetupReader)
 [![Coverage
 status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://codecov.io/github/jacobkap/asciiSetupReader?branch=master)
-[![](https://cranlogs.r-pkg.org/badges/asciiSetupReader)](https://cran.rstudio.com/web/packages/asciiSetupReader/index.html)
+[![](https://cranlogs.r-pkg.org/badges/asciiSetupReader)](https://CRAN.R-project.org/package=asciiSetupReader)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
 Overview
