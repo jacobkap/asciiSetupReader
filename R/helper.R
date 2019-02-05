@@ -56,6 +56,7 @@ fix_variable_values <- function(dataset, value_label_section, column) {
 
   value_label_section <- single_digit(value_label_section)
   value_label_section <- double_digit(value_label_section)
+  value_label_section <- value_label_section[!duplicated(value_label_section)]
 
   if (!is.character(dataset[[column]])) {
     data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
@@ -63,6 +64,8 @@ fix_variable_values <- function(dataset, value_label_section, column) {
   data.table::set(dataset, j = column,
                   value = haven::as_factor(haven::labelled(dataset[[column]],
                                                            value_label_section)))
+
+
   data.table::set(dataset, j = column, value = as.character(dataset[[column]]))
   return(dataset)
 }

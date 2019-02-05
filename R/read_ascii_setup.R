@@ -58,7 +58,7 @@ read_ascii_setup <- function(data,
 
   if (grepl(".sps(\\.zip)?$", setup_file)) {
 
-    data <- spss_ascii_reader(dataset_name    = data,
+    data <- spss_ascii_reader(dataset_name   = data,
                              sps_name        = setup_file,
                              value_label_fix = use_value_labels,
                              real_names      = use_clean_names,
