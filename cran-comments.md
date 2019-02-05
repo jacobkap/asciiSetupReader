@@ -1,3 +1,5 @@
+This is an update to fix a problem I was alerted to today that this package does not work with the dev version of the package Haven (one of this package's dependencies). 
+
 ## Test environments
 
 * local Windows install, R 3.5.1
