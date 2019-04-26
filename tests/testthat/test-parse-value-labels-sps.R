@@ -1973,3 +1973,47 @@ test_that("SADC - parsed value labels are accurate", {
                  "Same sex only or both sexes" = "3"))
 
 })
+
+
+
+
+test_that("Crosswalk 2012 - parsed value labels are accurate", {
+
+
+  expect_equal(crosswalk2012_parsed_sps$value_labels$ORI9,
+               c("Not in UCR/NCIC"    = "-1"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$UA,
+               c("Not a Census place" = "-1"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$SUBTYPE1,
+               c("Public buildings/facilities"            = "1",
+                 "Natural resources/parks and recreation" = "2",
+                 "Transportation systems/facilities"      = "3",
+                 "Criminal investigations"                = "4",
+                 "Special enforcement"                    = "5",
+                 "Not applicable"                         = "888"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$GOVID,
+               c("Multi-jurisdiction (see COMMENTS)" = "999999991",
+                 "Undetermined"                      = "999999999"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$INTPTLAT,
+               c("Undetermined" = "-9"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$INTPTLONG,
+               c("Undetermined" = "-9"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$CONGDIST1,
+               c("Undetermined" = "-9"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$FCOUNTY,
+               c("Multi-jurisdiction (see COMMENTS)" = "991",
+                 "Federal agency"                    = "997",
+                 "Undetermined"                      = "999"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$AGCYTYPE,
+               c("Local police department"      = "0",
+                 "Sheriffs office"              = "1",
+                 "State law enforcement agency" = "5",
+                 "Special jurisdiction"         = "6",
+                 "Constable/Marshal"            = "7",
+                 "Federal"                      = "997"))
+  expect_equal(crosswalk2012_parsed_sps$value_labels$REPORT_FLAG,
+               c("Record has no ORI"                         = "0",
+                 "ORI reported 1+ offenses"                  = "1",
+                 "ORI reported 0 offenses or did not report" = "2"))
+
+})

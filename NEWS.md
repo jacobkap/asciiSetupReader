@@ -1,3 +1,7 @@
+# asciiSetupReader 2.0.2
+
+* Misc. bug fixes.
+
 # asciiSetupReader 2.0.1
 
 * Fix problem where package didn't work with dev version of Haven.

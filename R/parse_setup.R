@@ -44,6 +44,7 @@ parse_setup <- function(setup_file) {
     setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                   setup)
     setup <- gsub(" \\(A\\) ", " ", setup)
+    setup <- gsub(" \\([0-9]\\) ", " ", setup)
     setup <- gsub(" ([0-9]+-[0-9]+) ([[:alpha:]])", " \\1   \\2",
                   setup)
     setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",

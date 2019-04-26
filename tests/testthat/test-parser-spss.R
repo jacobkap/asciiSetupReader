@@ -26,6 +26,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(jail_2010_sps_name))
   expect_silent(parse_setup(corrections_sps_name))
   expect_silent(parse_setup(sadc_sps_name))
+  expect_silent(parse_setup(crosswalk2012_sps_name))
 
 })
 
@@ -51,6 +52,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(jail_2010_parsed_sps$setup), 200)
   expect_equal(nrow(corrections_parsed_sps$setup), 14)
   expect_equal(nrow(sadc_parsed_sps$setup), 314)
+  expect_equal(nrow(crosswalk2012_parsed_sps$setup), 46)
 
 
 })
@@ -170,6 +172,18 @@ test_that("Starting number is correct", {
 
 
 
+  expect_equal(head(crosswalk2012_parsed_sps$setup$begin),
+               c(1, 3, 6,
+                 11, 13, 16))
+  expect_equal(tail(crosswalk2012_parsed_sps$setup$begin),
+               c(1350, 1351, 1352,
+                 1353, 1354, 1355))
+
+
+
+
+
+
 })
 
 test_that("Ending number is correct", {
@@ -283,11 +297,45 @@ test_that("Ending number is correct", {
                                                   158))
   expect_equal(tail(sadc_parsed_sps$setup$end), c(845, 848, 851,
                                                   854, 857, 860))
+
+
+  expect_equal(head(crosswalk2012_parsed_sps$setup$end),
+               c(2, 5, 10,
+                 12, 15, 20))
+  expect_equal(tail(crosswalk2012_parsed_sps$setup$end),
+               c(1350, 1351, 1352,
+                 1353, 1354, 1355))
 })
 
 
 test_that("Original names are correct", {
   skip_on_cran()
+
+
+
+  expect_equal(head(crosswalk2012_parsed_sps$setup$column_number),
+               c("FSTATE", "FCOUNTY", "FPLACE",
+                 "FIPS_ST", "FIPS_COUNTY", "FIPS"))
+  expect_equal(tail(crosswalk2012_parsed_sps$setup$column_number),
+               c("SOURCE_CSLLEA2008", "SOURCE_UCR2010", "SOURCE_UCR2011",
+                 "SOURCE_UCR2012", "SOURCE_NCIC2012", "SOURCE_VENDOR"))
+
+  expect_equal(head(crosswalk2012_parsed_sps$setup$column_name),
+               c("FIPS_STATE_CODE",
+                 "FIPS_COUNTY_CODE",
+                 "FIPS_PLACE_CODE",
+                 "FIPS_STATE_CODE_ALPHANUMERIC",
+                 "FIPS_COUNTY_CODE_ALPHANUMERIC",
+                 "FIPS_STATE_COUNTY_CODE_ALPHANUMERIC"))
+  expect_equal(tail(crosswalk2012_parsed_sps$setup$column_name),
+               c("SOURCE_FILE_FLAG_CSLLEA_2008",
+                 "SOURCE_FILE_FLAG_UCR_2010",
+                 "SOURCE_FILE_FLAG_UCR_2011",
+                 "SOURCE_FILE_FLAG_UCR_2012",
+                 "SOURCE_FILE_FLAG_NCIC_2012",
+                 "SOURCE_FILE_FLAG_VENDOR_FILE_2012"))
+
+
 
   expect_equal(sac_parsed_sps$setup$column_number[1:20],
                c("TRINUM", "SUBNO", "TODDATYR",
