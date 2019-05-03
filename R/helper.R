@@ -221,6 +221,8 @@ get_value_labels_sps <- function(codebook, codebook_column_spaces) {
                        "\\1 \\2", value_labels)
   value_labels <- gsub("([[:alpha:]])\\s\\s([[:punct:]])",
                        "\\1 \\2", value_labels)
+  value_labels <- gsub(":  ",
+                       ": ", value_labels)
 
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]

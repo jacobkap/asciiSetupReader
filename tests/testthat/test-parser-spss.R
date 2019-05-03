@@ -27,6 +27,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(corrections_sps_name))
   expect_silent(parse_setup(sadc_sps_name))
   expect_silent(parse_setup(crosswalk2012_sps_name))
+  expect_silent(parse_setup(dutch_election_sps_name))
 
 })
 
@@ -53,6 +54,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(corrections_parsed_sps$setup), 14)
   expect_equal(nrow(sadc_parsed_sps$setup), 314)
   expect_equal(nrow(crosswalk2012_parsed_sps$setup), 46)
+  #  expect_equal(nrow(dutch_election_parsed_sps$setup), )
 
 
 })
@@ -180,6 +182,16 @@ test_that("Starting number is correct", {
                  1353, 1354, 1355))
 
 
+  expect_equal(head(dutch_election_parsed_sps$setup$begin),
+               c(1, 5, 9,
+                 11, 14, 16))
+  expect_equal(tail(dutch_election_parsed_sps$setup$begin),
+               c(1250, 1251, 1252,
+                 1254, 1255, 1256))
+
+
+
+
 
 
 
@@ -305,6 +317,14 @@ test_that("Ending number is correct", {
   expect_equal(tail(crosswalk2012_parsed_sps$setup$end),
                c(1350, 1351, 1352,
                  1353, 1354, 1355))
+
+
+  expect_equal(head(dutch_election_parsed_sps$setup$end),
+               c(4, 8, 10,
+                 13, 15, 16))
+  expect_equal(tail(dutch_election_parsed_sps$setup$end),
+               c(1250, 1251, 1253,
+                 1254, 1255, 1256))
 })
 
 
@@ -335,6 +355,29 @@ test_that("Original names are correct", {
                  "SOURCE_FILE_FLAG_NCIC_2012",
                  "SOURCE_FILE_FLAG_VENDOR_FILE_2012"))
 
+
+
+  expect_equal(head(dutch_election_parsed_sps$setup$column_number),
+               c("V1", "V2", "V3",
+                 "V4", "V5", "V6"))
+  expect_equal(tail(dutch_election_parsed_sps$setup$column_number),
+               c("V761", "V762", "V763",
+                 "V764", "V765", "V766"))
+
+  expect_equal(head(dutch_election_parsed_sps$setup$column_name),
+               c("ICPSR_STUDY_NUMBER_7261",
+                 "INTERVIEW_NUMBER",
+                 "PROVINCE_OF_INTERVIEW",
+                 "MUNICIPALITY_OF_INT",
+                 "DGRE_OF_URBNZATN_MNCPLTY",
+                 "X1ST_VISIT_CS_OF_NNINT"))
+  expect_equal(tail(dutch_election_parsed_sps$setup$column_name),
+               c("X3_COOPERATION_OF_R",
+                 "X3_GNL_RLBLTY_R_S_ANSR",
+                 "X3_UNRELIABLE_RESPONSES",
+                 "X3_R_S_GNL_INTRST_N_POLT",
+                 "X3_R_S_LVL_F_INF_ABT_PLT",
+                 "RESPONSE_BY_WAVE"))
 
 
   expect_equal(sac_parsed_sps$setup$column_number[1:20],

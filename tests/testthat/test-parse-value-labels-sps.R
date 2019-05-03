@@ -2017,3 +2017,142 @@ test_that("Crosswalk 2012 - parsed value labels are accurate", {
                  "ORI reported 0 offenses or did not report" = "2"))
 
 })
+
+
+test_that("Dutch election - parsed value labels are accurate", {
+
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V3,
+               c("GRONINGEN"    = "01",
+                 "FRIESLAND"    = "02",
+                 "DRENTE"    = "03",
+                 "OVERIJSSEL"    = "04",
+                 "GELDERLAND"    = "05",
+                 "UTRECHT"    = "06",
+                 "NOORD-HOLLAND"    = "07",
+                 "ZUID-HOLLAND"    = "08",
+                 "ZEELAND"    = "09",
+                 "NOORD-BRABANT"    = "10",
+                 "LIMBURG"    = "11"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V123A,
+               c("INAP"    = "97"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V123B,
+               c("INAP"    = "97"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V132,
+               c("VERY SATISFIED"    = "1",
+                 "SOMEWHAT SATISFIED"    = "3",
+                 "NOT SATISFIED"    = "5",
+                 "DK"    = "8",
+                 "NA"    = "9"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V231,
+               c("MEMBER OF ASSOCIATION OR ORGANIZATION ORIENTED"    = "0",
+                 "OTHER POLITICAL ORGANIZATION"    = "1",
+                 "NOT A MEMBER OF A POLITICAL ORGANIZATION"    = "5",
+                 "DK"    = "8",
+                 "NA"    = "9"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V236,
+               c("01 - 24"    = "0",
+                 "25 - 49"    = "1",
+                 "50 - 74"    = "2",
+                 "75 (CORRECT NUMBER)"    = "3",
+                 "76 - 100"    = "4",
+                 "101 - 125"    = "5",
+                 "126 - 150"    = "6",
+                 "151 OR MORE"    = "7",
+                 "DK"    = "8",
+                 "NA"    = "9"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V421,
+               c("DIFFERENCES SHOULD REMAIN AS THEY ARE"    = "1",
+                 "DIFFERENCES SHOULD BECOME LESS"    = "7",
+                 "DK"    = "8",
+                 "NA"    = "9",
+                 "INAP"    = "0"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V422,
+               c("DIFFERENCES SHOULD REMAIN AS THEY ARE"    = "1",
+                 "DIFFERENCES SHOULD BECOME LESS"    = "7",
+                 "DK"    = "8",
+                 "NA"    = "9",
+                 "INAP"    = "0"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V472A,
+               c("INAP"    = "97",
+                 "DK"    = "98",
+                 "NA; INAP"    = "99"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V587,
+               c("MEMBERS ALLOW THEMSELVES TO BE MINIMALLY INFLUENCED"    = "1",
+                 "MEMBERS ALLOW THEMSELVES TO BE STRONGLY INFLUENCED"    = "7",
+                 "DK"    = "8",
+                 "NA"    = "9",
+                 "INAP"    = "0"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V588,
+               c("DK"    = "98",
+                 "NA; INAP"    = "99"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V626,
+               c("Q"    = "01",
+                 "Q"    = "02",
+                 "Q"    = "03",
+                 "Q"    = "04",
+                 "Q"    = "05",
+                 "Q"    = "06",
+                 "Q"    = "07",
+                 "Q"    = "08",
+                 "Q"    = "09",
+                 "Q"    = "10",
+                 "Q"    = "11",
+                 "Q"    = "12",
+                 "Q"    = "13",
+                 "Q"    = "14",
+                 "Q"    = "15",
+                 "Q"    = "16",
+                 "Q"    = "17",
+                 "Q"    = "18",
+                 "Q"    = "19",
+                 "Q"    = "20",
+                 "Q"    = "21",
+                 "Q"    = "22",
+                 "Q"    = "23",
+                 "Q"    = "24",
+                 "Q"    = "25",
+                 "SOME QUESTIONS"    = "87",
+                 "THE MAJORITY"    = "88",
+                 "NO QUESTION UNRELIABLE"    = "89",
+                 "DK"    = "98",
+                 "NA"    = "99",
+                 "INAP"    = "00"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V627,
+               c("VERY HIGH"    = "1",
+                 "FAIRLY HIGH"    = "2",
+                 "AVERAGE"    = "3",
+                 "FAIRLY LOW"    = "4",
+                 "VERY LOW"    = "5",
+                 "NA"    = "9",
+                 "INAP"    = "0"))
+
+  expect_equal(dutch_election_parsed_sps$value_labels$V765,
+               c("VERY HIGH"    = "1",
+                 "FAIRLY HIGH"    = "2",
+                 "AVERAGE"    = "3",
+                 "FAIRLY LOW"    = "4",
+                 "VERY LOW"    = "5",
+                 "NA"    = "9",
+                 "INAP"    = "0"))
+  expect_equal(dutch_election_parsed_sps$value_labels$V766,
+               c("RESPONSE 1970, RESPONSE 1971, RESPONSE 1972"    = "1",
+                 "RESPONSE 1970, RESPONSE 1971, NON-RESPONSE 1972"    = "2",
+                 "RESPONSE 1970, RESPONSE 1971, MAILED QUESTIONNAIRE"    = "3",
+                 "RESPONSE 1970, NON-RESPONSE 1971, RESPONSE 1972"    = "4",
+                 "RESPONSE 1970, NON-RESPONSE 1971, NON-RESPONSE 1972"    = "5",
+                 "RESPONSE 1970, NON-RESPONSE 1971, MAILED QUESTION-"    = "6"))
+
+})

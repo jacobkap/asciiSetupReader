@@ -37,6 +37,9 @@ weimar_sas_name       <- system.file("testdata",
 crosswalk_dataset_name     <- system.file("testdata",
                                           "crosswalk.zip",
                                           package = "asciiSetupReader")
+dutch_election_dataset_name     <- system.file("testdata",
+                                          "dutch_election_study.zip",
+                                          package = "asciiSetupReader")
 
 crosswalk_sps_name         <- system.file("testdata",
                                           "crosswalk.sps",
@@ -122,9 +125,12 @@ corrections_sps_name       <- system.file("testdata",
 sadc_sps_name              <- system.file("testdata",
                                           "2017_sadc_spss_input_program.sps",
                                           package = "asciiSetupReader")
-crosswalk2012_sps_name              <- system.file("testdata",
+crosswalk2012_sps_name     <- system.file("testdata",
                                           "crosswalk2012.sps",
                                           package = "asciiSetupReader")
+dutch_election_sps_name    <- system.file("testdata",
+                                                   "dutch_election_study_sps.zip",
+                                                   package = "asciiSetupReader")
 
 
 crosswalk_sas_name         <- system.file("testdata",
@@ -356,6 +362,7 @@ jail_2010_parsed_sps       <- parse_setup(jail_2010_sps_name)
 corrections_parsed_sps     <- parse_setup(corrections_sps_name)
 sadc_parsed_sps            <- parse_setup(sadc_sps_name)
 crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
+dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 
 parole_parsed_sas          <- parse_setup(parole_sas_name)
 sac_parsed_sas             <- parse_setup(sac_sas_name)

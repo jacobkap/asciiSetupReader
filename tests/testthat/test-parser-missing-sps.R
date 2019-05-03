@@ -367,3 +367,26 @@ test_that("UCR 1985 has right missing values", {
 
 
 
+test_that("Dutch election has right missing values", {
+  expect_equal(head(dutch_election_parsed_sps$missing$variable),
+               c("V6", "V6", "V7",
+                 "V7", "V8", "V10"))
+  expect_equal(head(dutch_election_parsed_sps$missing$values),
+               c("0000009 THRU HI", "0000000", "0000009 THRU HI",
+                 "0000000", "0000000", "0011499 THRU HI"))
+  expect_equal(tail(dutch_election_parsed_sps$missing$variable),
+               c("V763", "V763", "V764",
+                 "V764", "V765", "V765"))
+  expect_equal(tail(dutch_election_parsed_sps$missing$values),
+               c("0000098 THRU HI", "0000000", "0000009 THRU HI",
+                 "0000000", "0000009 THRU HI", "0000000"))
+
+  expect_equal(head(unique(dutch_election_parsed_sps$missing$variable)),
+               c("V6", "V7", "V8",
+                 "V10", "V30", "V31"))
+  expect_equal(tail(unique(dutch_election_parsed_sps$missing$variable)),
+               c("V760", "V761", "V762",
+                 "V763", "V764", "V765"))
+})
+
+

@@ -4,6 +4,17 @@ context("There are no warning or error messages")
 test_that("No messages or warnings or errors for file loads - SPSS", {
   skip_on_cran()
 
+
+  expect_silent(read_ascii_setup(data = dutch_election_dataset_name,
+                                 setup_file = dutch_election_sps_name))
+  expect_silent(read_ascii_setup(data = dutch_election_dataset_name,
+                                 setup_file = dutch_election_sps_name,
+                                 select_columns = 1:5))
+  expect_silent(read_ascii_setup(data = dutch_election_dataset_name,
+                                 setup_file = dutch_election_sps_name,
+                                 select_columns = c(1:5, 7, 111:123)))
+
+
   expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
                                  setup_file = jail_1987_sps_name))
   expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
