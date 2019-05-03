@@ -24,7 +24,7 @@ This will return a list of length 3 containing the objects "setup", "value_label
 
 ```{r}
 # Using the example .sps setup file included with the package
-sps_name <- system.file("extdata", "sacramento.sps",
+sps_name <- system.file("extdata", "example_setup.sps",
                           package = "asciiSetupReader")
 example <- asciiSetupReader::parse_setup(sps_name)
 ```
