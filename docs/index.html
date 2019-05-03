@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -107,13 +107,13 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">To install this package, use the code</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"asciiSetupReader"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co"># The development version is available on Github.</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># install.packages("devtools")</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"jacobkap/asciiSetupReader"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">To install this package, use the code</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"asciiSetupReader"</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co"># The development version is available on Github.</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-7" title="7">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"jacobkap/asciiSetupReader"</span>)</a></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
@@ -121,14 +121,14 @@
 <p>These parameters <code>data</code> and <code>setup_file</code> are the only ones requires to run the package though three optional parameters allow you to customize results.</p>
 <p><code>data</code> - A string containing the name of the data file <code>setup_file</code> - A string containing the name of the data file</p>
 <p>Both files must be in your working directory or the string must contain the path to the file. Below is an example of reading in the example dataset - the original data and setup files can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">setup_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="dt">setup_file =</span> setup_file)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</a>
+<a class="sourceLine" id="cb2-2" title="2">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3">setup_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,</a>
+<a class="sourceLine" id="cb2-4" title="4">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
+<a class="sourceLine" id="cb2-5" title="5"></a>
+<a class="sourceLine" id="cb2-6" title="6">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="dt">setup_file =</span> setup_file)</a>
+<a class="sourceLine" id="cb2-8" title="8">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
 <pre><code>##   IDENTIFIER_CODE NUMERIC_STATE_CODE ORI_CODE             GROUP
 ## 1 SHR master file            Alabama  AL00112 Cit 50,000-99,999
 ## 2 SHR master file            Alabama  AL00112 Cit 50,000-99,999

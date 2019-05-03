@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
       <h1>Making an .sps file</h1>
                         <h4 class="author">Jacob Kaplan</h4>
             
-            <h4 class="date">2019-02-25</h4>
+            <h4 class="date">2019-05-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/master/vignettes/making-an-sps-file.Rmd"><code>vignettes/making-an-sps-file.Rmd</code></a></small>
       <div class="hidden name"><code>making-an-sps-file.Rmd</code></div>
@@ -103,9 +103,9 @@
 <p>There are two parameters absolutely needed - <code>file_name</code> and <code>col_positions</code> - as well as four optional parameters.</p>
 <ul>
 <li>
-<code>file_name</code> - Name of the file to be saved (e.g. “setup_file1”). There is no need to put the .sps extension in the file name.</li>
+<code>file_name</code> - Name of the file to be saved (e.g. “setup_file1”). There is no need to put the .sps extension in the file name.</li>
 <li>
-<code>col_positions</code> - Either a vector of strings indicating the start and end position of each column (e.g. “1-3”, “4-5”) or a vector of the widths of the columns (e.g. 3, 2).</li>
+<code>col_positions</code> - Either a vector of strings indicating the start and end position of each column (e.g. “1-3”, “4-5”) or a vector of the widths of the columns (e.g. 3, 2).</li>
 <li>
 <code>col_names</code> - A vector of names for the columns. If none are provided, will automatically create names based on column number (e.g. V1, V2, V3).</li>
 <li>
@@ -124,55 +124,55 @@
 <h2 class="hasAnchor">
 <a href="#col_positions" class="anchor"></a>col_positions</h2>
 <p>This is a vector either of strings indicating the width of each column (starting at 1) or the starting and ending point of that column with a “-” between the start and end number.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">col_positions &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"1-1"</span>, <span class="st">"2-3"</span>, <span class="st">"4-5"</span>, <span class="st">"6-11"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">col_positions &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"1-1"</span>, <span class="st">"2-3"</span>, <span class="st">"4-5"</span>, <span class="st">"6-11"</span>)</a></code></pre></div>
 </div>
 <div id="col_names" class="section level2">
 <h2 class="hasAnchor">
 <a href="#col_names" class="anchor"></a>col_names</h2>
 <p>This is a vector of strings with names for the column. Only useful if the guide you’re following to make this .sps file includes these names and you want to be exact. If you don’t include this, it will just name the columns V1:Vnumber_of_columns.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">col_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span>, <span class="st">"var4"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">col_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span>, <span class="st">"var4"</span>)</a></code></pre></div>
 </div>
 <div id="col_labels" class="section level2">
 <h2 class="hasAnchor">
 <a href="#col_labels" class="anchor"></a>col_labels</h2>
 <p>This is the same as col_names but each column name should be the descriptive name of the column. These names are the ones that will be used if real_names = TRUE in read_ascii_setup.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">col_labels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"version_number"</span>, <span class="st">"victim_sex"</span>, <span class="st">"victim_race"</span>, <span class="st">"state"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">col_labels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"version_number"</span>, <span class="st">"victim_sex"</span>, <span class="st">"victim_race"</span>, <span class="st">"state"</span>)</a></code></pre></div>
 </div>
 <div id="value_labels" class="section level2">
 <h2 class="hasAnchor">
 <a href="#value_labels" class="anchor"></a>value_labels</h2>
 <p>This is a named vector with the column name as its own string followed by a string for each value-label pair in that column. The syntax is ‘value = label’. For the column name, the label is blank so it appears ‘column =’. For example, if ‘sex’ is the column name as it has value labels for M = Male and F = Female, the value_labels parameter will be:</p>
 <p>value_labels = c(“sex =”, “M = Male”, “F = Female”)</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">value_labels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"victim_sex = "</span>,</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">                  <span class="st">"MA = male"</span>,</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">                  <span class="st">"FE = female"</span>,</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">                  <span class="st">"UN = unknown"</span>,</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">                  <span class="st">"victim_race = "</span>,</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">                  <span class="st">"WH = white"</span>,</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">                  <span class="st">"BL = black"</span>,</a>
-<a class="sourceLine" id="cb4-8" data-line-number="8">                  <span class="st">"IA = american indian or alaskan native"</span>,</a>
-<a class="sourceLine" id="cb4-9" data-line-number="9">                  <span class="st">"AS = asian"</span>,</a>
-<a class="sourceLine" id="cb4-10" data-line-number="10">                  <span class="st">"UN = unknown"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">value_labels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"victim_sex = "</span>,</a>
+<a class="sourceLine" id="cb4-2" title="2">                  <span class="st">"MA = male"</span>,</a>
+<a class="sourceLine" id="cb4-3" title="3">                  <span class="st">"FE = female"</span>,</a>
+<a class="sourceLine" id="cb4-4" title="4">                  <span class="st">"UN = unknown"</span>,</a>
+<a class="sourceLine" id="cb4-5" title="5">                  <span class="st">"victim_race = "</span>,</a>
+<a class="sourceLine" id="cb4-6" title="6">                  <span class="st">"WH = white"</span>,</a>
+<a class="sourceLine" id="cb4-7" title="7">                  <span class="st">"BL = black"</span>,</a>
+<a class="sourceLine" id="cb4-8" title="8">                  <span class="st">"IA = american indian or alaskan native"</span>,</a>
+<a class="sourceLine" id="cb4-9" title="9">                  <span class="st">"AS = asian"</span>,</a>
+<a class="sourceLine" id="cb4-10" title="10">                  <span class="st">"UN = unknown"</span>)</a></code></pre></div>
 </div>
 <div id="missing_values" class="section level2">
 <h2 class="hasAnchor">
 <a href="#missing_values" class="anchor"></a>missing_values</h2>
 <p>This is a vector of strings with the column name (can be either the name in col_names or col_labels but must be consistent) followed by all the values that represent missing values, each in its own string.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">missing_values &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"victim_sex"</span>, </a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">                    <span class="st">"-9"</span>, </a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                    <span class="st">"-8"</span>, </a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                    <span class="st">"victim_race"</span>,</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">                    <span class="st">"-8"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">missing_values &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"victim_sex"</span>, </a>
+<a class="sourceLine" id="cb5-2" title="2">                    <span class="st">"-9"</span>, </a>
+<a class="sourceLine" id="cb5-3" title="3">                    <span class="st">"-8"</span>, </a>
+<a class="sourceLine" id="cb5-4" title="4">                    <span class="st">"victim_race"</span>,</a>
+<a class="sourceLine" id="cb5-5" title="5">                    <span class="st">"-8"</span>)</a></code></pre></div>
 </div>
 <div id="putting-it-all-together" class="section level2">
 <h2 class="hasAnchor">
 <a href="#putting-it-all-together" class="anchor"></a>Putting it all together</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/make_sps_setup">make_sps_setup</a></span>(<span class="dt">file_name =</span> <span class="st">"setup_file_example"</span>,</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">                                 <span class="dt">col_positions  =</span> col_positions,</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                                 <span class="dt">col_names      =</span> col_names,</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">                                 <span class="dt">col_labels     =</span> col_labels,</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">                                 <span class="dt">value_labels   =</span> value_labels,</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">                                 <span class="dt">missing_values =</span> missing_values)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/make_sps_setup">make_sps_setup</a></span>(<span class="dt">file_name =</span> <span class="st">"setup_file_example"</span>,</a>
+<a class="sourceLine" id="cb6-2" title="2">                                 <span class="dt">col_positions  =</span> col_positions,</a>
+<a class="sourceLine" id="cb6-3" title="3">                                 <span class="dt">col_names      =</span> col_names,</a>
+<a class="sourceLine" id="cb6-4" title="4">                                 <span class="dt">col_labels     =</span> col_labels,</a>
+<a class="sourceLine" id="cb6-5" title="5">                                 <span class="dt">value_labels   =</span> value_labels,</a>
+<a class="sourceLine" id="cb6-6" title="6">                                 <span class="dt">missing_values =</span> missing_values)</a></code></pre></div>
 </div>
   </div>
 

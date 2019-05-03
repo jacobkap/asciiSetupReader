@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
       <h1>Introduction to asciiSetupReader</h1>
                         <h4 class="author">Jacob Kaplan</h4>
             
-            <h4 class="date">2019-02-25</h4>
+            <h4 class="date">2019-05-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/master/vignettes/Introduction_to_asciiSetupReader.Rmd"><code>vignettes/Introduction_to_asciiSetupReader.Rmd</code></a></small>
       <div class="hidden name"><code>Introduction_to_asciiSetupReader.Rmd</code></div>
@@ -102,14 +102,14 @@
 <p><code>data</code> - A string containing the name of the data file</p>
 <p><code>setup_file</code> - A string containing the name of the data file</p>
 <p>Both files must be in your working directory or the string must contain the path to the file. Below is an example of reading in the example dataset - the original data and setup files can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">setup_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="dt">setup_file =</span> setup_file)</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</a>
+<a class="sourceLine" id="cb1-2" title="2">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3">setup_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,</a>
+<a class="sourceLine" id="cb1-4" title="4">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="dt">setup_file =</span> setup_file)</a>
+<a class="sourceLine" id="cb1-8" title="8">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
 <pre><code>##   IDENTIFIER_CODE NUMERIC_STATE_CODE ORI_CODE             GROUP
 ## 1 SHR master file            Alabama  AL00112 Cit 50,000-99,999
 ## 2 SHR master file            Alabama  AL00112 Cit 50,000-99,999
@@ -123,10 +123,10 @@
 <a href="#use_value_labels" class="anchor"></a><code>use_value_labels</code>
 </h2>
 <p>Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing “male” or “female” in a column about gender, it will be “0” or “1” (or “M” and “F”). The setup file gives the actual value of these representations. When the parameter <code>use_value_labels</code> is TRUE (which it is by default) it will give the value labels; otherwise it will give only the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE (or use the parameter <code>select_columns</code> to get only those columns).</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file,</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="dt">use_value_labels =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="dt">setup_file =</span> setup_file,</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="dt">use_value_labels =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-4" title="4">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
 <pre><code>##   IDENTIFIER_CODE NUMERIC_STATE_CODE ORI_CODE GROUP
 ## 1               6                  1  AL00112     3
 ## 2               6                  1  AL00112     3
@@ -140,10 +140,10 @@
 <a href="#use_clean_names" class="anchor"></a><code>use_clean_names</code>
 </h2>
 <p>Column names are similar to how there are both value representations and value labels for values in a column. The columns may have a non-descriptive name (e.g. V1, V2) or a descriptive one (e.g. CITY, GENDER). When <code>use_clean_names</code> is TRUE (which it is by), the descriptive name is given; otherwise the non-descriptive name is given.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file,</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="dt">use_clean_names =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="dt">setup_file =</span> setup_file,</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="dt">use_clean_names =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-4" title="4">example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></a></code></pre></div>
 <pre><code>##                V1      V2      V3                V4
 ## 1 SHR master file Alabama AL00112 Cit 50,000-99,999
 ## 2 SHR master file Alabama AL00112 Cit 50,000-99,999
@@ -158,10 +158,10 @@
 </h2>
 <p>This parameter allows you to return only the specific columns you want. It is very useful when dealing with a large file which you only want part of. It accepts 3 inputs: column numbers, the non-descriptive column names, or the descriptive column names - you can only choose one input type, cannot mix them together. To get the column names and numbers, consult with the g documentation.</p>
 <p>This gets only the first two columns of data and specifies the columns by number.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file, </a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="dt">select_columns =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>) <span class="co"># Gets only the first 2 columns</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(example)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="dt">setup_file =</span> setup_file, </a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="dt">select_columns =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>) <span class="co"># Gets only the first 2 columns</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(example)</a></code></pre></div>
 <pre><code>##   IDENTIFIER_CODE NUMERIC_STATE_CODE
 ## 1 SHR master file            Alabama
 ## 2 SHR master file            Alabama
@@ -170,10 +170,10 @@
 ## 5 SHR master file            Arizona
 ## 6 SHR master file            Arizona</code></pre>
 <p>This gets only the first two columns of data and specifies the columns by descriptive names.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file, </a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="dt">select_columns =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"IDENTIFIER_CODE"</span>, <span class="st">"NUMERIC_STATE_CODE"</span>)) <span class="co"># Gets only the first 2 columns</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(example)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="dt">setup_file =</span> setup_file, </a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="dt">select_columns =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"IDENTIFIER_CODE"</span>, <span class="st">"NUMERIC_STATE_CODE"</span>)) <span class="co"># Gets only the first 2 columns</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(example)</a></code></pre></div>
 <pre><code>##   IDENTIFIER_CODE NUMERIC_STATE_CODE
 ## 1 SHR master file            Alabama
 ## 2 SHR master file            Alabama
@@ -182,10 +182,10 @@
 ## 5 SHR master file            Arizona
 ## 6 SHR master file            Arizona</code></pre>
 <p>This gets only the first column of data and specifies the column by non-descriptive names.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="dt">setup_file =</span> setup_file, </a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="dt">select_columns =</span> <span class="st">"V1"</span>) <span class="co"># Gets only the first columnss</span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(example)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/asciiSetupReader/topics/read_ascii_setup">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="dt">setup_file =</span> setup_file, </a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="dt">select_columns =</span> <span class="st">"V1"</span>) <span class="co"># Gets only the first columnss</span></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(example)</a></code></pre></div>
 <pre><code>##   IDENTIFIER_CODE
 ## 1 SHR master file
 ## 2 SHR master file
