@@ -7,7 +7,8 @@ Authors@R:
     person(given = "Jacob",
            family = "Kaplan",
            role = c("aut", "cre"),
-           email = "jkkaplan6@gmail.com")
+           email = "jkkaplan6@gmail.com",
+           comment = c(ORCID = "0000-0002-0601-0387"))
 Description: Lets you open a fixed-width ASCII file (.txt or
     .dat) that has an accompanying setup file (.sps or .sas). These file
     combinations are sometimes referred to as .txt+.sps, .txt+.sas,
