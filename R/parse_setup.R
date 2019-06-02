@@ -51,7 +51,7 @@ parse_setup <- function(setup_file) {
                   setup)
     setup <- unlist(strsplit(setup, '"\\s{3,}'))
   } else {
-    setup <- codebook[grep2("^INPUT$", codebook):grep("^$", codebook)[grep("^$", codebook) > grep2("^INPUT$", codebook) + 5][1]]
+    setup <- codebook[grep2("^INPUT$", codebook):grep("^$|^;$", codebook)[grep("^$|^;$", codebook) > grep2("^INPUT$", codebook) + 5][1]]
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+) ", "\\1 \\2 ", setup)
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+)$", "\\1 \\2", setup)
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+) ", "\\1 \\2 ", setup)
@@ -242,9 +242,13 @@ parse_value_labels <- function(setup, type) {
 parse_column_names <- function(codebook, type) {
   # Get the column names
   if (type == "sps") {
-    variables <- codebook[grep2("^variable labels$", codebook):
-                            grep2("^value labels$|missing values|^execute$",
-                                  codebook)[1]]
+    variable_label_location <- grep2("^variable labels$", codebook)
+    next_location <- grep2("^value labels$|missing values|^execute$|^.$",
+                           codebook)
+    next_location <- next_location[next_location > variable_label_location]
+    next_location <- next_location[1]
+    next_location <- next_location - 1
+    variables <- codebook[variable_label_location:next_location]
     variables <- gsub("\\'\\'", "\\'", variables)
     variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
                       variables)
@@ -262,13 +266,17 @@ parse_column_names <- function(codebook, type) {
       variables <- variables[-plus]
     }
   } else if (type == "sas") {
-    variables <- codebook[grep2("^LABEL$", codebook):
-                            grep("^$", codebook)[grep("^$", codebook) >
-                                                   grep2("^LABEL$",
-                                                         codebook)][1]]
+    variable_label_location <- grep2("^LABEL$|^ATTRIB$", codebook)
+    next_location <- grep2("^$|^;", codebook)
+    next_location <- next_location[next_location > variable_label_location]
+    next_location <- next_location[1]
+
+    variables <- codebook[variable_label_location:next_location]
     variables <- variables[grep("=", variables)]
     variables <- gsub("(\\S)=", "\\1 =", variables)
     variables <- gsub('([[:alpha:]]+\\") ', '\\1   ', variables)
+
+    variables <- gsub(' LABEL =\\"', '  "', variables)
   }
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
 

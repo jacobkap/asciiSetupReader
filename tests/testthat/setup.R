@@ -38,8 +38,8 @@ crosswalk_dataset_name     <- system.file("testdata",
                                           "crosswalk.zip",
                                           package = "asciiSetupReader")
 dutch_election_dataset_name     <- system.file("testdata",
-                                          "dutch_election_study.zip",
-                                          package = "asciiSetupReader")
+                                               "dutch_election_study.zip",
+                                               package = "asciiSetupReader")
 
 crosswalk_sps_name         <- system.file("testdata",
                                           "crosswalk.sps",
@@ -129,10 +129,15 @@ crosswalk2012_sps_name     <- system.file("testdata",
                                           "crosswalk2012.sps",
                                           package = "asciiSetupReader")
 dutch_election_sps_name    <- system.file("testdata",
-                                                   "dutch_election_study_sps.zip",
-                                                   package = "asciiSetupReader")
+                                          "dutch_election_study_sps.zip",
+                                          package = "asciiSetupReader")
+well_being_sps_name        <- system.file("testdata",
+                                          "WB2016.sps",
+                                          package = "asciiSetupReader")
 
-
+well_being_sas_name        <- system.file("testdata",
+                                      "WB2016.sas",
+                                      package = "asciiSetupReader")
 crosswalk_sas_name         <- system.file("testdata",
                                           "crosswalk.sas",
                                           package = "asciiSetupReader")
@@ -216,24 +221,24 @@ sadc_sas_name              <- system.file("testdata",
                                           package = "asciiSetupReader")
 
 parole <- read_ascii_setup(data = parole_survey_dataset_name,
-                            setup_file = parole_sps_name,
-                            use_clean_names = FALSE)
+                           setup_file = parole_sps_name,
+                           use_clean_names = FALSE)
 
 SHR2 <- read_ascii_setup(data = SHR_dataset_name,
-                          setup_file = SHR_sps_name, select_columns = 1:5)
+                         setup_file = SHR_sps_name, select_columns = 1:5)
 SHR3 <- read_ascii_setup(data = SHR_dataset_name,
-                          setup_file = SHR_sps_name,
-                          select_columns = c(1, 5, 50:55, 100:121, 152))
+                         setup_file = SHR_sps_name,
+                         select_columns = c(1, 5, 50:55, 100:121, 152))
 
 
 UCR2 <- read_ascii_setup(data = UCR_dataset_name,
-                          setup_file = UCR_sps_name,
-                          select_columns = c("V1", "V50", "V100", "V111",
-                                           "V1000"))
+                         setup_file = UCR_sps_name,
+                         select_columns = c("V1", "V50", "V100", "V111",
+                                            "V1000"))
 NIBRS2 <- read_ascii_setup(data = NIBRS_dataset_name,
-                            setup_file = NIBRS_sps_name,
-                            select_columns = c("B1001", "B1005", "B1010",
-                                             "B1016", "B1019"))
+                           setup_file = NIBRS_sps_name,
+                           select_columns = c("B1001", "B1005", "B1010",
+                                              "B1016", "B1019"))
 
 # Read SAS ====================================================================
 SHR2_sas   <- read_ascii_setup(data = SHR_dataset_name,
@@ -244,19 +249,19 @@ SHR3_sas   <- read_ascii_setup(data = SHR_dataset_name,
 UCR2_sas   <- read_ascii_setup(data = UCR_dataset_name,
                                setup_file = UCR_sas_name,
                                select_columns = c("V1", "V50", "V100",
-                                                "V111", "V1000"))
+                                                  "V111", "V1000"))
 NIBRS2_sas <- read_ascii_setup(data = NIBRS_dataset_name,
                                setup_file = NIBRS_sas_name,
                                select_columns = c("B1001", "B1005",
-                                                "B1010", "B1016", "B1019"))
+                                                  "B1010", "B1016", "B1019"))
 
 SHR        <- read_ascii_setup(data = SHR_dataset_name,
-                                setup_file = SHR_sps_name)
+                               setup_file = SHR_sps_name)
 UCR        <- read_ascii_setup(data = UCR_dataset_name,
-                                setup_file = UCR_sps_name,
-                                select_columns = 1:150)
+                               setup_file = UCR_sps_name,
+                               select_columns = 1:150)
 NIBRS      <- read_ascii_setup(data = NIBRS_dataset_name,
-                                setup_file = NIBRS_sps_name)
+                               setup_file = NIBRS_sps_name)
 SHR_sas    <- read_ascii_setup(data = SHR_dataset_name,
                                setup_file = SHR_sas_name)
 UCR_sas    <- read_ascii_setup(data = UCR_dataset_name,
@@ -265,40 +270,40 @@ UCR_sas    <- read_ascii_setup(data = UCR_dataset_name,
 NIBRS_sas  <- read_ascii_setup(data = NIBRS_dataset_name,
                                setup_file = NIBRS_sas_name)
 weimar     <- read_ascii_setup(data = weimar_dataset_name,
-                                setup_file = weimar_sps_name)
+                               setup_file = weimar_sps_name)
 weimar_sas <- read_ascii_setup(data = weimar_dataset_name,
                                setup_file = weimar_sas_name)
 
 
 
 SHR_names    <- read_ascii_setup(data = SHR_dataset_name,
-                                  setup_file = SHR_sps_name,
-                                  select_columns = c(1, 33, 45, 72, 100, 152))
+                                 setup_file = SHR_sps_name,
+                                 select_columns = c(1, 33, 45, 72, 100, 152))
 SHR2_names   <- read_ascii_setup(data = SHR_dataset_name,
-                                  setup_file = SHR_sps_name,
-                                  use_clean_names = FALSE,
-                                  select_columns = c(1, 33, 45, 72, 100, 152))
+                                 setup_file = SHR_sps_name,
+                                 use_clean_names = FALSE,
+                                 select_columns = c(1, 33, 45, 72, 100, 152))
 UCR_names    <- read_ascii_setup(data = UCR_dataset_name,
-                                  setup_file = UCR_sps_name,
-                                  select_columns = c(1, 33, 345, 572, 1000, 1400))
+                                 setup_file = UCR_sps_name,
+                                 select_columns = c(1, 33, 345, 572, 1000, 1400))
 UCR2_names   <- read_ascii_setup(data = UCR_dataset_name,
-                                  setup_file = UCR_sps_name,
-                                  select_columns = c(1, 33, 345, 572, 1000, 1400),
-                                  use_clean_names = FALSE)
+                                 setup_file = UCR_sps_name,
+                                 select_columns = c(1, 33, 345, 572, 1000, 1400),
+                                 use_clean_names = FALSE)
 NIBRS_names   <- read_ascii_setup(data = NIBRS_dataset_name,
-                                   setup_file = NIBRS_sps_name,
-                                   select_columns = c(1, 3, 5, 7, 10, 15))
+                                  setup_file = NIBRS_sps_name,
+                                  select_columns = c(1, 3, 5, 7, 10, 15))
 NIBRS2_names  <- read_ascii_setup(data = NIBRS_dataset_name,
-                                   setup_file = NIBRS_sps_name,
-                                   use_clean_names = FALSE,
-                                   select_columns = c(1, 3, 5, 7, 10, 15))
+                                  setup_file = NIBRS_sps_name,
+                                  use_clean_names = FALSE,
+                                  select_columns = c(1, 3, 5, 7, 10, 15))
 
 weimar_names  <- read_ascii_setup(data = weimar_dataset_name,
-                                   setup_file = weimar_sps_name,
-                                   select_columns = c(1:7, 23))
+                                  setup_file = weimar_sps_name,
+                                  select_columns = c(1:7, 23))
 weimar2_names <- read_ascii_setup(data = weimar_dataset_name,
-                                   setup_file = weimar_sps_name,
-                                   use_clean_names = FALSE)
+                                  setup_file = weimar_sps_name,
+                                  use_clean_names = FALSE)
 
 
 # Read SAS ===============================================================
@@ -309,15 +314,15 @@ SHR2_sas_names    <- read_ascii_setup(data = SHR_dataset_name,
                                       setup_file = SHR_sas_name,
                                       use_clean_names = FALSE,
                                       select_columns = c(1, 33, 45,
-                                                       72, 100, 152))
+                                                         72, 100, 152))
 UCR_sas_names     <- read_ascii_setup(data = UCR_dataset_name,
                                       setup_file = UCR_sas_name,
                                       select_columns = c(1, 33, 345,
-                                                       572, 1000, 1400))
+                                                         572, 1000, 1400))
 UCR2_sas_names    <- read_ascii_setup(data = UCR_dataset_name,
                                       setup_file = UCR_sas_name,
                                       select_columns = c(1, 33, 345,
-                                                       572, 1000, 1400),
+                                                         572, 1000, 1400),
                                       use_clean_names = FALSE)
 NIBRS_sas_names   <- read_ascii_setup(data = NIBRS_dataset_name,
                                       setup_file = NIBRS_sas_name,
@@ -334,8 +339,8 @@ weimar2_sas_names <- read_ascii_setup(data = weimar_dataset_name,
                                       setup_file = weimar_sas_name,
                                       use_clean_names = FALSE)
 crosswalk         <- read_ascii_setup(data = crosswalk_dataset_name,
-                                       setup_file = crosswalk_sps_name,
-                                       use_clean_names = FALSE)
+                                      setup_file = crosswalk_sps_name,
+                                      use_clean_names = FALSE)
 
 parole_parsed_sps          <- parse_setup(parole_sps_name)
 sac_parsed_sps             <- parse_setup(sac_sps_name)
@@ -363,7 +368,9 @@ corrections_parsed_sps     <- parse_setup(corrections_sps_name)
 sadc_parsed_sps            <- parse_setup(sadc_sps_name)
 crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
 dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
+well_being_parsed_sps      <- parse_setup(well_being_sps_name)
 
+well_being_parsed_sas      <- parse_setup(well_being_sas_name)
 parole_parsed_sas          <- parse_setup(parole_sas_name)
 sac_parsed_sas             <- parse_setup(sac_sas_name)
 sex_offender_parsed_sas    <- parse_setup(sex_offender_sas_name)

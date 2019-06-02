@@ -28,7 +28,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(sadc_sps_name))
   expect_silent(parse_setup(crosswalk2012_sps_name))
   expect_silent(parse_setup(dutch_election_sps_name))
-
+  expect_silent(parse_setup(well_being_sps_name))
 })
 
 
@@ -55,6 +55,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(sadc_parsed_sps$setup), 314)
   expect_equal(nrow(crosswalk2012_parsed_sps$setup), 46)
   #  expect_equal(nrow(dutch_election_parsed_sps$setup), )
+  expect_equal(nrow(well_being_parsed_sps$setup), 312)
 
 
 })
@@ -191,15 +192,25 @@ test_that("Starting number is correct", {
 
 
 
-
-
-
+  expect_equal(head(well_being_parsed_sps$setup$begin),
+               c(1, 2, 7,
+                 9, 10, 13))
+  expect_equal(tail(well_being_parsed_sps$setup$begin),
+               c(405, 406, 407,
+                 408, 409, 418))
 
 
 })
 
 test_that("Ending number is correct", {
   skip_on_cran()
+
+  expect_equal(head(well_being_parsed_sps$setup$end),
+               c(1, 6, 8,
+                 9, 12, 13))
+  expect_equal(tail(well_being_parsed_sps$setup$end),
+               c(405, 406, 407,
+                 408, 417, 419))
 
   expect_equal(weimar_parsed_sps$setup$end,
                c(2, 4, 5, 22, 29, 36, 43, 50, 57, 64, 71, 78,
@@ -330,6 +341,32 @@ test_that("Ending number is correct", {
 
 test_that("Original names are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(well_being_parsed_sps$setup$column_number),
+               c("WB16REL", "WB16YRID", "WB16SN",
+                 "WB16SEX", "WB16AGE", "WB16IWMODE"))
+  expect_equal(head(well_being_parsed_sps$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X2015_FAMILY_INTERVIEW_ID_NUMBER",
+                 "SEQUENCE_NUMBER_15",
+                 "SEX_OF_R",
+                 "AGE_OF_R_ON_DEC_31_2015",
+                 "MODE_OF_INTERVIEW"))
+
+
+  expect_equal(tail(well_being_parsed_sps$setup$column_number),
+               c("WB16BKSECH", "WB16BKSECI", "WB16BKSECJ",
+                 "WB16BKSECK", "WB16WT", "WB16DEV"))
+  expect_equal(tail(well_being_parsed_sps$setup$column_name),
+               c("WTR_BACKED_UP_SECTION_H",
+                 "WTR_BACKED_UP_SECTION_I",
+                 "WTR_BACKED_UP_SECTION_J",
+                 "WTR_BACKED_UP_SECTION_K",
+                 "WELLBEING_CROSS_SECTIONAL_WEIGHT",
+                 "DEVICE_TYPE_FOR_WEB_LOGIN"))
+
+
 
 
 

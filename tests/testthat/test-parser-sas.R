@@ -26,6 +26,8 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(jail_1987_sas_name))
   expect_silent(parse_setup(jail_2010_sas_name))
   expect_silent(parse_setup(corrections_sas_name))
+  expect_silent(parse_setup(well_being_sas_name))
+
 
 })
 
@@ -51,7 +53,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(jail_1987_parsed_sas$setup), 176)
 
   expect_equal(nrow(jail_2010_parsed_sas$setup), 200)
-
+  expect_equal(nrow(well_being_parsed_sas$setup), 312)
   expect_equal(nrow(corrections_parsed_sas$setup), 14)
 
 
@@ -191,10 +193,27 @@ test_that("Starting number is correct", {
                                                      30, 31))
 
 
+  expect_equal(head(well_being_parsed_sas$setup$begin),
+               c(1, 2, 7,
+                 9, 10, 13))
+  expect_equal(tail(well_being_parsed_sas$setup$begin),
+               c(405, 406, 407,
+                 408, 409, 418))
+
+
+
+
 })
 
 test_that("Ending number is correct", {
   skip_on_cran()
+
+  expect_equal(head(well_being_parsed_sas$setup$end),
+               c(1, 6, 8,
+                 9, 12, 13))
+  expect_equal(tail(well_being_parsed_sas$setup$end),
+               c(405, 406, 407,
+                 408, 417, 419))
 
   expect_equal(weimar_parsed_sas$setup$end, c(2, 4, 5,
                                               22, 29, 36, 43, 50, 57, 64, 71, 78,
@@ -494,5 +513,30 @@ test_that("Original names are correct", {
                  "DETAILED_CATEGORIZATION_OF_MOST_SERIOUS_SENTENCED_OFFENSE",
                  "RACE_HISPANIC_ETHNICITY_OF_INMATE",
                  "AGE_AT_ADMISSION"))
+
+
+
+  expect_equal(head(well_being_parsed_sas$setup$column_number),
+               c("WB16REL", "WB16YRID", "WB16SN",
+                 "WB16SEX", "WB16AGE", "WB16IWMODE"))
+  expect_equal(head(well_being_parsed_sas$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X2015_FAMILY_INTERVIEW_ID_NUMBER",
+                 "SEQUENCE_NUMBER_15",
+                 "SEX_OF_R",
+                 "AGE_OF_R_ON_DEC_31_2015",
+                 "MODE_OF_INTERVIEW"))
+
+
+  expect_equal(tail(well_being_parsed_sas$setup$column_number),
+               c("WB16BKSECH", "WB16BKSECI", "WB16BKSECJ",
+                 "WB16BKSECK", "WB16WT", "WB16DEV"))
+  expect_equal(tail(well_being_parsed_sas$setup$column_name),
+               c("WTR_BACKED_UP_SECTION_H",
+                 "WTR_BACKED_UP_SECTION_I",
+                 "WTR_BACKED_UP_SECTION_J",
+                 "WTR_BACKED_UP_SECTION_K",
+                 "WELLBEING_CROSS_SECTIONAL_WEIGHT",
+                 "DEVICE_TYPE_FOR_WEB_LOGIN"))
 
 })
