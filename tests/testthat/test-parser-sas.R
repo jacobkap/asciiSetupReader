@@ -21,13 +21,17 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(SHR1988_sas_name))
   expect_silent(parse_setup(SHR1981_sas_name))
   expect_silent(parse_setup(ca_vital_sas_name))
-
   expect_silent(parse_setup(ncvs_sas_name))
   expect_silent(parse_setup(jail_1987_sas_name))
   expect_silent(parse_setup(jail_2010_sas_name))
   expect_silent(parse_setup(corrections_sas_name))
   expect_silent(parse_setup(well_being_sas_name))
-
+  expect_silent(parse_setup(psid_toy_sas_name))
+  #expect_silent(parse_setup(escolar_sas_name))
+  expect_silent(parse_setup(health_nutrition_sas_name))
+  expect_silent(parse_setup(psid_core_sas_name))
+  expect_silent(parse_setup(india_human_sas_name))
+  expect_silent(parse_setup(psid_supplement_sas_name))
 
 })
 
@@ -55,14 +59,21 @@ test_that("Right number of columns", {
   expect_equal(nrow(jail_2010_parsed_sas$setup), 200)
   expect_equal(nrow(well_being_parsed_sas$setup), 312)
   expect_equal(nrow(corrections_parsed_sas$setup), 14)
-
-
+  expect_equal(nrow(psid_toy_parsed_sas$setup),  3)
+ # expect_equal(nrow(escolar_parsed_sas$setup),  )
+  expect_equal(nrow(health_nutrition_parsed_sas$setup),  43)
+  expect_equal(nrow(india_human_parsed_sas$setup),  337)
+  expect_equal(nrow(psid_core_parsed_sas$setup),  2084)
+  expect_equal(nrow(psid_supplement_parsed_sas$setup), 17)
 })
 
 
 test_that("Starting number is correct", {
   skip_on_cran()
 
+
+  expect_equal(psid_toy_parsed_sas$setup$begin,
+               c(1, 2, 7))
 
   expect_equal(sac_parsed_sas$setup$begin[1:20], c(1, 3, 6,
                                                    10, 16, 17,
@@ -201,12 +212,74 @@ test_that("Starting number is correct", {
                  408, 409, 418))
 
 
+  expect_equal(head(psid_supplement_parsed_sps$setup$begin),
+               c(1, 6, 13,
+                 20, 27, 34))
+  expect_equal(tail(psid_supplement_parsed_sps$setup$begin),
+               c(76, 83, 90,
+                 97, 104, 111))
+
+
+  expect_equal(head(health_nutrition_parsed_sas$setup$begin),
+               c(1, 6, 9,
+                 12, 15, 18))
+  expect_equal(tail(health_nutrition_parsed_sas$setup$begin),
+               c(118, 121, 124,
+                 138, 152, 155))
+
+  expect_equal(head(india_human_parsed_sas$setup$begin),
+               c(1, 2, 4,
+                 6, 8, 11))
+  expect_equal(tail(india_human_parsed_sas$setup$begin),
+               c(1022, 1023, 1025,
+                 1027, 1028, 1029))
+
+
+
+  expect_equal(head(psid_core_parsed_sas$setup$begin),
+               c(1, 2, 7,
+                 11, 13, 15))
+  expect_equal(tail(psid_core_parsed_sas$setup$begin),
+               c(3525, 3535, 3545,
+                 3546, 3552, 3553))
+
+
 
 
 })
 
 test_that("Ending number is correct", {
   skip_on_cran()
+
+  expect_equal(head(psid_core_parsed_sas$setup$end),
+               c(1, 6, 10,
+                 12, 14, 16))
+  expect_equal(tail(psid_core_parsed_sas$setup$end),
+               c(3534, 3544, 3545,
+                 3551, 3552, 3558))
+
+
+
+  expect_equal(head(india_human_parsed_sas$setup$end),
+               c(1, 3, 5,
+                 7, 10, 11))
+  expect_equal(tail(india_human_parsed_sas$setup$end),
+               c(1022, 1024, 1026,
+                 1027, 1028, 1030))
+
+  expect_equal(head(health_nutrition_parsed_sas$setup$end),
+               c(5, 8, 11,
+                 14, 17, 20))
+  expect_equal(tail(health_nutrition_parsed_sas$setup$end),
+               c(120, 123, 137,
+                 151, 154, 157))
+
+  expect_equal(head(psid_supplement_parsed_sas$setup$end),
+               c(5, 12, 19,
+                 26, 33, 40))
+  expect_equal(tail(psid_supplement_parsed_sas$setup$end),
+               c(82, 89, 96,
+                 103, 110, 117))
 
   expect_equal(head(well_being_parsed_sas$setup$end),
                c(1, 6, 8,
@@ -291,12 +364,49 @@ test_that("Ending number is correct", {
   expect_equal(head(jail_2010_parsed_sas$setup$end), c(21, 30, 32, 77, 122, 154))
   expect_equal(tail(jail_2010_parsed_sas$setup$end), c(1126, 1132, 1134, 1140, 1142, 1150))
 
-  expect_equal(corrections_parsed_sas$setup$end, c(1, 5, 7, 8, 9, 10, 14, 18, 22, 26, 27, 29, 30, 31))
+  expect_equal(corrections_parsed_sas$setup$end, c(1, 5, 7, 8, 9,
+                                                   10, 14, 18, 22,
+                                                   26, 27, 29, 30, 31))
+
+
+  expect_equal(psid_toy_parsed_sas$setup$end,
+               c(1, 6, 13))
+
 })
 
 
 test_that("Original names are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(psid_supplement_parsed_sas$setup$column_number),
+               c("ID94",
+                 "VIANN_94",
+                 "VOANN_94",
+                 "VSHOM_94",
+                 "VBREL_94",
+                 "VSREL_94"))
+  expect_equal(tail(psid_supplement_parsed_sas$setup$column_number),
+               c("VIASS_94",
+                 "VIDEB_94",
+                 "VINHA_94",
+                 "VINHB_94",
+                 "VINHC_94",
+                 "VSTOC_94"))
+  expect_equal(head(psid_supplement_parsed_sas$setup$column_name),
+               c("X1994_INTERVIEW_NUMBER",
+                 "PUT_INTO_ANNUITY_94",
+                 "CASH_IN_ANNUITY_94",
+                 "SELL_MAIN_HOME_94",
+                 "BUY_REAL_ESTATE_94",
+                 "SELL_REAL_ESTATE_94"))
+  expect_equal(tail(psid_supplement_parsed_sas$setup$column_name),
+               c("ASSETS_BROUGHT_IN_94",
+                 "DEBTS_BROUGHT_IN_94",
+                 "FIRST_GIFT_INHERITANCE_94",
+                 "SECOND_GIFT_INHERITANCE_94",
+                 "THIRD_GIFT_INHERITANCE_94",
+                 "NET_INTO_STOCK_94"))
 
   expect_equal(sac_parsed_sas$setup$column_number[1:20], c("TRINUM", "SUBNO", "TODDATYR",
                                                            "DATSTAR", "CONSTATE", "Q1JSEX",
@@ -539,4 +649,105 @@ test_that("Original names are correct", {
                  "WELLBEING_CROSS_SECTIONAL_WEIGHT",
                  "DEVICE_TYPE_FOR_WEB_LOGIN"))
 
+  expect_equal(psid_toy_parsed_sas$setup$column_number,
+               c("ER66001", "ER66002", "ER71426"))
+  expect_equal(psid_toy_parsed_sas$setup$column_name,
+               c("RELEASE_NUMBER",
+                 "X2017_FAMILY_INTERVIEW_ID_NUMBER",
+                 "TOTAL_FAMILY_INCOME_2016"))
+
+
+  expect_equal(head(health_nutrition_parsed_sas$setup$column_number),
+               c("SEQN",
+                 "SDDSRVYR",
+                 "RIDSTATR",
+                 "RIDEXMON",
+                 "RIAGENDR",
+                 "RIDAGEYR"))
+  expect_equal(tail(health_nutrition_parsed_sas$setup$column_number),
+               c("MIAINTRP",
+                 "AIALANG",
+                 "WTINT2YR",
+                 "WTMEC2YR",
+                 "SDMVPSU",
+                 "SDMVSTRA"))
+
+  expect_equal(head(health_nutrition_parsed_sas$setup$column_name),
+               c("Respondent_sequence_number",
+                 "Data_Release_Number",
+                 "Interview_Examination_Status",
+                 "Six_month_time_period",
+                 "Gender",
+                 "Age_at_Screening_Adjudicated_Recode"))
+  expect_equal(tail(health_nutrition_parsed_sas$setup$column_name),
+               c("Interpreter_used_in_MEC_Interview",
+                 "Language_of_ACASI_Interview",
+                 "Full_Sample_2_Year_Interview_Weight",
+                 "Full_Sample_2_Year_MEC_Exam_Weight",
+                 "Masked_Variance_Pseudo_PSU",
+                 "Masked_Variance_Pseudo_Stratum"))
+
+
+  expect_equal(head(india_human_parsed_sas$setup$column_number),
+               c("SURVEY",
+                 "STATEID",
+                 "DISTID",
+                 "PSUID",
+                 "HHID",
+                 "HHSPLITID"))
+  expect_equal(tail(india_human_parsed_sas$setup$column_number),
+               c("MGYEAR5",
+                 "NMIG5",
+                 "MGMONTHS5",
+                 "MGYEAR1",
+                 "NMIG1",
+                 "MGMONTHS1"))
+
+  expect_equal(head(india_human_parsed_sas$setup$column_name),
+               c("IHDS_I_2005_or_IHDS_II_2012",
+                 "State_code",
+                 "District_code",
+                 "PSU_village_neighborhood_code",
+                 "Household_ID_3_digit",
+                 "Split_household_ID"))
+  expect_equal(tail(india_human_parsed_sas$setup$column_name),
+               c("HQ6_4_1_Migrant_five_years_ago_or_less",
+                 "HQ6_4_1_migrations_in_last_5_years",
+                 "HQ6_4_7_total_months_gone_in_last_5_years",
+                 "HQ6_4_8_Migrant_one_year_ago_or_less",
+                 "HQ6_4_1_migrations_in_last_1_year",
+                 "HQ6_4_7_total_months_gone_in_last_1_year"))
+
+
+
+
+  expect_equal(head(psid_core_parsed_sas$setup$column_number),
+               c("ER10001",
+                 "ER10002",
+                 "ER10003",
+                 "ER10004",
+                 "ER10005",
+                 "ER10006"))
+  expect_equal(tail(psid_core_parsed_sas$setup$column_number),
+               c("ER12079",
+                 "ER12080",
+                 "ER12081",
+                 "ER12082",
+                 "ER12083",
+                 "ER12084"))
+
+  expect_equal(head(psid_core_parsed_sas$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X1997_INTERVIEW",
+                 "INTERVIEWER_ID",
+                 "CURRENT_STATE",
+                 "MONTH_CURRENT_IW",
+                 "DAY_CURRENT_IW"))
+  expect_equal(tail(psid_core_parsed_sas$setup$column_name),
+               c("TOTAL_FAMILY_INCOME",
+                 "LABOR_INCOME_HEAD",
+                 "ACC_LABOR_INCOME_HD",
+                 "LABOR_INCOME_WIFE",
+                 "ACC_LABOR_INCOME_WF",
+                 "FAMILY_WEIGHT"))
 })

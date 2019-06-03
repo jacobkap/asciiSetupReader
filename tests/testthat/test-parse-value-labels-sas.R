@@ -21,6 +21,7 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(corrections_parsed_sas$value_labels), 9)
 
   expect_equal(length(jail_2010_parsed_sas$value_labels), 123)
+  expect_equal(length(health_nutrition_parsed_sas$value_labels), 36)
 
 })
 
@@ -1847,5 +1848,86 @@ test_that("Jail survey 2010 - parsed value labels are accurate", {
                  "(1) Estimated" = "1",
                  "(8) Not applicable" = "8",
                  "(9) Dont know" = "9"))
+})
+
+
+
+test_that("India human - parsed value labels are accurate", {
+
+
+  expect_equal(india_human_parsed_sas$value_labels$SURVEY,
+               c("(1) IHDS-I 1" = "1",
+                 "(2) IHDS-II 2" = "2"))
+  expect_equal(india_human_parsed_sas$value_labels$CS18,
+               c("(1) Voc: <1 yr 1" = "1",
+                 "(2) Voc: 1-2 years 2" = "2",
+                 "(3) Voc: 3+ years 3" = "3",
+                 "(4) Others 4" = "4"))
+  expect_equal(india_human_parsed_sas$value_labels$CS19,
+               c("(1) Govt. 1" = "1",
+                 "(2) Private 2" = "2"))
+  expect_equal(india_human_parsed_sas$value_labels$MG11,
+               c("(1) Contractor 1" = "1",
+                 "(2) With a job or Self Employed 2" = "2",
+                 "(3) Without a job 3" = "3"))
+  expect_equal(india_human_parsed_sas$value_labels$MM13,
+               c("(0) No 0" = "0",
+                 "(1) Yes 1" = "1"))
+  expect_equal(india_human_parsed_sas$value_labels$TA6,
+               c("(1) Nicely 1" = "1",
+                 "(2) Somewhat nicely 2" = "2",
+                 "(3) Not nicely 3" = "3"))
+  expect_equal(india_human_parsed_sas$value_labels$MGYEAR1,
+               c("(0) No 0" = "0",
+                 "(1) Yes 1" = "1"))
+})
+
+
+test_that("Health and Nutrition - parsed value labels are accurate", {
+
+
+  expect_equal(health_nutrition_parsed_sas$value_labels$SDDSRVYR,
+               c("(4) NHANES 2005-2006 Public Release" = "4"))
+  expect_equal(health_nutrition_parsed_sas$value_labels$RIAGENDR,
+               c("(1) Male" = "1",
+                 "(2) Female" = "2"))
+  expect_equal(health_nutrition_parsed_sas$value_labels$DMDCITZN,
+               c("(1) Citizen by birth or naturalization" = "1",
+                 "(2) Not a citizen of the US" = "2",
+                 "(7) Refused" = "7",
+                 "(9) Dont know" = "9"))
+  expect_equal(health_nutrition_parsed_sas$value_labels$DMDEDUC3,
+               c("(0) Never Attended / Kindergarten Only" = "0",
+                 "(1) 1st Grade" = "1",
+                 "(2) 2nd Grade" = "2",
+                 "(3) 3rd Grade" = "3",
+                 "(4) 4th Grade" = "4",
+                 "(5) 5th Grade" = "5",
+                 "(6) 6th Grade" = "6",
+                 "(7) 7th Grade" = "7",
+                 "(8) 8th Grade" = "8",
+                 "(9) 9th Grade" = "9",
+                 "(10) 10th Grade" = "10",
+                 "(11) 11th Grade" = "11",
+                 "(12) 12th Grade, No Diploma" = "12",
+                 "(13) High School Graduate" = "13",
+                 "(14) GED or Equivalent" = "14",
+                 "(15) More than high school" = "15",
+                 "(55) Less Than 5th Grade" = "55",
+                 "(66) Less Than 9th Grade" = "66",
+                 "(77) Refused" = "77",
+                 "(99) Dont know" = "99"))
+  expect_equal(health_nutrition_parsed_sas$value_labels$DMDHRBRN,
+               c("(1) Born in 50 US States or Washington, DC" = "1",
+                 "(2) Born in Mexico" = "2",
+                 "(3) Born Elsewhere" = "3",
+                 "(7) Refused" = "7",
+                 "(9) Dont know" = "9"))
+  expect_equal(health_nutrition_parsed_sas$value_labels$SIAINTRP,
+               c("(1) Yes" = "1",
+                 "(2) No" = "2"))
+  expect_equal(health_nutrition_parsed_sas$value_labels$AIALANG,
+               c("(1) English" = "1",
+                 "(2) Spanish" = "2"))
 })
 

@@ -20,8 +20,50 @@ test_that("Right number of missing values", {
   expect_equal(nrow(jail_2010_parsed_sps$missing), 60)
   expect_equal(nrow(corrections_parsed_sps$missing), 7)
   expect_equal(nrow(sadc_parsed_sps$missing), 312)
+  expect_true(is.null(well_being_parsed_sps$missing))
+  expect_equal(nrow(psid_supplement_parsed_sps$missing), 16)
+  #expect_true(is.null(escolar_parsed_sps$missing))
+  expect_true(is.null(health_nutrition_parsed_sps$missing))
+  expect_true(is.null(ad_health_parsed_sps$missing))
+
+  expect_equal(nrow(india_human_parsed_sps$missing), 1)
+  expect_true(is.null(psid_core_parsed_sps$missing))
+
 
 })
+
+test_that("India human has right missing values", {
+  expect_equal(india_human_parsed_sps$missing$variable,
+               "MB21B")
+  expect_equal(tail(india_human_parsed_sps$missing$values),
+               c("8"))
+})
+
+
+test_that("PSID supplement has right missing values", {
+  expect_equal(head(psid_supplement_parsed_sps$missing$variable),
+               c("VIANN_94", "VOANN_94", "VSHOM_94",
+                 "VBREL_94", "VSREL_94", "VHIMP_94"))
+  expect_equal(tail(psid_supplement_parsed_sps$missing$variable),
+               c("VIASS_94", "VIDEB_94", "VINHA_94",
+                 "VINHB_94", "VINHC_94", "VSTOC_94"))
+
+  expect_equal(head(psid_supplement_parsed_sps$missing$values),
+               c("0", "0", "0",
+                 "0", "0", "0"))
+  expect_equal(tail(psid_supplement_parsed_sps$missing$values),
+               c("0", "0", "0",
+                 "0", "0", "0"))
+
+  expect_equal(head(unique(psid_supplement_parsed_sps$missing$variable)),
+               c("VIANN_94", "VOANN_94", "VSHOM_94",
+                 "VBREL_94", "VSREL_94", "VHIMP_94"))
+  expect_equal(tail(unique(psid_supplement_parsed_sps$missing$variable)),
+               c("VIASS_94", "VIDEB_94", "VINHA_94",
+                 "VINHB_94", "VINHC_94", "VSTOC_94"))
+})
+
+
 
 test_that("Sac has right missing values", {
   expect_equal(head(sac_parsed_sps$missing$variable),

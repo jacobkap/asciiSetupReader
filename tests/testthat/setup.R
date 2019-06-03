@@ -40,7 +40,6 @@ crosswalk_dataset_name     <- system.file("testdata",
 dutch_election_dataset_name     <- system.file("testdata",
                                                "dutch_election_study.zip",
                                                package = "asciiSetupReader")
-
 crosswalk_sps_name         <- system.file("testdata",
                                           "crosswalk.sps",
                                           package = "asciiSetupReader")
@@ -134,10 +133,44 @@ dutch_election_sps_name    <- system.file("testdata",
 well_being_sps_name        <- system.file("testdata",
                                           "WB2016.sps",
                                           package = "asciiSetupReader")
+escolar_sps_name           <- system.file("testdata",
+                                          "escolar.sps",
+                                          package = "asciiSetupReader")
+psid_supplement_sps_name   <- system.file("testdata",
+                                          "psid_supplement.sps",
+                                          package = "asciiSetupReader")
+psid_core_sps_name        <- system.file("testdata",
+                                         "psid_core.sps",
+                                         package = "asciiSetupReader")
+ad_health_sps_name        <- system.file("testdata",
+                                         "study_of_adolescent_health.sps",
+                                         package = "asciiSetupReader")
+health_nutrition_sps_name <- system.file("testdata",
+                                         "health_and_nutrition.sps",
+                                         package = "asciiSetupReader")
+india_human_sps_name  <- system.file("testdata",
+                                         "india_human_development.sps",
+                                         package = "asciiSetupReader")
 
+
+psid_toy_sas_name          <- system.file("testdata",
+                                          "psid_toy.sas",
+                                          package = "asciiSetupReader")
+psid_supplement_sas_name   <- system.file("testdata",
+                                          "psid_supplement.sas",
+                                          package = "asciiSetupReader")
+psid_core_sas_name        <- system.file("testdata",
+                                         "psid_core.sas",
+                                         package = "asciiSetupReader")
+health_nutrition_sas_name <- system.file("testdata",
+                                         "health_and_nutrition.sas",
+                                         package = "asciiSetupReader")
+india_human_sas_name  <- system.file("testdata",
+                                         "india_human_development.sas",
+                                         package = "asciiSetupReader")
 well_being_sas_name        <- system.file("testdata",
-                                      "WB2016.sas",
-                                      package = "asciiSetupReader")
+                                          "WB2016.sas",
+                                          package = "asciiSetupReader")
 crosswalk_sas_name         <- system.file("testdata",
                                           "crosswalk.sas",
                                           package = "asciiSetupReader")
@@ -369,30 +402,41 @@ sadc_parsed_sps            <- parse_setup(sadc_sps_name)
 crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
 dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 well_being_parsed_sps      <- parse_setup(well_being_sps_name)
+#escolar_parsed_sps          <- parse_setup(escolar_sps_name)
+psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
+psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)
+ad_health_parsed_sps        <- parse_setup(ad_health_sps_name)
+health_nutrition_parsed_sps <- parse_setup(health_nutrition_sps_name)
+india_human_parsed_sps      <- parse_setup(india_human_sps_name)
 
-well_being_parsed_sas      <- parse_setup(well_being_sas_name)
-parole_parsed_sas          <- parse_setup(parole_sas_name)
-sac_parsed_sas             <- parse_setup(sac_sas_name)
-sex_offender_parsed_sas    <- parse_setup(sex_offender_sas_name)
-ucr1960_parsed_sas         <- parse_setup(ucr1960_sas_name)
-weimar_parsed_sas          <- parse_setup(weimar_sas_name)
-acs_parsed_sas             <- parse_setup(acs_sas_name)
-nibrs_parsed_sas           <- parse_setup(nibrs_sas_name)
-prisoners_parsed_sas       <- parse_setup(prisoners_sas_name)
-ca_vital_parsed_sas        <- parse_setup(ca_vital_sas_name)
-crosswalk_parsed_sas       <- parse_setup(crosswalk_sas_name)
-ucr1985_parsed_sas         <- parse_setup(ucr1985_sas_name)
-ucr1986_parsed_sas         <- parse_setup(ucr1986_sas_name)
-ucr2000_parsed_sas         <- parse_setup(ucr2000_sas_name)
+psid_toy_parsed_sas         <- parse_setup(psid_toy_sas_name)
+psid_supplement_parsed_sas  <- parse_setup(psid_supplement_sas_name)
+psid_core_parsed_sas        <- parse_setup(psid_core_sas_name)
+health_nutrition_parsed_sas <- parse_setup(health_nutrition_sas_name)
+india_human_parsed_sas      <- parse_setup(india_human_sas_name)
+well_being_parsed_sas       <- parse_setup(well_being_sas_name)
+parole_parsed_sas           <- parse_setup(parole_sas_name)
+sac_parsed_sas              <- parse_setup(sac_sas_name)
+sex_offender_parsed_sas     <- parse_setup(sex_offender_sas_name)
+ucr1960_parsed_sas          <- parse_setup(ucr1960_sas_name)
+weimar_parsed_sas           <- parse_setup(weimar_sas_name)
+acs_parsed_sas              <- parse_setup(acs_sas_name)
+nibrs_parsed_sas            <- parse_setup(nibrs_sas_name)
+prisoners_parsed_sas        <- parse_setup(prisoners_sas_name)
+ca_vital_parsed_sas         <- parse_setup(ca_vital_sas_name)
+crosswalk_parsed_sas        <- parse_setup(crosswalk_sas_name)
+ucr1985_parsed_sas          <- parse_setup(ucr1985_sas_name)
+ucr1986_parsed_sas          <- parse_setup(ucr1986_sas_name)
+ucr2000_parsed_sas          <- parse_setup(ucr2000_sas_name)
 #ucr2006_parsed_sas         <- parse_setup(ucr2006_sas_name)
-SHR1987_parsed_sas         <- parse_setup(SHR1987_sas_name)
-SHR1988_parsed_sas         <- parse_setup(SHR1988_sas_name)
-SHR1981_parsed_sas         <- parse_setup(SHR1981_sas_name)
-leoka1980_parsed_sas       <- parse_setup(leoka1980_sas_name)
-property_stolen_parsed_sas <- parse_setup(property_stolen_sas_name)
-ncvs_parsed_sas            <- parse_setup(ncvs_sas_name)
-jail_1987_parsed_sas       <- parse_setup(jail_1987_sas_name)
-jail_2010_parsed_sas       <- parse_setup(jail_2010_sas_name)
-corrections_parsed_sas     <- parse_setup(corrections_sas_name)
-SHR_parsed_sas             <- parse_setup(SHR_sas_name)
+SHR1987_parsed_sas          <- parse_setup(SHR1987_sas_name)
+SHR1988_parsed_sas          <- parse_setup(SHR1988_sas_name)
+SHR1981_parsed_sas          <- parse_setup(SHR1981_sas_name)
+leoka1980_parsed_sas        <- parse_setup(leoka1980_sas_name)
+property_stolen_parsed_sas  <- parse_setup(property_stolen_sas_name)
+ncvs_parsed_sas             <- parse_setup(ncvs_sas_name)
+jail_1987_parsed_sas        <- parse_setup(jail_1987_sas_name)
+jail_2010_parsed_sas        <- parse_setup(jail_2010_sas_name)
+corrections_parsed_sas      <- parse_setup(corrections_sas_name)
+SHR_parsed_sas              <- parse_setup(SHR_sas_name)
 #sadc_parsed_sas            <- parse_setup(sadc_sas_name)

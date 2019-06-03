@@ -41,17 +41,53 @@ parse_setup <- function(setup_file) {
   if (type == "sps") {
     setup <- codebook[grep2("DATA LIST", codebook):
                         grep2("^variable labels$", codebook)]
+    setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
+
+    # If starts with a number, combine with previous row
+    start_with_number <- grep("^[0-9]", setup)
+    if (length(start_with_number) > 0) {
+      for (n in length(start_with_number):1) {
+        setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
+                                                 setup[start_with_number[n]],
+                                                  collapse = " ")
+      }
+      setup <- setup[-start_with_number]
+    }
+    setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
+                  setup)
+
     setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
                   setup)
+
     setup <- gsub(" \\(A\\) ", " ", setup)
-    setup <- gsub(" \\([0-9]\\) ", " ", setup)
     setup <- gsub(" ([0-9]+-[0-9]+) ([[:alpha:]])", " \\1   \\2",
                   setup)
     setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",
                   setup)
     setup <- unlist(strsplit(setup, '"\\s{3,}'))
   } else {
-    setup <- codebook[grep2("^INPUT$", codebook):grep("^$|^;$", codebook)[grep("^$|^;$", codebook) > grep2("^INPUT$", codebook) + 5][1]]
+    second_grep_value <- grep("^$|^;$", codebook)[grep("^$|^;$", codebook) > grep2("^INPUT$", codebook) + 5]
+    second_grep_value <- second_grep_value[1]
+    if (is.na(second_grep_value)) {
+      second_grep_value <- length(codebook)
+    }
+    setup <- codebook[grep2("^INPUT$", codebook):second_grep_value]
+    setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
+
+    # If starts with a number, combine with previous row
+    start_with_number <- grep("^[0-9]", setup)
+
+    if (length(start_with_number) > 0) {
+      for (n in length(start_with_number):1) {
+        setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
+                                                 setup[start_with_number[n]],
+                                                 collapse = " ")
+      }
+      setup <- setup[-start_with_number]
+    }
+
+    setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
+                  setup)
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+) ", "\\1 \\2 ", setup)
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+)$", "\\1 \\2", setup)
     setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+) ", "\\1 \\2 ", setup)
@@ -248,6 +284,9 @@ parse_column_names <- function(codebook, type) {
     next_location <- next_location[next_location > variable_label_location]
     next_location <- next_location[1]
     next_location <- next_location - 1
+    if (is.na(next_location)) {
+      next_location <- length(codebook) + 1
+    }
     variables <- codebook[variable_label_location:next_location]
     variables <- gsub("\\'\\'", "\\'", variables)
     variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
@@ -270,10 +309,15 @@ parse_column_names <- function(codebook, type) {
     next_location <- grep2("^$|^;", codebook)
     next_location <- next_location[next_location > variable_label_location]
     next_location <- next_location[1]
+    if (is.na(next_location)) {
+      next_location <- length(codebook)
+    }
+
 
     variables <- codebook[variable_label_location:next_location]
     variables <- variables[grep("=", variables)]
     variables <- gsub("(\\S)=", "\\1 =", variables)
+    variables <- gsub("=(\\S)", "= \\1", variables)
     variables <- gsub('([[:alpha:]]+\\") ', '\\1   ', variables)
 
     variables <- gsub(' LABEL =\\"', '  "', variables)
@@ -281,7 +325,7 @@ parse_column_names <- function(codebook, type) {
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
 
 
-  variables <- data.frame(column_name = fix_names(variables),
+  variables <- data.frame(column_name   = fix_names(variables),
                           column_number = gsub(" .*", "",
                                                variables),
                           stringsAsFactors = FALSE)

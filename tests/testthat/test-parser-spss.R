@@ -29,6 +29,13 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(crosswalk2012_sps_name))
   expect_silent(parse_setup(dutch_election_sps_name))
   expect_silent(parse_setup(well_being_sps_name))
+
+  expect_silent(parse_setup(psid_supplement_sps_name))
+ # expect_silent(parse_setup(escolar_sps_name))
+  expect_silent(parse_setup(health_nutrition_sps_name))
+  expect_silent(parse_setup(ad_health_sps_name))
+  expect_silent(parse_setup(india_human_sps_name))
+  expect_silent(parse_setup(psid_core_sps_name))
 })
 
 
@@ -36,32 +43,42 @@ test_that("parse_setup is silent", {
 
 test_that("Right number of columns", {
   skip_on_cran()
-  expect_equal(nrow(sac_parsed_sps$setup), 197)
-  expect_equal(nrow(sex_offender_parsed_sps$setup), 34)
-  expect_equal(nrow(ucr1960_parsed_sps$setup), 1448)
-  expect_equal(nrow(weimar_parsed_sps$setup), 23)
-  expect_equal(nrow(acs_parsed_sps$setup), 6)
-  expect_equal(nrow(nibrs_parsed_sps$setup), 20)
-  expect_equal(nrow(parole_parsed_sps$setup), 59)
-  expect_equal(nrow(prisoners_parsed_sps$setup), 201)
-  expect_equal(nrow(ca_vital_parsed_sps$setup), 59)
-  expect_equal(nrow(crosswalk_parsed_sps$setup), 29)
-  expect_equal(nrow(ucr1985_parsed_sps$setup), 1458)
-  expect_equal(nrow(ucr1986_parsed_sps$setup), 1458)
-  expect_equal(nrow(ucr2000_parsed_sps$setup), 1448)
-  expect_equal(nrow(jail_1987_parsed_sps$setup), 176)
-  expect_equal(nrow(jail_2010_parsed_sps$setup), 200)
-  expect_equal(nrow(corrections_parsed_sps$setup), 14)
-  expect_equal(nrow(sadc_parsed_sps$setup), 314)
+  expect_equal(nrow(sac_parsed_sps$setup),          197)
+  expect_equal(nrow(sex_offender_parsed_sps$setup),  34)
+  expect_equal(nrow(ucr1960_parsed_sps$setup),     1448)
+  expect_equal(nrow(weimar_parsed_sps$setup),        23)
+  expect_equal(nrow(acs_parsed_sps$setup),            6)
+  expect_equal(nrow(nibrs_parsed_sps$setup),         20)
+  expect_equal(nrow(parole_parsed_sps$setup),        59)
+  expect_equal(nrow(prisoners_parsed_sps$setup),    201)
+  expect_equal(nrow(ca_vital_parsed_sps$setup),      59)
+  expect_equal(nrow(crosswalk_parsed_sps$setup),     29)
+  expect_equal(nrow(ucr1985_parsed_sps$setup),     1458)
+  expect_equal(nrow(ucr1986_parsed_sps$setup),     1458)
+  expect_equal(nrow(ucr2000_parsed_sps$setup),     1448)
+  expect_equal(nrow(jail_1987_parsed_sps$setup),    176)
+  expect_equal(nrow(jail_2010_parsed_sps$setup),    200)
+  expect_equal(nrow(corrections_parsed_sps$setup),   14)
+  expect_equal(nrow(sadc_parsed_sps$setup),         314)
   expect_equal(nrow(crosswalk2012_parsed_sps$setup), 46)
   #  expect_equal(nrow(dutch_election_parsed_sps$setup), )
-  expect_equal(nrow(well_being_parsed_sps$setup), 312)
-
+  expect_equal(nrow(well_being_parsed_sps$setup),   312)
+  expect_equal(nrow(psid_supplement_parsed_sps$setup),   17)
+  expect_equal(nrow(health_nutrition_parsed_sps$setup),  43)
+  expect_equal(nrow(ad_health_parsed_sps$setup),  5)
+  expect_equal(nrow(india_human_parsed_sps$setup),  337)
+  expect_equal(nrow(psid_core_parsed_sps$setup),  2084)
 
 })
 
 test_that("Starting number is correct", {
   skip_on_cran()
+
+
+  expect_equal(ad_health_parsed_sps$setup$begin,
+               c(1, 9, 12,
+                 27, 42))
+
   expect_equal(sac_parsed_sps$setup$begin[1:20],
                c(1, 3, 6, 10, 16, 17, 18, 19, 20, 21, 22,
                  23, 24, 25, 27, 29, 31, 32, 33, 34))
@@ -200,10 +217,86 @@ test_that("Starting number is correct", {
                  408, 409, 418))
 
 
+  expect_equal(head(psid_supplement_parsed_sps$setup$begin),
+               c(1, 6, 13,
+                 20, 27, 34))
+  expect_equal(tail(psid_supplement_parsed_sps$setup$begin),
+               c(76, 83, 90,
+                 97, 104, 111))
+
+
+
+  expect_equal(head(health_nutrition_parsed_sps$setup$begin),
+               c(1, 6, 9,
+                 12, 15, 18))
+  expect_equal(tail(health_nutrition_parsed_sps$setup$begin),
+               c(118, 121, 124,
+                 138, 152, 155))
+
+
+  expect_equal(head(india_human_parsed_sps$setup$begin),
+               c(1, 2, 4,
+                 6, 8, 11))
+  expect_equal(tail(india_human_parsed_sps$setup$begin),
+               c(1022, 1023, 1025,
+                 1027, 1028, 1029))
+
+
+  # expect_equal(head(escolar_parsed_sps$setup$begin),
+  #              c(0, 8, 13,
+  #                25, 75, 77))
+  # expect_equal(tail(escolar_parsed_sps$setup$begin),
+  #              c(8359, 8365, 8371,
+  #                8377, 8383, 8389))
+
+
+  expect_equal(head(psid_core_parsed_sps$setup$begin),
+               c(1, 2, 7,
+                 11, 13, 15))
+  expect_equal(tail(psid_core_parsed_sps$setup$begin),
+               c(3525, 3535, 3545,
+                 3546, 3552, 3553))
+
+
 })
 
 test_that("Ending number is correct", {
   skip_on_cran()
+
+  expect_equal(head(psid_core_parsed_sps$setup$end),
+               c(1, 6, 10,
+                 12, 14, 16))
+  expect_equal(tail(psid_core_parsed_sps$setup$end),
+               c(3534, 3544, 3545,
+                 3551, 3552, 3558))
+
+
+  # expect_equal(head(escolar_parsed_sps$setup$end),
+  #              c(7, 12, 24,
+  #                74, 76, 126))
+  # expect_equal(tail(escolar_parsed_sps$setup$end),
+  #              c(8364, 8370, 8376,
+  #                8382, 8388, 8394))
+
+  expect_equal(head(india_human_parsed_sps$setup$end),
+               c(1, 3, 5,
+                 7, 10, 11))
+  expect_equal(tail(india_human_parsed_sps$setup$end),
+               c(1022, 1024, 1026,
+                 1027, 1028, 1030))
+
+
+  expect_equal(ad_health_parsed_sps$setup$end,
+               c(8, 11, 26,
+                 41, 56))
+
+
+  expect_equal(head(health_nutrition_parsed_sps$setup$end),
+               c(5, 8, 11,
+                 14, 17, 20))
+  expect_equal(tail(health_nutrition_parsed_sps$setup$end),
+               c(120, 123, 137,
+                 151, 154, 157))
 
   expect_equal(head(well_being_parsed_sps$setup$end),
                c(1, 6, 8,
@@ -336,11 +429,52 @@ test_that("Ending number is correct", {
   expect_equal(tail(dutch_election_parsed_sps$setup$end),
                c(1250, 1251, 1253,
                  1254, 1255, 1256))
+
+  expect_equal(head(psid_supplement_parsed_sps$setup$end),
+               c(5, 12, 19,
+                 26, 33, 40))
+  expect_equal(tail(psid_supplement_parsed_sps$setup$end),
+               c(82, 89, 96,
+                 103, 110, 117))
+
+
 })
 
 
 test_that("Original names are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(psid_supplement_parsed_sps$setup$column_number),
+               c("ID94",
+                 "VIANN_94",
+                 "VOANN_94",
+                 "VSHOM_94",
+                 "VBREL_94",
+                 "VSREL_94"))
+  expect_equal(tail(psid_supplement_parsed_sps$setup$column_number),
+               c("VIASS_94",
+                 "VIDEB_94",
+                 "VINHA_94",
+                 "VINHB_94",
+                 "VINHC_94",
+                 "VSTOC_94"))
+  expect_equal(head(psid_supplement_parsed_sps$setup$column_name),
+               c("X1994_INTERVIEW_NUMBER",
+                 "PUT_INTO_ANNUITY_94",
+                 "CASH_IN_ANNUITY_94",
+                 "SELL_MAIN_HOME_94",
+                 "BUY_REAL_ESTATE_94",
+                 "SELL_REAL_ESTATE_94"))
+  expect_equal(tail(psid_supplement_parsed_sps$setup$column_name),
+               c("ASSETS_BROUGHT_IN_94",
+                 "DEBTS_BROUGHT_IN_94",
+                 "FIRST_GIFT_INHERITANCE_94",
+                 "SECOND_GIFT_INHERITANCE_94",
+                 "THIRD_GIFT_INHERITANCE_94",
+                 "NET_INTO_STOCK_94"))
+
+
 
 
   expect_equal(head(well_being_parsed_sps$setup$column_number),
@@ -353,8 +487,6 @@ test_that("Original names are correct", {
                  "SEX_OF_R",
                  "AGE_OF_R_ON_DEC_31_2015",
                  "MODE_OF_INTERVIEW"))
-
-
   expect_equal(tail(well_being_parsed_sps$setup$column_number),
                c("WB16BKSECH", "WB16BKSECI", "WB16BKSECJ",
                  "WB16BKSECK", "WB16WT", "WB16DEV"))
@@ -682,5 +814,147 @@ test_that("Original names are correct", {
                  "Usually_slept_in_the_home_of_a_friend_family_member_or_other_person_because_they_had_to_leave_their_home_or_their_parent_or_guardian_cannot_afford_housing",
                  "Speak_English_well_or_very_well",
                  "Are_transgender"))
+
+
+
+  expect_equal(head(health_nutrition_parsed_sps$setup$column_number),
+               c("SEQN",
+                 "SDDSRVYR",
+                 "RIDSTATR",
+                 "RIDEXMON",
+                 "RIAGENDR",
+                 "RIDAGEYR"))
+  expect_equal(tail(health_nutrition_parsed_sps$setup$column_number),
+               c("MIAINTRP",
+                 "AIALANG",
+                 "WTINT2YR",
+                 "WTMEC2YR",
+                 "SDMVPSU",
+                 "SDMVSTRA"))
+
+  expect_equal(head(health_nutrition_parsed_sps$setup$column_name),
+               c("Respondent_sequence_number",
+                 "Data_Release_Number",
+                 "Interview_Examination_Status",
+                 "Six_month_time_period",
+                 "Gender",
+                 "Age_at_Screening_Adjudicated_Recode"))
+  expect_equal(tail(health_nutrition_parsed_sps$setup$column_name),
+               c("Interpreter_used_in_MEC_Interview",
+                 "Language_of_ACASI_Interview",
+                 "Full_Sample_2_Year_Interview_Weight",
+                 "Full_Sample_2_Year_MEC_Exam_Weight",
+                 "Masked_Variance_Pseudo_PSU",
+                 "Masked_Variance_Pseudo_Stratum"))
+
+
+  expect_equal(ad_health_parsed_sps$setup$column_number,
+               c("AID",
+                 "CLUSTER2",
+                 "GSWGT4",
+                 "GSWGT4_2",
+                 "GSWGT134"))
+  expect_equal(ad_health_parsed_sps$setup$column_name,
+               c("RESPONDENT_IDENTIFIER",
+                 "Sample_cluster",
+                 "Post_stratified_untrimmed_longitudinal_grand_sample_weight",
+                 "Post_stratified_untrimmed_cross_sectional_grand_sample_weight",
+                 "Post_stratified_untrimmed_longitudinal_grand_sample_weight_for_Waves_I_III_and_IV"))
+
+
+
+  expect_equal(head(india_human_parsed_sps$setup$column_number),
+               c("SURVEY",
+                 "STATEID",
+                 "DISTID",
+                 "PSUID",
+                 "HHID",
+                 "HHSPLITID"))
+  expect_equal(tail(india_human_parsed_sps$setup$column_number),
+               c("MGYEAR5",
+                 "NMIG5",
+                 "MGMONTHS5",
+                 "MGYEAR1",
+                 "NMIG1",
+                 "MGMONTHS1"))
+
+  expect_equal(head(india_human_parsed_sps$setup$column_name),
+               c("IHDS_I_2005_or_IHDS_II_2012",
+                 "State_code",
+                 "District_code",
+                 "PSU_village_neighborhood_code",
+                 "Household_ID_3_digit",
+                 "Split_household_ID"))
+  expect_equal(tail(india_human_parsed_sps$setup$column_name),
+               c("HQ6_4_1_Migrant_five_years_ago_or_less",
+                 "HQ6_4_1_migrations_in_last_5_years",
+                 "HQ6_4_7_total_months_gone_in_last_5_years",
+                 "HQ6_4_8_Migrant_one_year_ago_or_less",
+                 "HQ6_4_1_migrations_in_last_1_year",
+                 "HQ6_4_7_total_months_gone_in_last_1_year"))
+
+
+
+#
+#   expect_equal(head(escolar_parsed_sps$setup$column_number),
+#                c("MASCARA",
+#                  "ANO",
+#                  "CODMUNIC",
+#                  "UF",
+#                  "SIGLA",
+#                  "MUNIC"))
+#   expect_equal(tail(escolar_parsed_sps$setup$column_number),
+#                c("VTE165",
+#                  "VTE166",
+#                  "VTE167",
+#                  "VTE169",
+#                  "VTE169",
+#                  "VTE16A"))
+#
+#   expect_equal(head(escolar_parsed_sps$setup$column_name),
+#                c("MASCARA",
+#                  "ANO",
+#                  "CODMUNIC",
+#                  "UF",
+#                  "SIGLA",
+#                  "MUNIC"))
+#   expect_equal(tail(escolar_parsed_sps$setup$column_name),
+#                c("VTE165",
+#                  "VTE166",
+#                  "VTE167",
+#                  "VTE169",
+#                  "VTE169",
+#                  "VTE16A"))
+
+
+  expect_equal(head(psid_core_parsed_sps$setup$column_number),
+               c("ER10001",
+                 "ER10002",
+                 "ER10003",
+                 "ER10004",
+                 "ER10005",
+                 "ER10006"))
+  expect_equal(tail(psid_core_parsed_sps$setup$column_number),
+               c("ER12079",
+                 "ER12080",
+                 "ER12081",
+                 "ER12082",
+                 "ER12083",
+                 "ER12084"))
+
+  expect_equal(head(psid_core_parsed_sps$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X1997_INTERVIEW",
+                 "INTERVIEWER_ID",
+                 "CURRENT_STATE",
+                 "MONTH_CURRENT_IW",
+                 "DAY_CURRENT_IW"))
+  expect_equal(tail(psid_core_parsed_sps$setup$column_name),
+               c("TOTAL_FAMILY_INCOME",
+                 "LABOR_INCOME_HEAD",
+                 "ACC_LABOR_INCOME_HD",
+                 "LABOR_INCOME_WIFE",
+                 "ACC_LABOR_INCOME_WF",
+                 "FAMILY_WEIGHT"))
 
 })
