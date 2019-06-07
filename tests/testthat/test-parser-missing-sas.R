@@ -19,7 +19,7 @@ test_that("Right number of missing values", {
   expect_equal(nrow(jail_1987_parsed_sas$missing), 15)
   expect_equal(nrow(jail_2010_parsed_sas$missing), 60)
   expect_equal(nrow(corrections_parsed_sas$missing), 7)
-#  expect_equal(nrow(sadc_parsed_sas$missing), 312)
+  #  expect_equal(nrow(sadc_parsed_sas$missing), 312)
   expect_true(is.null(well_being_parsed_sas$missing))
   expect_true(is.null(psid_toy_parsed_sas$missing))
   expect_equal(nrow(psid_supplement_parsed_sas$missing), 16)
@@ -28,7 +28,121 @@ test_that("Right number of missing values", {
   expect_equal(nrow(india_human_parsed_sas$missing), 1)
   expect_true(is.null(psid_core_parsed_sas$missing))
 
+
+  expect_equal(nrow(census_police_parsed_sas$missing), 74)
+  expect_equal(nrow(step_in_parsed_sas$missing), 2)
+  expect_equal(nrow(cps_1973_parsed_sas$missing), 235)
+  expect_true(is.null(education_1985_parsed_sas$missing))
+  expect_true(is.null(education_1995_parsed_sas$missing))
+
+  expect_true(is.null(cps_2004_parsed_sas$missing))
+  expect_equal(nrow(drug_abuse_parsed_sas$missing), 424)
+  expect_equal(nrow(british_crime_teen_parsed_sas$missing), 1119)
+  expect_true(is.null(detroit_parsed_sas$missing))
+  expect_true(is.null(worry_parsed_sas$missing))
+
 })
+
+test_that("British Crime Teen has right missing values", {
+  expect_equal(head(british_crime_teen_parsed_sas$missing$variable),
+               c("TB_CASE", "TB_CASE", "TB_CASE",
+                 "AR_CODE", "AR_CODE", "AR_CODE"))
+  expect_equal(tail(british_crime_teen_parsed_sas$missing$variable),
+               c("T73", "T73", "T73",
+                 "T74", "T74", "T74"))
+
+  expect_equal(head(british_crime_teen_parsed_sas$missing$values),
+               c("-7", "-8", "-9",
+                 "-7", "-8", "-9"))
+  expect_equal(tail(british_crime_teen_parsed_sas$missing$values),
+               c("-7", "-8", "-9",
+                 "-7", "-8", "-9"))
+
+  expect_equal(head(unique(british_crime_teen_parsed_sas$missing$variable)),
+               c("TB_CASE", "AR_CODE", "T_SN",
+                 "T_SCRN", "BOOSTER", "CARD_28"))
+  expect_equal(tail(unique(british_crime_teen_parsed_sas$missing$variable)),
+               c("T69", "T70", "T71",
+                 "T72", "T73", "T74"))
+})
+
+test_that("Drug Abuse has right missing values", {
+  expect_equal(head(drug_abuse_parsed_sas$missing$variable),
+               c("ID", "RESPCODE", "SITEID",
+                 "DATE", "DEGREE", "YEAR_DEG"))
+  expect_equal(tail(drug_abuse_parsed_sas$missing$variable),
+               c("DOCLEAD", "EOTDIV", "EOTTOL",
+                 "EOTSCO", "EOTOPN", "EOTOPN"))
+
+  expect_equal(head(drug_abuse_parsed_sas$missing$values),
+               c("-9", "-9", "-9",
+                 "-9", "-9", "-9"))
+  expect_equal(tail(drug_abuse_parsed_sas$missing$values),
+               c("-9.0", "-9.0", "-9.0",
+                 "-9", "-9.0", "-5.0"))
+
+  expect_equal(head(unique(drug_abuse_parsed_sas$missing$variable)),
+               c("ID", "RESPCODE", "SITEID",
+                 "DATE", "DEGREE", "YEAR_DEG"))
+  expect_equal(tail(unique(drug_abuse_parsed_sas$missing$variable)),
+               c("DOCSUP", "DOCLEAD", "EOTDIV",
+                 "EOTTOL", "EOTSCO", "EOTOPN"))
+})
+
+test_that("Step In has right missing values", {
+  expect_equal(step_in_parsed_sas$missing$variable,
+               c("NR_DAYS", "CHARGE"))
+  expect_equal(step_in_parsed_sas$missing$values,
+               c("-99", "-99"))
+})
+
+test_that("CPS 1973 has right missing values", {
+  expect_equal(head(cps_1973_parsed_sas$missing$variable),
+               c("V1013", "V1014", "V1020",
+                 "V1021", "V1022", "V1029"))
+  expect_equal(tail(cps_1973_parsed_sas$missing$variable),
+               c("V1261", "V1262", "V1263",
+                 "V1264", "V1265", "V1266"))
+
+  expect_equal(head(cps_1973_parsed_sas$missing$values),
+               c("0000000", "0000000", "0000000",
+                 "0000000", "0000000", "0000000"))
+  expect_equal(tail(cps_1973_parsed_sas$missing$values),
+               c("-999999", "-999999", "-999999",
+                 "-999999", "-999999", "-999999"))
+
+  expect_equal(head(unique(cps_1973_parsed_sas$missing$variable)),
+               c("V1013", "V1014", "V1020",
+                 "V1021", "V1022", "V1029"))
+  expect_equal(tail(unique(cps_1973_parsed_sas$missing$variable)),
+               c("V1261", "V1262", "V1263",
+                 "V1264", "V1265", "V1266"))
+})
+
+
+test_that("Census Police has right missing values", {
+  expect_equal(head(census_police_parsed_sas$missing$variable),
+               c("SUBTYPE1", "SUBTYPE2", "Q1A1",
+                 "Q1A2", "Q1A3", "Q1A4"))
+  expect_equal(tail(census_police_parsed_sas$missing$variable),
+               c("Q6E", "Q6F", "Q6G",
+                 "Q6H", "Q6I", "Q6_TOT"))
+
+  expect_equal(head(census_police_parsed_sas$missing$values),
+               c("888", "888", "-9",
+                 "-9", "-9", "-9"))
+  expect_equal(tail(census_police_parsed_sas$missing$values),
+               c("-9", "-9", "-9",
+                 "-9", "-9", "-9"))
+
+  expect_equal(head(unique(census_police_parsed_sas$missing$variable)),
+               c("SUBTYPE1", "SUBTYPE2", "Q1A1",
+                 "Q1A2", "Q1A3", "Q1A4"))
+  expect_equal(tail(unique(census_police_parsed_sas$missing$variable)),
+               c("Q6E", "Q6F", "Q6G",
+                 "Q6H", "Q6I", "Q6_TOT"))
+})
+
 
 test_that("India human has right missing values", {
   expect_equal(india_human_parsed_sas$missing$variable,

@@ -29,13 +29,26 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(crosswalk2012_sps_name))
   expect_silent(parse_setup(dutch_election_sps_name))
   expect_silent(parse_setup(well_being_sps_name))
-
   expect_silent(parse_setup(psid_supplement_sps_name))
- # expect_silent(parse_setup(escolar_sps_name))
   expect_silent(parse_setup(health_nutrition_sps_name))
   expect_silent(parse_setup(ad_health_sps_name))
   expect_silent(parse_setup(india_human_sps_name))
   expect_silent(parse_setup(psid_core_sps_name))
+  expect_silent(parse_setup(step_in_sps_name))
+  expect_silent(parse_setup(cps_1973_sps_name))
+  expect_silent(parse_setup(census_police_sps_name))
+  expect_silent(parse_setup(psid_core_sps_name))
+  expect_silent(parse_setup(step_in_sps_name))
+  expect_silent(parse_setup(cps_1973_sps_name))
+  expect_silent(parse_setup(census_police_sps_name))
+
+  expect_silent(parse_setup(escolar_sps_name))
+  expect_silent(parse_setup(british_crime_teen_sps_name))
+  expect_silent(parse_setup(drug_abuse_sps_name))
+  expect_silent(parse_setup(detroit_sps_name))
+  expect_silent(parse_setup(worry_sps_name))
+  expect_silent(parse_setup(cps_2004_sps_name))
+
 })
 
 
@@ -61,18 +74,105 @@ test_that("Right number of columns", {
   expect_equal(nrow(corrections_parsed_sps$setup),   14)
   expect_equal(nrow(sadc_parsed_sps$setup),         314)
   expect_equal(nrow(crosswalk2012_parsed_sps$setup), 46)
-  #  expect_equal(nrow(dutch_election_parsed_sps$setup), )
+  expect_equal(nrow(dutch_election_parsed_sps$setup), 878)
   expect_equal(nrow(well_being_parsed_sps$setup),   312)
   expect_equal(nrow(psid_supplement_parsed_sps$setup),   17)
   expect_equal(nrow(health_nutrition_parsed_sps$setup),  43)
   expect_equal(nrow(ad_health_parsed_sps$setup),  5)
   expect_equal(nrow(india_human_parsed_sps$setup),  337)
   expect_equal(nrow(psid_core_parsed_sps$setup),  2084)
+  expect_equal(nrow(step_in_parsed_sps$setup), 8)
+  expect_equal(nrow(cps_1973_parsed_sps$setup), 269)
+  expect_equal(nrow(census_police_parsed_sps$setup), 92)
+
+  expect_equal(nrow(escolar_parsed_sps$setup), 1307)
+  expect_equal(nrow(british_crime_teen_parsed_sps$setup), 374)
+  expect_equal(nrow(drug_abuse_parsed_sps$setup),         337)
+  expect_equal(nrow(detroit_parsed_sps$setup),            369)
+  expect_equal(nrow(worry_parsed_sps$setup),              486)
+  expect_equal(nrow(cps_2004_parsed_sps$setup),           286)
 
 })
 
-test_that("Starting number is correct", {
+test_that("Column numbers are correct", {
   skip_on_cran()
+
+  expect_equal(head(british_crime_teen_parsed_sps$setup$begin), c(1, 7, 13,
+                                                                  16, 18, 19))
+  expect_equal(head(british_crime_teen_parsed_sps$setup$end),   c(6, 12, 15,
+                                                                  17, 18, 19))
+  expect_equal(tail(british_crime_teen_parsed_sps$setup$begin), c(685, 686, 690,
+                                                                  691, 695, 696))
+  expect_equal(tail(british_crime_teen_parsed_sps$setup$end),   c(685, 689, 690,
+                                                                  694, 695, 697))
+
+
+  expect_equal(head(drug_abuse_parsed_sps$setup$begin), c(1, 27, 53,
+                                                          79, 105, 131))
+  expect_equal(head(drug_abuse_parsed_sps$setup$end),   c(26, 52, 78,
+                                                          104, 130, 156))
+  expect_equal(tail(drug_abuse_parsed_sps$setup$begin), c(1161, 1165, 1180,
+                                                          1195, 1210, 1212))
+  expect_equal(tail(drug_abuse_parsed_sps$setup$end),   c(1164, 1179, 1194,
+                                                          1209, 1211, 1215))
+
+
+  expect_equal(head(detroit_parsed_sps$setup$begin), c(1, 9, 17,
+                                                       25, 40, 48))
+  expect_equal(head(detroit_parsed_sps$setup$end),   c(8, 16, 24,
+                                                       39, 47, 55))
+  expect_equal(tail(detroit_parsed_sps$setup$begin), c(4849, 4857, 4865,
+                                                       4873, 4881, 4889))
+  expect_equal(tail(detroit_parsed_sps$setup$end),   c(4856, 4864, 4872,
+                                                       4880, 4888, 4896))
+
+
+  expect_equal(head(worry_parsed_sps$setup$begin), c(1, 5, 7,
+                                                     8, 9, 10))
+  expect_equal(head(worry_parsed_sps$setup$end),   c(4, 6, 7,
+                                                     8, 9, 10))
+  expect_equal(tail(worry_parsed_sps$setup$begin), c(676, 677, 678,
+                                                     679, 694, 709))
+  expect_equal(tail(worry_parsed_sps$setup$end),   c(676, 677, 678,
+                                                     693, 708, 723))
+
+
+  expect_equal(head(cps_2004_parsed_sps$setup$begin), c(1, 16, 20,
+                                                        22, 25, 27))
+  expect_equal(head(cps_2004_parsed_sps$setup$end),   c(15, 19, 21,
+                                                        24, 26, 28))
+  expect_equal(tail(cps_2004_parsed_sps$setup$begin), c(590, 592, 594,
+                                                        596, 598, 599))
+  expect_equal(tail(cps_2004_parsed_sps$setup$end),   c(591, 593, 595,
+                                                        597, 598, 608))
+
+
+  expect_equal(head(step_in_parsed_sps$setup$begin), c(1, 5, 7,
+                                                       18, 31, 35))
+  expect_equal(head(step_in_parsed_sps$setup$end),   c(4, 6, 17,
+                                                       30, 34, 35))
+  expect_equal(tail(step_in_parsed_sps$setup$begin), c(7, 18, 31,
+                                                       35, 36, 37))
+  expect_equal(tail(step_in_parsed_sps$setup$end),   c(17, 30, 34,
+                                                       35, 36, 39))
+
+  expect_equal(head(cps_1973_parsed_sps$setup$begin), c(1, 2, 11,
+                                                        12, 13, 14))
+  expect_equal(head(cps_1973_parsed_sps$setup$end),   c(1, 10, 11,
+                                                        12, 13, 14))
+  expect_equal(tail(cps_1973_parsed_sps$setup$begin), c(554, 561, 568,
+                                                        575, 579, 580))
+  expect_equal(tail(cps_1973_parsed_sps$setup$end),   c(560, 567, 574,
+                                                        578, 579, 582))
+
+  expect_equal(head(census_police_parsed_sps$setup$begin), c(1, 9, 13,
+                                                             21, 29, 30))
+  expect_equal(head(census_police_parsed_sps$setup$end),   c(8, 12, 20,
+                                                             28, 29, 31))
+  expect_equal(tail(census_police_parsed_sps$setup$begin), c(619, 645, 647,
+                                                             669, 689, 714))
+  expect_equal(tail(census_police_parsed_sps$setup$end),   c(644, 646, 668,
+                                                             688, 713, 721))
 
 
   expect_equal(ad_health_parsed_sps$setup$begin,
@@ -242,12 +342,18 @@ test_that("Starting number is correct", {
                  1027, 1028, 1029))
 
 
-  # expect_equal(head(escolar_parsed_sps$setup$begin),
-  #              c(0, 8, 13,
-  #                25, 75, 77))
-  # expect_equal(tail(escolar_parsed_sps$setup$begin),
-  #              c(8359, 8365, 8371,
-  #                8377, 8383, 8389))
+  expect_equal(head(escolar_parsed_sps$setup$begin),
+               c(0, 8, 13,
+                 25, 75, 77))
+  expect_equal(tail(escolar_parsed_sps$setup$begin),
+               c(8359, 8365, 8371,
+                 8377, 8383, 8389))
+  expect_equal(head(escolar_parsed_sps$setup$end),
+               c(7, 12, 24,
+                 74, 76, 126))
+  expect_equal(tail(escolar_parsed_sps$setup$end),
+               c(8364, 8370, 8376,
+                 8382, 8388, 8394))
 
 
   expect_equal(head(psid_core_parsed_sps$setup$begin),
@@ -256,13 +362,6 @@ test_that("Starting number is correct", {
   expect_equal(tail(psid_core_parsed_sps$setup$begin),
                c(3525, 3535, 3545,
                  3546, 3552, 3553))
-
-
-})
-
-test_that("Ending number is correct", {
-  skip_on_cran()
-
   expect_equal(head(psid_core_parsed_sps$setup$end),
                c(1, 6, 10,
                  12, 14, 16))
@@ -271,12 +370,7 @@ test_that("Ending number is correct", {
                  3551, 3552, 3558))
 
 
-  # expect_equal(head(escolar_parsed_sps$setup$end),
-  #              c(7, 12, 24,
-  #                74, 76, 126))
-  # expect_equal(tail(escolar_parsed_sps$setup$end),
-  #              c(8364, 8370, 8376,
-  #                8382, 8388, 8394))
+
 
   expect_equal(head(india_human_parsed_sps$setup$end),
                c(1, 3, 5,
@@ -441,7 +535,7 @@ test_that("Ending number is correct", {
 })
 
 
-test_that("Original names are correct", {
+test_that("Column names are correct", {
   skip_on_cran()
 
 
@@ -894,37 +988,34 @@ test_that("Original names are correct", {
                  "HQ6_4_7_total_months_gone_in_last_1_year"))
 
 
-
-#
-#   expect_equal(head(escolar_parsed_sps$setup$column_number),
-#                c("MASCARA",
-#                  "ANO",
-#                  "CODMUNIC",
-#                  "UF",
-#                  "SIGLA",
-#                  "MUNIC"))
-#   expect_equal(tail(escolar_parsed_sps$setup$column_number),
-#                c("VTE165",
-#                  "VTE166",
-#                  "VTE167",
-#                  "VTE169",
-#                  "VTE169",
-#                  "VTE16A"))
-#
-#   expect_equal(head(escolar_parsed_sps$setup$column_name),
-#                c("MASCARA",
-#                  "ANO",
-#                  "CODMUNIC",
-#                  "UF",
-#                  "SIGLA",
-#                  "MUNIC"))
-#   expect_equal(tail(escolar_parsed_sps$setup$column_name),
-#                c("VTE165",
-#                  "VTE166",
-#                  "VTE167",
-#                  "VTE169",
-#                  "VTE169",
-#                  "VTE16A"))
+    expect_equal(head(escolar_parsed_sps$setup$column_number),
+                 c("MASCARA",
+                   "ANO",
+                   "CODMUNIC",
+                   "UF",
+                   "SIGLA",
+                   "MUNIC"))
+    expect_equal(tail(escolar_parsed_sps$setup$column_number),
+                 c("VTE165",
+                   "VTE166",
+                   "VTE167",
+                   "VTE168",
+                   "VTE169",
+                   "VTE16A"))
+    expect_equal(head(escolar_parsed_sps$setup$column_name),
+                 c("MASCARA",
+                   "ANO",
+                   "CODMUNIC",
+                   "UF",
+                   "SIGLA",
+                   "MUNIC"))
+    expect_equal(tail(escolar_parsed_sps$setup$column_name),
+                 c("VTE165",
+                   "VTE166",
+                   "VTE167",
+                   "VTE168",
+                   "VTE169",
+                   "VTE16A"))
 
 
   expect_equal(head(psid_core_parsed_sps$setup$column_number),
@@ -956,5 +1047,247 @@ test_that("Original names are correct", {
                  "LABOR_INCOME_WIFE",
                  "ACC_LABOR_INCOME_WF",
                  "FAMILY_WEIGHT"))
+
+
+
+  expect_equal(head(step_in_parsed_sps$setup$column_number),
+               c("CID",
+                 "RCTR",
+                 "FSDATE",
+                 "EVENT_DATE",
+                 "NR_DAYS",
+                 "NO_RECORD"))
+  expect_equal(tail(step_in_parsed_sps$setup$column_number),
+               c("FSDATE",
+                 "EVENT_DATE",
+                 "NR_DAYS",
+                 "NO_RECORD",
+                 "EVENT",
+                 "CHARGE"))
+  expect_equal(head(step_in_parsed_sps$setup$column_name),
+               c("CID",
+                 "RCTR",
+                 "FSDATE",
+                 "EVENT_DATE",
+                 "NR_DAYS",
+                 "NO_RECORD"))
+  expect_equal(tail(step_in_parsed_sps$setup$column_name),
+               c("FSDATE",
+                 "EVENT_DATE",
+                 "NR_DAYS",
+                 "NO_RECORD",
+                 "EVENT",
+                 "CHARGE"))
+
+
+  expect_equal(head(cps_1973_parsed_sps$setup$column_number),
+               c("V1001",
+                 "V1002",
+                 "V1003",
+                 "V1004",
+                 "V1005",
+                 "V1006"))
+  expect_equal(tail(cps_1973_parsed_sps$setup$column_number),
+               c("V1264",
+                 "V1265",
+                 "V1266",
+                 "V1267",
+                 "V1268",
+                 "V1269"))
+  expect_equal(head(cps_1973_parsed_sps$setup$column_name),
+               c("SMON",
+                 "HHSEQNUM",
+                 "HNUM",
+                 "SUBH",
+                 "STATS1",
+                 "STATS2"))
+  expect_equal(tail(cps_1973_parsed_sps$setup$column_name),
+               c("AWAIT3",
+                 "AWAIT4",
+                 "AWAIT5",
+                 "ICPSR_STUDY_NUMBER_7616",
+                 "ICPSR_EDITION_NUMBER_1",
+                 "ICPSR_PART_NUMBER_001"))
+
+
+  expect_equal(head(census_police_parsed_sps$setup$column_number),
+               c("CSLLEA08_ID",
+                 "AGCYTYPE",
+                 "SUBTYPE1",
+                 "SUBTYPE2",
+                 "TRIBAL",
+                 "Q1A1"))
+  expect_equal(tail(census_police_parsed_sps$setup$column_number),
+               c("CITY",
+                 "STATE",
+                 "ZIP",
+                 "STATENAME",
+                 "COUNTY",
+                 "FIPS"))
+  expect_equal(head(census_police_parsed_sps$setup$column_name),
+               c("AGENCY_IDENTIFIER",
+                 "TYPE_OF_AGENCY",
+                 "SPECIAL_JURISDICTION_GENERAL_TYPE",
+                 "SPECIAL_JURISDICTION_SPECIFIC_TYPE",
+                 "TRIBAL_AGENCY_INDICATOR",
+                 "Q1A1_FIRST_RESPONSE_TO_CRIMINAL_INCIDENTS"))
+  expect_equal(tail(census_police_parsed_sps$setup$column_name),
+               c("CITY",
+                 "STATE_CODE",
+                 "ZIP",
+                 "NAME_OF_STATE",
+                 "COUNTY_NAME",
+                 "FIPS_CODE"))
+
+
+  expect_equal(head(british_crime_teen_parsed_sps$setup$column_number),
+               c("ROW_LAB",
+                 "TB_CASE",
+                 "AR_CODE",
+                 "T_SN",
+                 "T_SCRN",
+                 "BOOSTER"))
+  expect_equal(tail(british_crime_teen_parsed_sps$setup$column_number),
+               c("T69",
+                 "T70",
+                 "T71",
+                 "T72",
+                 "T73",
+                 "T74"))
+  expect_equal(head(british_crime_teen_parsed_sps$setup$column_name),
+               c("ROW_LAB",
+                 "TB_CASE",
+                 "AR_CODE",
+                 "T_SN",
+                 "T_SCRN",
+                 "BOOSTER"))
+  expect_equal(tail(british_crime_teen_parsed_sps$setup$column_name),
+               c("T69",
+                 "T70",
+                 "T71",
+                 "T72",
+                 "T73",
+                 "T74"))
+
+
+  expect_equal(head(drug_abuse_parsed_sps$setup$column_number),
+               c("DEGREE_SPECIFY_OTHER",
+                 "DISCIPLINE",
+                 "DISCIPLINE_OTHER",
+                 "STATE_CREDENTIALS_SPECIFY",
+                 "NATIONAL_CERTIFICATION_OT",
+                 "LICENSURE_SPECIFY"))
+  expect_equal(tail(drug_abuse_parsed_sps$setup$column_number),
+               c("DOCSUP",
+                 "DOCLEAD",
+                 "EOTDIV",
+                 "EOTTOL",
+                 "EOTSCO",
+                 "EOTOPN"))
+  expect_equal(head(drug_abuse_parsed_sps$setup$column_name),
+               c("Degree_other",
+                 "Discipline",
+                 "Discipline_Other",
+                 "State_substance_abuse_counseling_credentials_Not_in_CD",
+                 "National_certification_Other_Not_in_CD",
+                 "Licensure_Specify_Not_in_CD"))
+  expect_equal(tail(drug_abuse_parsed_sps$setup$column_name),
+               c("Organizational_Support_Subscale_RAND_section_D",
+                 "Leadership_sub_scale_section_D",
+                 "Divergence_sub_scale_section_E",
+                 "Tolerance_for_ambiguity_section_E",
+                 "Service_Coordination",
+                 "Openness"))
+
+
+  expect_equal(head(detroit_parsed_sps$setup$column_number),
+               c("CASEID",
+                 "IWERID",
+                 "CASETYPE",
+                 "FINALWGT",
+                 "STRATUM",
+                 "CLUSTER"))
+  expect_equal(tail(detroit_parsed_sps$setup$column_number),
+               c("J5A",
+                 "J5B",
+                 "J5C",
+                 "J5D",
+                 "J6",
+                 "J7"))
+  expect_equal(head(detroit_parsed_sps$setup$column_name),
+               c("CASEID",
+                 "IWER_ID",
+                 "CASETYPE",
+                 "FINAL_SAMPLE_WEIGHT",
+                 "STRATUM",
+                 "CLUSTER"))
+  expect_equal(tail(detroit_parsed_sps$setup$column_name),
+               c("IF_NO_WERE_FAMILY_MEMBERS_OR_FRIENDS_PRESENT",
+                 "NUMBER_OF_OTHER_PEOPLE_PRESENT",
+                 "DID_RESPONDENT_CONSULT_WITH_OTHERS_BEFORE_RESPONDING",
+                 "DID_OTHERS_PRESENT_TRY_TO_ANSWER_FOR_RESPONDENT",
+                 "DID_R_SEEM_GUARDED_NERVOUS_OR_SUSPICIOUS_ABOUT_THE_INTERVIEW",
+                 "WAS_INTERVIEW_CONDUCTED_IN_PERSON_OR_BY_TELEPHONE"))
+
+
+  expect_equal(head(worry_parsed_sps$setup$column_number),
+               c("SUBJ",
+                 "VERSION",
+                 "PRE1",
+                 "POST1",
+                 "PRE2",
+                 "POST2"))
+  expect_equal(tail(worry_parsed_sps$setup$column_number),
+               c("HOSPNEXT",
+                 "EDUC",
+                 "CHILDREN",
+                 "BIS",
+                 "EXTRAVER",
+                 "STABLE"))
+  expect_equal(head(worry_parsed_sps$setup$column_name),
+               c("Subject_identification_number",
+                 "Version",
+                 "Overall_how_serious_a_problem_is_patient_safety_in_U_S_healthcare_today",
+                 "How_serious_a_problem_is_patient_safety",
+                 "Overall_how_serious_a_problem_is_medical_errors_in_U_S_healthcare_today",
+                 "How_serious_a_problem_is_medical_errors"))
+  expect_equal(tail(worry_parsed_sps$setup$column_name),
+               c("How_likely_are_you_to_spend_a_night_in_the_hospital_in_the_coming_year",
+                 "Your_highest_education_level",
+                 "How_many_children_if_any_do_you_have_at_home",
+                 "BIS_Behavioral_Inhibition_scale",
+                 "Extraversion_scale",
+                 "Stability_scale"))
+
+
+  expect_equal(head(cps_2004_parsed_sps$setup$column_number),
+               c("HRHHID",
+                 "HRYEAR4",
+                 "HURESPLI",
+                 "HUFINAL",
+                 "HUSPNISH",
+                 "HETENURE"))
+  expect_equal(tail(cps_2004_parsed_sps$setup$column_number),
+               c("HEQ2C",
+                 "HEQ2D",
+                 "HEQ2E",
+                 "HEQ3",
+                 "HRSUPINT",
+                 "HWSUPWGT"))
+  expect_equal(head(cps_2004_parsed_sps$setup$column_name),
+               c("HRHHID",
+                 "HRYEAR4",
+                 "HURESPLI",
+                 "HUFINAL",
+                 "HUSPNISH",
+                 "HETENURE"))
+  expect_equal(tail(cps_2004_parsed_sps$setup$column_name),
+               c("HEQ2C",
+                 "HEQ2D",
+                 "HEQ2E",
+                 "HEQ3",
+                 "HRSUPINT",
+                 "HWSUPWGT"))
+
 
 })

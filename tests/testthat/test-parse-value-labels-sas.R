@@ -19,10 +19,236 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(property_stolen_parsed_sas$value_labels), 15)
   #  expect_equal(length(ASR), 36)
   expect_equal(length(corrections_parsed_sas$value_labels), 9)
-
   expect_equal(length(jail_2010_parsed_sas$value_labels), 123)
   expect_equal(length(health_nutrition_parsed_sas$value_labels), 36)
 
+
+  expect_equal(length(step_in_parsed_sas$value_labels), 4)
+  expect_equal(length(census_police_parsed_sas$value_labels), 76)
+  expect_true(is.null(education_1995_parsed_sas$value_labels))
+  expect_true(is.null(education_1985_parsed_sas$value_labels))
+  expect_true(is.null(cps_1973_parsed_sas$value_labels))
+
+  # expect_equal(length(cps_2004_parsed_sas$value_labels), )
+  # expect_equal(length(drug_abuse_parsed_sas$value_labels), )
+   expect_true(is.null(british_crime_teen_parsed_sps$value_labels))
+  # expect_equal(length(detroit_parsed_sas$value_labels), )
+  # expect_equal(length(worry_parsed_sas$value_labels), )
+})
+
+
+test_that("CPS 2004 - parsed value labels are accurate", {
+
+
+  expect_equal(cps_2004_parsed_sas$value_labels$HURESPLI,
+               c("(-3) REFUSED" = "-3",
+                 "(-2) DONT KNOW" = "-2",
+                 "(-1) BLANK OR NOT IN UNIVERSE" = "-1"))
+  expect_equal(cps_2004_parsed_sas$value_labels$HETELAVL,
+               c("(-3) REFUSED" = "-3",
+                 "(-2) DONT KNOW" = "-2",
+                 "(-1) BLANK OR NOT IN UNIVERSE" = "-1",
+                 "(1) YES" = "1",
+                 "(2) NO" = "2"))
+  expect_equal(cps_2004_parsed_sas$value_labels$HETELHHD,
+               c("(-3) REFUSED" = "-3",
+                 "(-2) DONT KNOW" = "-2",
+                 "(-1) BLANK OR NOT IN UNIVERSE" = "-1",
+                 "(1) YES" = "1",
+                 "(2) NO" = "2"))
+  expect_equal(cps_2004_parsed_sas$value_labels$PEIO1ICD,
+               c("(-3) REFUSED" = "-3",
+                 "(-2) DONT KNOW" = "-2",
+                 "(-1) BLANK OR NOT IN UNIVERSE" = "-1"))
+  expect_equal(cps_2004_parsed_sas$value_labels$PEIO1OCD,
+               c("(-3) REFUSED" = "-3",
+                 "(-2) DONT KNOW" = "-2",
+                 "(-1) BLANK OR NOT IN UNIVERSE" = "-1"))
+  expect_equal(cps_2004_parsed_sas$value_labels$HEQ3,
+               c("(-9) No response" = "-9",
+                 "(-3) Refused" = "-3",
+                 "(-2) Dont know" = "-2",
+                 "(-1) Blank or Not in Universe" = "-1",
+                 "(1) All or almost all calls," = "1",
+                 "(2) More than half," = "2",
+                 "(3) Less than half, or" = "3",
+                 "(4) Very few or none?" = "4"))
+  expect_equal(cps_2004_parsed_sas$value_labels$HRSUPINT,
+               c("(1) Interview" = "1",
+                 "(2) Noninterview" = "2"))
+})
+
+
+test_that("Drug abuse - parsed value labels are accurate", {
+
+
+  expect_equal(drug_abuse_parsed_sas$value_labels$ID,
+               c("(-9) Missing" = "-9"))
+  expect_equal(drug_abuse_parsed_sas$value_labels$RESPCODE,
+               c("(-9) Missing" = "-9"))
+  expect_equal(drug_abuse_parsed_sas$value_labels$ADDICTIONS_COUNSELING ,
+               c("(-9) Missing" = "-9",
+                 "(0) Not Marked" = "0",
+                 "(1) Marked" = "1"))
+  expect_equal(drug_abuse_parsed_sas$value_labels$BSOCA5,
+               c("(-9) Blank / Not ascertained" = "-9",
+                 "(1) Disagree Strongly" = "1",
+                 "(2) Disagree" = "2",
+                 "(3) Uncertain" = "3",
+                 "(4) Agree" = "4",
+                 "(5) Agree Strongly" = "5"))
+  expect_equal(drug_abuse_parsed_sas$value_labels$BSOCA6,
+               c("(-9) Blank / Not ascertained" = "-9",
+                 "(1) Disagree Strongly" = "1",
+                 "(2) Disagree" = "2",
+                 "(3) Uncertain" = "3",
+                 "(4) Agree" = "4",
+                 "(5) Agree Strongly" = "5"))
+  expect_equal(drug_abuse_parsed_sas$value_labels$EOTSCO,
+               c("(-9) Missing" = "-9"))
+  expect_equal(drug_abuse_parsed_sas$value_labels$EOTOPN    ,
+               c("(-9) Missing" = "-9",
+                 "(-5) Not calculated for respondent type" = "-5"))
+})
+
+
+test_that("Detroit - parsed value labels are accurate", {
+
+
+  expect_equal(detroit_parsed_sas$value_labels$I_MONTH,
+               c("(1) January" = "1",
+                 "(2) February" = "2",
+                 "(3) March" = "3",
+                 "(4) April" = "4",
+                 "(5) May" = "5",
+                 "(6) June" = "6",
+                 "(7) July" = "7",
+                 "(8) August" = "8",
+                 "(9) September" = "9",
+                 "(10) October" = "10",
+                 "(11) November" = "11",
+                 "(12) December" = "12"))
+  expect_equal(detroit_parsed_sas$value_labels$A1_YEAR,
+               c("(95) ALL OF LIFE" = "95",
+                 "(97) UNCODEABLE" = "97"))
+  expect_equal(detroit_parsed_sas$value_labels$A1_MONTH,
+               c("(97) UNCODEABLE" = "97"))
+  expect_equal(detroit_parsed_sas$value_labels$D11A,
+               c("(1) IDENTITY" = "1",
+                 "(5) NO" = "5",
+                 "(7) Uncodeable" = "7",
+                 "(8) Dont_Know" = "8",
+                 "(9) Refuse" = "9"))
+  expect_equal(detroit_parsed_sas$value_labels$J1,
+               c("(1) VERY DARK" = "1",
+                 "(2) DARK" = "2",
+                 "(3) MEDIUM" = "3",
+                 "(4) LIGHT" = "4",
+                 "(5) VERY LIGHT" = "5",
+                 "(7) Uncodeable" = "7",
+                 "(8) Dont_Know" = "8",
+                 "(9) Refuse" = "9"))
+  expect_equal(detroit_parsed_sas$value_labels$J5B,
+               c("(97) UNCODEABLE" = "97",
+                 "(98) DONT KNOW" = "98",
+                 "(99) REFUSE" = "99"))
+  expect_equal(detroit_parsed_sas$value_labels$J7,
+               c("(1) IN PERSON" = "1",
+                 "(2) TELEPHONE" = "2",
+                 "(7) Uncodeable" = "7",
+                 "(8) Dont_Know" = "8",
+                 "(9) Refuse" = "9"))
+})
+
+
+test_that("Worry - parsed value labels are accurate", {
+
+
+  expect_equal(worry_parsed_sas$value_labels$PRE1,
+               c("(0) Not at all serious problem" = "0",
+                 "(2) Somewhat serious problem" = "2",
+                 "(4) Moderately serious problem" = "4",
+                 "(6) Very serious problem" = "6"))
+  expect_equal(worry_parsed_sas$value_labels$CONDITION ,
+               c("(1) At beginning" = "1",
+                 "(2) At end" = "2"))
+  expect_equal(worry_parsed_sas$value_labels$C1,
+               c("(0) Not at all likely" = "0",
+                 "(6) Very likely" = "6"))
+  expect_equal(worry_parsed_sas$value_labels$G12,
+               c("(0) Just chance/no one is to blame" = "0",
+                 "(6) Someone at the hospital is to blame" = "6"))
+  expect_equal(worry_parsed_sas$value_labels$G19,
+               c("(0) Just chance/no one is to blame" = "0",
+                 "(6) Someone at the hospital is to blame" = "6"))
+  expect_equal(worry_parsed_sas$value_labels$HEALTH,
+               c("(1) Poor" = "1",
+                 "(2) Fair" = "2",
+                 "(3) Good" = "3",
+                 "(4) Excellent" = "4"))
+  expect_equal(worry_parsed_sas$value_labels$EDUC,
+               c("(1) Less than high school" = "1",
+                 "(2) High school graduate" = "2",
+                 "(3) Some college" = "3",
+                 "(4) College graduate" = "4",
+                 "(5) Graduate degree" = "5"))
+})
+
+
+test_that("Census Police - parsed value labels are accurate", {
+
+
+  expect_equal(census_police_parsed_sas$value_labels$AGCYTYPE,
+               c("(0) Local police department" = "0",
+                 "(1) Sheriffs office" = "1",
+                 "(5) Primary state law enforcement agency" = "5",
+                 "(6) Special jurisdiction" = "6",
+                 "(7) Constable/marshal" = "7"))
+  expect_equal(census_police_parsed_sas$value_labels$SUBTYPE1,
+               c("(1) Public buildings/facilities" = "1",
+                 "(2) Natural resources/parks and recreation" = "2",
+                 "(3) Transportation systems/facilities" = "3",
+                 "(4) Criminal investigations" = "4",
+                 "(5) Special enforcement" = "5",
+                 "(888) Not applicable" = "888"))
+  expect_equal(census_police_parsed_sas$value_labels$TRIBAL,
+               c("(0) Not a tribal agency" = "0",
+                 "(1) Yes, a tribal agency" = "1"))
+  expect_equal(census_police_parsed_sas$value_labels$Q1A1,
+               c("(-9) Blank" = "-9",
+                 "(1) Yes" = "1",
+                 "(2) No" = "2"))
+  expect_equal(census_police_parsed_sas$value_labels$Q3EST,
+               c("(-9) Blank" = "-9",
+                 "(-2) Dont know" = "-2",
+                 "(1) Yes" = "1",
+                 "(2) No" = "2"))
+  expect_equal(census_police_parsed_sas$value_labels$Q6I,
+               c("(-9) Blank" = "-9"))
+  expect_equal(census_police_parsed_sas$value_labels$Q6_TOT,
+               c("(-9) Blank" = "-9"))
+})
+
+
+test_that("Step In - parsed value labels are accurate", {
+
+
+  expect_equal(step_in_parsed_sas$value_labels$NR_DAYS,
+               c("(-99) missing value (date of release (event 2) is unknown or client was still incarcerated at the time of data collection)" = "-99"))
+  expect_equal(step_in_parsed_sas$value_labels$NO_RECORD,
+               c("(1) arrest data not available" = "1"))
+  expect_equal(step_in_parsed_sas$value_labels$EVENT,
+               c("(1) arrest that leads to incarceration" = "1",
+                 "(2) release from jail/prison after arrest (EVENT 1)" = "2",
+                 "(3) arrest that does not lead to incarceration" = "3"))
+  expect_equal(step_in_parsed_sas$value_labels$CHARGE,
+               c("(-99) missing value: type of charge is unknown" = "-99",
+                 "(1) violent: use of dangerous weapon, robbery, assault, battery, homicide, attempted homicide, manslaughter, mugging, kidnap" = "1",
+                 "(2) property: theft, identity theft, burglary, possession stolen vehicle, unauthorized use of vehicle, credit card forgery," = "2",
+                 "(3) drug: drug possession, drug distribution, public intoxication, DUI, drug use, poss. to distribute, drug paraphernalia, m" = "3",
+                 "(4) parole violation" = "4",
+                 "(5) other: failure to appear, possession of firearm, harassment, criminal driving, false police report, child endangerment," = "5",
+                 "(6) sex: prostitution, pimping, rape, sexual assault, sex w/minor" = "6"))
 })
 
 

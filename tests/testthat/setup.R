@@ -140,7 +140,7 @@ psid_supplement_sps_name   <- system.file("testdata",
                                           "psid_supplement.sps",
                                           package = "asciiSetupReader")
 psid_core_sps_name        <- system.file("testdata",
-                                         "psid_core.sps",
+                                         "psid_core_sps.zip",
                                          package = "asciiSetupReader")
 ad_health_sps_name        <- system.file("testdata",
                                          "study_of_adolescent_health.sps",
@@ -149,25 +149,84 @@ health_nutrition_sps_name <- system.file("testdata",
                                          "health_and_nutrition.sps",
                                          package = "asciiSetupReader")
 india_human_sps_name  <- system.file("testdata",
-                                         "india_human_development.sps",
-                                         package = "asciiSetupReader")
+                                     "india_human_development.sps",
+                                     package = "asciiSetupReader")
 
 
+british_crime_teen_sps_name  <- system.file("testdata",
+                                            "british_crime_teen.sps",
+                                            package = "asciiSetupReader")
+drug_abuse_sps_name          <- system.file("testdata",
+                                            "drug_abuse.sps",
+                                            package = "asciiSetupReader")
+worry_sps_name               <- system.file("testdata",
+                                            "worry.sps",
+                                            package = "asciiSetupReader")
+cps_1973_sps_name            <- system.file("testdata",
+                                            "cps_1973.sps",
+                                            package = "asciiSetupReader")
+cps_2004_sps_name           <- system.file("testdata",
+                                           "cps_2004.sps",
+                                           package = "asciiSetupReader")
+census_police_sps_name      <- system.file("testdata",
+                                           "census_of_police.sps",
+                                           package = "asciiSetupReader")
+detroit_sps_name            <- system.file("testdata",
+                                           "detroit.sps",
+                                           package = "asciiSetupReader")
+step_in_sps_name            <- system.file("testdata",
+                                           "step_in.sps",
+                                           package = "asciiSetupReader")
+
+
+
+
+
+british_crime_teen_sas_name  <- system.file("testdata",
+                                            "british_crime_teen.sas",
+                                            package = "asciiSetupReader")
+drug_abuse_sas_name          <- system.file("testdata",
+                                            "drug_abuse.sas",
+                                            package = "asciiSetupReader")
+worry_sas_name               <- system.file("testdata",
+                                            "worry.sas",
+                                            package = "asciiSetupReader")
+cps_1973_sas_name            <- system.file("testdata",
+                                            "cps_1973.sas",
+                                            package = "asciiSetupReader")
+education_1985_sas_name     <- system.file("testdata",
+                                           "education_1985.sas",
+                                           package = "asciiSetupReader")
+education_1995_sas_name     <- system.file("testdata",
+                                           "education_1995.sas",
+                                           package = "asciiSetupReader")
+cps_2004_sas_name           <- system.file("testdata",
+                                           "cps_2004.sas",
+                                           package = "asciiSetupReader")
+census_police_sas_name      <- system.file("testdata",
+                                           "census_of_police.sas",
+                                           package = "asciiSetupReader")
+detroit_sas_name            <- system.file("testdata",
+                                           "detroit.sas",
+                                           package = "asciiSetupReader")
+step_in_sas_name            <- system.file("testdata",
+                                           "step_in.sas",
+                                           package = "asciiSetupReader")
 psid_toy_sas_name          <- system.file("testdata",
                                           "psid_toy.sas",
                                           package = "asciiSetupReader")
 psid_supplement_sas_name   <- system.file("testdata",
                                           "psid_supplement.sas",
                                           package = "asciiSetupReader")
-psid_core_sas_name        <- system.file("testdata",
-                                         "psid_core.sas",
-                                         package = "asciiSetupReader")
-health_nutrition_sas_name <- system.file("testdata",
-                                         "health_and_nutrition.sas",
-                                         package = "asciiSetupReader")
-india_human_sas_name  <- system.file("testdata",
-                                         "india_human_development.sas",
-                                         package = "asciiSetupReader")
+psid_core_sas_name         <- system.file("testdata",
+                                          "psid_core_sas.zip",
+                                          package = "asciiSetupReader")
+health_nutrition_sas_name  <- system.file("testdata",
+                                          "health_and_nutrition.sas",
+                                          package = "asciiSetupReader")
+india_human_sas_name       <- system.file("testdata",
+                                          "india_human_development.sas",
+                                          package = "asciiSetupReader")
 well_being_sas_name        <- system.file("testdata",
                                           "WB2016.sas",
                                           package = "asciiSetupReader")
@@ -402,13 +461,34 @@ sadc_parsed_sps            <- parse_setup(sadc_sps_name)
 crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
 dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 well_being_parsed_sps      <- parse_setup(well_being_sps_name)
-#escolar_parsed_sps          <- parse_setup(escolar_sps_name)
+escolar_parsed_sps          <- parse_setup(escolar_sps_name)
 psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
 psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)
 ad_health_parsed_sps        <- parse_setup(ad_health_sps_name)
 health_nutrition_parsed_sps <- parse_setup(health_nutrition_sps_name)
 india_human_parsed_sps      <- parse_setup(india_human_sps_name)
+step_in_parsed_sps          <- parse_setup(step_in_sps_name)
+cps_1973_parsed_sps         <- parse_setup(cps_1973_sps_name)
+census_police_parsed_sps    <- parse_setup(census_police_sps_name)
 
+
+british_crime_teen_parsed_sps <- parse_setup(british_crime_teen_sps_name)
+drug_abuse_parsed_sps         <- parse_setup(drug_abuse_sps_name)
+detroit_parsed_sps            <- parse_setup(detroit_sps_name)
+worry_parsed_sps              <- parse_setup(worry_sps_name)
+cps_2004_parsed_sps           <- parse_setup(cps_2004_sps_name)
+
+british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
+drug_abuse_parsed_sas         <- parse_setup(drug_abuse_sas_name)
+detroit_parsed_sas            <- parse_setup(detroit_sas_name)
+worry_parsed_sas              <- parse_setup(worry_sas_name)
+cps_2004_parsed_sas           <- parse_setup(cps_2004_sas_name)
+
+step_in_parsed_sas          <- parse_setup(step_in_sas_name)
+education_1985_parsed_sas   <- parse_setup(education_1985_sas_name)
+education_1995_parsed_sas   <- parse_setup(education_1995_sas_name)
+cps_1973_parsed_sas         <- parse_setup(cps_1973_sas_name)
+census_police_parsed_sas    <- parse_setup(census_police_sas_name)
 psid_toy_parsed_sas         <- parse_setup(psid_toy_sas_name)
 psid_supplement_parsed_sas  <- parse_setup(psid_supplement_sas_name)
 psid_core_parsed_sas        <- parse_setup(psid_core_sas_name)

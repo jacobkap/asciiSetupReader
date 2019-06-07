@@ -1,42 +1,48 @@
-get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
+get_column_spaces <- function(setup, variables, codebook) {
 
-  column_spaces <- gsub("([0-9]) - ([0-9])", "\\1-\\2", column_spaces)
-  column_spaces <- gsub("([0-9]+-[0-9]+) ([[:alpha:]]+)", "\\1   \\2",
-                        column_spaces)
-  column_spaces <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
-                        column_spaces)
-  column_spaces <- gsub("\\s{2,}\\$ ([0-9]+)", " \\1",
-                        column_spaces)
-  column_spaces <- unlist(strsplit(column_spaces, "\\s{2,}"))
-  column_spaces <- gsub("\\$|\\;|\\(.*|\\.[0-9]+", "", column_spaces)
-  column_spaces <- gsub("\\.$", "", column_spaces)
-  column_spaces <- stringr::str_trim(column_spaces)
-  column_spaces <- column_spaces[grep("[0-9]$", column_spaces)]
-  column_spaces <- data.frame(column_number = column_spaces,
+  setup <- gsub("\tF[0-9].0$|\tA[0-9]+$", "", setup)
+  setup <- gsub("([0-9]) - ([0-9])", "\\1-\\2", setup)
+  setup <- gsub("([0-9]+-[0-9]+) ([[:alpha:]]+)", "\\1   \\2",
+                        setup)
+  setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
+                        setup)
+  setup <- gsub("\\s{2,}\\$ ([0-9]+)", " \\1",
+                        setup)
+  setup <- unlist(strsplit(setup, "\\s{2,}"))
+  setup <- gsub("\\$|\\;|\\(.*|\\.[0-9]+", "", setup)
+  setup <- gsub("\\.$", "", setup)
+  setup <- stringr::str_trim(setup)
+  setup <- setup[grep("[0-9]$", setup)]
+  setup <- data.frame(column_number = setup,
                               stringsAsFactors = FALSE)
 
-  column_spaces$begin <- gsub(".* ", "", column_spaces$column_number)
-  column_spaces$end   <- gsub(".*-", "", column_spaces$begin)
-  column_spaces$begin <- gsub("-.*", "", column_spaces$begin)
+  setup$begin <- gsub(".* ", "", setup$column_number)
+  setup$end   <- gsub(".*-", "", setup$begin)
+  setup$begin <- gsub("-.*", "", setup$begin)
+  setup <- setup[setup$column_number != setup$begin, ]
 
-  column_spaces$column_number <- gsub(" .*", "", column_spaces$column_number)
-  column_spaces <- column_spaces[tolower(column_spaces$column_number) %in%
-                                   tolower(codebook_variables$column_number), ]
+  setup$column_number <- gsub(" .*", "", setup$column_number)
+  if (!is.null(variables)) {
+    setup <- setup[tolower(setup$column_number) %in%
+                                     tolower(variables$column_number), ]
 
-  # In the CDC SADC data set, the column number changes from lowercase
-  # to uppercase depending on section of setup file.
-  for (i in 1:nrow(column_spaces)) {
-    if (tolower(column_spaces$column_number[i]) %in% tolower(codebook_variables$column_number)) {
-      column_spaces$column_number[i] <-
-        codebook_variables$column_number[tolower(codebook_variables$column_number) %in% tolower(column_spaces$column_number[i])]
+    # In the CDC SADC data set, the column number changes from lowercase
+    # to uppercase depending on section of setup file.
+    for (i in 1:nrow(setup)) {
+      if (tolower(setup$column_number[i]) %in% tolower(variables$column_number)) {
+        setup$column_number[i] <-
+          variables$column_number[tolower(variables$column_number) %in% tolower(setup$column_number[i])]
+      }
     }
+    setup <- merge(setup, variables,
+                           by = "column_number", all.x = TRUE)
+  } else {
+    setup$column_name <- setup$column_number
   }
 
 
-  column_spaces <- merge(column_spaces, codebook_variables,
-                         by = "column_number", all.x = TRUE)
-  column_spaces$begin <- as.numeric(column_spaces$begin)
-  column_spaces$end   <- as.numeric(column_spaces$end)
+  setup$begin <- as.numeric(setup$begin)
+  setup$end   <- as.numeric(setup$end)
 
 
   format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
@@ -50,13 +56,13 @@ get_column_spaces <- function(column_spaces, codebook_variables, codebook) {
     format <- stringr::str_trim(format)
     format <- data.frame(column_name = gsub(" .*", "", format),
                          f_name      = gsub(".* ", "", format))
-    column_spaces <- merge(column_spaces, format, by.x = "column_number",
+    setup <- merge(setup, format, by.x = "column_number",
                            by.y = "column_name", all.x = TRUE)
   }
 
-  column_spaces <- column_spaces[order(column_spaces$begin), ]
+  setup <- setup[order(setup$begin), ]
 
-  return(column_spaces)
+  return(setup)
 }
 
 
@@ -134,10 +140,10 @@ fix_names_missing_numeric <- function(data,
   }
   if (real_names) {
     # Fixes column names to real names
-    codebook_variables <- setup$setup[setup$setup$column_number
+    variables <- setup$setup[setup$setup$column_number
                                       %in% names(data), ]
-    data.table::setnames(data, old = codebook_variables$column_number,
-                         new = codebook_variables$column_name)
+    data.table::setnames(data, old = variables$column_number,
+                         new = variables$column_name)
   }
 
 

@@ -1,3 +1,7 @@
+# asciiSetupReader 2.0.3
+
+* Misc. bug fixes and many new tests.
+
 # asciiSetupReader 2.0.2
 
 * Misc. bug fixes.
