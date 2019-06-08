@@ -7,6 +7,13 @@ notifications:
   email:
     on_failure: always
 
+on_failure:
+  - ./travis-tool.sh dump_logs
+
+after_script:
+  - ./travis-tool.sh dump_logs_by_extension "timings"
+  - ./travis-tool.sh dump_sysinfo
+
 r_packages:
   - covr
 
