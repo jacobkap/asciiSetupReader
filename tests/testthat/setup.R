@@ -37,9 +37,6 @@ weimar_sas_name       <- system.file("testdata",
 crosswalk_dataset_name     <- system.file("testdata",
                                           "crosswalk.zip",
                                           package = "asciiSetupReader")
-dutch_election_dataset_name     <- system.file("testdata",
-                                               "dutch_election_study.zip",
-                                               package = "asciiSetupReader")
 crosswalk_sps_name         <- system.file("testdata",
                                           "crosswalk.sps",
                                           package = "asciiSetupReader")
@@ -139,9 +136,9 @@ escolar_sps_name           <- system.file("testdata",
 psid_supplement_sps_name   <- system.file("testdata",
                                           "psid_supplement.sps",
                                           package = "asciiSetupReader")
-psid_core_sps_name        <- system.file("testdata",
-                                         "psid_core_sps.zip",
-                                         package = "asciiSetupReader")
+# psid_core_sps_name        <- system.file("testdata",
+#                                          "psid_core_sps.zip",
+#                                          package = "asciiSetupReader")
 ad_health_sps_name        <- system.file("testdata",
                                          "study_of_adolescent_health.sps",
                                          package = "asciiSetupReader")
@@ -175,6 +172,7 @@ detroit_sps_name            <- system.file("testdata",
 step_in_sps_name            <- system.file("testdata",
                                            "step_in.sps",
                                            package = "asciiSetupReader")
+
 cambridge_sps_name     <- system.file("testdata",
                                       "cambridge_sps.zip",
                                       package = "asciiSetupReader")
@@ -264,9 +262,9 @@ psid_toy_sas_name          <- system.file("testdata",
 psid_supplement_sas_name   <- system.file("testdata",
                                           "psid_supplement.sas",
                                           package = "asciiSetupReader")
-psid_core_sas_name         <- system.file("testdata",
-                                          "psid_core_sas.zip",
-                                          package = "asciiSetupReader")
+# psid_core_sas_name         <- system.file("testdata",
+#                                           "psid_core_sas.zip",
+#                                           package = "asciiSetupReader")
 health_nutrition_sas_name  <- system.file("testdata",
                                           "health_and_nutrition.sas",
                                           package = "asciiSetupReader")
