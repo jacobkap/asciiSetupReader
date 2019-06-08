@@ -149,30 +149,30 @@ health_nutrition_sps_name <- system.file("testdata",
                                          "health_and_nutrition.sps",
                                          package = "asciiSetupReader")
 india_human_sps_name  <- system.file("testdata",
-                                     "india_human_development.sps",
+                                     "india_human_development_sps.zip",
                                      package = "asciiSetupReader")
 
 
 british_crime_teen_sps_name  <- system.file("testdata",
-                                            "british_crime_teen.sps",
+                                            "british_crime_teen_sps.zip",
                                             package = "asciiSetupReader")
 drug_abuse_sps_name          <- system.file("testdata",
-                                            "drug_abuse.sps",
+                                            "drug_abuse_sps.zip",
                                             package = "asciiSetupReader")
 worry_sps_name               <- system.file("testdata",
-                                            "worry.sps",
+                                            "worry_sps.zip",
                                             package = "asciiSetupReader")
 cps_1973_sps_name            <- system.file("testdata",
-                                            "cps_1973.sps",
+                                            "cps_1973_sps.zip",
                                             package = "asciiSetupReader")
 cps_2004_sps_name           <- system.file("testdata",
-                                           "cps_2004.sps",
+                                           "cps_2004_sps.zip",
                                            package = "asciiSetupReader")
 census_police_sps_name      <- system.file("testdata",
                                            "census_of_police.sps",
                                            package = "asciiSetupReader")
 detroit_sps_name            <- system.file("testdata",
-                                           "detroit.sps",
+                                           "detroit_sps.zip",
                                            package = "asciiSetupReader")
 step_in_sps_name            <- system.file("testdata",
                                            "step_in.sps",
@@ -183,16 +183,16 @@ step_in_sps_name            <- system.file("testdata",
 
 
 british_crime_teen_sas_name  <- system.file("testdata",
-                                            "british_crime_teen.sas",
+                                            "british_crime_teen_sas.zip",
                                             package = "asciiSetupReader")
 drug_abuse_sas_name          <- system.file("testdata",
-                                            "drug_abuse.sas",
+                                            "drug_abuse_sas.zip",
                                             package = "asciiSetupReader")
 worry_sas_name               <- system.file("testdata",
-                                            "worry.sas",
+                                            "worry_sas.zip",
                                             package = "asciiSetupReader")
 cps_1973_sas_name            <- system.file("testdata",
-                                            "cps_1973.sas",
+                                            "cps_1973_sas.zip",
                                             package = "asciiSetupReader")
 education_1985_sas_name     <- system.file("testdata",
                                            "education_1985.sas",
@@ -201,13 +201,13 @@ education_1995_sas_name     <- system.file("testdata",
                                            "education_1995.sas",
                                            package = "asciiSetupReader")
 cps_2004_sas_name           <- system.file("testdata",
-                                           "cps_2004.sas",
+                                           "cps_2004_sas.zip",
                                            package = "asciiSetupReader")
 census_police_sas_name      <- system.file("testdata",
                                            "census_of_police.sas",
                                            package = "asciiSetupReader")
 detroit_sas_name            <- system.file("testdata",
-                                           "detroit.sas",
+                                           "detroit_sas.zip",
                                            package = "asciiSetupReader")
 step_in_sas_name            <- system.file("testdata",
                                            "step_in.sas",
@@ -225,7 +225,7 @@ health_nutrition_sas_name  <- system.file("testdata",
                                           "health_and_nutrition.sas",
                                           package = "asciiSetupReader")
 india_human_sas_name       <- system.file("testdata",
-                                          "india_human_development.sas",
+                                          "india_human_development_sas.zip",
                                           package = "asciiSetupReader")
 well_being_sas_name        <- system.file("testdata",
                                           "WB2016.sas",
