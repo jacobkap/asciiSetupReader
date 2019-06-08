@@ -24,23 +24,125 @@ test_that("Right number of missing values", {
   expect_true(is.null(psid_toy_parsed_sas$missing))
   expect_equal(nrow(psid_supplement_parsed_sas$missing), 16)
   expect_true(is.null(health_nutrition_parsed_sas$missing))
-
   expect_equal(nrow(india_human_parsed_sas$missing), 1)
   expect_true(is.null(psid_core_parsed_sas$missing))
-
-
   expect_equal(nrow(census_police_parsed_sas$missing), 74)
   expect_equal(nrow(step_in_parsed_sas$missing), 2)
   expect_equal(nrow(cps_1973_parsed_sas$missing), 235)
   expect_true(is.null(education_1985_parsed_sas$missing))
   expect_true(is.null(education_1995_parsed_sas$missing))
-
   expect_true(is.null(cps_2004_parsed_sas$missing))
   expect_equal(nrow(drug_abuse_parsed_sas$missing), 424)
   expect_equal(nrow(british_crime_teen_parsed_sas$missing), 1119)
   expect_true(is.null(detroit_parsed_sas$missing))
   expect_true(is.null(worry_parsed_sas$missing))
 
+  expect_equal(nrow(cambridge_parsed_sas$missing), 1068)
+  expect_true(is.null(guam_parsed_sas$missing))
+  expect_true(is.null(china_2002_parsed_sas$missing))
+  expect_true(is.null(china_1995_parsed_sas$missing))
+  expect_equal(nrow(china_1998_parsed_sas$missing), 47)
+  expect_true(is.null(indonesia_parsed_sas$missing))
+  expect_equal(nrow(UN_crime_parsed_sas$missing), 357)
+  expect_equal(nrow(county_arrest_parsed_sas$missing), 13)
+
+})
+
+
+
+test_that("Cambridge has right missing values", {
+  expect_equal(head(cambridge_parsed_sas$missing$variable),
+               c("V7", "V8", "V10",
+                 "V11", "V12", "V12"))
+  expect_equal(head(cambridge_parsed_sas$missing$values),
+               c("0", "0", "0",
+                 "0", "0", "9"))
+
+  expect_equal(tail(cambridge_parsed_sas$missing$variable),
+               c("V876", "V877", "V877",
+                 "V878", "V879", "V880"))
+  expect_equal(tail(cambridge_parsed_sas$missing$values),
+               c("98", "0", "98",
+                 "0", "0", "0"))
+
+  expect_equal(cambridge_parsed_sas$missing$values[cambridge_parsed_sas$missing$variable == "V747"],
+               c("6", "8", "9"))
+
+  expect_equal(head(unique(cambridge_parsed_sas$missing$variable)),
+               c("V7", "V8", "V10",
+                 "V11", "V12", "V20"))
+  expect_equal(tail(unique(cambridge_parsed_sas$missing$variable)),
+               c("V875", "V876", "V877",
+                 "V878", "V879", "V880"))
+})
+
+test_that("China 1998 has right missing values", {
+  expect_equal(head(china_1998_parsed_sas$missing$variable),
+               c("RELATION", "GENDER", "AGE",
+                 "STUDENT", "INCOME88", "RESIDENC"))
+  expect_equal(head(china_1998_parsed_sas$missing$values),
+               c("9", "9", "999",
+                 "9", "9", "9"))
+
+  expect_equal(tail(china_1998_parsed_sas$missing$variable),
+               c("IT07T", "IT07M", "IT07E",
+                 "IT08T", "IT08M", "IT08E"))
+  expect_equal(tail(china_1998_parsed_sas$missing$values),
+               c("9", "99999", "99999",
+                 "9", "99999", "99999"))
+
+  expect_equal(head(unique(china_1998_parsed_sas$missing$variable)),
+               c("RELATION", "GENDER", "AGE",
+                 "STUDENT", "INCOME88", "RESIDENC"))
+  expect_equal(tail(unique(china_1998_parsed_sas$missing$variable)),
+               c("IT07T", "IT07M", "IT07E",
+                 "IT08T", "IT08M", "IT08E"))
+})
+
+test_that("UN Crime has right missing values", {
+  expect_equal(head(UN_crime_parsed_sas$missing$variable),
+               c("NNHOM70N", "NNHOM70N", "NNHOM70N",
+                 "NNHOM71N", "NNHOM71N", "NNHOM71N"))
+  expect_equal(head(UN_crime_parsed_sas$missing$values),
+               c("-2", "-3", "-9",
+                 "-2", "-3", "-9"))
+
+  expect_equal(tail(UN_crime_parsed_sas$missing$variable),
+               c("X5", "X5", "X5",
+                 "X6", "X6", "X6"))
+  expect_equal(tail(UN_crime_parsed_sas$missing$values),
+               c("-2", "-3", "-9",
+                 "-2", "-3", "-9"))
+
+  expect_equal(head(unique(UN_crime_parsed_sas$missing$variable)),
+               c("NNHOM70N", "NNHOM71N", "NNHOM72N",
+                 "NNHOM73N", "NNHOM74N", "NNHOM75N"))
+  expect_equal(tail(unique(UN_crime_parsed_sas$missing$variable)),
+               c("PSTF745", "X2", "X3",
+                 "X4", "X5", "X6"))
+})
+
+test_that("County arrest has right missing values", {
+  expect_equal(head(county_arrest_parsed_sas$missing$variable),
+               c("V7", "V8", "V9",
+                 "V10", "V11", "V12"))
+  expect_equal(head(county_arrest_parsed_sas$missing$values),
+               c("9999999", "9999999", "999999",
+                 "99999", "99999", "9999"))
+
+  expect_equal(tail(county_arrest_parsed_sas$missing$variable),
+               c("V14", "V15", "V16",
+                 "V17", "V18", "V19"))
+  expect_equal(tail(county_arrest_parsed_sas$missing$values),
+               c("99999", "99999", "99999",
+                 "99999", "99999", "9999"))
+
+  expect_equal(head(unique(county_arrest_parsed_sas$missing$variable)),
+               c("V7", "V8", "V9",
+                 "V10", "V11", "V12"))
+  expect_equal(tail(unique(county_arrest_parsed_sas$missing$variable)),
+               c("V14", "V15", "V16",
+                 "V17", "V18", "V19"))
 })
 
 test_that("British Crime Teen has right missing values", {

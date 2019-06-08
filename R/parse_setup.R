@@ -142,6 +142,7 @@ parse_missing_sps <- function(codebook, setup) {
   missing <- gsub("\\) ", "\\)   ", missing)
   missing <- gsub(",\\s+(-?[0-9]),", ", \\1,", missing)
   missing <- gsub(",\\s+(-?[0-9])\\)", ", \\1\\)", missing)
+  missing <- gsub("([0-9]),([0-9])", "\\1, \\2", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
@@ -270,6 +271,7 @@ parse_value_labels <- function(setup, type) {
     } else if (type == "sas") {
       value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
     }
+    value_label_order <- unique(value_labels$column)
     value_labels <- split.data.frame(value_labels, value_labels$column)
     value_label_cols <- c()
     for (i in seq_along(value_labels)) {
@@ -279,6 +281,7 @@ parse_value_labels <- function(setup, type) {
     }
 
     names(value_labels) <- value_label_cols
+    value_labels <- value_labels[value_label_order]
     return(value_labels)
   }
 }

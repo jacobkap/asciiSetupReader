@@ -121,9 +121,9 @@ get_value_labels <- function(codebook, setup, type) {
   return(value_labels)
 }
 
-get_value_labels_sas <- function(codebook, column_spaces) {
+get_value_labels_sas <- function(codebook, setup) {
   # Gets value labels
-  f_names <- as.character(column_spaces$f_name[!is.na(column_spaces$f_name)])
+  f_names <- as.character(setup$f_name[!is.na(setup$f_name)])
   starting <- c()
   for (f_name in f_names) {
     result <- grep(paste("VALUE", f_name),
@@ -158,14 +158,13 @@ get_value_labels_sas <- function(codebook, column_spaces) {
   value_labels <- gsub("&\\s+", "& ", value_labels)
 
 
-
   value_labels <- gsub("([[:alpha:]]+)\\s+(<?[0-9]+)", "\\1 \\2",
                        value_labels)
   value_labels <- gsub("([[:alpha:]]+)\\s+([[:alpha:]]+)", "\\1 \\2",
                        value_labels)
   value_labels <- gsub("([[:alnum:]]+\\.[[:alnum:]]+=)", "      \\1",
                        value_labels)
-  value_labels <- gsub("([^\\.]-?[[:alnum:]]+=)", "      \\1",
+  value_labels <- gsub("([^\\.]-?[[:alnum:]]+=[^A-z])", "      \\1",
                        value_labels)
   value_labels <- trimws(value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
@@ -177,7 +176,7 @@ get_value_labels_sas <- function(codebook, column_spaces) {
   column <- value_labels$value_labels[1]
   for (i in 1:nrow(value_labels)) {
     value_labels$column[i] <- column
-    if (value_labels$value_labels[i + 1] %in% column_spaces$f_name) {
+    if (value_labels$value_labels[i + 1] %in% setup$f_name) {
       column <- value_labels$value_labels[i + 1]
     }
   }
@@ -185,7 +184,7 @@ get_value_labels_sas <- function(codebook, column_spaces) {
   final_value_labels <- data.frame(stringsAsFactors = FALSE)
   for (col in unique(value_labels$column)) {
     single_value_label <- value_labels[value_labels$column %in% col, ]
-    real_names <- unique(column_spaces$column_number[column_spaces$f_name %in% col])
+    real_names <- unique(setup$column_number[setup$f_name %in% col])
     for (real_name in real_names) {
       temp <- single_value_label
       temp$value_labels[1] <- real_name
@@ -197,7 +196,7 @@ get_value_labels_sas <- function(codebook, column_spaces) {
   return(final_value_labels)
 }
 
-get_value_labels_sps <- function(codebook, codebook_column_spaces) {
+get_value_labels_sps <- function(codebook, setup) {
   value_start <- grep2("^value labels$",
                        codebook)
   end_row <- grep("^\\.$|^$", codebook)
@@ -218,8 +217,8 @@ get_value_labels_sps <- function(codebook, codebook_column_spaces) {
   value_labels <- gsub('(\\s{2,})([0-9]+)\\s{2,}\\"', '\\1\\2 \\"',
                        value_labels)
 
-  add_spaces <- paste0(codebook_column_spaces$column_number, "   ")
-  names(add_spaces) <- paste0('^', codebook_column_spaces$column_number, " ")
+  add_spaces <- paste0(setup$column_number, "   ")
+  names(add_spaces) <- paste0('^', setup$column_number, " ")
   add_spaces <- add_spaces[!duplicated(add_spaces)]
   add_spaces <- add_spaces[!grepl("^\\*", add_spaces)]
   value_labels <- stringr::str_replace_all(value_labels, add_spaces)
@@ -230,8 +229,7 @@ get_value_labels_sps <- function(codebook, codebook_column_spaces) {
                        "\\1 \\2", value_labels)
   value_labels <- gsub("([[:alpha:]])\\s\\s([[:punct:]])",
                        "\\1 \\2", value_labels)
-  value_labels <- gsub(":  ",
-                       ": ", value_labels)
+  value_labels <- gsub(":  ", ": ", value_labels)
 
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
@@ -250,7 +248,7 @@ get_value_labels_sps <- function(codebook, codebook_column_spaces) {
     value_labels$column[i] <- column
     if (grepl("\\' \\/$", value_labels$value_labels[i]) |
         value_labels$value_labels[i + 1] %in%
-        codebook_column_spaces$column_number |
+        setup$column_number |
         (!grepl("\\'", value_labels$value_labels[i + 1]) &
          !grepl("^[0-9]+$", value_labels$value_labels[i + 1]))) {
       column <- value_labels$value_labels[i + 1]
