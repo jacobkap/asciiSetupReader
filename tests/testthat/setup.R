@@ -172,55 +172,55 @@ detroit_sps_name            <- system.file("testdata",
 step_in_sps_name            <- system.file("testdata",
                                            "step_in.sps",
                                            package = "asciiSetupReader")
-cambridge_sps_name     <- system.file("testdata",
-                                      "cambridge_sps.zip",
-                                      package = "asciiSetupReader")
-guam_sps_name          <- system.file("testdata",
-                                      "guam_sps.zip",
-                                      package = "asciiSetupReader")
-china_2002_sps_name    <- system.file("testdata",
-                                      "china_2002.sps",
-                                      package = "asciiSetupReader")
-china_1995_sps_name    <- system.file("testdata",
-                                      "china_1995.sps",
-                                      package = "asciiSetupReader")
-china_1998_sps_name    <- system.file("testdata",
-                                      "china_1998.sps",
-                                      package = "asciiSetupReader")
-indonesia_sps_name     <- system.file("testdata",
-                                      "indonesia.sps",
-                                      package = "asciiSetupReader")
-UN_crime_sps_name      <- system.file("testdata",
-                                      "UN_crime.sps",
-                                      package = "asciiSetupReader")
-county_arrest_sps_name <- system.file("testdata",
-                                      "county_arrest.sps",
-                                      package = "asciiSetupReader")
-
-cambridge_sas_name     <- system.file("testdata",
-                                      "cambridge_sas.zip",
-                                      package = "asciiSetupReader")
-guam_sas_name          <- system.file("testdata",
-                                      "guam_sas.zip",
-                                      package = "asciiSetupReader")
-china_2002_sas_name    <- system.file("testdata",
-                                      "china_2002.sas",
-                                      package = "asciiSetupReader")
-china_1995_sas_name    <- system.file("testdata",
-                                      "china_1995.sas",
-                                      package = "asciiSetupReader")
-china_1998_sas_name    <- system.file("testdata",
-                                      "china_1998.sas",
-                                      package = "asciiSetupReader")
-indonesia_sas_name     <- system.file("testdata",
-                                      "indonesia.sas",
-                                      package = "asciiSetupReader")
-UN_crime_sas_name      <- system.file("testdata",
-                                      "UN_crime.sas",
-                                      package = "asciiSetupReader")
-county_arrest_sas_name <- system.file("testdata",
-                                      "county_arrest.sas",
-                                      package = "asciiSetupReader")
+# cambridge_sps_name     <- system.file("testdata",
+#                                       "cambridge_sps.zip",
+#                                       package = "asciiSetupReader")
+# guam_sps_name          <- system.file("testdata",
+#                                       "guam_sps.zip",
+#                                       package = "asciiSetupReader")
+# china_2002_sps_name    <- system.file("testdata",
+#                                       "china_2002.sps",
+#                                       package = "asciiSetupReader")
+# china_1995_sps_name    <- system.file("testdata",
+#                                       "china_1995.sps",
+#                                       package = "asciiSetupReader")
+# china_1998_sps_name    <- system.file("testdata",
+#                                       "china_1998.sps",
+#                                       package = "asciiSetupReader")
+# indonesia_sps_name     <- system.file("testdata",
+#                                       "indonesia.sps",
+#                                       package = "asciiSetupReader")
+# UN_crime_sps_name      <- system.file("testdata",
+#                                       "UN_crime.sps",
+#                                       package = "asciiSetupReader")
+# county_arrest_sps_name <- system.file("testdata",
+#                                       "county_arrest.sps",
+#                                       package = "asciiSetupReader")
+#
+# cambridge_sas_name     <- system.file("testdata",
+#                                       "cambridge_sas.zip",
+#                                       package = "asciiSetupReader")
+# guam_sas_name          <- system.file("testdata",
+#                                       "guam_sas.zip",
+#                                       package = "asciiSetupReader")
+# china_2002_sas_name    <- system.file("testdata",
+#                                       "china_2002.sas",
+#                                       package = "asciiSetupReader")
+# china_1995_sas_name    <- system.file("testdata",
+#                                       "china_1995.sas",
+#                                       package = "asciiSetupReader")
+# china_1998_sas_name    <- system.file("testdata",
+#                                       "china_1998.sas",
+#                                       package = "asciiSetupReader")
+# indonesia_sas_name     <- system.file("testdata",
+#                                       "indonesia.sas",
+#                                       package = "asciiSetupReader")
+# UN_crime_sas_name      <- system.file("testdata",
+#                                       "UN_crime.sas",
+#                                       package = "asciiSetupReader")
+# county_arrest_sas_name <- system.file("testdata",
+#                                       "county_arrest.sas",
+#                                       package = "asciiSetupReader")
 
 
 
@@ -519,24 +519,24 @@ detroit_parsed_sps            <- parse_setup(detroit_sps_name)
 worry_parsed_sps              <- parse_setup(worry_sps_name)
 cps_2004_parsed_sps           <- parse_setup(cps_2004_sps_name)
 
-cambridge_parsed_sps     <- parse_setup(cambridge_sps_name)
-guam_parsed_sps          <- parse_setup(guam_sps_name)
-china_2002_parsed_sps    <- parse_setup(china_2002_sps_name)
-china_1995_parsed_sps    <- parse_setup(china_1995_sps_name)
-china_1998_parsed_sps    <- parse_setup(china_1998_sps_name)
-indonesia_parsed_sps     <- parse_setup(indonesia_sps_name)
-UN_crime_parsed_sps      <- parse_setup(UN_crime_sps_name)
-county_arrest_parsed_sps <- parse_setup(county_arrest_sps_name)
-
-
-cambridge_parsed_sas        <- parse_setup(cambridge_sas_name)
-guam_parsed_sas             <- parse_setup(guam_sas_name)
-china_2002_parsed_sas       <- parse_setup(china_2002_sas_name)
-china_1995_parsed_sas       <- parse_setup(china_1995_sas_name)
-china_1998_parsed_sas       <- parse_setup(china_1998_sas_name)
-indonesia_parsed_sas        <- parse_setup(indonesia_sas_name)
-UN_crime_parsed_sas         <- parse_setup(UN_crime_sas_name)
-county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
+# cambridge_parsed_sps     <- parse_setup(cambridge_sps_name)
+# guam_parsed_sps          <- parse_setup(guam_sps_name)
+# china_2002_parsed_sps    <- parse_setup(china_2002_sps_name)
+# china_1995_parsed_sps    <- parse_setup(china_1995_sps_name)
+# china_1998_parsed_sps    <- parse_setup(china_1998_sps_name)
+# indonesia_parsed_sps     <- parse_setup(indonesia_sps_name)
+# UN_crime_parsed_sps      <- parse_setup(UN_crime_sps_name)
+# county_arrest_parsed_sps <- parse_setup(county_arrest_sps_name)
+#
+#
+# cambridge_parsed_sas        <- parse_setup(cambridge_sas_name)
+# guam_parsed_sas             <- parse_setup(guam_sas_name)
+# china_2002_parsed_sas       <- parse_setup(china_2002_sas_name)
+# china_1995_parsed_sas       <- parse_setup(china_1995_sas_name)
+# china_1998_parsed_sas       <- parse_setup(china_1998_sas_name)
+# indonesia_parsed_sas        <- parse_setup(indonesia_sas_name)
+# UN_crime_parsed_sas         <- parse_setup(UN_crime_sas_name)
+# county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
 
 
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
