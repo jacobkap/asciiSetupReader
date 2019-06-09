@@ -221,58 +221,58 @@ UN_crime_sas_name      <- system.file("testdata",
 county_arrest_sas_name <- system.file("testdata",
                                       "county_arrest.sas",
                                       package = "asciiSetupReader")
-#
-#
-#
-#
-# british_crime_teen_sas_name  <- system.file("testdata",
-#                                             "british_crime_teen_sas.zip",
-#                                             package = "asciiSetupReader")
-# drug_abuse_sas_name          <- system.file("testdata",
-#                                             "drug_abuse_sas.zip",
-#                                             package = "asciiSetupReader")
-# worry_sas_name               <- system.file("testdata",
-#                                             "worry_sas.zip",
-#                                             package = "asciiSetupReader")
-# cps_1973_sas_name            <- system.file("testdata",
-#                                             "cps_1973_sas.zip",
-#                                             package = "asciiSetupReader")
-# education_1985_sas_name     <- system.file("testdata",
-#                                            "education_1985.sas",
-#                                            package = "asciiSetupReader")
-# education_1995_sas_name     <- system.file("testdata",
-#                                            "education_1995.sas",
-#                                            package = "asciiSetupReader")
-# cps_2004_sas_name           <- system.file("testdata",
-#                                            "cps_2004_sas.zip",
-#                                            package = "asciiSetupReader")
-# census_police_sas_name      <- system.file("testdata",
-#                                            "census_of_police.sas",
-#                                            package = "asciiSetupReader")
-# detroit_sas_name            <- system.file("testdata",
-#                                            "detroit_sas.zip",
-#                                            package = "asciiSetupReader")
-# step_in_sas_name            <- system.file("testdata",
-#                                            "step_in.sas",
-#                                            package = "asciiSetupReader")
-# psid_toy_sas_name          <- system.file("testdata",
-#                                           "psid_toy.sas",
-#                                           package = "asciiSetupReader")
-# psid_supplement_sas_name   <- system.file("testdata",
-#                                           "psid_supplement.sas",
-#                                           package = "asciiSetupReader")
-# psid_core_sas_name         <- system.file("testdata",
-#                                           "psid_core_sas.zip",
-#                                           package = "asciiSetupReader")
-# health_nutrition_sas_name  <- system.file("testdata",
-#                                           "health_and_nutrition.sas",
-#                                           package = "asciiSetupReader")
-# india_human_sas_name       <- system.file("testdata",
-#                                           "india_human_development_sas.zip",
-#                                           package = "asciiSetupReader")
-# well_being_sas_name        <- system.file("testdata",
-#                                           "WB2016.sas",
-#                                           package = "asciiSetupReader")
+
+
+
+
+british_crime_teen_sas_name  <- system.file("testdata",
+                                            "british_crime_teen_sas.zip",
+                                            package = "asciiSetupReader")
+drug_abuse_sas_name          <- system.file("testdata",
+                                            "drug_abuse_sas.zip",
+                                            package = "asciiSetupReader")
+worry_sas_name               <- system.file("testdata",
+                                            "worry_sas.zip",
+                                            package = "asciiSetupReader")
+cps_1973_sas_name            <- system.file("testdata",
+                                            "cps_1973_sas.zip",
+                                            package = "asciiSetupReader")
+education_1985_sas_name     <- system.file("testdata",
+                                           "education_1985.sas",
+                                           package = "asciiSetupReader")
+education_1995_sas_name     <- system.file("testdata",
+                                           "education_1995.sas",
+                                           package = "asciiSetupReader")
+cps_2004_sas_name           <- system.file("testdata",
+                                           "cps_2004_sas.zip",
+                                           package = "asciiSetupReader")
+census_police_sas_name      <- system.file("testdata",
+                                           "census_of_police.sas",
+                                           package = "asciiSetupReader")
+detroit_sas_name            <- system.file("testdata",
+                                           "detroit_sas.zip",
+                                           package = "asciiSetupReader")
+step_in_sas_name            <- system.file("testdata",
+                                           "step_in.sas",
+                                           package = "asciiSetupReader")
+psid_toy_sas_name          <- system.file("testdata",
+                                          "psid_toy.sas",
+                                          package = "asciiSetupReader")
+psid_supplement_sas_name   <- system.file("testdata",
+                                          "psid_supplement.sas",
+                                          package = "asciiSetupReader")
+psid_core_sas_name         <- system.file("testdata",
+                                          "psid_core_sas.zip",
+                                          package = "asciiSetupReader")
+health_nutrition_sas_name  <- system.file("testdata",
+                                          "health_and_nutrition.sas",
+                                          package = "asciiSetupReader")
+india_human_sas_name       <- system.file("testdata",
+                                          "india_human_development_sas.zip",
+                                          package = "asciiSetupReader")
+well_being_sas_name        <- system.file("testdata",
+                                          "WB2016.sas",
+                                          package = "asciiSetupReader")
 # crosswalk_sas_name         <- system.file("testdata",
 #                                           "crosswalk.sas",
 #                                           package = "asciiSetupReader")
