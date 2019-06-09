@@ -506,7 +506,7 @@ crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
 dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 well_being_parsed_sps      <- parse_setup(well_being_sps_name)
 #escolar_parsed_sps          <- parse_setup(escolar_sps_name)
-# psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
+ psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
 
 
 

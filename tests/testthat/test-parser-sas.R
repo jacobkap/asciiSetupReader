@@ -343,10 +343,10 @@ test_that("Column numbers are correct", {
                  408, 409, 418))
 
 
-  expect_equal(head(psid_supplement_parsed_sps$setup$begin),
+  expect_equal(head(psid_supplement_parsed_sas$setup$begin),
                c(1, 6, 13,
                  20, 27, 34))
-  expect_equal(tail(psid_supplement_parsed_sps$setup$begin),
+  expect_equal(tail(psid_supplement_parsed_sas$setup$begin),
                c(76, 83, 90,
                  97, 104, 111))
 
