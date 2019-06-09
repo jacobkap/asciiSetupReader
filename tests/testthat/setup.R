@@ -160,67 +160,67 @@ worry_sps_name               <- system.file("testdata",
 cps_1973_sps_name            <- system.file("testdata",
                                             "cps_1973_sps.zip",
                                             package = "asciiSetupReader")
-# cps_2004_sps_name           <- system.file("testdata",
-#                                            "cps_2004_sps.zip",
-#                                            package = "asciiSetupReader")
-# census_police_sps_name      <- system.file("testdata",
-#                                            "census_of_police.sps",
-#                                            package = "asciiSetupReader")
-# detroit_sps_name            <- system.file("testdata",
-#                                            "detroit_sps.zip",
-#                                            package = "asciiSetupReader")
-# step_in_sps_name            <- system.file("testdata",
-#                                            "step_in.sps",
-#                                            package = "asciiSetupReader")
-# cambridge_sps_name     <- system.file("testdata",
-#                                       "cambridge_sps.zip",
-#                                       package = "asciiSetupReader")
-# guam_sps_name          <- system.file("testdata",
-#                                       "guam_sps.zip",
-#                                       package = "asciiSetupReader")
-# china_2002_sps_name    <- system.file("testdata",
-#                                       "china_2002.sps",
-#                                       package = "asciiSetupReader")
-# china_1995_sps_name    <- system.file("testdata",
-#                                       "china_1995.sps",
-#                                       package = "asciiSetupReader")
-# china_1998_sps_name    <- system.file("testdata",
-#                                       "china_1998.sps",
-#                                       package = "asciiSetupReader")
-# indonesia_sps_name     <- system.file("testdata",
-#                                       "indonesia.sps",
-#                                       package = "asciiSetupReader")
-# UN_crime_sps_name      <- system.file("testdata",
-#                                       "UN_crime.sps",
-#                                       package = "asciiSetupReader")
-# county_arrest_sps_name <- system.file("testdata",
-#                                       "county_arrest.sps",
-#                                       package = "asciiSetupReader")
-#
-# cambridge_sas_name     <- system.file("testdata",
-#                                       "cambridge_sas.zip",
-#                                       package = "asciiSetupReader")
-# guam_sas_name          <- system.file("testdata",
-#                                       "guam_sas.zip",
-#                                       package = "asciiSetupReader")
-# china_2002_sas_name    <- system.file("testdata",
-#                                       "china_2002.sas",
-#                                       package = "asciiSetupReader")
-# china_1995_sas_name    <- system.file("testdata",
-#                                       "china_1995.sas",
-#                                       package = "asciiSetupReader")
-# china_1998_sas_name    <- system.file("testdata",
-#                                       "china_1998.sas",
-#                                       package = "asciiSetupReader")
-# indonesia_sas_name     <- system.file("testdata",
-#                                       "indonesia.sas",
-#                                       package = "asciiSetupReader")
-# UN_crime_sas_name      <- system.file("testdata",
-#                                       "UN_crime.sas",
-#                                       package = "asciiSetupReader")
-# county_arrest_sas_name <- system.file("testdata",
-#                                       "county_arrest.sas",
-#                                       package = "asciiSetupReader")
+cps_2004_sps_name           <- system.file("testdata",
+                                           "cps_2004_sps.zip",
+                                           package = "asciiSetupReader")
+census_police_sps_name      <- system.file("testdata",
+                                           "census_of_police.sps",
+                                           package = "asciiSetupReader")
+detroit_sps_name            <- system.file("testdata",
+                                           "detroit_sps.zip",
+                                           package = "asciiSetupReader")
+step_in_sps_name            <- system.file("testdata",
+                                           "step_in.sps",
+                                           package = "asciiSetupReader")
+cambridge_sps_name     <- system.file("testdata",
+                                      "cambridge_sps.zip",
+                                      package = "asciiSetupReader")
+guam_sps_name          <- system.file("testdata",
+                                      "guam_sps.zip",
+                                      package = "asciiSetupReader")
+china_2002_sps_name    <- system.file("testdata",
+                                      "china_2002.sps",
+                                      package = "asciiSetupReader")
+china_1995_sps_name    <- system.file("testdata",
+                                      "china_1995.sps",
+                                      package = "asciiSetupReader")
+china_1998_sps_name    <- system.file("testdata",
+                                      "china_1998.sps",
+                                      package = "asciiSetupReader")
+indonesia_sps_name     <- system.file("testdata",
+                                      "indonesia.sps",
+                                      package = "asciiSetupReader")
+UN_crime_sps_name      <- system.file("testdata",
+                                      "UN_crime.sps",
+                                      package = "asciiSetupReader")
+county_arrest_sps_name <- system.file("testdata",
+                                      "county_arrest.sps",
+                                      package = "asciiSetupReader")
+
+cambridge_sas_name     <- system.file("testdata",
+                                      "cambridge_sas.zip",
+                                      package = "asciiSetupReader")
+guam_sas_name          <- system.file("testdata",
+                                      "guam_sas.zip",
+                                      package = "asciiSetupReader")
+china_2002_sas_name    <- system.file("testdata",
+                                      "china_2002.sas",
+                                      package = "asciiSetupReader")
+china_1995_sas_name    <- system.file("testdata",
+                                      "china_1995.sas",
+                                      package = "asciiSetupReader")
+china_1998_sas_name    <- system.file("testdata",
+                                      "china_1998.sas",
+                                      package = "asciiSetupReader")
+indonesia_sas_name     <- system.file("testdata",
+                                      "indonesia.sas",
+                                      package = "asciiSetupReader")
+UN_crime_sas_name      <- system.file("testdata",
+                                      "UN_crime.sas",
+                                      package = "asciiSetupReader")
+county_arrest_sas_name <- system.file("testdata",
+                                      "county_arrest.sas",
+                                      package = "asciiSetupReader")
 #
 #
 #
