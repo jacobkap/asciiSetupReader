@@ -273,209 +273,209 @@ india_human_sas_name       <- system.file("testdata",
 well_being_sas_name        <- system.file("testdata",
                                           "WB2016.sas",
                                           package = "asciiSetupReader")
-# crosswalk_sas_name         <- system.file("testdata",
-#                                           "crosswalk.sas",
-#                                           package = "asciiSetupReader")
-# ucr1985_sas_name           <- system.file("testdata",
-#                                           "1985_UCR_offenses_known_sas.zip",
-#                                           package = "asciiSetupReader")
-# ucr1986_sas_name           <- system.file("testdata",
-#                                           "1986_UCR_offenses_known_sas.zip",
-#                                           package = "asciiSetupReader")
-# ucr2000_sas_name           <- system.file("testdata",
-#                                           "2000_UCR_offenses_known_sas.zip",
-#                                           package = "asciiSetupReader")
-# ucr2006_sas_name           <- system.file("testdata",
-#                                           "2006_UCR_offenses_known_sas.zip",
-#                                           package = "asciiSetupReader")
-# sac_sas_name               <- system.file("testdata",
-#                                           "sacramento_sas.zip",
-#                                           package = "asciiSetupReader")
-# sex_offender_sas_name      <- system.file("testdata",
-#                                           "sex_offender_notification.sas",
-#                                           package = "asciiSetupReader")
-# ucr1960_sas_name           <- system.file("testdata",
-#                                           "ucr1960_sas.zip",
-#                                           package = "asciiSetupReader")
-# acs_sas_name               <- system.file("testdata",
-#                                           "acs_sas.zip",
-#                                           package = "asciiSetupReader")
-# nibrs_sas_name             <- system.file("testdata",
-#                                           "nibrs_2000_batch_header1_sas.zip",
-#                                           package = "asciiSetupReader")
-# prisoners_sas_name         <- system.file("testdata",
-#                                           "prisoners_sas.zip",
-#                                           package = "asciiSetupReader")
-# SHR1987_sas_name           <- system.file("testdata",
-#                                           "1987_SHR_sas.zip",
-#                                           package = "asciiSetupReader")
-# SHR1988_sas_name           <- system.file("testdata",
-#                                           "1988_SHR_sas.zip",
-#                                           package = "asciiSetupReader")
-# SHR1981_sas_name           <- system.file("testdata",
-#                                           "1981_SHR_sas.zip",
-#                                           package = "asciiSetupReader")
-# ca_vital_sas_name          <- system.file("testdata",
-#                                           "ca_vital.sas",
-#                                           package = "asciiSetupReader")
-# parole_sas_name            <- system.file("testdata",
-#                                           "parole_survey.sas",
-#                                           package = "asciiSetupReader")
-# SHR1987_sas_name           <- system.file("testdata",
-#                                           "1987_SHR_sas.zip",
-#                                           package = "asciiSetupReader")
-# SHR1988_sas_name           <- system.file("testdata",
-#                                           "1988_SHR_sas.zip",
-#                                           package = "asciiSetupReader")
-# SHR1981_sas_name           <- system.file("testdata",
-#                                           "1981_SHR_sas.zip",
-#                                           package = "asciiSetupReader")
-# leoka1980_sas_name         <- system.file("testdata",
-#                                           "1980_leoka_sas.zip",
-#                                           package = "asciiSetupReader")
-# property_stolen_sas_name   <- system.file("testdata",
-#                                           "ucr_property_stolen_1998_sas.zip",
-#                                           package = "asciiSetupReader")
-# ncvs_sas_name              <- system.file("testdata",
-#                                           "ncvs_1979_sas.zip",
-#                                           package = "asciiSetupReader")
-# jail_1987_sas_name         <- system.file("testdata",
-#                                           "jail_survey_1987.sas",
-#                                           package = "asciiSetupReader")
-# jail_2010_sas_name         <- system.file("testdata",
-#                                           "jail_survey_2010.sas",
-#                                           package = "asciiSetupReader")
-# jail_1987_dataset_name     <- system.file("testdata",
-#                                           "jail_survey_1987.zip",
-#                                           package = "asciiSetupReader")
-# corrections_sas_name       <- system.file("testdata",
-#                                           "corrections_prison_admissions_1991_2016.sas",
-#                                           package = "asciiSetupReader")
-# sadc_sas_name              <- system.file("testdata",
-#                                           "2017_sadc_sas_input_program.sas",
-#                                           package = "asciiSetupReader")
-#
-# parole <- read_ascii_setup(data = parole_survey_dataset_name,
-#                            setup_file = parole_sps_name,
-#                            use_clean_names = FALSE)
-#
-# SHR2 <- read_ascii_setup(data = SHR_dataset_name,
-#                          setup_file = SHR_sps_name, select_columns = 1:5)
-# SHR3 <- read_ascii_setup(data = SHR_dataset_name,
-#                          setup_file = SHR_sps_name,
-#                          select_columns = c(1, 5, 50:55, 100:121, 152))
-#
-#
-# UCR2 <- read_ascii_setup(data = UCR_dataset_name,
-#                          setup_file = UCR_sps_name,
-#                          select_columns = c("V1", "V50", "V100", "V111",
-#                                             "V1000"))
-# NIBRS2 <- read_ascii_setup(data = NIBRS_dataset_name,
-#                            setup_file = NIBRS_sps_name,
-#                            select_columns = c("B1001", "B1005", "B1010",
-#                                               "B1016", "B1019"))
-#
-# # Read SAS ====================================================================
-# SHR2_sas   <- read_ascii_setup(data = SHR_dataset_name,
-#                                setup_file = SHR_sas_name, select_columns = 1:5)
-# SHR3_sas   <- read_ascii_setup(data = SHR_dataset_name,
-#                                setup_file = SHR_sas_name,
-#                                select_columns = c(1, 5, 50:55, 100:121, 152))
-# UCR2_sas   <- read_ascii_setup(data = UCR_dataset_name,
-#                                setup_file = UCR_sas_name,
-#                                select_columns = c("V1", "V50", "V100",
-#                                                   "V111", "V1000"))
-# NIBRS2_sas <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                setup_file = NIBRS_sas_name,
-#                                select_columns = c("B1001", "B1005",
-#                                                   "B1010", "B1016", "B1019"))
-#
-# SHR        <- read_ascii_setup(data = SHR_dataset_name,
-#                                setup_file = SHR_sps_name)
-# UCR        <- read_ascii_setup(data = UCR_dataset_name,
-#                                setup_file = UCR_sps_name,
-#                                select_columns = 1:150)
-# NIBRS      <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                setup_file = NIBRS_sps_name)
-# SHR_sas    <- read_ascii_setup(data = SHR_dataset_name,
-#                                setup_file = SHR_sas_name)
-# UCR_sas    <- read_ascii_setup(data = UCR_dataset_name,
-#                                setup_file = UCR_sas_name,
-#                                select_columns = 1:150)
-# NIBRS_sas  <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                setup_file = NIBRS_sas_name)
-# weimar     <- read_ascii_setup(data = weimar_dataset_name,
-#                                setup_file = weimar_sps_name)
-# weimar_sas <- read_ascii_setup(data = weimar_dataset_name,
-#                                setup_file = weimar_sas_name)
-#
-#
-#
-# SHR_names    <- read_ascii_setup(data = SHR_dataset_name,
-#                                  setup_file = SHR_sps_name,
-#                                  select_columns = c(1, 33, 45, 72, 100, 152))
-# SHR2_names   <- read_ascii_setup(data = SHR_dataset_name,
-#                                  setup_file = SHR_sps_name,
-#                                  use_clean_names = FALSE,
-#                                  select_columns = c(1, 33, 45, 72, 100, 152))
-# UCR_names    <- read_ascii_setup(data = UCR_dataset_name,
-#                                  setup_file = UCR_sps_name,
-#                                  select_columns = c(1, 33, 345, 572, 1000, 1400))
-# UCR2_names   <- read_ascii_setup(data = UCR_dataset_name,
-#                                  setup_file = UCR_sps_name,
-#                                  select_columns = c(1, 33, 345, 572, 1000, 1400),
-#                                  use_clean_names = FALSE)
-# NIBRS_names   <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                   setup_file = NIBRS_sps_name,
-#                                   select_columns = c(1, 3, 5, 7, 10, 15))
-# NIBRS2_names  <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                   setup_file = NIBRS_sps_name,
-#                                   use_clean_names = FALSE,
-#                                   select_columns = c(1, 3, 5, 7, 10, 15))
-#
-# weimar_names  <- read_ascii_setup(data = weimar_dataset_name,
-#                                   setup_file = weimar_sps_name,
-#                                   select_columns = c(1:7, 23))
-# weimar2_names <- read_ascii_setup(data = weimar_dataset_name,
-#                                   setup_file = weimar_sps_name,
-#                                   use_clean_names = FALSE)
-#
-#
-# # Read SAS ===============================================================
-# SHR_sas_names     <- read_ascii_setup(data = SHR_dataset_name,
-#                                       setup_file = SHR_sas_name,
-#                                       select_columns = c(1, 33, 45, 72, 100, 152))
-# SHR2_sas_names    <- read_ascii_setup(data = SHR_dataset_name,
-#                                       setup_file = SHR_sas_name,
-#                                       use_clean_names = FALSE,
-#                                       select_columns = c(1, 33, 45,
-#                                                          72, 100, 152))
-# UCR_sas_names     <- read_ascii_setup(data = UCR_dataset_name,
-#                                       setup_file = UCR_sas_name,
-#                                       select_columns = c(1, 33, 345,
-#                                                          572, 1000, 1400))
-# UCR2_sas_names    <- read_ascii_setup(data = UCR_dataset_name,
-#                                       setup_file = UCR_sas_name,
-#                                       select_columns = c(1, 33, 345,
-#                                                          572, 1000, 1400),
-#                                       use_clean_names = FALSE)
-# NIBRS_sas_names   <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                       setup_file = NIBRS_sas_name,
-#                                       select_columns = c(1, 3, 5, 7, 10, 15))
-# NIBRS2_sas_names  <- read_ascii_setup(data = NIBRS_dataset_name,
-#                                       setup_file = NIBRS_sas_name,
-#                                       use_clean_names = FALSE,
-#                                       select_columns = c(1, 3, 5, 7, 10, 15))
-#
-# weimar_sas_names  <- read_ascii_setup(data = weimar_dataset_name,
-#                                       setup_file = weimar_sas_name,
-#                                       select_columns = c(1:7, 23))
-# weimar2_sas_names <- read_ascii_setup(data = weimar_dataset_name,
-#                                       setup_file = weimar_sas_name,
-#                                       use_clean_names = FALSE)
-# crosswalk         <- read_ascii_setup(data = crosswalk_dataset_name,
-#                                       setup_file = crosswalk_sps_name,
-#                                       use_clean_names = FALSE)
+crosswalk_sas_name         <- system.file("testdata",
+                                          "crosswalk.sas",
+                                          package = "asciiSetupReader")
+ucr1985_sas_name           <- system.file("testdata",
+                                          "1985_UCR_offenses_known_sas.zip",
+                                          package = "asciiSetupReader")
+ucr1986_sas_name           <- system.file("testdata",
+                                          "1986_UCR_offenses_known_sas.zip",
+                                          package = "asciiSetupReader")
+ucr2000_sas_name           <- system.file("testdata",
+                                          "2000_UCR_offenses_known_sas.zip",
+                                          package = "asciiSetupReader")
+ucr2006_sas_name           <- system.file("testdata",
+                                          "2006_UCR_offenses_known_sas.zip",
+                                          package = "asciiSetupReader")
+sac_sas_name               <- system.file("testdata",
+                                          "sacramento_sas.zip",
+                                          package = "asciiSetupReader")
+sex_offender_sas_name      <- system.file("testdata",
+                                          "sex_offender_notification.sas",
+                                          package = "asciiSetupReader")
+ucr1960_sas_name           <- system.file("testdata",
+                                          "ucr1960_sas.zip",
+                                          package = "asciiSetupReader")
+acs_sas_name               <- system.file("testdata",
+                                          "acs_sas.zip",
+                                          package = "asciiSetupReader")
+nibrs_sas_name             <- system.file("testdata",
+                                          "nibrs_2000_batch_header1_sas.zip",
+                                          package = "asciiSetupReader")
+prisoners_sas_name         <- system.file("testdata",
+                                          "prisoners_sas.zip",
+                                          package = "asciiSetupReader")
+SHR1987_sas_name           <- system.file("testdata",
+                                          "1987_SHR_sas.zip",
+                                          package = "asciiSetupReader")
+SHR1988_sas_name           <- system.file("testdata",
+                                          "1988_SHR_sas.zip",
+                                          package = "asciiSetupReader")
+SHR1981_sas_name           <- system.file("testdata",
+                                          "1981_SHR_sas.zip",
+                                          package = "asciiSetupReader")
+ca_vital_sas_name          <- system.file("testdata",
+                                          "ca_vital.sas",
+                                          package = "asciiSetupReader")
+parole_sas_name            <- system.file("testdata",
+                                          "parole_survey.sas",
+                                          package = "asciiSetupReader")
+SHR1987_sas_name           <- system.file("testdata",
+                                          "1987_SHR_sas.zip",
+                                          package = "asciiSetupReader")
+SHR1988_sas_name           <- system.file("testdata",
+                                          "1988_SHR_sas.zip",
+                                          package = "asciiSetupReader")
+SHR1981_sas_name           <- system.file("testdata",
+                                          "1981_SHR_sas.zip",
+                                          package = "asciiSetupReader")
+leoka1980_sas_name         <- system.file("testdata",
+                                          "1980_leoka_sas.zip",
+                                          package = "asciiSetupReader")
+property_stolen_sas_name   <- system.file("testdata",
+                                          "ucr_property_stolen_1998_sas.zip",
+                                          package = "asciiSetupReader")
+ncvs_sas_name              <- system.file("testdata",
+                                          "ncvs_1979_sas.zip",
+                                          package = "asciiSetupReader")
+jail_1987_sas_name         <- system.file("testdata",
+                                          "jail_survey_1987.sas",
+                                          package = "asciiSetupReader")
+jail_2010_sas_name         <- system.file("testdata",
+                                          "jail_survey_2010.sas",
+                                          package = "asciiSetupReader")
+jail_1987_dataset_name     <- system.file("testdata",
+                                          "jail_survey_1987.zip",
+                                          package = "asciiSetupReader")
+corrections_sas_name       <- system.file("testdata",
+                                          "corrections_prison_admissions_1991_2016.sas",
+                                          package = "asciiSetupReader")
+sadc_sas_name              <- system.file("testdata",
+                                          "2017_sadc_sas_input_program.sas",
+                                          package = "asciiSetupReader")
+
+parole <- read_ascii_setup(data = parole_survey_dataset_name,
+                           setup_file = parole_sps_name,
+                           use_clean_names = FALSE)
+
+SHR2 <- read_ascii_setup(data = SHR_dataset_name,
+                         setup_file = SHR_sps_name, select_columns = 1:5)
+SHR3 <- read_ascii_setup(data = SHR_dataset_name,
+                         setup_file = SHR_sps_name,
+                         select_columns = c(1, 5, 50:55, 100:121, 152))
+
+
+UCR2 <- read_ascii_setup(data = UCR_dataset_name,
+                         setup_file = UCR_sps_name,
+                         select_columns = c("V1", "V50", "V100", "V111",
+                                            "V1000"))
+NIBRS2 <- read_ascii_setup(data = NIBRS_dataset_name,
+                           setup_file = NIBRS_sps_name,
+                           select_columns = c("B1001", "B1005", "B1010",
+                                              "B1016", "B1019"))
+
+# Read SAS ====================================================================
+SHR2_sas   <- read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sas_name, select_columns = 1:5)
+SHR3_sas   <- read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sas_name,
+                               select_columns = c(1, 5, 50:55, 100:121, 152))
+UCR2_sas   <- read_ascii_setup(data = UCR_dataset_name,
+                               setup_file = UCR_sas_name,
+                               select_columns = c("V1", "V50", "V100",
+                                                  "V111", "V1000"))
+NIBRS2_sas <- read_ascii_setup(data = NIBRS_dataset_name,
+                               setup_file = NIBRS_sas_name,
+                               select_columns = c("B1001", "B1005",
+                                                  "B1010", "B1016", "B1019"))
+
+SHR        <- read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sps_name)
+UCR        <- read_ascii_setup(data = UCR_dataset_name,
+                               setup_file = UCR_sps_name,
+                               select_columns = 1:150)
+NIBRS      <- read_ascii_setup(data = NIBRS_dataset_name,
+                               setup_file = NIBRS_sps_name)
+SHR_sas    <- read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sas_name)
+UCR_sas    <- read_ascii_setup(data = UCR_dataset_name,
+                               setup_file = UCR_sas_name,
+                               select_columns = 1:150)
+NIBRS_sas  <- read_ascii_setup(data = NIBRS_dataset_name,
+                               setup_file = NIBRS_sas_name)
+weimar     <- read_ascii_setup(data = weimar_dataset_name,
+                               setup_file = weimar_sps_name)
+weimar_sas <- read_ascii_setup(data = weimar_dataset_name,
+                               setup_file = weimar_sas_name)
+
+
+
+SHR_names    <- read_ascii_setup(data = SHR_dataset_name,
+                                 setup_file = SHR_sps_name,
+                                 select_columns = c(1, 33, 45, 72, 100, 152))
+SHR2_names   <- read_ascii_setup(data = SHR_dataset_name,
+                                 setup_file = SHR_sps_name,
+                                 use_clean_names = FALSE,
+                                 select_columns = c(1, 33, 45, 72, 100, 152))
+UCR_names    <- read_ascii_setup(data = UCR_dataset_name,
+                                 setup_file = UCR_sps_name,
+                                 select_columns = c(1, 33, 345, 572, 1000, 1400))
+UCR2_names   <- read_ascii_setup(data = UCR_dataset_name,
+                                 setup_file = UCR_sps_name,
+                                 select_columns = c(1, 33, 345, 572, 1000, 1400),
+                                 use_clean_names = FALSE)
+NIBRS_names   <- read_ascii_setup(data = NIBRS_dataset_name,
+                                  setup_file = NIBRS_sps_name,
+                                  select_columns = c(1, 3, 5, 7, 10, 15))
+NIBRS2_names  <- read_ascii_setup(data = NIBRS_dataset_name,
+                                  setup_file = NIBRS_sps_name,
+                                  use_clean_names = FALSE,
+                                  select_columns = c(1, 3, 5, 7, 10, 15))
+
+weimar_names  <- read_ascii_setup(data = weimar_dataset_name,
+                                  setup_file = weimar_sps_name,
+                                  select_columns = c(1:7, 23))
+weimar2_names <- read_ascii_setup(data = weimar_dataset_name,
+                                  setup_file = weimar_sps_name,
+                                  use_clean_names = FALSE)
+
+
+# Read SAS ===============================================================
+SHR_sas_names     <- read_ascii_setup(data = SHR_dataset_name,
+                                      setup_file = SHR_sas_name,
+                                      select_columns = c(1, 33, 45, 72, 100, 152))
+SHR2_sas_names    <- read_ascii_setup(data = SHR_dataset_name,
+                                      setup_file = SHR_sas_name,
+                                      use_clean_names = FALSE,
+                                      select_columns = c(1, 33, 45,
+                                                         72, 100, 152))
+UCR_sas_names     <- read_ascii_setup(data = UCR_dataset_name,
+                                      setup_file = UCR_sas_name,
+                                      select_columns = c(1, 33, 345,
+                                                         572, 1000, 1400))
+UCR2_sas_names    <- read_ascii_setup(data = UCR_dataset_name,
+                                      setup_file = UCR_sas_name,
+                                      select_columns = c(1, 33, 345,
+                                                         572, 1000, 1400),
+                                      use_clean_names = FALSE)
+NIBRS_sas_names   <- read_ascii_setup(data = NIBRS_dataset_name,
+                                      setup_file = NIBRS_sas_name,
+                                      select_columns = c(1, 3, 5, 7, 10, 15))
+NIBRS2_sas_names  <- read_ascii_setup(data = NIBRS_dataset_name,
+                                      setup_file = NIBRS_sas_name,
+                                      use_clean_names = FALSE,
+                                      select_columns = c(1, 3, 5, 7, 10, 15))
+
+weimar_sas_names  <- read_ascii_setup(data = weimar_dataset_name,
+                                      setup_file = weimar_sas_name,
+                                      select_columns = c(1:7, 23))
+weimar2_sas_names <- read_ascii_setup(data = weimar_dataset_name,
+                                      setup_file = weimar_sas_name,
+                                      use_clean_names = FALSE)
+crosswalk         <- read_ascii_setup(data = crosswalk_dataset_name,
+                                      setup_file = crosswalk_sps_name,
+                                      use_clean_names = FALSE)
 #
 # parole_parsed_sps          <- parse_setup(parole_sps_name)
 # sac_parsed_sps             <- parse_setup(sac_sps_name)
