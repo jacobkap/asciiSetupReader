@@ -136,9 +136,9 @@ escolar_sps_name           <- system.file("testdata",
 psid_supplement_sps_name   <- system.file("testdata",
                                           "psid_supplement.sps",
                                           package = "asciiSetupReader")
-psid_core_sps_name        <- system.file("testdata",
-                                         "psid_core_sps.zip",
-                                         package = "asciiSetupReader")
+#psid_core_sps_name        <- system.file("testdata",
+#                                         "psid_core_sps.zip",
+#                                         package = "asciiSetupReader")
 ad_health_sps_name        <- system.file("testdata",
                                          "study_of_adolescent_health.sps",
                                          package = "asciiSetupReader")
@@ -261,9 +261,9 @@ psid_toy_sas_name          <- system.file("testdata",
 psid_supplement_sas_name   <- system.file("testdata",
                                           "psid_supplement.sas",
                                           package = "asciiSetupReader")
-psid_core_sas_name         <- system.file("testdata",
-                                          "psid_core_sas.zip",
-                                          package = "asciiSetupReader")
+#psid_core_sas_name         <- system.file("testdata",
+#                                          "psid_core_sas.zip",
+#                                          package = "asciiSetupReader")
 health_nutrition_sas_name  <- system.file("testdata",
                                           "health_and_nutrition.sas",
                                           package = "asciiSetupReader")
@@ -506,7 +506,7 @@ dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 well_being_parsed_sps      <- parse_setup(well_being_sps_name)
 escolar_parsed_sps          <- parse_setup(escolar_sps_name)
 psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
-psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)
+#psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)
 ad_health_parsed_sps        <- parse_setup(ad_health_sps_name)
 health_nutrition_parsed_sps <- parse_setup(health_nutrition_sps_name)
 india_human_parsed_sps      <- parse_setup(india_human_sps_name)
@@ -551,7 +551,7 @@ cps_1973_parsed_sas         <- parse_setup(cps_1973_sas_name)
 census_police_parsed_sas    <- parse_setup(census_police_sas_name)
 psid_toy_parsed_sas         <- parse_setup(psid_toy_sas_name)
 psid_supplement_parsed_sas  <- parse_setup(psid_supplement_sas_name)
-psid_core_parsed_sas        <- parse_setup(psid_core_sas_name)
+#psid_core_parsed_sas        <- parse_setup(psid_core_sas_name)
 health_nutrition_parsed_sas <- parse_setup(health_nutrition_sas_name)
 india_human_parsed_sas      <- parse_setup(india_human_sas_name)
 well_being_parsed_sas       <- parse_setup(well_being_sas_name)
