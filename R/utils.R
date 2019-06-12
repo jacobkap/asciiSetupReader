@@ -1,7 +1,7 @@
 get_column_spaces <- function(setup, variables, codebook) {
 
 
-  setup <- setup[grep("[0-9]-[0-9]| [0-9]", setup)]
+  setup <- setup[grep("[0-9]-[0-9]| [0-9]| \\$[0-9]", setup)]
 
 
   setup <- gsub("\tF[0-9].0$|\tA[0-9]+$|\t\\(.*\\)$", "", setup)
