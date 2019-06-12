@@ -197,6 +197,10 @@ county_arrest_sps_name <- system.file("testdata",
                                       "county_arrest.sps",
                                       package = "asciiSetupReader")
 
+psid_main_sps_name <- system.file("testdata",
+                                  "psid_main_sps.zip",
+                                  package = "asciiSetupReader")
+
 cambridge_sas_name     <- system.file("testdata",
                                       "cambridge_sas.zip",
                                       package = "asciiSetupReader")
@@ -220,6 +224,9 @@ UN_crime_sas_name      <- system.file("testdata",
                                       package = "asciiSetupReader")
 county_arrest_sas_name <- system.file("testdata",
                                       "county_arrest.sas",
+                                      package = "asciiSetupReader")
+psid_main_sas_name <- system.file("testdata",
+                                      "psid_main_sas.zip",
                                       package = "asciiSetupReader")
 
 
@@ -502,14 +509,10 @@ jail_2010_parsed_sps       <- parse_setup(jail_2010_sps_name)
 corrections_parsed_sps     <- parse_setup(corrections_sps_name)
 sadc_parsed_sps            <- parse_setup(sadc_sps_name)
 crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
-
 dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 well_being_parsed_sps      <- parse_setup(well_being_sps_name)
 escolar_parsed_sps          <- parse_setup(escolar_sps_name)
- psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
-
-
-
+psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
 psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)
 ad_health_parsed_sps        <- parse_setup(ad_health_sps_name)
 health_nutrition_parsed_sps <- parse_setup(health_nutrition_sps_name)
@@ -522,7 +525,6 @@ drug_abuse_parsed_sps         <- parse_setup(drug_abuse_sps_name)
 detroit_parsed_sps            <- parse_setup(detroit_sps_name)
 worry_parsed_sps              <- parse_setup(worry_sps_name)
 cps_2004_parsed_sps           <- parse_setup(cps_2004_sps_name)
-
 cambridge_parsed_sps     <- parse_setup(cambridge_sps_name)
 guam_parsed_sps          <- parse_setup(guam_sps_name)
 china_2002_parsed_sps    <- parse_setup(china_2002_sps_name)
@@ -531,8 +533,6 @@ china_1998_parsed_sps    <- parse_setup(china_1998_sps_name)
 indonesia_parsed_sps     <- parse_setup(indonesia_sps_name)
 UN_crime_parsed_sps      <- parse_setup(UN_crime_sps_name)
 county_arrest_parsed_sps <- parse_setup(county_arrest_sps_name)
-
-
 cambridge_parsed_sas        <- parse_setup(cambridge_sas_name)
 guam_parsed_sas             <- parse_setup(guam_sas_name)
 china_2002_parsed_sas       <- parse_setup(china_2002_sas_name)
@@ -541,8 +541,11 @@ china_1998_parsed_sas       <- parse_setup(china_1998_sas_name)
 indonesia_parsed_sas        <- parse_setup(indonesia_sas_name)
 UN_crime_parsed_sas         <- parse_setup(UN_crime_sas_name)
 county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
+psid_main_parsed_sps          <- parse_setup(psid_main_sps_name)
 
 
+
+psid_main_parsed_sas          <- parse_setup(psid_main_sas_name)
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
 drug_abuse_parsed_sas         <- parse_setup(drug_abuse_sas_name)
 detroit_parsed_sas            <- parse_setup(detroit_sas_name)

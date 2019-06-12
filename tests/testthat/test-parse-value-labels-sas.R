@@ -21,21 +21,16 @@ test_that("Number of value label columns are correct", {
   expect_equal(length(corrections_parsed_sas$value_labels), 9)
   expect_equal(length(jail_2010_parsed_sas$value_labels), 123)
   expect_equal(length(health_nutrition_parsed_sas$value_labels), 36)
-
-
   expect_equal(length(step_in_parsed_sas$value_labels), 4)
   expect_equal(length(census_police_parsed_sas$value_labels), 76)
   expect_true(is.null(education_1995_parsed_sas$value_labels))
   expect_true(is.null(education_1985_parsed_sas$value_labels))
   expect_true(is.null(cps_1973_parsed_sas$value_labels))
-
   # expect_equal(length(cps_2004_parsed_sas$value_labels), )
   # expect_equal(length(drug_abuse_parsed_sas$value_labels), )
    expect_true(is.null(british_crime_teen_parsed_sps$value_labels))
   # expect_equal(length(detroit_parsed_sas$value_labels), )
   # expect_equal(length(worry_parsed_sas$value_labels), )
-
-
    expect_equal(length(cambridge_parsed_sas$value_labels), 879)
    #expect_equal(length(guam_parsed_sas$value_labels), )
    expect_equal(length(china_2002_parsed_sas$value_labels), 79)
@@ -46,7 +41,103 @@ test_that("Number of value label columns are correct", {
    expect_true(is.null(county_arrest_parsed_sas$value_labels))
 })
 
+test_that("psid_main - parsed value labels are accurate", {
 
+  expect_equal(head(names(psid_main_parsed_sas$value_labels)),
+               c("ER30000",
+                 "ER30003",
+                 "ER30005",
+                 "ER30006",
+                 "ER30007",
+                 "ER30010"))
+  expect_equal(tail(names(psid_main_parsed_sas$value_labels)),
+               c("TA151282",
+                 "TA151286",
+                 "TA151288",
+                 "TA151290",
+                 "TA151291",
+                 "TA151301"))
+
+  expect_equal(psid_main_parsed_sas$value_labels$ER30000,
+               c("Release number 1, February 2019" = "1",
+                 "Release number 2, May 2019" = "2"))
+  expect_equal(psid_main_parsed_sas$value_labels$ER30003,
+               c("Head" = "1",
+                 "Wife/Wife" = "2",
+                 "Son or daughter" = "3",
+                 "Brother or sister" = "4",
+                 "Father or mother" = "5",
+                 "Grandchild, niece, nephew, other relatives under 18" = "6",
+                 "Other, including in-laws, other adult relatives" = "7",
+                 "Husband or Wife of Head who moved out or died in the year prior to the 1968 interview" = "8",
+                 "NA" = "9",
+                 "Individual from core sample who was born or moved in after the 1968 interview individual from Immigrant or Latino samples (ER30001 3001-3511, 4001-4462,7001-9308)" = "0"))
+  expect_equal(psid_main_parsed_sas$value_labels$ER30010,
+               c("Highest grade or year of schooling completed" = "1 - 16",
+                 "At least one year of postgraduate work" = "17",
+                 "NA DK" = "99",
+                 "Preschool born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003 0) still in school (ER30009 1 or 9)" = "0"))
+  expect_equal(psid_main_parsed_sas$value_labels$TA050372,
+               c("Checked with a public employment agency" = "1",
+                 "DK" = "8",
+                 "NA refused" = "9",
+                 "Inap.: has not checked with a public employment agency has not been looking for work during the past four weeks (TA050371 5,8 or 9) not head or wife/Wife in 2005 PSID interview (TA050011 3)" = "0"))
+  expect_equal(psid_main_parsed_sas$value_labels$TA110336,
+               c("Hour" = "1",
+                 "Day" = "2",
+                 "Week" = "3",
+                 "Two Weeks" = "4",
+                 "Month" = "5",
+                 "Year" = "6",
+                 "Other" = "7",
+                 "DK" = "8",
+                 "NA refused NA, DK, RF how much money earned at job 5 in 2010 (TA110335 9999998 or 9999999 or -999999)" = "9",
+                 "Inap.: has not done any work for money since January 1, 2009 (TA110141 5) NA, DK, RF whether any work done for money since January 1, 2009 (TA110141 8 or 9) fewer than five employers (TA110323 0)job 5 began after 2010 (TA110324 gt 2010) job 5 ended before 2010 (TA110326 lt 2010) NA, DK, RF year when job 5 ended (TA110326 9998 or 9999)" = "0"))
+  expect_equal(psid_main_parsed_sas$value_labels$TA131219,
+               c("Actual value" = "1 - 7",
+                 "Has no children (TA130100 0)" = "0",
+                 "All items are DK/NA/refused" = "9"))
+  expect_equal(psid_main_parsed_sas$value_labels$TA151290,
+               c("Never married, cohabiting" = "1",
+                 "Never married, not cohabiting" = "2",
+                 "Married, spouse present" = "3",
+                 "Married, spouse not present" = "4",
+                 "Separated" = "5",
+                 "Divorced, cohabiting" = "6",
+                 "Divorced, not cohabiting" = "7",
+                 "Widowed" = "8",
+                 "NA DK refused" = "9"))
+  expect_equal(psid_main_parsed_sas$value_labels$TA151291,
+               c("Northeast" = "1",
+                 "North Central" = "2",
+                 "South" = "3",
+                 "West" = "4",
+                 "Alaska, Hawaii" = "5",
+                 "Foreign country" = "6",
+                 "NA DK refused" = "9"))
+  expect_equal(psid_main_parsed_sas$value_labels$TA151301,
+               c("Less than high school diploma" = "1",
+                 "GED, no college" = "2",
+                 "High school graduate, no college" = "3",
+                 "GED plus some college" = "4",
+                 "High school graduate plus some college" = "5",
+                 "GED plus Associates degree" = "6",
+                 "High school graduate plus Associates degree" = "7",
+                 "GED plus Bachelors degree" = "8",
+                 "High school graduate plus Bachelors degree" = "9",
+                 "GED plus Masters degree" = "10",
+                 "High school graduate plus Masters degree" = "11",
+                 "GED plus Doctoral degree" = "12",
+                 "High school graduate plus Doctoral degree" = "13",
+                 "GED plus Medical degree" = "14",
+                 "High school graduate plus Medical degree" = "15",
+                 "GED plus Law degree" = "16",
+                 "High school graduate plus Law degree" = "17",
+                 "GED plus other degree" = "18",
+                 "High school graduate plus other degree" = "19",
+                 "Skipped, asked in TA 2013" = "96",
+                 "NA DK refused" = "99"))
+})
 
 test_that("Cambridge - parsed value labels are accurate", {
 

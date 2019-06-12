@@ -115,7 +115,9 @@ parse_setup <- function(setup_file) {
                            c("setup",
                              "value_labels",
                              "missing"))
-  setup$value_labels <- parse_value_labels(setup, type = type)
+  if (!is.null(setup$value_labels)) {
+    setup$value_labels <- parse_value_labels(setup, type = type)
+  }
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
@@ -262,28 +264,21 @@ parse_codebook <- function(setup_file, type) {
 
 parse_value_labels <- function(setup, type) {
 
-  if (is.null(setup$value_labels)) {
-    return(NULL)
-  } else {
     value_labels <- setup$value_labels
-    if (type == "sps") {
-      value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
-    } else if (type == "sas") {
-      value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
-    }
+    value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
+
     value_label_order <- unique(value_labels$column)
     value_labels <- split.data.frame(value_labels, value_labels$column)
     value_label_cols <- c()
     for (i in seq_along(value_labels)) {
       column <- unique(value_labels[[i]]$column)
-      value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]])
+      value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]], type)
       value_label_cols <- c(value_label_cols, column)
     }
 
     names(value_labels) <- value_label_cols
     value_labels <- value_labels[value_label_order]
     return(value_labels)
-  }
 }
 
 parse_column_names <- function(codebook, type) {
@@ -333,6 +328,7 @@ parse_column_names <- function(codebook, type) {
 
     variables <- codebook[variable_label_location:next_location]
     variables <- variables[grep("=", variables)]
+    variables <- gsub('\\"\\s+FORMAT=.*$', '\\"', variables)
     variables <- gsub("(\\S)=", "\\1 =", variables)
     variables <- gsub("=(\\S)", "= \\1", variables)
     variables <- gsub('([[:alpha:]]+\\") ', '\\1   ', variables)

@@ -1,68 +1,5 @@
 context("SPSS setup parse")
 
-
-
-test_that("parse_setup is silent", {
-  skip_on_cran()
-  expect_silent(parse_setup(crosswalk_sps_name))
-  expect_silent(parse_setup(parole_sps_name))
-  expect_silent(parse_setup(ucr1985_sps_name))
-  expect_silent(parse_setup(ucr1986_sps_name))
-  expect_silent(parse_setup(ucr2000_sps_name))
-  #  expect_silent(parse_setup(ucr2006_sps_name))
-  expect_silent(parse_setup(sac_sps_name))
-  expect_silent(parse_setup(sex_offender_sps_name))
-  expect_silent(parse_setup(ucr1960_sps_name))
-  expect_silent(parse_setup(weimar_sps_name))
-  expect_silent(parse_setup(acs_sps_name))
-  expect_silent(parse_setup(nibrs_sps_name))
-  expect_silent(parse_setup(prisoners_sps_name))
-  expect_silent(parse_setup(SHR1987_sps_name))
-  expect_silent(parse_setup(SHR1988_sps_name))
-  expect_silent(parse_setup(SHR1981_sps_name))
-  expect_silent(parse_setup(ca_vital_sps_name))
-  expect_silent(parse_setup(ncvs_sps_name))
-  expect_silent(parse_setup(jail_1987_sps_name))
-  expect_silent(parse_setup(jail_2010_sps_name))
-  expect_silent(parse_setup(corrections_sps_name))
-  expect_silent(parse_setup(sadc_sps_name))
-  expect_silent(parse_setup(crosswalk2012_sps_name))
-  expect_silent(parse_setup(dutch_election_sps_name))
-  expect_silent(parse_setup(well_being_sps_name))
-  expect_silent(parse_setup(psid_supplement_sps_name))
-  expect_silent(parse_setup(health_nutrition_sps_name))
-  expect_silent(parse_setup(ad_health_sps_name))
-  expect_silent(parse_setup(india_human_sps_name))
-  expect_silent(parse_setup(psid_core_sps_name))
-  expect_silent(parse_setup(step_in_sps_name))
-  expect_silent(parse_setup(cps_1973_sps_name))
-  expect_silent(parse_setup(census_police_sps_name))
-  expect_silent(parse_setup(psid_core_sps_name))
-  expect_silent(parse_setup(step_in_sps_name))
-  expect_silent(parse_setup(cps_1973_sps_name))
-  expect_silent(parse_setup(census_police_sps_name))
-  expect_silent(parse_setup(escolar_sps_name))
-  expect_silent(parse_setup(british_crime_teen_sps_name))
-  expect_silent(parse_setup(drug_abuse_sps_name))
-  expect_silent(parse_setup(detroit_sps_name))
-  expect_silent(parse_setup(worry_sps_name))
-  expect_silent(parse_setup(cps_2004_sps_name))
-
-  expect_silent(parse_setup(cambridge_sps_name))
-  expect_silent(parse_setup(guam_sps_name))
-  expect_silent(parse_setup(china_2002_sps_name))
-  expect_silent(parse_setup(china_1995_sps_name))
-  expect_silent(parse_setup(china_1998_sps_name))
-  expect_silent(parse_setup(indonesia_sps_name))
-  expect_silent(parse_setup(UN_crime_sps_name))
-  expect_silent(parse_setup(county_arrest_sps_name))
-
-
-})
-
-
-
-
 test_that("Right number of columns", {
   skip_on_cran()
   expect_equal(nrow(sac_parsed_sps$setup),          197)
@@ -108,6 +45,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(indonesia_parsed_sps$setup), 10)
   expect_equal(nrow(UN_crime_parsed_sps$setup), 121)
   expect_equal(nrow(county_arrest_parsed_sps$setup), 19)
+  expect_equal(nrow(psid_main_parsed_sps$setup), 3569)
 
 
 
@@ -115,6 +53,19 @@ test_that("Right number of columns", {
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+  expect_equal(head(psid_main_parsed_sps$setup$begin),
+               c(1, 2, 6,
+                 9, 10, 14))
+  expect_equal(head(psid_main_parsed_sps$setup$end),
+               c(1, 5, 8,
+                 9, 13, 15))
+  expect_equal(tail(psid_main_parsed_sps$setup$begin),
+               c(7365, 7371, 7375,
+                 7380, 7381, 7388))
+  expect_equal(tail(psid_main_parsed_sps$setup$end),
+               c(7370, 7374, 7379,
+                 7380, 7387, 7392))
 
   expect_equal(head(british_crime_teen_parsed_sps$setup$begin), c(1, 7, 13,
                                                                   16, 18, 19))
@@ -1596,6 +1547,36 @@ test_that("Column names are correct", {
                  "HEQ3",
                  "HRSUPINT",
                  "HWSUPWGT"))
+
+
+  expect_equal(head(psid_main_parsed_sps$setup$column_number),
+               c("ER30000",
+                 "ER30001",
+                 "ER30002",
+                 "ER32000",
+                 "ER32021",
+                 "ER32022"))
+  expect_equal(head(psid_main_parsed_sps$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X1968_INTERVIEW_NUMBER",
+                 "PERSON_NUMBER_68",
+                 "SEX_OF_INDIVIDUAL",
+                 "YEAR_BIRTH_INFO_MOST_RECENTLY_UPDATED",
+                 "LIVE_BIRTHS_TO_THIS_INDIVIDUAL"))
+  expect_equal(tail(psid_main_parsed_sps$setup$column_number),
+               c("ER34640",
+                 "ER34642",
+                 "ER34643",
+                 "ER34644",
+                 "ER34650",
+                 "ER34651"))
+  expect_equal(tail(psid_main_parsed_sps$setup$column_name),
+               c("OFUM_TOTAL_TRANSFER_INCOME_IMPUTED_17",
+                 "YEAR_S_O_FAM_FORMED_17",
+                 "MAIN_FAM_ID_FOR_S_O_17",
+                 "FOLLOW_STATUS_17",
+                 "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
+                 "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
 
 
 })

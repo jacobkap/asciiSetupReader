@@ -1,46 +1,84 @@
-value_label_matrixer <- function(value_label) {
+value_label_matrixer <- function(value_label, type) {
+  # Gets rid of column name row
+  value_label <- value_label[2:length(value_label)]
+
   value_label <- gsub("'\\.$", "'", value_label)
   value_label <- gsub("=\\[(.*)\\]", "='\\1'", value_label)
   value_label <- gsub('"\\.$', '"', value_label)
+
+  value_label <- gsub('"', "'", value_label)
+
+
+  # For PSID data which for some reason have the word Wife
+  # surrounded by single quotes sometimes!
+  value_label <- gsub("\\/'Wife\\'", "\\/Wife", value_label,
+                      ignore.case = TRUE)
+  value_label <- gsub("''Wife\\'", "\\/Wife", value_label, ignore.case = TRUE)
+  value_label <- gsub(" 'Wif'", " Wif", value_label, ignore.case = TRUE)
+  value_label <- gsub(" ([[:alnum:]]+) 'Wife'", " \\1 Wife", value_label,
+       ignore.case = TRUE)
+
+
+
+  # Removes any ' inside the text
+  value_label <- gsub("([[:alpha:]]) '([[:alpha:]]+-?[[:alpha:]]+)'", "\\1 \\2",
+                      value_label)
+  value_label <- gsub("([[:alpha:]]) '([[:alpha:]]+ .*[[:alpha:]]+)'([[:alpha:]]+ .*)'([[:alpha:]]+ .*[[:alpha:]]+)''",
+                      "\\1 \\2 \\3 \\4", value_label)
+  value_label <- gsub("([[:alpha:]]) '([[:alpha:]]+ [[:alpha:]]+ .*[[:alpha:]]+)'",
+                      "\\1 \\2", value_label)
+
   # In case some labels are on multiple lines
   plus <- grep("^\\+", value_label)
   # For cases where label is on multiple line but doesn't have a plus
-  num_apostrophes <- stringr::str_count(value_label, "'")
-  apostrophe_plus <- grep("\\'$", value_label)
-  apostrophe_plus <- apostrophe_plus[which(num_apostrophes == 1)]
+  apostrophe_plus <- grep("\\'$|^\\'", value_label)
+  num_apostrophes <- stringr::str_count(value_label[apostrophe_plus],
+                                        "'")
+  apostrophe_plus <- apostrophe_plus[num_apostrophes == 1]
   apostrophe_plus <- apostrophe_plus[!is.na(apostrophe_plus)]
-  plus <- unique(c(plus, apostrophe_plus))
+  value_label[apostrophe_plus] <- gsub("\\'", "", value_label[apostrophe_plus])
+
+  no_apostrophes <- stringr::str_count(value_label, "'")
+  no_apostrophes <- which(no_apostrophes == 0)
+
+  if (type == "sas") {
+    no_equal <- grep("=", value_label, invert = TRUE)
+    value_label[no_equal] <- gsub("\\'", "", value_label[no_equal])
+    plus <- sort(unique(c(plus, no_equal)))
+  }
+  plus <- sort(unique(c(plus, apostrophe_plus, no_apostrophes)))
   if (length(plus) > 0) {
-    for (n in 1:length(plus)) {
+    for (n in length(plus):1) {
+      value_label[plus[n] - 1]  <- gsub("\\'$", "", value_label[plus[n] - 1] )
       value_label[plus[n] - 1] <- paste(value_label[plus[n] - 1],
-                                                value_label[plus[n]],
-                                                collapse = " ")
+                                        value_label[plus[n]],
+                                        collapse = " ")
       value_label[plus[n] - 1] <- gsub("\\' *\\+ *\\'", "",
-                                               value_label[plus[n] - 1])
+                                       value_label[plus[n] - 1])
     }
     value_label <- value_label[-plus]
   }
 
-  value_label <- value_label[2:length(value_label)]
+
 
 
   value_label <- gsub('\\"', "\\'",
-                              value_label)
+                      value_label)
   value_label <- gsub("^''", "'####BLANK####'",
-                              value_label)
+                      value_label)
   value_label <- gsub("^' '", "'####SPACE####'",
-                              value_label)
+                      value_label)
   value_label <- gsub(" '' ", " '####BLANK####' ",
-                              value_label)
+                      value_label)
   value_label <- gsub(" {2,}| /\\.", "", value_label)
   value_label <- gsub('"', "'", value_label)
   value_label <- gsub("'\\s+.$", "'", value_label)
   value_label <- gsub("'$|''", "", value_label,
-                              perl = TRUE)
+                      perl = TRUE)
   value_label <- gsub("(?<![<>])=", " ", value_label, perl = TRUE)
   value_label <- gsub("\\s+", " ", value_label)
   value_label <- gsub("([[:alpha:]])\\'([[:alpha:]])", "\\1 \\2",
-                              value_label)
+                      value_label)
 
   value_label <- unlist(stringr::str_split(value_label, "' '"))
   if (all(grepl("\\s", value_label))) {
@@ -164,8 +202,14 @@ get_value_labels_sas <- function(codebook, setup) {
                        value_labels)
   value_labels <- gsub("([[:alnum:]]+\\.[[:alnum:]]+=)", "      \\1",
                        value_labels)
+
+
   value_labels <- gsub("([^\\.]-?[[:alnum:]]+=[^A-z])", "      \\1",
                        value_labels)
+  # value_labels <- gsub("(\\(?<=[^\\.]-?[[:alnum:]]+=[^A-z])", "      \\1",
+  #      value_labels)
+
+
   value_labels <- trimws(value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
 
@@ -200,12 +244,19 @@ get_value_labels_sps <- function(codebook, setup) {
   value_start <- grep2("^value labels$",
                        codebook)
   end_row <- grep("^\\.$|^$", codebook)
-  end_row <- end_row[end_row > value_start][1] - 1
-  if (is.na(end_row))  end_row <- length(codebook)
+  end_row <- end_row[end_row > value_start[length(value_start)]][1] - 1
+  if (is.na(end_row)) {
+    end_row <- length(codebook)
+  }
+  value_start <- value_start[1]
   value_labels <- codebook[value_start:end_row]
+   # Get rid of "Truncated value... stuff in PSID files
+  value_labels <- gsub('\\/\\*.*\\*\\/', "", value_labels)
   value_labels <- stringr::str_trim(value_labels)
   # value_labels <- gsub("([[:alpha:]])''([[:alpha:]])", "\\1'\\2",
   #                      value_labels)
+
+
   value_labels <- gsub('\\s+\\"$', '"', value_labels)
   value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels)
   value_labels <- gsub("\\s+\\(", " \\(", value_labels)

@@ -2,55 +2,6 @@ context("sas setup parse")
 
 
 
-test_that("parse_setup is silent", {
-  skip_on_cran()
-  expect_silent(parse_setup(crosswalk_sas_name))
-  expect_silent(parse_setup(parole_sas_name))
-  expect_silent(parse_setup(ucr1985_sas_name))
-  expect_silent(parse_setup(ucr1986_sas_name))
-  expect_silent(parse_setup(ucr2000_sas_name))
-  #  expect_silent(parse_setup(ucr2006_sas_name))
-  expect_silent(parse_setup(sac_sas_name))
-  expect_silent(parse_setup(sex_offender_sas_name))
-  expect_silent(parse_setup(ucr1960_sas_name))
-  expect_silent(parse_setup(weimar_sas_name))
-  expect_silent(parse_setup(acs_sas_name))
-  expect_silent(parse_setup(nibrs_sas_name))
-  expect_silent(parse_setup(prisoners_sas_name))
-  expect_silent(parse_setup(SHR1987_sas_name))
-  expect_silent(parse_setup(SHR1988_sas_name))
-  expect_silent(parse_setup(SHR1981_sas_name))
-  expect_silent(parse_setup(ca_vital_sas_name))
-  expect_silent(parse_setup(ncvs_sas_name))
-  expect_silent(parse_setup(jail_1987_sas_name))
-  expect_silent(parse_setup(jail_2010_sas_name))
-  expect_silent(parse_setup(corrections_sas_name))
-  expect_silent(parse_setup(well_being_sas_name))
-  expect_silent(parse_setup(psid_toy_sas_name))
-  #expect_silent(parse_setup(escolar_sas_name))
-  expect_silent(parse_setup(health_nutrition_sas_name))
-  expect_silent(parse_setup(psid_core_sas_name))
-  expect_silent(parse_setup(india_human_sas_name))
-  expect_silent(parse_setup(psid_supplement_sas_name))
-  expect_silent(parse_setup(step_in_sas_name))
-  expect_silent(parse_setup(education_1985_sas_name))
-  expect_silent(parse_setup(education_1995_sas_name))
-  expect_silent(parse_setup(cps_1973_sas_name))
-  expect_silent(parse_setup(census_police_sas_name))
-
-  expect_silent(parse_setup(cambridge_sas_name))
-  expect_silent(parse_setup(guam_sas_name))
-  expect_silent(parse_setup(china_2002_sas_name))
-  expect_silent(parse_setup(china_1995_sas_name))
-  expect_silent(parse_setup(china_1998_sas_name))
-  expect_silent(parse_setup(indonesia_sas_name))
-  expect_silent(parse_setup(UN_crime_sas_name))
-  expect_silent(parse_setup(county_arrest_sas_name))
-
-
-})
-
-
 test_that("Right number of columns", {
   skip_on_cran()
   expect_equal(nrow(sac_parsed_sas$setup), 197)
@@ -86,7 +37,6 @@ test_that("Right number of columns", {
   expect_equal(nrow(detroit_parsed_sas$setup),            369)
   expect_equal(nrow(worry_parsed_sas$setup),              486)
   expect_equal(nrow(cps_2004_parsed_sas$setup),           286)
-
   expect_equal(nrow(cambridge_parsed_sas$setup), 880)
   expect_equal(nrow(guam_parsed_sas$setup), 115)
   expect_equal(nrow(china_2002_parsed_sas$setup), 259)
@@ -95,6 +45,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(indonesia_parsed_sas$setup), 10)
   expect_equal(nrow(UN_crime_parsed_sas$setup), 121)
   expect_equal(nrow(county_arrest_parsed_sas$setup), 19)
+  expect_equal(nrow(psid_main_parsed_sas$setup), 3569)
 
 
 })
@@ -102,6 +53,19 @@ test_that("Right number of columns", {
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+  expect_equal(head(psid_main_parsed_sas$setup$begin),
+               c(1, 2, 6,
+                 9, 10, 14))
+  expect_equal(head(psid_main_parsed_sas$setup$end),
+               c(1, 5, 8,
+                 9, 13, 15))
+  expect_equal(tail(psid_main_parsed_sas$setup$begin),
+               c(7365, 7371, 7375,
+                 7380, 7381, 7388))
+  expect_equal(tail(psid_main_parsed_sas$setup$end),
+               c(7370, 7374, 7379,
+                 7380, 7387, 7392))
 
 
   expect_equal(head(british_crime_teen_parsed_sas$setup$begin), c(1, 7, 13,
@@ -1536,5 +1500,35 @@ test_that("Column names are correct", {
                  "HEQ3",
                  "HRSUPINT",
                  "HWSUPWGT"))
+
+
+  expect_equal(head(psid_main_parsed_sas$setup$column_number),
+               c("ER30000",
+                 "ER30001",
+                 "ER30002",
+                 "ER32000",
+                 "ER32021",
+                 "ER32022"))
+  expect_equal(head(psid_main_parsed_sas$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X1968_INTERVIEW_NUMBER",
+                 "PERSON_NUMBER_68",
+                 "SEX_OF_INDIVIDUAL",
+                 "YEAR_BIRTH_INFO_MOST_RECENTLY_UPDATED",
+                 "LIVE_BIRTHS_TO_THIS_INDIVIDUAL"))
+  expect_equal(tail(psid_main_parsed_sas$setup$column_number),
+               c("ER34640",
+                 "ER34642",
+                 "ER34643",
+                 "ER34644",
+                 "ER34650",
+                 "ER34651"))
+  expect_equal(tail(psid_main_parsed_sas$setup$column_name),
+               c("OFUM_TOTAL_TRANSFER_INCOME_IMPUTED_17",
+                 "YEAR_S_O_FAM_FORMED_17",
+                 "MAIN_FAM_ID_FOR_S_O_17",
+                 "FOLLOW_STATUS_17",
+                 "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
+                 "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
 
 })

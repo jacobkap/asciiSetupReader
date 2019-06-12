@@ -1,6 +1,11 @@
 get_column_spaces <- function(setup, variables, codebook) {
 
-  setup <- gsub("\tF[0-9].0$|\tA[0-9]+$", "", setup)
+
+  setup <- setup[grep("[0-9]-[0-9]| [0-9]", setup)]
+
+
+  setup <- gsub("\tF[0-9].0$|\tA[0-9]+$|\t\\(.*\\)$", "", setup)
+  setup <- gsub("\t", " ", setup)
   setup <- gsub("([0-9]) - ([0-9])", "\\1-\\2", setup)
   setup <- gsub("([0-9]+-[0-9]+) ([[:alpha:]]+)", "\\1   \\2",
                         setup)
@@ -15,6 +20,7 @@ get_column_spaces <- function(setup, variables, codebook) {
   setup <- setup[grep("[0-9]$", setup)]
   setup <- data.frame(column_number = setup,
                               stringsAsFactors = FALSE)
+  setup$column_number <- gsub("^\\/", "", setup$column_number)
 
   setup$begin <- gsub(".* ", "", setup$column_number)
   setup$end   <- gsub(".*-", "", setup$begin)
@@ -31,7 +37,8 @@ get_column_spaces <- function(setup, variables, codebook) {
     for (i in 1:nrow(setup)) {
       if (tolower(setup$column_number[i]) %in% tolower(variables$column_number)) {
         setup$column_number[i] <-
-          variables$column_number[tolower(variables$column_number) %in% tolower(setup$column_number[i])]
+          variables$column_number[tolower(variables$column_number) %in%
+                                    tolower(setup$column_number[i])]
       }
     }
     setup <- merge(setup, variables,

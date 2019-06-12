@@ -44,6 +44,7 @@ test_that("Right number of missing values", {
   expect_true(is.null(indonesia_parsed_sps$missing))
   expect_equal(nrow(UN_crime_parsed_sps$missing), 357)
   expect_equal(nrow(county_arrest_parsed_sps$missing), 13)
+  expect_true(is.null(psid_main_parsed_sps$missing))
 })
 
 

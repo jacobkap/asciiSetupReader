@@ -89,7 +89,7 @@
       <h1>Parsing an .sps or .sas file</h1>
                         <h4 class="author">Jacob Kaplan</h4>
             
-            <h4 class="date">2019-06-07</h4>
+            <h4 class="date">2019-06-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/master/vignettes/parsing-an-sps-or-sas-file.Rmd"><code>vignettes/parsing-an-sps-or-sas-file.Rmd</code></a></small>
       <div class="hidden name"><code>parsing-an-sps-or-sas-file.Rmd</code></div>
@@ -126,13 +126,61 @@
 <a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; SHR master file </span></a>
 <a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt;             "6" </span></a>
 <a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; $V10</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; Non-suburban     Suburban </span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt;          "0"          "1" </span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; $V100</span></a>
-<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt;      Hispanic or Latino  Not Hispanic or Latino Unknown or not reported </span></a>
-<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt;                     "H"                     "N"                     "U"</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; $V2</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt;         Alabama         Arizona        Arkansas      California </span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt;             "1"             "2"             "3"             "4" </span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt;        Colorado     Connecticut        Delaware Washington, D.C </span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt;             "5"             "6"             "7"             "8" </span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt;         Florida         Georgia           Idaho        Illinois </span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt;             "9"            "10"            "11"            "12" </span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt;         Indiana            Iowa          Kansas        Kentucky </span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt;            "13"            "14"            "15"            "16" </span></a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="co">#&gt;       Louisiana           Maine        Maryland   Massachusetts </span></a>
+<a class="sourceLine" id="cb3-16" title="16"><span class="co">#&gt;            "17"            "18"            "19"            "20" </span></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co">#&gt;        Michigan       Minnesota     Mississippi        Missouri </span></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="co">#&gt;            "21"            "22"            "23"            "24" </span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="co">#&gt;         Montana        Nebraska          Nevada   New Hampshire </span></a>
+<a class="sourceLine" id="cb3-20" title="20"><span class="co">#&gt;            "25"            "26"            "27"            "28" </span></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">#&gt;      New Jersey      New Mexico        New York  North Carolina </span></a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="co">#&gt;            "29"            "30"            "31"            "32" </span></a>
+<a class="sourceLine" id="cb3-23" title="23"><span class="co">#&gt;    North Dakota            Ohio        Oklahoma          Oregon </span></a>
+<a class="sourceLine" id="cb3-24" title="24"><span class="co">#&gt;            "33"            "34"            "35"            "36" </span></a>
+<a class="sourceLine" id="cb3-25" title="25"><span class="co">#&gt;    Pennsylvania    Rhode Island  South Carolina    South Dakota </span></a>
+<a class="sourceLine" id="cb3-26" title="26"><span class="co">#&gt;            "37"            "38"            "39"            "40" </span></a>
+<a class="sourceLine" id="cb3-27" title="27"><span class="co">#&gt;       Tennessee           Texas            Utah         Vermont </span></a>
+<a class="sourceLine" id="cb3-28" title="28"><span class="co">#&gt;            "41"            "42"            "43"            "44" </span></a>
+<a class="sourceLine" id="cb3-29" title="29"><span class="co">#&gt;        Virginia      Washington   West Virginia       Wisconsin </span></a>
+<a class="sourceLine" id="cb3-30" title="30"><span class="co">#&gt;            "45"            "46"            "47"            "48" </span></a>
+<a class="sourceLine" id="cb3-31" title="31"><span class="co">#&gt;         Wyoming          Alaska          Hawaii      Canal Zone </span></a>
+<a class="sourceLine" id="cb3-32" title="32"><span class="co">#&gt;            "49"            "50"            "51"            "52" </span></a>
+<a class="sourceLine" id="cb3-33" title="33"><span class="co">#&gt;     Puerto Rico  American Samoa            Guam  Virgin Islands </span></a>
+<a class="sourceLine" id="cb3-34" title="34"><span class="co">#&gt;            "53"            "54"            "55"            "62" </span></a>
+<a class="sourceLine" id="cb3-35" title="35"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-36" title="36"><span class="co">#&gt; $V4</span></a>
+<a class="sourceLine" id="cb3-37" title="37"><span class="co">#&gt;               Possessions         ALL cit 250,000 + </span></a>
+<a class="sourceLine" id="cb3-38" title="38"><span class="co">#&gt;                       "0"                       "1" </span></a>
+<a class="sourceLine" id="cb3-39" title="39"><span class="co">#&gt;       Cit 100,000-249,999         Cit 50,000-99,999 </span></a>
+<a class="sourceLine" id="cb3-40" title="40"><span class="co">#&gt;                       "2"                       "3" </span></a>
+<a class="sourceLine" id="cb3-41" title="41"><span class="co">#&gt;         Cit 25,000-49,999         Cit 10,000-24,999 </span></a>
+<a class="sourceLine" id="cb3-42" title="42"><span class="co">#&gt;                       "4"                       "5" </span></a>
+<a class="sourceLine" id="cb3-43" title="43"><span class="co">#&gt;           Cit 2,500-9,999               Cit &lt; 2,500 </span></a>
+<a class="sourceLine" id="cb3-44" title="44"><span class="co">#&gt;                       "6"                       "7" </span></a>
+<a class="sourceLine" id="cb3-45" title="45"><span class="co">#&gt;               Non-MSA co.              MSA counties </span></a>
+<a class="sourceLine" id="cb3-46" title="46"><span class="co">#&gt;                       "8"                       "9" </span></a>
+<a class="sourceLine" id="cb3-47" title="47"><span class="co">#&gt;           Cit 1,000,000 +       Cit 500,000-999,999 </span></a>
+<a class="sourceLine" id="cb3-48" title="48"><span class="co">#&gt;                      "1A"                      "1B" </span></a>
+<a class="sourceLine" id="cb3-49" title="49"><span class="co">#&gt;       Cit 250,000-499,999     Non-MSA co. 100,000 + </span></a>
+<a class="sourceLine" id="cb3-50" title="50"><span class="co">#&gt;                      "1C"                      "8A" </span></a>
+<a class="sourceLine" id="cb3-51" title="51"><span class="co">#&gt; Non-MSA co. 25,000-99,999 Non-MSA co. 10,000-24,999 </span></a>
+<a class="sourceLine" id="cb3-52" title="52"><span class="co">#&gt;                      "8B"                      "8C" </span></a>
+<a class="sourceLine" id="cb3-53" title="53"><span class="co">#&gt;      Non-MSA co. &lt; 10,000         Non-MSA St Police </span></a>
+<a class="sourceLine" id="cb3-54" title="54"><span class="co">#&gt;                      "8D"                      "8E" </span></a>
+<a class="sourceLine" id="cb3-55" title="55"><span class="co">#&gt;         MSA co. 100,000 +     MSA co. 25,000-99,999 </span></a>
+<a class="sourceLine" id="cb3-56" title="56"><span class="co">#&gt;                      "9A"                      "9B" </span></a>
+<a class="sourceLine" id="cb3-57" title="57"><span class="co">#&gt;     MSA co. 10,000-24,999          MSA co. &lt; 10,000 </span></a>
+<a class="sourceLine" id="cb3-58" title="58"><span class="co">#&gt;                      "9C"                      "9D" </span></a>
+<a class="sourceLine" id="cb3-59" title="59"><span class="co">#&gt;             MSA St Police </span></a>
+<a class="sourceLine" id="cb3-60" title="60"><span class="co">#&gt;                      "9E"</span></a></code></pre></div>
 <p>There is one named vector for each column in the data that has value labels. We can see how many there are using <code><a href="https://www.rdocumentation.org/packages/base/topics/length">length()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(example<span class="op">$</span>value_labels)</a>
 <a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; [1] 141</span></a></code></pre></div>
