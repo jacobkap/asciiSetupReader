@@ -8,8 +8,7 @@ notifications:
     on_failure: always
 
 
-install:
-  - travis_wait 30 mvn install
+script: travis_wait ./travis-tool.sh run_tests
 
 on_failure:
   - ./travis-tool.sh dump_logs
