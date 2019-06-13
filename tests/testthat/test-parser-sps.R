@@ -47,12 +47,30 @@ test_that("Right number of columns", {
   expect_equal(nrow(county_arrest_parsed_sps$setup), 19)
   expect_equal(nrow(psid_main_parsed_sps$setup), 3569)
 
+  expect_equal(nrow(escolar_2006_parsed_sps$setup), 3808)
+
 
 
 })
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+
+
+  expect_equal(head(escolar_2006_parsed_sps$setup$begin),
+               c(1, 9, 14,
+                 26, 76, 78))
+  expect_equal(head(escolar_2006_parsed_sps$setup$end),
+               c(8, 13, 25,
+                 75, 77, 127))
+  expect_equal(tail(escolar_2006_parsed_sps$setup$begin),
+               c(43671, 43683, 43695,
+                 43707, 43719, 43731))
+  expect_equal(tail(escolar_2006_parsed_sps$setup$end),
+               c(43682, 43694, 43706,
+                 43718, 43730, 43742))
+
 
   expect_equal(head(psid_main_parsed_sps$setup$begin),
                c(1, 2, 6,
@@ -1577,6 +1595,37 @@ test_that("Column names are correct", {
                  "FOLLOW_STATUS_17",
                  "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
                  "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
+
+
+
+  expect_equal(head(escolar_2006_parsed_sps$setup$column_number),
+               c("MASCARA",
+                 "ANO",
+                 "CODMUNIC",
+                 "UF",
+                 "SIGLA",
+                 "MUNIC"))
+  expect_equal(head(escolar_2006_parsed_sps$setup$column_name),
+               c("MASCARA",
+                 "ANO",
+                 "CODMUNIC",
+                 "UF",
+                 "SIGLA",
+                 "MUNIC"))
+  expect_equal(tail(escolar_2006_parsed_sps$setup$column_number),
+               c("VTE1G9",
+                 "VTE1GA",
+                 "VTE1C7",
+                 "VTE1C8",
+                 "VTE1C9",
+                 "VTE1CA"))
+  expect_equal(tail(escolar_2006_parsed_sps$setup$column_name),
+               c("VTE1G9",
+                 "VTE1GA",
+                 "VTE1C7",
+                 "VTE1C8",
+                 "VTE1C9",
+                 "VTE1CA"))
 
 
 })

@@ -251,8 +251,11 @@ make_thru_missing_rows <- function(missing) {
 }
 
 parse_codebook <- function(setup_file, type) {
+  # Not vroom::vroom_lines due to nul character in PSID_main_sps file
+  # that only appears when using vroom, not readr.
   codebook <- readr::read_lines(setup_file)
   codebook <- stringr::str_trim(codebook)
+
   if (type == "sps") {
     if (any(grepl("^DATA LIST", codebook, ignore.case = TRUE))) {
       codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]

@@ -8,9 +8,10 @@ notifications:
     on_failure: always
 
 
-
-install:
-  - travis_wait 30 Rscript -e "0"
+script:
+  - |
+    R CMD build --no-build-vignettes .
+    travis_wait 40 R CMD check --no--vignettes asciiSetupReader*tar.gz
 
 on_failure:
   - ./travis-tool.sh dump_logs

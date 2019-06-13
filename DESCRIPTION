@@ -15,7 +15,7 @@ Description: Lets you open a fixed-width ASCII file (.txt or
     .dat+.sps, or .dat+.sas. This will only run in a txt-sps or txt-sas
     pair in which the setup file contains instructions to open that text
     file. It will NOT open other text files, .sav, .sas, or .por data
-    files.  Fixed-width ASCII files with setup files are common in older
+    files. Fixed-width ASCII files with setup files are common in older
     (pre-2000) government data.
 License: MIT + file LICENSE
 URL: https://github.com/jacobkap/asciiSetupReader
@@ -25,6 +25,7 @@ Depends:
 Imports:
     data.table,
     haven,
+    vroom,
     readr,
     stringr,
     zoo

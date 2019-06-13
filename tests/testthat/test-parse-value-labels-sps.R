@@ -48,6 +48,8 @@ test_that("Number of value label columns are correct", {
    expect_equal(length(UN_crime_parsed_sps$value_labels), 119)
    expect_true(is.null(county_arrest_parsed_sps$value_labels))
 
+   expect_true(is.null(escolar_2006_parsed_sps$value_labels))
+
 })
 
 test_that("psid_main - parsed value labels are accurate", {

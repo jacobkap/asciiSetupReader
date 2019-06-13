@@ -122,18 +122,32 @@ fix_missing <- function(data, missing) {
 }
 
 
-read_data <- function(dataset_name, setup) {
-  positions <- readr::fwf_positions(setup$setup$begin,
+read_data <- function(data, setup) {
+  positions <- vroom::fwf_positions(setup$setup$begin,
                                     setup$setup$end,
                                     setup$setup$column_number)
-  data <- suppressMessages(readr::read_fwf(dataset_name,
-                                           col_positions = positions,
-                                           col_types = readr::cols(.default =
-                                                                     readr::col_character())))
+  data <- suppressMessages(vroom::vroom_fwf(data,
+                                            col_positions = positions,
+                                            col_types = vroom::cols(.default =
+                                                                      vroom::col_character())))
   data <- data.table::as.data.table(data)
 
   return(data)
 }
+
+# read_data_vroom <- function(dataset_name, setup) {
+#   positions <- vroom::fwf_positions(setup$setup$begin,
+#                                     setup$setup$end,
+#                                     setup$setup$column_number)
+#   data <- suppressMessages(vroom::vroom_fwf(dataset_name,
+#                                            col_positions = positions,
+#                                            col_types = readr::cols(.default =
+#                                                                      readr::col_character())))
+#   data <- data.table::as.data.table(data)
+#
+#   return(data)
+# }
+
 
 fix_names_missing_numeric <- function(data,
                                       setup,

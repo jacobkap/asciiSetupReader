@@ -103,6 +103,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(UN_crime_sps_name))
   expect_silent(parse_setup(county_arrest_sps_name))
   expect_silent(parse_setup(psid_main_sps_name))
+  expect_silent(parse_setup(escolar_2006_sps_name))
 
 })
 
@@ -171,13 +172,13 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                  setup_file = weimar_sps_name,
                                  select_columns = 3))
 
-
-  expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
-                                 setup_file = crosswalk_sps_name,
-                                 select_columns = 4))
-  expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
-                                 setup_file = crosswalk_sps_name,
-                                 use_clean_names = FALSE))
+#
+#   expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
+#                                  setup_file = crosswalk_sps_name,
+#                                  select_columns = 4))
+#   expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
+#                                  setup_file = crosswalk_sps_name,
+#                                  use_clean_names = FALSE))
 
 
 
@@ -190,8 +191,8 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
 
   expect_silent(read_ascii_setup(data = UCR_dataset_name,
                                  setup_file = UCR_sps_name))
-  expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
-                                 setup_file = crosswalk_sps_name))
+  # expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
+  #                                setup_file = crosswalk_sps_name))
   expect_silent(read_ascii_setup(data = parole_survey_dataset_name,
                                  setup_file = parole_sps_name))
   expect_silent(read_ascii_setup(data = SHR_dataset_name,

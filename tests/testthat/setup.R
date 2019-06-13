@@ -34,9 +34,9 @@ weimar_sps_name       <- system.file("testdata",
 weimar_sas_name       <- system.file("testdata",
                                      "weimar_sas.zip",
                                      package = "asciiSetupReader")
-crosswalk_dataset_name     <- system.file("testdata",
-                                          "crosswalk.zip",
-                                          package = "asciiSetupReader")
+# crosswalk_dataset_name     <- system.file("testdata",
+#                                           "crosswalk.zip",
+#                                           package = "asciiSetupReader")
 crosswalk_sps_name         <- system.file("testdata",
                                           "crosswalk.sps",
                                           package = "asciiSetupReader")
@@ -196,10 +196,13 @@ UN_crime_sps_name      <- system.file("testdata",
 county_arrest_sps_name <- system.file("testdata",
                                       "county_arrest.sps",
                                       package = "asciiSetupReader")
-
 psid_main_sps_name <- system.file("testdata",
                                   "psid_main_sps.zip",
                                   package = "asciiSetupReader")
+escolar_2006_sps_name <- system.file("testdata",
+                                  "escolar_2006_sps.zip",
+                                  package = "asciiSetupReader")
+
 
 cambridge_sas_name     <- system.file("testdata",
                                       "cambridge_sas.zip",
@@ -480,9 +483,9 @@ weimar_sas_names  <- read_ascii_setup(data = weimar_dataset_name,
 weimar2_sas_names <- read_ascii_setup(data = weimar_dataset_name,
                                       setup_file = weimar_sas_name,
                                       use_clean_names = FALSE)
-crosswalk         <- read_ascii_setup(data = crosswalk_dataset_name,
-                                      setup_file = crosswalk_sps_name,
-                                      use_clean_names = FALSE)
+# crosswalk         <- read_ascii_setup(data = crosswalk_dataset_name,
+#                                       setup_file = crosswalk_sps_name,
+#                                       use_clean_names = FALSE)
 
 parole_parsed_sps          <- parse_setup(parole_sps_name)
 sac_parsed_sps             <- parse_setup(sac_sps_name)
@@ -541,8 +544,8 @@ china_1998_parsed_sas       <- parse_setup(china_1998_sas_name)
 indonesia_parsed_sas        <- parse_setup(indonesia_sas_name)
 UN_crime_parsed_sas         <- parse_setup(UN_crime_sas_name)
 county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
-psid_main_parsed_sps          <- parse_setup(psid_main_sps_name)
-
+psid_main_parsed_sps        <- parse_setup(psid_main_sps_name)
+escolar_2006_parsed_sps     <- parse_setup(escolar_2006_sps_name)
 
 
 psid_main_parsed_sas          <- parse_setup(psid_main_sas_name)

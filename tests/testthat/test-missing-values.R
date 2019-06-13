@@ -68,19 +68,6 @@ test_that("number of missing values is correct - SPSS", {
   expect_equal(sum(parole$ENDOFYEAR %in% "Not known/Dont know"),   2)
 
 
-  expect_equal(sum(is.na(crosswalk$UORI)),         1205)
-  expect_equal(sum(crosswalk$UMSA %in% "Unknown/ not an MSA"),    13630)
-  expect_equal(sum(crosswalk$UADD5 %in% "Unknown"),        5634)
-  expect_equal(sum(crosswalk$CGOVTYPE %in% "Unknown"),      137)
-  expect_equal(sum(crosswalk$FCOUNTY %in% "Unknown"),        65)
-  expect_equal(sum(crosswalk$FMSA %in% "Unknown/ no MSA"),        13793)
-  expect_equal(sum(crosswalk$UCOUNTY %in% "Unknown"),        61)
-  expect_equal(sum(is.na(crosswalk$UPOPGRP)),      4636)
-  expect_equal(sum(crosswalk$CGOVIDNU %in% "Unknown"),      449)
-  expect_equal(sum(crosswalk$FSTATE %in% "Unknown"),          1)
-  expect_equal(sum(crosswalk$FPLACE %in% "Unknown"),        424)
-  expect_equal(sum(crosswalk$FCMSA %in% "Unknown"),        4190)
-
 })
 
 

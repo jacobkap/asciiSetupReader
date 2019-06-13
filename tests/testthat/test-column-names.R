@@ -115,3 +115,4 @@ test_that("Not fixed column names are correct - SAS", {
                                     "V22", "V23"))
 
 })
+
