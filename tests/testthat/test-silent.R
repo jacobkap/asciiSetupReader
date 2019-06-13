@@ -44,7 +44,6 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(indonesia_sas_name))
   expect_silent(parse_setup(UN_crime_sas_name))
   expect_silent(parse_setup(county_arrest_sas_name))
-  expect_silent(parse_setup(psid_main_sas_name))
 
 
 })
@@ -102,17 +101,24 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(indonesia_sps_name))
   expect_silent(parse_setup(UN_crime_sps_name))
   expect_silent(parse_setup(county_arrest_sps_name))
-  expect_silent(parse_setup(psid_main_sps_name))
   expect_silent(parse_setup(escolar_2006_sps_name))
 
+})
+
+test_that("No messages or warnings or errors for PSID Main", {
+  # PSID main take SUPER LONG so they are separate and
+  # skipped on both CRAN and TravisCI
+  skip_on_cran()
+  skip_on_travis()
+
+  expect_silent(parse_setup(psid_main_sps_name))
+  expect_silent(parse_setup(psid_main_sas_name))
 })
 
 
 test_that("No messages or warnings or errors for file loads - SPSS", {
   skip_on_cran()
-
-
-
+  skip_on_travis()
 
   expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
                                  setup_file = jail_1987_sps_name))
@@ -172,13 +178,6 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                  setup_file = weimar_sps_name,
                                  select_columns = 3))
 
-#
-#   expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
-#                                  setup_file = crosswalk_sps_name,
-#                                  select_columns = 4))
-#   expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
-#                                  setup_file = crosswalk_sps_name,
-#                                  use_clean_names = FALSE))
 
 
 
@@ -191,8 +190,6 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
 
   expect_silent(read_ascii_setup(data = UCR_dataset_name,
                                  setup_file = UCR_sps_name))
-  # expect_silent(read_ascii_setup(data = crosswalk_dataset_name,
-  #                                setup_file = crosswalk_sps_name))
   expect_silent(read_ascii_setup(data = parole_survey_dataset_name,
                                  setup_file = parole_sps_name))
   expect_silent(read_ascii_setup(data = SHR_dataset_name,
@@ -201,6 +198,8 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
 
 test_that("No messages or warnings or errors for file loads - SAS", {
   skip_on_cran()
+  skip_on_travis()
+
 
   expect_silent(read_ascii_setup(data = SHR_dataset_name,
                                  setup_file = SHR_sas_name,
