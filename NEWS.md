@@ -3,7 +3,6 @@
 * Misc. bug fixes and many new tests.
 * Reorder list of value labels returned from `parse_setup` to be in same order
   as in setup file.
-* Speed boosts due to usage of `vroom` instead of `readr` package.
 
 # asciiSetupReader 2.0.2
 
