@@ -25,7 +25,6 @@ Depends:
 Imports:
     data.table,
     haven,
-    vroom,
     readr,
     stringr,
     zoo

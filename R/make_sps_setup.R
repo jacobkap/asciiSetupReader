@@ -80,7 +80,7 @@ make_sps_setup <- function(file_name,
 
   # Takes the input of column widths and makes the column position strings
   if (is.numeric(col_positions)) {
-    col_positions       <- vroom::fwf_widths(col_positions)
+    col_positions       <- readr::fwf_widths(col_positions)
     col_positions$begin <- col_positions$begin + 1
     col_positions       <- paste0(col_positions$begin,
                                   "-",
