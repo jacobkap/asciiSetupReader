@@ -113,6 +113,7 @@ test_that("No messages or warnings or errors for PSID Main", {
 
   expect_silent(parse_setup(psid_main_sps_name))
   expect_silent(parse_setup(psid_main_sas_name))
+  expect_silent(parse_setup(psid_all_sas_name))
 })
 
 

@@ -41,6 +41,94 @@ test_that("Number of value label columns are correct", {
    expect_true(is.null(county_arrest_parsed_sas$value_labels))
 })
 
+
+test_that("PSID All - parsed value labels are accurate", {
+
+  expect_equal(head(names(psid_all_parsed_sas$value_labels)),
+               c("ER30000",
+                 "ER30003",
+                 "ER30005",
+                 "ER30006",
+                 "ER30009",
+                 "ER30010"))
+  expect_equal(tail(names(psid_all_parsed_sas$value_labels)),
+               c("ER34611",
+                 "ER34644",
+                 "ER34646",
+                 "ER34647",
+                 "ER34648",
+                 "ER34649"))
+
+  expect_equal(psid_all_parsed_sas$value_labels$ER30000,
+               c("Release number 1, February 2019" = "1",
+                 "Release number 2, May 2019" = "2"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER30003,
+               c("Head" = "1",
+                 "Wife/Wife" = "2",
+                 "Son or daughter" = "3",
+                 "Brother or sister" = "4",
+                 "Father or mother" = "5",
+                 "Grandchild, niece, nephew, other relatives under 18" = "6",
+                 "Other, including in-laws, other adult relatives" = "7",
+                 "Husband or Wife of Head who moved out or died in the year prior to the 1968 interview" = "8",
+                 "NA" = "9",
+                 "Individual from core sample who was born or moved in after the 1968 interview individual from Immigrant or Latino samples (ER30001 3001-3511, 4001-4462,7001-9308)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER30010,
+               c("Highest grade or year of schooling completed" = "1 - 16",
+                 "At least one year of postgraduate work" = "17",
+                 "NA DK" = "99",
+                 "Preschool born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003 0) still in school (ER30009 1 or 9)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER30382,
+               c("Working now" = "1",
+                 "Only temporarily laid off" = "2",
+                 "Looking for work, unemployed" = "3",
+                 "Retired" = "4",
+                 "Permanently disabled" = "5",
+                 "HouseWife keeping house" = "6",
+                 "Student" = "7",
+                 "Other" = "8",
+                 "NA DK" = "9",
+                 "Inap.: from Immigrant or Latino samples (ER30001 3001-3511,4001-4462,7001-9308) born or moved in after the 1982 interview (ER30373>0 and ER30374 0) main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373 0) mover-out nonresponse for 1982 only if deceased (ER30374 81-89) in an institution in both 1981 and 1982 (ER30374 51-59 and ER30378 0) not a person aged 16 or older (ER30376 001-015)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER30383,
+               c("Full-time student" = "1",
+                 "Part-time student" = "3",
+                 "Not enrolled in school" = "5",
+                 "NA DK" = "9",
+                 "Inap.: from Immigrant or Latino samples (ER30001 3001-3511,4001-4462,7001-9308) born or moved in after the 1982 interview (ER30373>0 and ER30374 0) main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373 0) Head or Wife in 1982 (ER30374 1-20 and ER30375 1 or 02) in an institution in both 1981 and 1982 (ER30374 51-59 and ER30378 0) not a person aged 16 or older (ER30376 001- 015)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER30384,
+               c("Highest grade or year of school completed" = "1 - 17",
+                 "NA DK" = "99",
+                 "Inap.: from Immigrant or Latino samples (ER30001 3001-3511,4001-4462,7001-9308) born or moved in after the 1982 interview (ER30373>0 and ER30374 0) main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373 0) in an institution in both 1981 and 1982 (ER30374 51-59 and ER30378 0) not a person aged 16 or older (ER30376 001-015)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER33295,
+               c("Yes" = "1",
+                 "No" = "5",
+                 "Doesnt do" = "7",
+                 "DK" = "8",
+                 "NA" = "9",
+                 "Inap.: from Immigrant sample (ER30001 3001-3511,4001-4462) main family nonresponse by 1995 or mover-out nonresponse by 1994 (ER33201 0) born or moved in after the 1995 interview (ER33201>0 and ER33 202 0) in an institution or mover-out nonresponse in 1995 (ER33202 51-89) not a person age 55 or older (ER33204 001-054)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER33296,
+               c("Yes" = "1",
+                 "No" = "5",
+                 "Doesnt do" = "7",
+                 "DK" = "8",
+                 "NA" = "9",
+                 "Inap.: from Immigrant sample (ER30001 3001-3511,4001-4462) main family nonresponse by 1995 or mover-out nonresponse by 1994 (ER33201 0) born or moved in after the 1995 interview (ER33201>0 and ER33 202 0) in an institution or mover-out nonresponse in 1995 (ER33202 51-89) not a person age 55 or older (ER33204 001-054)" = "0"))
+  expect_equal(psid_all_parsed_sas$value_labels$ER34648,
+               c("This sample member was main family nonresponse and had been in the FU in 2015." = "1",
+                 "This nonsample individual had been in the 2015 FU, and this FU became nonresponse in 2017." = "3",
+                 "This sample member had been in an institution in 2015, but his or her family became nonresponse in 2017." = "4",
+                 "This sample member, linked to a 2017 response family, was in an institution at the time of the 2017 interview." = "5",
+                 "This sample member moved out or died between the 2015 and 2017 interviews." = "6",
+                 "This nonsample individual moved out or died between the 2015 and 2017 interviews." = "8",
+                 "This individual had become nonresponse by the time of the 2017 interview." = "10",
+                 "Main family recontact: this person was selected for recontact in 2017, but the family was not successfully interviewed." = "21",
+                 "Splitoff recontact: this sample member moved out of a 2017 recontact main family but was not successfully interviewed." = "26",
+                 "Individual connected with the Latino sample (ER30001 7001-9308) this sample was dropped beginning in 1996. Individual dropped from the Census (SEO) sample due to budgetary constraints this group wa s dropped beginning in 1997." = "40",
+                 "DK NA" = "99",
+                 "Inap.: this individual was in a panel family in 2017 (ER34502 1-20)." = "0"))
+})
+
+
 test_that("psid_main - parsed value labels are accurate", {
 
   expect_equal(head(names(psid_main_parsed_sas$value_labels)),

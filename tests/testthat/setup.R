@@ -204,6 +204,9 @@ escolar_2006_sps_name <- system.file("testdata",
                                   package = "asciiSetupReader")
 
 
+psid_all_sas_name       <- system.file("testdata",
+                                     "psid_all_sas.zip",
+                                     package = "asciiSetupReader")
 cambridge_sas_name     <- system.file("testdata",
                                       "cambridge_sas.zip",
                                       package = "asciiSetupReader")
@@ -547,7 +550,7 @@ county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
 psid_main_parsed_sps        <- parse_setup(psid_main_sps_name)
 escolar_2006_parsed_sps     <- parse_setup(escolar_2006_sps_name)
 
-
+psid_all_parsed_sas          <- parse_setup(psid_all_sas_name)
 psid_main_parsed_sas          <- parse_setup(psid_main_sas_name)
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
 drug_abuse_parsed_sas         <- parse_setup(drug_abuse_sas_name)

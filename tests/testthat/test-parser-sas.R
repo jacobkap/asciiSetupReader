@@ -46,6 +46,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(UN_crime_parsed_sas$setup), 121)
   expect_equal(nrow(county_arrest_parsed_sas$setup), 19)
   expect_equal(nrow(psid_main_parsed_sas$setup), 3569)
+  expect_equal(nrow(psid_all_parsed_sas$setup), 1534)
 
 
 })
@@ -53,6 +54,21 @@ test_that("Right number of columns", {
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(psid_all_parsed_sas$setup$begin),
+               c(1, 2, 6,
+                 9, 10, 11))
+  expect_equal(head(psid_all_parsed_sas$setup$end),
+               c(1, 5, 8,
+                 9, 10, 11))
+  expect_equal(tail(psid_all_parsed_sas$setup$begin),
+               c(4062, 4063, 4065,
+                 4067, 4069, 4076))
+  expect_equal(tail(psid_all_parsed_sas$setup$end),
+               c(4062, 4064, 4066,
+                 4068, 4075, 4080))
+
 
   expect_equal(head(psid_main_parsed_sas$setup$begin),
                c(1, 2, 6,
@@ -1528,6 +1544,37 @@ test_that("Column names are correct", {
                  "YEAR_S_O_FAM_FORMED_17",
                  "MAIN_FAM_ID_FOR_S_O_17",
                  "FOLLOW_STATUS_17",
+                 "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
+                 "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
+
+
+
+  expect_equal(head(psid_all_parsed_sas$setup$column_number),
+               c("ER30000",
+                 "ER30001",
+                 "ER30002",
+                 "ER32000",
+                 "ER32001",
+                 "ER32002"))
+  expect_equal(head(psid_all_parsed_sas$setup$column_name),
+               c("RELEASE_NUMBER",
+                 "X1968_INTERVIEW_NUMBER",
+                 "PERSON_NUMBER_68",
+                 "SEX_OF_INDIVIDUAL",
+                 "WTR_ALWAYS_IN_RESPONDING_FAMILY_UNIT",
+                 "WTR_EVER_CODED_INSTITUTIONAL"))
+  expect_equal(tail(psid_all_parsed_sas$setup$column_number),
+               c("ER34646",
+                 "ER34647",
+                 "ER34648",
+                 "ER34649",
+                 "ER34650",
+                 "ER34651"))
+  expect_equal(tail(psid_all_parsed_sas$setup$column_name),
+               c("WTR_ELIGIBLE_FOR_TA_17",
+                 "RESULT_OF_TA_IW_ATTEMPT_17",
+                 "TYPE_OF_IND_RECORD_17",
+                 "WHY_NONRESPONSE_17",
                  "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
                  "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
 

@@ -11,9 +11,10 @@ value_label_matrixer <- function(value_label, type) {
 
   # For PSID data which for some reason have the word Wife
   # surrounded by single quotes sometimes!
-  value_label <- gsub("\\/'Wife\\'", "\\/Wife", value_label,
+  value_label <- gsub("'Wife''s'", "\\/Wifes", value_label, ignore.case = TRUE)
+  value_label <- gsub("\\/'Wife'", "\\/Wife", value_label,
                       ignore.case = TRUE)
-  value_label <- gsub("''Wife\\'", "\\/Wife", value_label, ignore.case = TRUE)
+  value_label <- gsub("''Wife'", "\\/Wife", value_label, ignore.case = TRUE)
   value_label <- gsub(" 'Wif'", " Wif", value_label, ignore.case = TRUE)
   value_label <- gsub(" ([[:alnum:]]+) 'Wife'", " \\1 Wife", value_label,
        ignore.case = TRUE)
