@@ -22,10 +22,8 @@ test_that("Right number of missing values", {
   #  expect_equal(nrow(sadc_parsed_sas$missing), 312)
   expect_true(is.null(well_being_parsed_sas$missing))
   expect_true(is.null(psid_toy_parsed_sas$missing))
-  expect_equal(nrow(psid_supplement_parsed_sas$missing), 16)
   expect_true(is.null(health_nutrition_parsed_sas$missing))
   expect_equal(nrow(india_human_parsed_sas$missing), 1)
-  expect_true(is.null(psid_core_parsed_sas$missing))
   expect_equal(nrow(census_police_parsed_sas$missing), 74)
   expect_equal(nrow(step_in_parsed_sas$missing), 2)
   expect_equal(nrow(cps_1973_parsed_sas$missing), 235)
@@ -45,8 +43,7 @@ test_that("Right number of missing values", {
   expect_true(is.null(indonesia_parsed_sas$missing))
   expect_equal(nrow(UN_crime_parsed_sas$missing), 357)
   expect_equal(nrow(county_arrest_parsed_sas$missing), 13)
-  expect_true(is.null(psid_main_parsed_sas$missing))
-  expect_true(is.null(psid_all_parsed_sas$missing))
+
 })
 
 
@@ -254,28 +251,6 @@ test_that("India human has right missing values", {
                c("8"))
 })
 
-test_that("PSID supplement has right missing values", {
-  expect_equal(head(psid_supplement_parsed_sas$missing$variable),
-               c("VIANN_94", "VOANN_94", "VSHOM_94",
-                 "VBREL_94", "VSREL_94", "VHIMP_94"))
-  expect_equal(tail(psid_supplement_parsed_sas$missing$variable),
-               c("VIASS_94", "VIDEB_94", "VINHA_94",
-                 "VINHB_94", "VINHC_94", "VSTOC_94"))
-
-  expect_equal(head(psid_supplement_parsed_sas$missing$values),
-               c("0", "0", "0",
-                 "0", "0", "0"))
-  expect_equal(tail(psid_supplement_parsed_sas$missing$values),
-               c("0", "0", "0",
-                 "0", "0", "0"))
-
-  expect_equal(head(unique(psid_supplement_parsed_sas$missing$variable)),
-               c("VIANN_94", "VOANN_94", "VSHOM_94",
-                 "VBREL_94", "VSREL_94", "VHIMP_94"))
-  expect_equal(tail(unique(psid_supplement_parsed_sas$missing$variable)),
-               c("VIASS_94", "VIDEB_94", "VINHA_94",
-                 "VINHB_94", "VINHC_94", "VSTOC_94"))
-})
 
 test_that("Jail survey 1987 has right missing values", {
   expect_equal(head(jail_1987_parsed_sas$missing$variable),

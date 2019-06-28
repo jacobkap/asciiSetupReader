@@ -28,9 +28,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(psid_toy_sas_name))
   #expect_silent(parse_setup(escolar_sas_name))
   expect_silent(parse_setup(health_nutrition_sas_name))
-  expect_silent(parse_setup(psid_core_sas_name))
   expect_silent(parse_setup(india_human_sas_name))
-  expect_silent(parse_setup(psid_supplement_sas_name))
   expect_silent(parse_setup(step_in_sas_name))
   expect_silent(parse_setup(education_1985_sas_name))
   expect_silent(parse_setup(education_1995_sas_name))
@@ -75,15 +73,12 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(crosswalk2012_sps_name))
   expect_silent(parse_setup(dutch_election_sps_name))
   expect_silent(parse_setup(well_being_sps_name))
-  expect_silent(parse_setup(psid_supplement_sps_name))
   expect_silent(parse_setup(health_nutrition_sps_name))
   expect_silent(parse_setup(ad_health_sps_name))
   expect_silent(parse_setup(india_human_sps_name))
-  expect_silent(parse_setup(psid_core_sps_name))
   expect_silent(parse_setup(step_in_sps_name))
   expect_silent(parse_setup(cps_1973_sps_name))
   expect_silent(parse_setup(census_police_sps_name))
-  expect_silent(parse_setup(psid_core_sps_name))
   expect_silent(parse_setup(step_in_sps_name))
   expect_silent(parse_setup(cps_1973_sps_name))
   expect_silent(parse_setup(census_police_sps_name))
@@ -103,17 +98,6 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(county_arrest_sps_name))
   expect_silent(parse_setup(escolar_2006_sps_name))
 
-})
-
-test_that("No messages or warnings or errors for PSID Main", {
-  # PSID main take SUPER LONG so they are separate and
-  # skipped on both CRAN and TravisCI
-  skip_on_cran()
-  skip_on_travis()
-
-  expect_silent(parse_setup(psid_main_sps_name))
-  expect_silent(parse_setup(psid_main_sas_name))
-  expect_silent(parse_setup(psid_all_sas_name))
 })
 
 

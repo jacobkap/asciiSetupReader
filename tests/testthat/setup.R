@@ -133,12 +133,7 @@ well_being_sps_name        <- system.file("testdata",
 escolar_sps_name           <- system.file("testdata",
                                           "escolar.SPS",
                                           package = "asciiSetupReader")
-psid_supplement_sps_name   <- system.file("testdata",
-                                          "psid_supplement.sps",
-                                          package = "asciiSetupReader")
-psid_core_sps_name        <- system.file("testdata",
-                                         "psid_core_sps.zip",
-                                         package = "asciiSetupReader")
+
 ad_health_sps_name        <- system.file("testdata",
                                          "study_of_adolescent_health.sps",
                                          package = "asciiSetupReader")
@@ -196,17 +191,11 @@ UN_crime_sps_name      <- system.file("testdata",
 county_arrest_sps_name <- system.file("testdata",
                                       "county_arrest.sps",
                                       package = "asciiSetupReader")
-psid_main_sps_name <- system.file("testdata",
-                                  "psid_main_sps.zip",
-                                  package = "asciiSetupReader")
 escolar_2006_sps_name <- system.file("testdata",
                                   "escolar_2006_sps.zip",
                                   package = "asciiSetupReader")
 
 
-psid_all_sas_name       <- system.file("testdata",
-                                     "psid_all_sas.zip",
-                                     package = "asciiSetupReader")
 cambridge_sas_name     <- system.file("testdata",
                                       "cambridge_sas.zip",
                                       package = "asciiSetupReader")
@@ -231,9 +220,7 @@ UN_crime_sas_name      <- system.file("testdata",
 county_arrest_sas_name <- system.file("testdata",
                                       "county_arrest.sas",
                                       package = "asciiSetupReader")
-psid_main_sas_name <- system.file("testdata",
-                                      "psid_main_sas.zip",
-                                      package = "asciiSetupReader")
+
 
 
 
@@ -271,12 +258,7 @@ step_in_sas_name            <- system.file("testdata",
 psid_toy_sas_name          <- system.file("testdata",
                                           "psid_toy.sas",
                                           package = "asciiSetupReader")
-psid_supplement_sas_name   <- system.file("testdata",
-                                          "psid_supplement.sas",
-                                          package = "asciiSetupReader")
-psid_core_sas_name         <- system.file("testdata",
-                                          "psid_core_sas.zip",
-                                          package = "asciiSetupReader")
+
 health_nutrition_sas_name  <- system.file("testdata",
                                           "health_and_nutrition.sas",
                                           package = "asciiSetupReader")
@@ -518,8 +500,6 @@ crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
 dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
 well_being_parsed_sps      <- parse_setup(well_being_sps_name)
 escolar_parsed_sps          <- parse_setup(escolar_sps_name)
-psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
-psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)
 ad_health_parsed_sps        <- parse_setup(ad_health_sps_name)
 health_nutrition_parsed_sps <- parse_setup(health_nutrition_sps_name)
 india_human_parsed_sps      <- parse_setup(india_human_sps_name)
@@ -547,11 +527,9 @@ china_1998_parsed_sas       <- parse_setup(china_1998_sas_name)
 indonesia_parsed_sas        <- parse_setup(indonesia_sas_name)
 UN_crime_parsed_sas         <- parse_setup(UN_crime_sas_name)
 county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
-psid_main_parsed_sps        <- parse_setup(psid_main_sps_name)
 escolar_2006_parsed_sps     <- parse_setup(escolar_2006_sps_name)
 
-psid_all_parsed_sas          <- parse_setup(psid_all_sas_name)
-psid_main_parsed_sas          <- parse_setup(psid_main_sas_name)
+
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
 drug_abuse_parsed_sas         <- parse_setup(drug_abuse_sas_name)
 detroit_parsed_sas            <- parse_setup(detroit_sas_name)
@@ -563,8 +541,6 @@ education_1995_parsed_sas   <- parse_setup(education_1995_sas_name)
 cps_1973_parsed_sas         <- parse_setup(cps_1973_sas_name)
 census_police_parsed_sas    <- parse_setup(census_police_sas_name)
 psid_toy_parsed_sas         <- parse_setup(psid_toy_sas_name)
-psid_supplement_parsed_sas  <- parse_setup(psid_supplement_sas_name)
-psid_core_parsed_sas        <- parse_setup(psid_core_sas_name)
 health_nutrition_parsed_sas <- parse_setup(health_nutrition_sas_name)
 india_human_parsed_sas      <- parse_setup(india_human_sas_name)
 well_being_parsed_sas       <- parse_setup(well_being_sas_name)

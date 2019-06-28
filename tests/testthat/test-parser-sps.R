@@ -22,11 +22,9 @@ test_that("Right number of columns", {
   expect_equal(nrow(crosswalk2012_parsed_sps$setup), 46)
   expect_equal(nrow(dutch_election_parsed_sps$setup), 878)
   expect_equal(nrow(well_being_parsed_sps$setup),   312)
-  expect_equal(nrow(psid_supplement_parsed_sps$setup),   17)
   expect_equal(nrow(health_nutrition_parsed_sps$setup),  43)
   expect_equal(nrow(ad_health_parsed_sps$setup),  5)
   expect_equal(nrow(india_human_parsed_sps$setup),  337)
-  expect_equal(nrow(psid_core_parsed_sps$setup),  2084)
   expect_equal(nrow(step_in_parsed_sps$setup), 8)
   expect_equal(nrow(cps_1973_parsed_sps$setup), 269)
   expect_equal(nrow(census_police_parsed_sps$setup), 92)
@@ -45,7 +43,6 @@ test_that("Right number of columns", {
   expect_equal(nrow(indonesia_parsed_sps$setup), 10)
   expect_equal(nrow(UN_crime_parsed_sps$setup), 121)
   expect_equal(nrow(county_arrest_parsed_sps$setup), 19)
-  expect_equal(nrow(psid_main_parsed_sps$setup), 3569)
 
   expect_equal(nrow(escolar_2006_parsed_sps$setup), 3808)
 
@@ -72,18 +69,7 @@ test_that("Column numbers are correct", {
                  43718, 43730, 43742))
 
 
-  expect_equal(head(psid_main_parsed_sps$setup$begin),
-               c(1, 2, 6,
-                 9, 10, 14))
-  expect_equal(head(psid_main_parsed_sps$setup$end),
-               c(1, 5, 8,
-                 9, 13, 15))
-  expect_equal(tail(psid_main_parsed_sps$setup$begin),
-               c(7365, 7371, 7375,
-                 7380, 7381, 7388))
-  expect_equal(tail(psid_main_parsed_sps$setup$end),
-               c(7370, 7374, 7379,
-                 7380, 7387, 7392))
+
 
   expect_equal(head(british_crime_teen_parsed_sps$setup$begin), c(1, 7, 13,
                                                                   16, 18, 19))
@@ -305,12 +291,7 @@ test_that("Column numbers are correct", {
                  408, 409, 418))
 
 
-  expect_equal(head(psid_supplement_parsed_sps$setup$begin),
-               c(1, 6, 13,
-                 20, 27, 34))
-  expect_equal(tail(psid_supplement_parsed_sps$setup$begin),
-               c(76, 83, 90,
-                 97, 104, 111))
+
 
 
 
@@ -342,20 +323,6 @@ test_that("Column numbers are correct", {
   expect_equal(tail(escolar_parsed_sps$setup$end),
                c(8364, 8370, 8376,
                  8382, 8388, 8394))
-
-
-  expect_equal(head(psid_core_parsed_sps$setup$begin),
-               c(1, 2, 7,
-                 11, 13, 15))
-  expect_equal(tail(psid_core_parsed_sps$setup$begin),
-               c(3525, 3535, 3545,
-                 3546, 3552, 3553))
-  expect_equal(head(psid_core_parsed_sps$setup$end),
-               c(1, 6, 10,
-                 12, 14, 16))
-  expect_equal(tail(psid_core_parsed_sps$setup$end),
-               c(3534, 3544, 3545,
-                 3551, 3552, 3558))
 
 
 
@@ -511,13 +478,6 @@ test_that("Column numbers are correct", {
   expect_equal(tail(dutch_election_parsed_sps$setup$end),
                c(1250, 1251, 1253,
                  1254, 1255, 1256))
-
-  expect_equal(head(psid_supplement_parsed_sps$setup$end),
-               c(5, 12, 19,
-                 26, 33, 40))
-  expect_equal(tail(psid_supplement_parsed_sps$setup$end),
-               c(82, 89, 96,
-                 103, 110, 117))
 
 
   expect_equal(head(cambridge_parsed_sps$setup$begin),
@@ -814,38 +774,6 @@ test_that("Column names are correct", {
                  "LARCENY",
                  "VEHICLE_THEFT",
                  "ARSON"))
-
-
-  expect_equal(head(psid_supplement_parsed_sps$setup$column_number),
-               c("ID94",
-                 "VIANN_94",
-                 "VOANN_94",
-                 "VSHOM_94",
-                 "VBREL_94",
-                 "VSREL_94"))
-  expect_equal(tail(psid_supplement_parsed_sps$setup$column_number),
-               c("VIASS_94",
-                 "VIDEB_94",
-                 "VINHA_94",
-                 "VINHB_94",
-                 "VINHC_94",
-                 "VSTOC_94"))
-  expect_equal(head(psid_supplement_parsed_sps$setup$column_name),
-               c("X1994_INTERVIEW_NUMBER",
-                 "PUT_INTO_ANNUITY_94",
-                 "CASH_IN_ANNUITY_94",
-                 "SELL_MAIN_HOME_94",
-                 "BUY_REAL_ESTATE_94",
-                 "SELL_REAL_ESTATE_94"))
-  expect_equal(tail(psid_supplement_parsed_sps$setup$column_name),
-               c("ASSETS_BROUGHT_IN_94",
-                 "DEBTS_BROUGHT_IN_94",
-                 "FIRST_GIFT_INHERITANCE_94",
-                 "SECOND_GIFT_INHERITANCE_94",
-                 "THIRD_GIFT_INHERITANCE_94",
-                 "NET_INTO_STOCK_94"))
-
-
 
 
   expect_equal(head(well_being_parsed_sps$setup$column_number),
@@ -1295,38 +1223,6 @@ test_that("Column names are correct", {
                    "VTE16A"))
 
 
-  expect_equal(head(psid_core_parsed_sps$setup$column_number),
-               c("ER10001",
-                 "ER10002",
-                 "ER10003",
-                 "ER10004",
-                 "ER10005",
-                 "ER10006"))
-  expect_equal(tail(psid_core_parsed_sps$setup$column_number),
-               c("ER12079",
-                 "ER12080",
-                 "ER12081",
-                 "ER12082",
-                 "ER12083",
-                 "ER12084"))
-
-  expect_equal(head(psid_core_parsed_sps$setup$column_name),
-               c("RELEASE_NUMBER",
-                 "X1997_INTERVIEW",
-                 "INTERVIEWER_ID",
-                 "CURRENT_STATE",
-                 "MONTH_CURRENT_IW",
-                 "DAY_CURRENT_IW"))
-  expect_equal(tail(psid_core_parsed_sps$setup$column_name),
-               c("TOTAL_FAMILY_INCOME",
-                 "LABOR_INCOME_HEAD",
-                 "ACC_LABOR_INCOME_HD",
-                 "LABOR_INCOME_WIFE",
-                 "ACC_LABOR_INCOME_WF",
-                 "FAMILY_WEIGHT"))
-
-
-
   expect_equal(head(step_in_parsed_sps$setup$column_number),
                c("CID",
                  "RCTR",
@@ -1567,34 +1463,6 @@ test_that("Column names are correct", {
                  "HWSUPWGT"))
 
 
-  expect_equal(head(psid_main_parsed_sps$setup$column_number),
-               c("ER30000",
-                 "ER30001",
-                 "ER30002",
-                 "ER32000",
-                 "ER32021",
-                 "ER32022"))
-  expect_equal(head(psid_main_parsed_sps$setup$column_name),
-               c("RELEASE_NUMBER",
-                 "X1968_INTERVIEW_NUMBER",
-                 "PERSON_NUMBER_68",
-                 "SEX_OF_INDIVIDUAL",
-                 "YEAR_BIRTH_INFO_MOST_RECENTLY_UPDATED",
-                 "LIVE_BIRTHS_TO_THIS_INDIVIDUAL"))
-  expect_equal(tail(psid_main_parsed_sps$setup$column_number),
-               c("ER34640",
-                 "ER34642",
-                 "ER34643",
-                 "ER34644",
-                 "ER34650",
-                 "ER34651"))
-  expect_equal(tail(psid_main_parsed_sps$setup$column_name),
-               c("OFUM_TOTAL_TRANSFER_INCOME_IMPUTED_17",
-                 "YEAR_S_O_FAM_FORMED_17",
-                 "MAIN_FAM_ID_FOR_S_O_17",
-                 "FOLLOW_STATUS_17",
-                 "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
-                 "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
 
 
 

@@ -25,8 +25,6 @@ test_that("Right number of columns", {
   # expect_equal(nrow(escolar_parsed_sas$setup),  1307)
   expect_equal(nrow(health_nutrition_parsed_sas$setup),  43)
   expect_equal(nrow(india_human_parsed_sas$setup),  337)
-  expect_equal(nrow(psid_core_parsed_sas$setup),  2084)
-  expect_equal(nrow(psid_supplement_parsed_sas$setup), 17)
   expect_equal(nrow(step_in_parsed_sas$setup), 8)
   expect_equal(nrow(education_1985_parsed_sas$setup), 21)
   expect_equal(nrow(education_1995_parsed_sas$setup), 69)
@@ -45,8 +43,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(indonesia_parsed_sas$setup), 10)
   expect_equal(nrow(UN_crime_parsed_sas$setup), 121)
   expect_equal(nrow(county_arrest_parsed_sas$setup), 19)
-  expect_equal(nrow(psid_main_parsed_sas$setup), 3569)
-  expect_equal(nrow(psid_all_parsed_sas$setup), 1534)
+
 
 
 })
@@ -56,32 +53,7 @@ test_that("Column numbers are correct", {
   skip_on_cran()
 
 
-  expect_equal(head(psid_all_parsed_sas$setup$begin),
-               c(1, 2, 6,
-                 9, 10, 11))
-  expect_equal(head(psid_all_parsed_sas$setup$end),
-               c(1, 5, 8,
-                 9, 10, 11))
-  expect_equal(tail(psid_all_parsed_sas$setup$begin),
-               c(4062, 4063, 4065,
-                 4067, 4069, 4076))
-  expect_equal(tail(psid_all_parsed_sas$setup$end),
-               c(4062, 4064, 4066,
-                 4068, 4075, 4080))
 
-
-  expect_equal(head(psid_main_parsed_sas$setup$begin),
-               c(1, 2, 6,
-                 9, 10, 14))
-  expect_equal(head(psid_main_parsed_sas$setup$end),
-               c(1, 5, 8,
-                 9, 13, 15))
-  expect_equal(tail(psid_main_parsed_sas$setup$begin),
-               c(7365, 7371, 7375,
-                 7380, 7381, 7388))
-  expect_equal(tail(psid_main_parsed_sas$setup$end),
-               c(7370, 7374, 7379,
-                 7380, 7387, 7392))
 
 
   expect_equal(head(british_crime_teen_parsed_sas$setup$begin), c(1, 7, 13,
@@ -323,12 +295,6 @@ test_that("Column numbers are correct", {
                  408, 409, 418))
 
 
-  expect_equal(head(psid_supplement_parsed_sas$setup$begin),
-               c(1, 6, 13,
-                 20, 27, 34))
-  expect_equal(tail(psid_supplement_parsed_sas$setup$begin),
-               c(76, 83, 90,
-                 97, 104, 111))
 
 
   expect_equal(head(health_nutrition_parsed_sas$setup$begin),
@@ -347,21 +313,6 @@ test_that("Column numbers are correct", {
 
 
 
-  expect_equal(head(psid_core_parsed_sas$setup$begin),
-               c(1, 2, 7,
-                 11, 13, 15))
-  expect_equal(tail(psid_core_parsed_sas$setup$begin),
-               c(3525, 3535, 3545,
-                 3546, 3552, 3553))
-  expect_equal(head(psid_core_parsed_sas$setup$end),
-               c(1, 6, 10,
-                 12, 14, 16))
-  expect_equal(tail(psid_core_parsed_sas$setup$end),
-               c(3534, 3544, 3545,
-                 3551, 3552, 3558))
-
-
-
   expect_equal(head(india_human_parsed_sas$setup$end),
                c(1, 3, 5,
                  7, 10, 11))
@@ -376,12 +327,6 @@ test_that("Column numbers are correct", {
                c(120, 123, 137,
                  151, 154, 157))
 
-  expect_equal(head(psid_supplement_parsed_sas$setup$end),
-               c(5, 12, 19,
-                 26, 33, 40))
-  expect_equal(tail(psid_supplement_parsed_sas$setup$end),
-               c(82, 89, 96,
-                 103, 110, 117))
 
   expect_equal(head(well_being_parsed_sas$setup$end),
                c(1, 6, 8,
@@ -843,34 +788,7 @@ test_that("Column names are correct", {
 
 
 
-  expect_equal(head(psid_supplement_parsed_sas$setup$column_number),
-               c("ID94",
-                 "VIANN_94",
-                 "VOANN_94",
-                 "VSHOM_94",
-                 "VBREL_94",
-                 "VSREL_94"))
-  expect_equal(tail(psid_supplement_parsed_sas$setup$column_number),
-               c("VIASS_94",
-                 "VIDEB_94",
-                 "VINHA_94",
-                 "VINHB_94",
-                 "VINHC_94",
-                 "VSTOC_94"))
-  expect_equal(head(psid_supplement_parsed_sas$setup$column_name),
-               c("X1994_INTERVIEW_NUMBER",
-                 "PUT_INTO_ANNUITY_94",
-                 "CASH_IN_ANNUITY_94",
-                 "SELL_MAIN_HOME_94",
-                 "BUY_REAL_ESTATE_94",
-                 "SELL_REAL_ESTATE_94"))
-  expect_equal(tail(psid_supplement_parsed_sas$setup$column_name),
-               c("ASSETS_BROUGHT_IN_94",
-                 "DEBTS_BROUGHT_IN_94",
-                 "FIRST_GIFT_INHERITANCE_94",
-                 "SECOND_GIFT_INHERITANCE_94",
-                 "THIRD_GIFT_INHERITANCE_94",
-                 "NET_INTO_STOCK_94"))
+
 
   expect_equal(sac_parsed_sas$setup$column_number[1:20], c("TRINUM", "SUBNO", "TODDATYR",
                                                            "DATSTAR", "CONSTATE", "Q1JSEX",
@@ -1185,35 +1103,6 @@ test_that("Column names are correct", {
 
 
 
-  expect_equal(head(psid_core_parsed_sas$setup$column_number),
-               c("ER10001",
-                 "ER10002",
-                 "ER10003",
-                 "ER10004",
-                 "ER10005",
-                 "ER10006"))
-  expect_equal(tail(psid_core_parsed_sas$setup$column_number),
-               c("ER12079",
-                 "ER12080",
-                 "ER12081",
-                 "ER12082",
-                 "ER12083",
-                 "ER12084"))
-
-  expect_equal(head(psid_core_parsed_sas$setup$column_name),
-               c("RELEASE_NUMBER",
-                 "X1997_INTERVIEW",
-                 "INTERVIEWER_ID",
-                 "CURRENT_STATE",
-                 "MONTH_CURRENT_IW",
-                 "DAY_CURRENT_IW"))
-  expect_equal(tail(psid_core_parsed_sas$setup$column_name),
-               c("TOTAL_FAMILY_INCOME",
-                 "LABOR_INCOME_HEAD",
-                 "ACC_LABOR_INCOME_HD",
-                 "LABOR_INCOME_WIFE",
-                 "ACC_LABOR_INCOME_WF",
-                 "FAMILY_WEIGHT"))
 
 
 
@@ -1518,64 +1407,6 @@ test_that("Column names are correct", {
                  "HWSUPWGT"))
 
 
-  expect_equal(head(psid_main_parsed_sas$setup$column_number),
-               c("ER30000",
-                 "ER30001",
-                 "ER30002",
-                 "ER32000",
-                 "ER32021",
-                 "ER32022"))
-  expect_equal(head(psid_main_parsed_sas$setup$column_name),
-               c("RELEASE_NUMBER",
-                 "X1968_INTERVIEW_NUMBER",
-                 "PERSON_NUMBER_68",
-                 "SEX_OF_INDIVIDUAL",
-                 "YEAR_BIRTH_INFO_MOST_RECENTLY_UPDATED",
-                 "LIVE_BIRTHS_TO_THIS_INDIVIDUAL"))
-  expect_equal(tail(psid_main_parsed_sas$setup$column_number),
-               c("ER34640",
-                 "ER34642",
-                 "ER34643",
-                 "ER34644",
-                 "ER34650",
-                 "ER34651"))
-  expect_equal(tail(psid_main_parsed_sas$setup$column_name),
-               c("OFUM_TOTAL_TRANSFER_INCOME_IMPUTED_17",
-                 "YEAR_S_O_FAM_FORMED_17",
-                 "MAIN_FAM_ID_FOR_S_O_17",
-                 "FOLLOW_STATUS_17",
-                 "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
-                 "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
 
-
-
-  expect_equal(head(psid_all_parsed_sas$setup$column_number),
-               c("ER30000",
-                 "ER30001",
-                 "ER30002",
-                 "ER32000",
-                 "ER32001",
-                 "ER32002"))
-  expect_equal(head(psid_all_parsed_sas$setup$column_name),
-               c("RELEASE_NUMBER",
-                 "X1968_INTERVIEW_NUMBER",
-                 "PERSON_NUMBER_68",
-                 "SEX_OF_INDIVIDUAL",
-                 "WTR_ALWAYS_IN_RESPONDING_FAMILY_UNIT",
-                 "WTR_EVER_CODED_INSTITUTIONAL"))
-  expect_equal(tail(psid_all_parsed_sas$setup$column_number),
-               c("ER34646",
-                 "ER34647",
-                 "ER34648",
-                 "ER34649",
-                 "ER34650",
-                 "ER34651"))
-  expect_equal(tail(psid_all_parsed_sas$setup$column_name),
-               c("WTR_ELIGIBLE_FOR_TA_17",
-                 "RESULT_OF_TA_IW_ATTEMPT_17",
-                 "TYPE_OF_IND_RECORD_17",
-                 "WHY_NONRESPONSE_17",
-                 "CORE_IMM_INDIVIDUAL_LONGITUDINAL_WT_17",
-                 "CORE_IMM_INDIVIDUAL_CROSS_SECTION_WT_17"))
 
 })
