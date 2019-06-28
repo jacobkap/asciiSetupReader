@@ -350,6 +350,7 @@ sadc_sas_name              <- system.file("testdata",
                                           "2017_sadc_sas_input_program.sas",
                                           package = "asciiSetupReader")
 
+
 parole <- read_ascii_setup(data = parole_survey_dataset_name,
                            setup_file = parole_sps_name,
                            use_clean_names = FALSE)
@@ -359,8 +360,6 @@ SHR2 <- read_ascii_setup(data = SHR_dataset_name,
 SHR3 <- read_ascii_setup(data = SHR_dataset_name,
                          setup_file = SHR_sps_name,
                          select_columns = c(1, 5, 50:55, 100:121, 152))
-
-
 UCR2 <- read_ascii_setup(data = UCR_dataset_name,
                          setup_file = UCR_sps_name,
                          select_columns = c("V1", "V50", "V100", "V111",
