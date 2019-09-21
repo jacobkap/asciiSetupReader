@@ -119,7 +119,8 @@
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>These parameters <code>data</code> and <code>setup_file</code> are the only ones requires to run the package though three optional parameters allow you to customize results.</p>
-<p><code>data</code> - A string containing the name of the data file <code>setup_file</code> - A string containing the name of the data file</p>
+<p><code>data</code> - A string containing the name of the data file</p>
+<p><code>setup_file</code> - A string containing the name of the setup file</p>
 <p>Both files must be in your working directory or the string must contain the path to the file. Below is an example of reading in the example dataset - the original data and setup files can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</a>
 <a class="sourceLine" id="cb2-2" title="2">             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</a>
