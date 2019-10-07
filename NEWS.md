@@ -1,3 +1,8 @@
+# asciiSetupReader 2.2.0
+
+* Adds an addin to use the `read_ascii_setup()` function interactively. This allows
+  users to select every option in the popup window. 
+
 # asciiSetupReader 2.1.0
 
 * Reorder list of value labels returned from `parse_setup` to be in same order

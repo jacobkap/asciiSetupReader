@@ -2,7 +2,7 @@ Type: Package
 Package: asciiSetupReader
 Title: Reads Fixed-Width ASCII Data Files (.txt or .dat) that
     Have Accompanying Setup Files (.sps or .sas)
-Version: 2.1.0
+Version: 2.2.0
 Authors@R: 
     person(given = "Jacob",
            family = "Kaplan",
@@ -27,7 +27,10 @@ Imports:
     haven,
     readr,
     stringr,
-    zoo
+    zoo,
+    shiny (>= 0.13),
+    miniUI (>= 0.1.1),
+    rstudioapi (>= 0.5)
 Suggests: 
     covr,
     knitr,

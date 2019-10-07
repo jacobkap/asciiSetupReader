@@ -3,5 +3,6 @@
 export(make_sps_setup)
 export(parse_setup)
 export(read_ascii_setup)
+export(read_ascii_setup_addin)
 export(sas_ascii_reader)
 export(spss_ascii_reader)
