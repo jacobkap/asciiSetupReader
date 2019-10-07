@@ -1,4 +1,3 @@
-
 #' @title Launch an RStudio addin to select options for read_ascii_setup()
 #' @description Launch an RStudio addin to select options for read_ascii_setup().
 #' @return the return of \code{\link[shiny]{runGadget}}
