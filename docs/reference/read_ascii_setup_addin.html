@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • asciiSetupReader</title>
+<title>Launch an RStudio addin to select options for read_ascii_setup() — read_ascii_setup_addin • asciiSetupReader</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Launch an RStudio addin to select options for read_ascii_setup() — read_ascii_setup_addin" />
+
+<meta property="og:description" content="Launch an RStudio addin to select options for read_ascii_setup()." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -117,99 +120,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Launch an RStudio addin to select options for read_ascii_setup()</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jacobkap/asciiSetupReader/blob/master/R/read_ascii_setup_addin.R'><code>R/read_ascii_setup_addin.R</code></a></small>
+    <div class="hidden name"><code>read_ascii_setup_addin.Rd</code></div>
     </div>
 
-    <div id="asciisetupreader-220" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-220" class="anchor"></a>asciiSetupReader 2.2.0<small> Unreleased </small>
-</h1>
-<ul>
-<li>Adds an addin to use the <code><a href="../reference/read_ascii_setup.html">read_ascii_setup()</a></code> function interactively. This allows users to select every option in the popup window.</li>
-</ul>
-</div>
-    <div id="asciisetupreader-210" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-210" class="anchor"></a>asciiSetupReader 2.1.0<small> 2019-06-28 </small>
-</h1>
-<ul>
-<li>Reorder list of value labels returned from <code>parse_setup</code> to be in same order as in setup file.</li>
-<li>Misc. bug fixes and many new tests.</li>
-</ul>
-</div>
-    <div id="asciisetupreader-202" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-202" class="anchor"></a>asciiSetupReader 2.0.2<small> Unreleased </small>
-</h1>
-<ul>
-<li>Misc. bug fixes.</li>
-</ul>
-</div>
-    <div id="asciisetupreader-201" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-201" class="anchor"></a>asciiSetupReader 2.0.1<small> 2019-02-05 </small>
-</h1>
-<ul>
-<li>Fix problem where package didn’t work with dev version of Haven.</li>
-</ul>
-</div>
-    <div id="asciisetupreader-200" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-200" class="anchor"></a>asciiSetupReader 2.0.0<small> 2019-02-04 </small>
-</h1>
-<div id="major-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major Changes</h2>
-<ul>
-<li>Adds a single function (<code>read_ascii_setup</code>) that will read in data for both .dat+.sps and .dat+.sas pairs. This is just a helper function that calls <code>spss_ascii_reader</code> or <code>sas_ascii_reader</code>.</li>
-<li>Adds function to create sps setup files.</li>
-<li>Adds capacity for .sas reader to handle missing values.</li>
-<li>Adds a function for users to parse the setup file (.sps or .sas) and get results. An accompanying vignette explains this function.</li>
-<li>Adds a function to make your own .sps files (not .sas yet).</li>
-</ul>
-</div>
-<div id="minor-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor Changes</h2>
-<ul>
-<li>Adds option to not coerce potentially numeric columns into numeric type. Useful in cases like dealing with Census FIPS codes that have leading zeros.</li>
-<li>Miscellaneous bug fixes.</li>
-<li>Fixes bug when missing values are an interval (e.g. -1 thru -8).</li>
-</ul>
-</div>
-</div>
-    <div id="asciisetupreader-140" class="section level1">
-<h1 class="page-header">
-<a href="#asciisetupreader-140" class="anchor"></a>asciiSetupReader 1.4.0<small> 2018-06-18 </small>
-</h1>
-<ul>
-<li>Adds capacity to the SPSS reader to handle Missing Values.</li>
-<li>Fixes bug where function fails if no value-labels are detected.
-<ul>
-<li>Applies both when setup file has no value-labels and if only select columns that have no value-labels.</li>
-</ul>
-</li>
-<li>Adds a huge number of tests.</li>
-<li>Changes factor column to character columns.</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    
+    <p>Launch an RStudio addin to select options for read_ascii_setup().</p>
+    
+    </div>
 
+    <pre class="usage"><span class='fu'>read_ascii_setup_addin</span>()</pre>
+        
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>read_ascii_setup() code to console with options based on user input</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>read_ascii_setup_addin</span>()
+<span class='co'># }</span></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#asciisetupreader-220">2.2.0</a></li>
-        <li><a href="#asciisetupreader-210">2.1.0</a></li>
-        <li><a href="#asciisetupreader-202">2.0.2</a></li>
-        <li><a href="#asciisetupreader-201">2.0.1</a></li>
-        <li><a href="#asciisetupreader-200">2.0.0</a></li>
-        <li><a href="#asciisetupreader-140">1.4.0</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
+  </div>
 </div>
 
       <footer>

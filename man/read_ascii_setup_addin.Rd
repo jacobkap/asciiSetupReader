@@ -7,7 +7,7 @@
 read_ascii_setup_addin()
 }
 \value{
-the return of \code{\link[shiny]{runGadget}}
+read_ascii_setup() code to console with options based on user input
 }
 \description{
 Launch an RStudio addin to select options for read_ascii_setup().
