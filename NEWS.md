@@ -1,3 +1,7 @@
+# asciiSetupReader 2.2.1
+
+* Misc. bug fixes.
+
 # asciiSetupReader 2.2.0
 
 * Adds an addin to use the `read_ascii_setup()` function interactively. This allows

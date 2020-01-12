@@ -194,6 +194,27 @@ county_arrest_sps_name <- system.file("testdata",
 escolar_2006_sps_name <- system.file("testdata",
                                   "escolar_2006_sps.zip",
                                   package = "asciiSetupReader")
+mtf_1999_sps_name     <- system.file("testdata",
+                                     "monitoring_the_future_1999_sps.zip",
+                                     package = "asciiSetupReader")
+mtf_2003_sps_name     <- system.file("testdata",
+                                 "monitoring_the_future_2003_sps.zip",
+                                 package = "asciiSetupReader")
+mtf_1990_sps_name     <- system.file("testdata",
+                                 "monitoring_the_future_1990_sps.zip",
+                                 package = "asciiSetupReader")
+mtf_1989_sps_name     <- system.file("testdata",
+                                 "monitoring_the_future_1989_sps.zip",
+                                 package = "asciiSetupReader")
+mtf_2004_sps_name     <- system.file("testdata",
+                                 "monitoring_the_future_2004_sps.zip",
+                                 package = "asciiSetupReader")
+mtf_2002_sps_name     <- system.file("testdata",
+                                 "monitoring_the_future_2002_sps.zip",
+                                 package = "asciiSetupReader")
+mtf_1993_sps_name     <- system.file("testdata",
+                                 "monitoring_the_future_1993_sps.zip",
+                                 package = "asciiSetupReader")
 
 
 cambridge_sas_name     <- system.file("testdata",
@@ -518,15 +539,22 @@ china_1998_parsed_sps    <- parse_setup(china_1998_sps_name)
 indonesia_parsed_sps     <- parse_setup(indonesia_sps_name)
 UN_crime_parsed_sps      <- parse_setup(UN_crime_sps_name)
 county_arrest_parsed_sps <- parse_setup(county_arrest_sps_name)
-cambridge_parsed_sas        <- parse_setup(cambridge_sas_name)
-guam_parsed_sas             <- parse_setup(guam_sas_name)
-china_2002_parsed_sas       <- parse_setup(china_2002_sas_name)
-china_1995_parsed_sas       <- parse_setup(china_1995_sas_name)
-china_1998_parsed_sas       <- parse_setup(china_1998_sas_name)
-indonesia_parsed_sas        <- parse_setup(indonesia_sas_name)
-UN_crime_parsed_sas         <- parse_setup(UN_crime_sas_name)
-county_arrest_parsed_sas    <- parse_setup(county_arrest_sas_name)
-escolar_2006_parsed_sps     <- parse_setup(escolar_2006_sps_name)
+cambridge_parsed_sas     <- parse_setup(cambridge_sas_name)
+guam_parsed_sas          <- parse_setup(guam_sas_name)
+china_2002_parsed_sas    <- parse_setup(china_2002_sas_name)
+china_1995_parsed_sas    <- parse_setup(china_1995_sas_name)
+china_1998_parsed_sas    <- parse_setup(china_1998_sas_name)
+indonesia_parsed_sas     <- parse_setup(indonesia_sas_name)
+UN_crime_parsed_sas      <- parse_setup(UN_crime_sas_name)
+county_arrest_parsed_sas <- parse_setup(county_arrest_sas_name)
+escolar_2006_parsed_sps  <- parse_setup(escolar_2006_sps_name)
+mtf_1999_parsed_sps      <- parse_setup(mtf_1999_sps_name)
+mtf_2003_parsed_sps      <- parse_setup(mtf_2003_sps_name)
+mtf_1990_parsed_sps      <- parse_setup(mtf_1990_sps_name)
+mtf_1989_parsed_sps      <- parse_setup(mtf_1989_sps_name)
+mtf_2004_parsed_sps      <- parse_setup(mtf_2004_sps_name)
+mtf_2002_parsed_sps      <- parse_setup(mtf_2002_sps_name)
+mtf_1993_parsed_sps      <- parse_setup(mtf_1993_sps_name)
 
 
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)

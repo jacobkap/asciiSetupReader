@@ -5,7 +5,8 @@ value_label_matrixer <- function(value_label, type) {
   value_label <- gsub("'\\.$", "'", value_label)
   value_label <- gsub("=\\[(.*)\\]", "='\\1'", value_label)
   value_label <- gsub('"\\.$', '"', value_label)
-
+  value_label <- gsub("'(BEFORE) '([0-9]{2})'", "'\\1 \\2'", value_label,
+                      ignore.case = TRUE)
   value_label <- gsub('"', "'", value_label)
 
 
@@ -89,6 +90,8 @@ value_label_matrixer <- function(value_label, type) {
   value_label <- stringr::str_trim(value_label)
   value_label <- gsub("####BLANK####", "", value_label)
   value_label <- gsub("####SPACE####", " ", value_label)
+
+  value_label <- value_label[!value_label %in% c("/", "/ .")]
 
   value_label <- matrix(value_label, ncol = 2, byrow = TRUE)
   values <- value_label[, 1]
@@ -254,8 +257,6 @@ get_value_labels_sps <- function(codebook, setup) {
    # Get rid of "Truncated value... stuff in PSID files
   value_labels <- gsub('\\/\\*.*\\*\\/', "", value_labels)
   value_labels <- stringr::str_trim(value_labels)
-  # value_labels <- gsub("([[:alpha:]])''([[:alpha:]])", "\\1'\\2",
-  #                      value_labels)
 
 
   value_labels <- gsub('\\s+\\"$', '"', value_labels)

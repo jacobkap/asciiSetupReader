@@ -100,6 +100,15 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(county_arrest_sps_name))
   expect_silent(parse_setup(escolar_2006_sps_name))
 
+
+  expect_silent(parse_setup(mtf_1999_sps_name))
+  expect_silent(parse_setup(mtf_2003_sps_name))
+  expect_silent(parse_setup(mtf_1990_sps_name))
+  expect_silent(parse_setup(mtf_1989_sps_name))
+  expect_silent(parse_setup(mtf_2004_sps_name))
+  expect_silent(parse_setup(mtf_2002_sps_name))
+  expect_silent(parse_setup(mtf_1993_sps_name))
+
 })
 
 

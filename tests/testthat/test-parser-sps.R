@@ -43,8 +43,16 @@ test_that("Right number of columns", {
   expect_equal(nrow(indonesia_parsed_sps$setup), 10)
   expect_equal(nrow(UN_crime_parsed_sps$setup), 121)
   expect_equal(nrow(county_arrest_parsed_sps$setup), 19)
-
   expect_equal(nrow(escolar_2006_parsed_sps$setup), 3808)
+
+
+  expect_equal(nrow(mtf_1999_parsed_sps$setup), 108)
+  expect_equal(nrow(mtf_2003_parsed_sps$setup), 108)
+  expect_equal(nrow(mtf_1990_parsed_sps$setup), 111)
+  expect_equal(nrow(mtf_1989_parsed_sps$setup), 117)
+  expect_equal(nrow(mtf_2004_parsed_sps$setup), 116)
+  expect_equal(nrow(mtf_2002_parsed_sps$setup), 108)
+  expect_equal(nrow(mtf_1993_parsed_sps$setup), 111)
 
 
 
@@ -52,6 +60,104 @@ test_that("Right number of columns", {
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(mtf_1999_parsed_sps$setup$begin),
+               c(1, 2, 3,
+                 4, 10, 14))
+  expect_equal(head(mtf_1999_parsed_sps$setup$end),
+               c(1, 2, 3,
+                 9, 13, 14))
+  expect_equal(tail(mtf_1999_parsed_sps$setup$begin),
+               c(210, 212, 214,
+                 216, 218, 220))
+  expect_equal(tail(mtf_1999_parsed_sps$setup$end),
+               c(211, 213, 215,
+                 217, 219, 224))
+
+
+  expect_equal(head(mtf_2003_parsed_sps$setup$begin),
+               c(1, 6, 7,
+                 8, 9, 16))
+  expect_equal(head(mtf_2003_parsed_sps$setup$end),
+               c(5, 6, 7,
+                 8, 15, 19))
+  expect_equal(tail(mtf_2003_parsed_sps$setup$begin),
+               c(213, 215, 217,
+                 219, 221, 223))
+  expect_equal(tail(mtf_2003_parsed_sps$setup$end),
+               c(214, 216, 218,
+                 220, 222, 224))
+
+
+  expect_equal(head(mtf_1990_parsed_sps$setup$begin),
+               c(1, 3, 4,
+                 9, 14, 15))
+  expect_equal(head(mtf_1990_parsed_sps$setup$end),
+               c(2, 3, 8,
+                 13, 14, 15))
+  expect_equal(tail(mtf_1990_parsed_sps$setup$begin),
+               c(116, 117, 118,
+                 119, 123, 124))
+  expect_equal(tail(mtf_1990_parsed_sps$setup$end),
+               c(116, 117, 118,
+                 122, 123, 124))
+
+
+  expect_equal(head(mtf_1989_parsed_sps$setup$begin),
+               c(1, 3, 4,
+                 9, 14, 15))
+  expect_equal(head(mtf_1989_parsed_sps$setup$end),
+               c(2, 3, 8,
+                 13, 14, 15))
+  expect_equal(tail(mtf_1989_parsed_sps$setup$begin),
+               c(122, 123, 124,
+                 125, 129, 130))
+  expect_equal(tail(mtf_1989_parsed_sps$setup$end),
+               c(122, 123, 124,
+                 128, 129, 130))
+
+
+  expect_equal(head(mtf_2004_parsed_sps$setup$begin),
+               c(1, 3, 4,
+                 9, 14, 15))
+  expect_equal(head(mtf_2004_parsed_sps$setup$end),
+               c(2, 3, 8,
+                 13, 14, 15))
+  expect_equal(tail(mtf_2004_parsed_sps$setup$begin),
+               c(121, 122, 123,
+                 124, 128, 129))
+  expect_equal(tail(mtf_2004_parsed_sps$setup$end),
+               c(121, 122, 123,
+                 127, 128, 129))
+
+
+  expect_equal(head(mtf_2002_parsed_sps$setup$begin),
+               c(1, 2, 3,
+                 4, 10, 14))
+  expect_equal(head(mtf_2002_parsed_sps$setup$end),
+               c(1, 2, 3,
+                 9, 13, 14))
+  expect_equal(tail(mtf_2002_parsed_sps$setup$begin),
+               c(210, 212, 214,
+                 216, 218, 220))
+  expect_equal(tail(mtf_2002_parsed_sps$setup$end),
+               c(211, 213, 215,
+                 217, 219, 224))
+
+
+  expect_equal(head(mtf_1993_parsed_sps$setup$begin),
+               c(1, 3, 4,
+                 9, 14, 15))
+  expect_equal(head(mtf_1993_parsed_sps$setup$end),
+               c(2, 3, 8,
+                 13, 14, 15))
+  expect_equal(tail(mtf_1993_parsed_sps$setup$begin),
+               c(116, 117, 118,
+                 119, 123, 124))
+  expect_equal(tail(mtf_1993_parsed_sps$setup$end),
+               c(116, 117, 118,
+                 122, 123, 124))
 
 
 
@@ -1193,34 +1299,34 @@ test_that("Column names are correct", {
                  "HQ6_4_7_total_months_gone_in_last_1_year"))
 
 
-    expect_equal(head(escolar_parsed_sps$setup$column_number),
-                 c("MASCARA",
-                   "ANO",
-                   "CODMUNIC",
-                   "UF",
-                   "SIGLA",
-                   "MUNIC"))
-    expect_equal(tail(escolar_parsed_sps$setup$column_number),
-                 c("VTE165",
-                   "VTE166",
-                   "VTE167",
-                   "VTE168",
-                   "VTE169",
-                   "VTE16A"))
-    expect_equal(head(escolar_parsed_sps$setup$column_name),
-                 c("MASCARA",
-                   "ANO",
-                   "CODMUNIC",
-                   "UF",
-                   "SIGLA",
-                   "MUNIC"))
-    expect_equal(tail(escolar_parsed_sps$setup$column_name),
-                 c("VTE165",
-                   "VTE166",
-                   "VTE167",
-                   "VTE168",
-                   "VTE169",
-                   "VTE16A"))
+  expect_equal(head(escolar_parsed_sps$setup$column_number),
+               c("MASCARA",
+                 "ANO",
+                 "CODMUNIC",
+                 "UF",
+                 "SIGLA",
+                 "MUNIC"))
+  expect_equal(tail(escolar_parsed_sps$setup$column_number),
+               c("VTE165",
+                 "VTE166",
+                 "VTE167",
+                 "VTE168",
+                 "VTE169",
+                 "VTE16A"))
+  expect_equal(head(escolar_parsed_sps$setup$column_name),
+               c("MASCARA",
+                 "ANO",
+                 "CODMUNIC",
+                 "UF",
+                 "SIGLA",
+                 "MUNIC"))
+  expect_equal(tail(escolar_parsed_sps$setup$column_name),
+               c("VTE165",
+                 "VTE166",
+                 "VTE167",
+                 "VTE168",
+                 "VTE169",
+                 "VTE16A"))
 
 
   expect_equal(head(step_in_parsed_sps$setup$column_number),
@@ -1496,4 +1602,156 @@ test_that("Column names are correct", {
                  "VTE1CA"))
 
 
+
+  expect_equal(head(mtf_1999_parsed_sps$setup$column_number),
+               c("V13", "V16", "V17",
+                 "V5", "V1", "V3"))
+  expect_equal(head(mtf_1999_parsed_sps$setup$column_name),
+               c("X992_SCHL_RGN_4_CAT",
+                 "X992_SELF_REP_NOT_0",
+                 "X992_SMSA_NON_SMSA_0",
+                 "SAMPLING_WEIGHT",
+                 "YEAR_OF_ADMIN_4_DIGITS",
+                 "X992_FORM_ID"))
+  expect_equal(tail(mtf_1999_parsed_sps$setup$column_number),
+               c("V113", "V114", "V205",
+                 "V206", "V207", "CASEID"))
+  expect_equal(tail(mtf_1999_parsed_sps$setup$column_name),
+               c("X991B19B_X_MARJ_LAST12MO",
+                 "X991B19C_X_MARJ_LAST30DA",
+                 "X9915C32_R_S_BRANCH_SERV",
+                 "X9915C33_R_XPCTS_BE_OFFCR",
+                 "X9915C34_R_XPCTS_MLTR_CR",
+                 "CASE_IDENTIFICATION_NUMBER"))
+
+
+  expect_equal(head(mtf_2003_parsed_sps$setup$column_number),
+               c("CASEID", "V13", "V16",
+                 "V17", "V5", "V1"))
+  expect_equal(head(mtf_2003_parsed_sps$setup$column_name),
+               c("CASE_IDENTIFICATION_NUMBER",
+                 "X022_SCHL_RGN_4_CAT",
+                 "X022_SELF_REP_NOT_0",
+                 "X022_SMSA_NON_SMSA_0",
+                 "SAMPLING_WEIGHT",
+                 "YEAR_OF_ADMIN_4_DIGITS"))
+  expect_equal(tail(mtf_2003_parsed_sps$setup$column_number),
+               c("V112", "V113", "V114",
+                 "V205", "V206", "V207"))
+  expect_equal(tail(mtf_2003_parsed_sps$setup$column_name),
+               c("X021B019A_X_MARJ_LIFETIM",
+                 "X021B019B_X_MARJ_LAST12M",
+                 "X021B019C_X_MARJ_LAST30D",
+                 "X0215C32_R_S_BRANCH_SERV",
+                 "X0215C33_R_XPCTS_B_OFFCR",
+                 "X0215C34_R_XPCTS_MLTR_CR"))
+
+
+  expect_equal(head(mtf_1990_parsed_sps$setup$column_number),
+               c("V1", "V3", "V4",
+                 "V5", "V13", "V16"))
+  expect_equal(head(mtf_1990_parsed_sps$setup$column_name),
+               c("X902_YEAR_OF_ADMINST",
+                 "X902_FORM_ID",
+                 "X902_R_S_ID_SERIAL",
+                 "X902_SAMPLING_WEIGHT",
+                 "X902_SCHL_RGN_4_CAT",
+                 "X902_SELF_REP_NOT_0"))
+  expect_equal(tail(mtf_1990_parsed_sps$setup$column_number),
+               c("V145", "V146", "V147",
+                 "V208", "V209", "V210"))
+  expect_equal(tail(mtf_1990_parsed_sps$setup$column_name),
+               c("X902B17A_X_INHL_LIFETIME",
+                 "X902B17B_X_INHL_LAST12MO",
+                 "X902B17C_X_INHL_LAST30DA",
+                 "ICPSR_STUDY_NUMBER",
+                 "ICPSR_EDITION_NUMBER",
+                 "ICPSR_PART_NUMBER"))
+
+  expect_equal(head(mtf_1989_parsed_sps$setup$column_number),
+               c("V1", "V3", "V4",
+                 "V5", "V13", "V16"))
+  expect_equal(head(mtf_1989_parsed_sps$setup$column_name),
+               c("X892_YEAR_OF_ADMINST",
+                 "X892_FORM_ID",
+                 "X892_R_S_ID_SERIAL",
+                 "X892_SAMPLING_WEIGHT",
+                 "X892_SCHL_RGN_4_CAT",
+                 "X892_SELF_REP_NOT_0"))
+  expect_equal(tail(mtf_1989_parsed_sps$setup$column_number),
+               c("V205", "V206", "V207",
+                 "V208", "V209", "V210"))
+  expect_equal(tail(mtf_1989_parsed_sps$setup$column_name),
+               c("X892C32_R_S_BRANCH_SERV",
+                 "X892C33_R_XPCTS_B_OFFCR",
+                 "X892C34_R_XPCTS_MLTR_CR",
+                 "ICPSR_STUDY_NUMBER_9397",
+                 "ICPSR_VERSION_NUMBER_1",
+                 "ICPSR_PART_NUMBER_1"))
+
+
+  expect_equal(head(mtf_2004_parsed_sps$setup$column_number),
+               c("V1", "V3", "V4",
+                 "V5", "V13", "V16"))
+  expect_equal(head(mtf_2004_parsed_sps$setup$column_name),
+               c("X805_YEAR_OF_ADMINST",
+                 "X805_FORM_ID",
+                 "X805_R_S_ID_SERIAL",
+                 "X805_SAMPLING_WEIGHT",
+                 "X805_SCHL_RGN_4_CAT",
+                 "X805_SELF_REP_NOT_0"))
+  expect_equal(tail(mtf_2004_parsed_sps$setup$column_number),
+               c("V205", "V206", "V207",
+                 "V9001", "V9002", "V9003"))
+  expect_equal(tail(mtf_2004_parsed_sps$setup$column_name),
+               c("X805C32_R_S_BRANCH_SERV",
+                 "X805C33_R_XPCTS_B_OFFCR",
+                 "X805C34_R_XPCTS_MLTR_CR",
+                 "ICPSR_STUDY_NUMBER",
+                 "ICPSR_PART_NUMBER",
+                 "ICPSR_DATA_VERSION_NO"))
+
+
+  expect_equal(head(mtf_2002_parsed_sps$setup$column_number),
+               c("V13", "V16", "V17",
+                 "V5", "V1", "V3"))
+  expect_equal(head(mtf_2002_parsed_sps$setup$column_name),
+               c("X012_SCHL_RGN_4_CAT",
+                 "X012_SELF_REP_NOT_0",
+                 "X012_SMSA_NON_SMSA_0",
+                 "SAMPLING_WEIGHT",
+                 "YEAR_OF_ADMIN_4_DIGITS",
+                 "X012_FORM_ID"))
+  expect_equal(tail(mtf_2002_parsed_sps$setup$column_number),
+               c("V113", "V114", "V205",
+                 "V206", "V207", "CASEID"))
+  expect_equal(tail(mtf_2002_parsed_sps$setup$column_name),
+               c("X011B019B_X_MARJ_LAST12M",
+                 "X011B019C_X_MARJ_LAST30D",
+                 "X0115C32_R_S_BRANCH_SERV",
+                 "X0115C33_R_XPCTS_B_OFFCR",
+                 "X0115C34_R_XPCTS_MLTR_CR",
+                 "CASE_IDENTIFICATION_NUMBER"))
+
+
+  expect_equal(head(mtf_1993_parsed_sps$setup$column_number),
+               c("V1", "V3", "V4",
+                 "V5", "V13", "V16"))
+  expect_equal(head(mtf_1993_parsed_sps$setup$column_name),
+               c("X922_YEAR_OF_ADMINST",
+                 "X922_FORM_ID",
+                 "X922_R_S_ID_SERIAL",
+                 "X922_SAMPLING_WEIGHT",
+                 "X922_SCHL_RGN_4_CAT",
+                 "X922_SELF_REP_NOT_0"))
+  expect_equal(tail(mtf_1993_parsed_sps$setup$column_number),
+               c("V145", "V146", "V147",
+                 "V208", "V209", "V210"))
+  expect_equal(tail(mtf_1993_parsed_sps$setup$column_name),
+               c("X922B17A_X_INHL_LIFETIME",
+                 "X922B17B_X_INHL_LAST12MO",
+                 "X922B17C_X_INHL_LAST30DA",
+                 "ICPSR_STUDY_NUMBER",
+                 "ICPSR_EDITION_NUMBER",
+                 "ICPSR_PART_NUMBER"))
 })
