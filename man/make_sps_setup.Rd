@@ -4,8 +4,14 @@
 \alias{make_sps_setup}
 \title{Create an SPSS setup file (.sps) to use for reading in fixed-width text files}
 \usage{
-make_sps_setup(file_name, col_positions, col_names = NULL,
-  col_labels = NULL, value_labels = NULL, missing_values = NULL)
+make_sps_setup(
+  file_name,
+  col_positions,
+  col_names = NULL,
+  col_labels = NULL,
+  value_labels = NULL,
+  missing_values = NULL
+)
 }
 \arguments{
 \item{file_name}{Name of the file to be saved (e.g. "setup_file1"). There is no need to put

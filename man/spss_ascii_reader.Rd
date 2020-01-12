@@ -4,8 +4,14 @@
 \alias{spss_ascii_reader}
 \title{Read fixed-width ASCII file using SPSS Setup file.}
 \usage{
-spss_ascii_reader(dataset_name, sps_name, value_label_fix = TRUE,
-  real_names = TRUE, keep_columns = NULL, coerce_numeric = TRUE)
+spss_ascii_reader(
+  dataset_name,
+  sps_name,
+  value_label_fix = TRUE,
+  real_names = TRUE,
+  keep_columns = NULL,
+  coerce_numeric = TRUE
+)
 }
 \arguments{
 \item{dataset_name}{Name of the ASCII (.txt) file that contains the data.
@@ -73,6 +79,7 @@ example4 <- spss_ascii_reader(dataset_name = dataset_name,
 \seealso{
 \code{\link{sas_ascii_reader()}} For using an SAS setup file
 
-Other ASCII Reader functions: \code{\link{sas_ascii_reader}}
+Other ASCII Reader functions: 
+\code{\link{sas_ascii_reader}()}
 }
 \concept{ASCII Reader functions}

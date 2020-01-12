@@ -4,9 +4,14 @@
 \alias{read_ascii_setup}
 \title{Read fixed-width ASCII file using SPSS or SAS Setup file.}
 \usage{
-read_ascii_setup(data, setup_file, use_value_labels = TRUE,
-  use_clean_names = TRUE, select_columns = NULL,
-  coerce_numeric = TRUE)
+read_ascii_setup(
+  data,
+  setup_file,
+  use_value_labels = TRUE,
+  use_clean_names = TRUE,
+  select_columns = NULL,
+  coerce_numeric = TRUE
+)
 }
 \arguments{
 \item{data}{Name of the ASCII (.txt or .dat) file that contains the data.
