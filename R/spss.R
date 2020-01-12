@@ -76,7 +76,6 @@ spss_ascii_reader <- function(dataset_name,
   setup$setup <- selected_columns(keep_columns, setup$setup)
 
   data <- read_data(dataset_name, setup)
-  #data2 <- read_data_vroom(dataset_name, setup)
 
 
   data <- fix_value_labels(data, setup, value_label_fix)

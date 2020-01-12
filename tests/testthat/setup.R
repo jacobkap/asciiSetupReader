@@ -215,6 +215,12 @@ mtf_2002_sps_name     <- system.file("testdata",
 mtf_1993_sps_name     <- system.file("testdata",
                                  "monitoring_the_future_1993_sps.zip",
                                  package = "asciiSetupReader")
+mtf_1991_sps_name     <- system.file("testdata",
+                                     "monitoring_the_future_1991_sps.zip",
+                                     package = "asciiSetupReader")
+mtf_1992_sps_name     <- system.file("testdata",
+                                     "monitoring_the_future_1992_sps.zip",
+                                     package = "asciiSetupReader")
 
 
 cambridge_sas_name     <- system.file("testdata",
@@ -555,6 +561,8 @@ mtf_1989_parsed_sps      <- parse_setup(mtf_1989_sps_name)
 mtf_2004_parsed_sps      <- parse_setup(mtf_2004_sps_name)
 mtf_2002_parsed_sps      <- parse_setup(mtf_2002_sps_name)
 mtf_1993_parsed_sps      <- parse_setup(mtf_1993_sps_name)
+mtf_1991_parsed_sps      <- parse_setup(mtf_1991_sps_name)
+mtf_1992_parsed_sps      <- parse_setup(mtf_1992_sps_name)
 
 
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)

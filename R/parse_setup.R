@@ -109,6 +109,7 @@ parse_setup <- function(setup_file) {
   } else {
     missing <- NULL
   }
+  missing <- missing[!duplicated(missing), ]
 
   value_labels <- get_value_labels(codebook, setup, type = type)
   setup <- stats::setNames(list(setup, value_labels, missing),
