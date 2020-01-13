@@ -77,7 +77,7 @@ example4 <- spss_ascii_reader(dataset_name = dataset_name,
 
 }
 \seealso{
-\code{\link{sas_ascii_reader()}} For using an SAS setup file
+\code{\link{sas_ascii_reader}} For using an SAS setup file
 
 Other ASCII Reader functions: 
 \code{\link{sas_ascii_reader}()}

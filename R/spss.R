@@ -9,7 +9,7 @@
 #' in government data, particular data produced before 2010.
 #'
 #' @family ASCII Reader functions
-#' @seealso \code{\link{sas_ascii_reader()}} For using an SAS setup file
+#' @seealso \code{\link{sas_ascii_reader}} For using an SAS setup file
 #'
 #' @param dataset_name Name of the ASCII (.txt) file that contains the data.
 #'   This file may be zipped with a file extension of .zip.
