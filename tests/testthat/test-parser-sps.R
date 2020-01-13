@@ -55,6 +55,7 @@ test_that("Right number of columns", {
   expect_equal(nrow(mtf_1993_parsed_sps$setup), 111)
   expect_equal(nrow(mtf_1991_parsed_sps$setup), 111)
   expect_equal(nrow(mtf_1992_parsed_sps$setup), 111)
+  expect_equal(nrow(mtf_1979_parsed_sps$setup), 293)
 
 
 
@@ -62,6 +63,19 @@ test_that("Right number of columns", {
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+  expect_equal(head(mtf_1979_parsed_sps$setup$begin),
+               c(1, 3, 4,
+                 9, 14, 15))
+  expect_equal(head(mtf_1979_parsed_sps$setup$end),
+               c(2, 3, 8,
+                 13, 14, 15))
+  expect_equal(tail(mtf_1979_parsed_sps$setup$begin),
+               c(299, 300, 301,
+                 302, 306, 307))
+  expect_equal(tail(mtf_1979_parsed_sps$setup$end),
+               c(299, 300, 301,
+                 305, 306, 307))
 
   expect_equal(head(mtf_1991_parsed_sps$setup$begin),
                c(1, 3, 4,
@@ -1827,4 +1841,26 @@ test_that("Column names are correct", {
                  "ICPSR_STUDY_NUMBER",
                  "ICPSR_EDITION_NUMBER",
                  "ICPSR_PART_NUMBER"))
+
+
+  expect_equal(head(mtf_1979_parsed_sps$setup$column_number),
+               c("V1", "V3", "V4",
+                 "V5", "V13", "V16"))
+  expect_equal(head(mtf_1979_parsed_sps$setup$column_name),
+               c("X794_YEAR_OF_ADMINST",
+                 "X794_FORM_ID",
+                 "X794_R_S_ID_SERIAL",
+                 "X794_SAMPLING_WEIGHT",
+                 "X792_SCHL_RGN_4_CAT",
+                 "X792_SELF_REP_NOT_0"))
+  expect_equal(tail(mtf_1979_parsed_sps$setup$column_number),
+               c("V4382", "V4383", "V4384",
+                 "V9001", "V9002", "V9003"))
+  expect_equal(tail(mtf_1979_parsed_sps$setup$column_name),
+               c("DUMMY_ITEM_DELETED_IN_79",
+                 "DUMMY_ITEM_DELETED_IN_79",
+                 "DUMMY_ITEM_DELETED_IN_79",
+                 "ICPSR_STUDY_NUMBER",
+                 "ICPSR_PART_NUMBER",
+                 "ICPSR_VERSION_NUMBER"))
 })

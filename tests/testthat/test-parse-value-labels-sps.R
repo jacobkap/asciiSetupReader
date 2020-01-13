@@ -60,7 +60,61 @@ test_that("Number of value label columns are correct", {
    expect_equal(length(mtf_1993_parsed_sps$value_labels), 109)
    expect_equal(length(mtf_1991_parsed_sps$value_labels), 109)
    expect_equal(length(mtf_1992_parsed_sps$value_labels), 109)
+  # expect_equal(length(mtf_1979_parsed_sps$value_labels), )
 
+})
+
+test_that("Monitoring the Future 1979 - parsed value labels are accurate", {
+
+  expect_equal(head(names(mtf_1979_parsed_sps$value_labels)),
+               c("V1",
+                 "V3",
+                 "V13",
+                 "V16",
+                 "V17",
+                 "V4101"))
+  expect_equal(tail(names(mtf_1979_parsed_sps$value_labels)),
+               c("V4371",
+                 "V4372",
+                 "V4373",
+                 "V4374",
+                 "V9001",
+                 "V9002"))
+
+  expect_equal(mtf_1979_parsed_sps$value_labels$V1,
+               c("1979" = "79"))
+  expect_equal(mtf_1979_parsed_sps$value_labels$V3,
+               c("FORM 4" = "4"))
+  expect_equal(mtf_1979_parsed_sps$value_labels$V4103,
+               c("NO:(1)" = "1",
+                 "YES:(2)" = "2"))
+  expect_equal(mtf_1979_parsed_sps$value_labels$V4158,
+               c("NO" = "0",
+                 "YES" = "1"))
+  expect_equal(mtf_1979_parsed_sps$value_labels$V4245,
+               c("NOT IMPORTANT" = "1",
+                 "A LITTLE IMPORTANT" = "2",
+                 "PRETTY IMPORTANT" = "3",
+                 "VERY IMPORTANT" = "4"))
+  expect_equal(mtf_1979_parsed_sps$value_labels$V4248,
+               c("LABORER (CAR WASHER, SANITARY WORKER, FARM LABORER)" = "1",
+                 "SERVICE WORKER" = "2",
+                 "OPERATIVE OR SEMI-SKILLED WORKER" = "3",
+                 "SALES CLERK IN A RETAIL STORE" = "4",
+                 "CLERICAL OR OFFICE WORKER" = "5",
+                 "PROTECTIVE SERVICE (POLICE OFFICER, FIREMAN, DETECTIVE)" = "6",
+                 "MILITARY SERVICE" = "7",
+                 "CRAFTSMAN OR SKILLED WORKER" = "8",
+                 "FARM OWNER, FARM MANAGER" = "9",
+                 "OWNER OF SMALL BUSINESS (RESTAURANT OWNER, SHOP OWNER)" = "10",
+                 "SALES REPRESENTATIVE" = "11",
+                 "MANAGER OR ADMINISTRATOR" = "12",
+                 "PROFESSIONAL WITHOUT DOCTORAL DEGREE" = "13",
+                 "PROFESSIONAL WITH DOCTORAL DEGREE OR EQUIVALENT" = "14",
+                 "FULL-TIME HOMEMAKER OR HOUSEWIFE" = "15",
+                 "DON T KNOW-GO TO Q.A13" = "16"))
+  expect_equal(mtf_1979_parsed_sps$value_labels$V9002,
+               c("PART 4: FORM 4 QUESTIONNAIRE" = "4"))
 })
 
 test_that("Monitoring the Future 1992 - parsed value labels are accurate", {

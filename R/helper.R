@@ -66,6 +66,8 @@ value_label_matrixer <- function(value_label, type) {
 
   value_label <- gsub('\\"', "\\'",
                       value_label)
+  value_label <- gsub("A 'NECESSARY", "A NECESSARY",
+                      value_label)
   value_label <- gsub("^''", "'####BLANK####'",
                       value_label)
   value_label <- gsub("^' '", "'####SPACE####'",

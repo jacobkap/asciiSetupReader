@@ -110,6 +110,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(mtf_1993_sps_name))
   expect_silent(parse_setup(mtf_1991_sps_name))
   expect_silent(parse_setup(mtf_1992_sps_name))
+  expect_silent(parse_setup(mtf_1979_sps_name))
 
 })
 

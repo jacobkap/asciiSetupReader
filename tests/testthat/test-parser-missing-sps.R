@@ -54,6 +54,7 @@ test_that("Right number of missing values", {
   expect_equal(nrow(mtf_1993_parsed_sps$missing), 206)
   expect_equal(nrow(mtf_1991_parsed_sps$missing), 206)
   expect_equal(nrow(mtf_1992_parsed_sps$missing), 206)
+  expect_equal(nrow(mtf_1979_parsed_sps$missing), 544)
 })
 
 
@@ -824,5 +825,28 @@ test_that("Monitoring the Future 1992 has right missing values", {
   expect_equal(tail(unique(mtf_1992_parsed_sps$missing$variable)),
                c("V142", "V143", "V144",
                  "V145", "V146", "V147"))
+})
+
+test_that("Monitoring the Future 1979 has right missing values", {
+  expect_equal(head(mtf_1979_parsed_sps$missing$variable),
+               c("V5", "V5", "V13",
+                 "V16", "V17", "V4101"))
+  expect_equal(head(mtf_1979_parsed_sps$missing$values),
+               c("9 THRU HI", "0", "9 THRU HI",
+                 "9 THRU HI", "9 THRU HI", "9 THRU HI"))
+
+  expect_equal(tail(mtf_1979_parsed_sps$missing$variable),
+               c("V4382", "V4382", "V4383",
+                 "V4383", "V4384", "V4384"))
+  expect_equal(tail(mtf_1979_parsed_sps$missing$values),
+               c("9 THRU HI", "0", "9 THRU HI",
+                 "0", "9 THRU HI", "0"))
+
+  expect_equal(head(unique(mtf_1979_parsed_sps$missing$variable)),
+               c("V5", "V13", "V16",
+                 "V17", "V4101", "V4102"))
+  expect_equal(tail(unique(mtf_1979_parsed_sps$missing$variable)),
+               c("V4379", "V4380", "V4381",
+                 "V4382", "V4383", "V4384"))
 })
 
