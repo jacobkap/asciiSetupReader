@@ -2,7 +2,7 @@ Type: Package
 Package: asciiSetupReader
 Title: Reads Fixed-Width ASCII Data Files (.txt or .dat) that
     Have Accompanying Setup Files (.sps or .sas)
-Version: 2.2.1
+Version: 2.3.0
 Authors@R: 
     person(given = "Jacob",
            family = "Kaplan",
@@ -26,6 +26,7 @@ Imports:
     data.table,
     haven,
     readr,
+    vroom,
     stringr,
     zoo,
     shiny (>= 0.13),

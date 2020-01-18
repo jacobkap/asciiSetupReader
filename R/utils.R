@@ -123,13 +123,13 @@ fix_missing <- function(data, missing) {
 
 
 read_data <- function(data, setup) {
-  positions <- readr::fwf_positions(setup$setup$begin,
+  positions <- vroom::fwf_positions(setup$setup$begin,
                                     setup$setup$end,
                                     setup$setup$column_number)
-  data <- suppressMessages(readr::read_fwf(data,
-                                            col_positions = positions,
-                                            col_types = readr::cols(.default =
-                                                                      readr::col_character())))
+  data <- suppressMessages(vroom::vroom_fwf(data,
+                                           col_positions = positions,
+                                           col_types = vroom::cols(.default =
+                                                                     vroom::col_character())))
   data <- data.table::as.data.table(data)
 
   return(data)
