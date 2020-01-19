@@ -5,7 +5,7 @@ Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](http
 Status](https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&svg=true)](https://ci.appveyor.com/project/jacobkap/asciiSetupReader)
 [![Coverage
 status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://codecov.io/github/jacobkap/asciiSetupReader?branch=master)
-[![](https://cranlogs.r-pkg.org/badges/asciiSetupReader)](https://CRAN.R-project.org/package=asciiSetupReader)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue)](https://cran.r-project.org/package=asciiSetupReader)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
 Overview
@@ -38,8 +38,9 @@ These parameters `data` and `setup_file` are the only ones requires to
 run the package though three optional parameters allow you to customize
 results.
 
-`data` - A string containing the name of the data file `setup_file` - A
-string containing the name of the data file
+`data` - A string containing the name of the data file
+
+`setup_file` - A string containing the name of the setup file
 
 Both files must be in your working directory or the string must contain
 the path to the file. Below is an example of reading in the example

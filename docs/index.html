@@ -118,7 +118,8 @@
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>These parameters <code>data</code> and <code>setup_file</code> are the only ones requires to run the package though three optional parameters allow you to customize results.</p>
-<p><code>data</code> - A string containing the name of the data file <code>setup_file</code> - A string containing the name of the data file</p>
+<p><code>data</code> - A string containing the name of the data file</p>
+<p><code>setup_file</code> - A string containing the name of the setup file</p>
 <p>Both files must be in your working directory or the string must contain the path to the file. Below is an example of reading in the example dataset - the original data and setup files can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</span>
 <span id="cb2-2"><a href="#cb2-2"></a>             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</span>
@@ -179,7 +180,7 @@
 <li><a href="https://travis-ci.org/jacobkap/asciiSetupReader"><img src="https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master" alt="Travis-CI Build Status"></a></li>
 <li><a href="https://ci.appveyor.com/project/jacobkap/asciiSetupReader"><img src="https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
 <li><a href="https://codecov.io/github/jacobkap/asciiSetupReader?branch=master"><img src="https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
-<li><a href="https://CRAN.R-project.org/package=asciiSetupReader"><img src="https://cranlogs.r-pkg.org/badges/asciiSetupReader"></a></li>
+<li><a href="https://cran.r-project.org/package=asciiSetupReader"><img src="http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a></li>
 </ul>
 </div>
