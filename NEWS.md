@@ -1,3 +1,7 @@
+# asciiSetupReader 2.3.1
+
+* Fix bug caused by `vroom` not handling embedded nulls.
+
 # asciiSetupReader 2.3.0
 
 * Misc. bug fixes.
