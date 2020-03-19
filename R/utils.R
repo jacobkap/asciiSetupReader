@@ -51,6 +51,14 @@ get_column_spaces <- function(setup, variables, codebook) {
   setup$begin <- as.numeric(setup$begin)
   setup$end   <- as.numeric(setup$end)
 
+  # Checks if any begin values are > than end values
+  if (any(setup$begin > setup$end)) {
+
+    stop(paste0("The following columns have a start number greater than the end number. Please check your setup file and fix this issue before rerunning this code.",
+                paste("\nColumns with issue: ",
+                      setup$column_number[setup$begin > setup$end])))
+  }
+
 
   format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
   if (any(grepl2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook))) {
@@ -114,7 +122,7 @@ fix_missing <- function(data, missing) {
     data.table::set(data, j = column,
                     value = haven::as_factor(haven::labelled(data[[column]],
                                                              missing_values)))
-    # Resaves as character type instead of factor type
+    # Re-saves as character type instead of factor type
     data.table::set(data, j = column, value = as.character(data[[column]]))
 
   }

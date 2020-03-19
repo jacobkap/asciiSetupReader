@@ -1,6 +1,9 @@
 # asciiSetupReader 2.3.1
 
 * Fix bug caused by `vroom` not handling embedded nulls.
+* Fix bug where code would run even if start column number > end column number, but would crash code later.
+* Fix bug where code wouldn't run if .sps setup file read MISSING VALUE rather than MISSING VALUES.
+
 
 # asciiSetupReader 2.3.0
 

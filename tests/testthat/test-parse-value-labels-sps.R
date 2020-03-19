@@ -61,7 +61,7 @@ test_that("Number of value label columns are correct", {
    expect_equal(length(mtf_1991_parsed_sps$value_labels), 109)
    expect_equal(length(mtf_1992_parsed_sps$value_labels), 109)
   # expect_equal(length(mtf_1979_parsed_sps$value_labels), )
-
+   expect_true(is.null(missing_value_no_s_parsed_sps$value_labels))
 })
 
 test_that("Monitoring the Future 1979 - parsed value labels are accurate", {

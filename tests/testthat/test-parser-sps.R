@@ -59,10 +59,26 @@ test_that("Right number of columns", {
 
 
 
+
 })
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(missing_value_no_s_parsed_sps$setup$begin),
+               c(1, 5, 6,
+                 9, 10, 14))
+  expect_equal(head(missing_value_no_s_parsed_sps$setup$end),
+               c(4, 5, 8,
+                 9, 13, 17))
+  expect_equal(tail(missing_value_no_s_parsed_sps$setup$begin),
+               c(2299, 2301, 2303,
+                 2304, 2305, 2306))
+  expect_equal(tail(missing_value_no_s_parsed_sps$setup$end),
+               c(2300, 2302, 2303,
+                 2304, 2305, 2306))
+
 
   expect_equal(head(mtf_1979_parsed_sps$setup$begin),
                c(1, 3, 4,
@@ -748,6 +764,30 @@ test_that("Column numbers are correct", {
 
 test_that("Column names are correct", {
   skip_on_cran()
+
+
+  expect_equal(head(missing_value_no_s_parsed_sps$setup$column_number),
+               c("V1", "V2", "V3",
+                 "V4", "V5", "V6"))
+  expect_equal(head(missing_value_no_s_parsed_sps$setup$column_name),
+               c("ICPSR_STUDY_NUMBER_7779",
+                 "ICPSR_EDITION_NUMBER_1",
+                 "ICPSR_PART_NUMBER_001",
+                 "S_DATA_SOURCE",
+                 "S_INTERVIEW_NUMBER",
+                 "S_FILE_NUMBER"))
+  expect_equal(tail(missing_value_no_s_parsed_sps$setup$column_number),
+               c("V4018", "V4019", "V4020",
+                 "V4021", "V4022", "V4023"))
+  expect_equal(tail(missing_value_no_s_parsed_sps$setup$column_name),
+               c("S_F_T_WHITES_REC_82",
+                 "S_F_T_NEGROES_REC_82",
+                 "S_OPINION_STRENGTH_0MD",
+                 "S_SELF_CONFIDENCE_0MD_8",
+                 "S_PERSONAL_TRUST_0MD_82",
+                 "S_POLITICAL_TRUST_0MD_8"))
+
+
 
 
   expect_equal(head(cambridge_parsed_sps$setup$column_number),
