@@ -58,6 +58,30 @@ test_that("Right number of missing values", {
 })
 
 
+test_that("missing_value_no_s_parsed_sps has right missing values", {
+  expect_equal(head(missing_value_no_s_parsed_sps$missing$variable),
+               c("V10", "V12R1", "V12R1",
+                 "V12R2", "V12R2", "V12R3"))
+  expect_equal(head(missing_value_no_s_parsed_sps$missing$values),
+               c("999 THRU HIGHEST", "0", "96 THRU HIGHEST",
+                 "0", "96 THRU HIGHEST", "0"))
+
+  expect_equal(tail(missing_value_no_s_parsed_sps$missing$variable),
+               c("V4018", "V4019", "V4020",
+                 "V4021", "V4022", "V4023"))
+  expect_equal(tail(missing_value_no_s_parsed_sps$missing$values),
+               c("99 THRU HIGHEST", "99 THRU HIGHEST", "0",
+                 "0", "0", "0"))
+
+  expect_equal(head(unique(missing_value_no_s_parsed_sps$missing$variable)),
+               c("V10", "V12R1", "V12R2",
+                 "V12R3", "V13R1", "V13R2"))
+  expect_equal(tail(unique(missing_value_no_s_parsed_sps$missing$variable)),
+               c("V4018", "V4019", "V4020",
+                 "V4021", "V4022", "V4023"))
+})
+
+
 test_that("Cambridge has right missing values", {
   expect_equal(head(cambridge_parsed_sps$missing$variable),
                c("V7", "V8", "V10",

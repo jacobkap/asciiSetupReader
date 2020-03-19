@@ -131,7 +131,10 @@ parse_setup <- function(setup_file) {
 
 parse_missing_sps <- function(codebook, setup) {
 
-  start <- grep2("MISSING VALUES$", codebook)
+  start <- grep2("MISSING VALUES?$", codebook)
+  if (length(start) == 0) {
+    start <- grep2("MISSING VALUE RECODE", codebook)
+  }
   end <- grep2("EXECUTE|^\\*.*SPSS", codebook)
   if (length(end) == 0 | all(end <= start)) {
     end <- length(codebook)
@@ -146,6 +149,9 @@ parse_missing_sps <- function(codebook, setup) {
   missing <- gsub(",\\s+(-?[0-9]),", ", \\1,", missing)
   missing <- gsub(",\\s+(-?[0-9])\\)", ", \\1\\)", missing)
   missing <- gsub("([0-9]),([0-9])", "\\1, \\2", missing)
+  missing <- gsub("^RECODE (V\\S*) *", "\\1 ", missing)
+  missing <- gsub("=SYSMIS", "", missing)
+  missing <- gsub("([0-9], ) +(-?[0-9])", "\\1\\2", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
@@ -153,7 +159,6 @@ parse_missing_sps <- function(codebook, setup) {
                         stringsAsFactors = FALSE)
   missing$variable[missing$variable == ""] <- NA
   missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
-  # missing$values <- gsub("\\.$", "", missing$values)
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
@@ -165,7 +170,7 @@ parse_missing_sps <- function(codebook, setup) {
     }
   }
 
-  missing <- missing[missing$variable %in% setup$column_number, ]
+  missing <- missing[missing$variable %in% c(setup$column_number), ]
   if (nrow(missing) > 0) {
   missing <- make_thru_missing_rows(missing)
   rownames(missing) <- 1:nrow(missing)

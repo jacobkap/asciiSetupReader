@@ -45,6 +45,8 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(county_arrest_sas_name))
 
 
+
+
 })
 
 test_that("parse_setup is silent", {
@@ -111,6 +113,9 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(mtf_1991_sps_name))
   expect_silent(parse_setup(mtf_1992_sps_name))
   expect_silent(parse_setup(mtf_1979_sps_name))
+
+
+  expect_silent(parse_setup(missing_value_no_s_name))
 
 })
 

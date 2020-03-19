@@ -192,29 +192,29 @@ county_arrest_sps_name <- system.file("testdata",
                                       "county_arrest.sps",
                                       package = "asciiSetupReader")
 escolar_2006_sps_name <- system.file("testdata",
-                                  "escolar_2006_sps.zip",
-                                  package = "asciiSetupReader")
+                                     "escolar_2006_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_1999_sps_name     <- system.file("testdata",
                                      "monitoring_the_future_1999_sps.zip",
                                      package = "asciiSetupReader")
 mtf_2003_sps_name     <- system.file("testdata",
-                                 "monitoring_the_future_2003_sps.zip",
-                                 package = "asciiSetupReader")
+                                     "monitoring_the_future_2003_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_1990_sps_name     <- system.file("testdata",
-                                 "monitoring_the_future_1990_sps.zip",
-                                 package = "asciiSetupReader")
+                                     "monitoring_the_future_1990_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_1989_sps_name     <- system.file("testdata",
-                                 "monitoring_the_future_1989_sps.zip",
-                                 package = "asciiSetupReader")
+                                     "monitoring_the_future_1989_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_2004_sps_name     <- system.file("testdata",
-                                 "monitoring_the_future_2004_sps.zip",
-                                 package = "asciiSetupReader")
+                                     "monitoring_the_future_2004_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_2002_sps_name     <- system.file("testdata",
-                                 "monitoring_the_future_2002_sps.zip",
-                                 package = "asciiSetupReader")
+                                     "monitoring_the_future_2002_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_1993_sps_name     <- system.file("testdata",
-                                 "monitoring_the_future_1993_sps.zip",
-                                 package = "asciiSetupReader")
+                                     "monitoring_the_future_1993_sps.zip",
+                                     package = "asciiSetupReader")
 mtf_1991_sps_name     <- system.file("testdata",
                                      "monitoring_the_future_1991_sps.zip",
                                      package = "asciiSetupReader")
@@ -224,6 +224,9 @@ mtf_1992_sps_name     <- system.file("testdata",
 mtf_1979_sps_name     <- system.file("testdata",
                                      "monitoring_the_future_1979_sps.zip",
                                      package = "asciiSetupReader")
+missing_value_no_s_name  <- system.file("testdata",
+                                        "missing_value_no_s_setup_sps.zip",
+                                        package = "asciiSetupReader")
 
 
 cambridge_sas_name     <- system.file("testdata",
@@ -378,6 +381,9 @@ corrections_sas_name       <- system.file("testdata",
                                           package = "asciiSetupReader")
 sadc_sas_name              <- system.file("testdata",
                                           "2017_sadc_sas_input_program.sas",
+                                          package = "asciiSetupReader")
+starting_number_bigger_than_ending_number <- system.file("testdata",
+                                          "starting_number_bigger_than_ending_number.sps",
                                           package = "asciiSetupReader")
 
 
@@ -567,6 +573,7 @@ mtf_1993_parsed_sps      <- parse_setup(mtf_1993_sps_name)
 mtf_1991_parsed_sps      <- parse_setup(mtf_1991_sps_name)
 mtf_1992_parsed_sps      <- parse_setup(mtf_1992_sps_name)
 mtf_1979_parsed_sps      <- parse_setup(mtf_1979_sps_name)
+missing_value_no_s_parsed_sps <- parse_setup(missing_value_no_s_name)
 
 
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
