@@ -112,6 +112,18 @@ fix_missing <- function(data, missing) {
     missing_values <- missing$values[missing$variable == column]
     missing_values <- as.character(trimws(missing_values))
     missing_values <- gsub("\\'", "", missing_values)
+
+    if (any(grepl("thru hi", missing, ignore.case = TRUE))) {
+      thru_higher <- missing_values[grep("thru hi", missing_values, ignore.case = TRUE)]
+      thru_higher <- gsub(" thru hi.*", "", thru_higher, ignore.case = TRUE)
+      thru_higher <- as.numeric(thru_higher)
+      unique_values_numeric <- suppressWarnings(as.numeric(unique(data[[column]])))
+      unique_values_numeric <- unique_values_numeric[!is.na(unique_values_numeric)]
+      missing_values <- c(missing_values,
+                          unique_values_numeric[unique_values_numeric > thru_higher])
+      missing_values <- gsub(" thru hi.*", "", missing_values, ignore.case = TRUE)
+
+    }
     names(missing_values) <- NA
 
     # Sets character to column type in case it isn't already.
