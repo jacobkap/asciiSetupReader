@@ -5,6 +5,8 @@ output:
 html_preview: false
 ---
 
+<img src="man/figures/asciiSetupReader_badge.png" align="right"  width = "120"/>
+
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader)
 [![Travis-CI Build
 Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader) 

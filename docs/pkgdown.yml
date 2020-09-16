@@ -1,8 +1,9 @@
 pandoc: 2.9.1
-pkgdown: 1.4.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   Introduction_to_asciiSetupReader: Introduction_to_asciiSetupReader.html
   making-an-sps-file: making-an-sps-file.html
   parsing-an-sps-or-sas-file: parsing-an-sps-or-sas-file.html
+last_built: 2020-09-16T19:12Z
 

@@ -1,3 +1,5 @@
+<img src="man/figures/asciiSetupReader_badge.png" align="right"  width = "120"/>
+
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader)
 [![Travis-CI Build
 Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader)

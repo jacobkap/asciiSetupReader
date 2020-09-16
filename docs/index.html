@@ -7,10 +7,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reads Fixed-Width ASCII Data Files (.txt or .dat) that
     Have Accompanying Setup Files (.sps or .sas) • asciiSetupReader</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Reads Fixed-Width ASCII Data Files (.txt or .dat) that
     Have Accompanying Setup Files (.sps or .sas)">
 <meta property="og:description" content="Lets you open a fixed-width ASCII file (.txt or
@@ -21,13 +22,12 @@
     file. It will NOT open other text files, .sav, .sas, or .por data
     files. Fixed-width ASCII files with setup files are common in older
     (pre-2000) government data.">
-<meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/jacobkap/asciiSetupReader">
+  <a href="https://github.com/jacobkap/asciiSetupReader/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -97,7 +97,8 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-
+<p><img src="reference/figures/asciiSetupReader_badge.png" align="right" width="120"></p>
+<p><a href="https://cran.r-project.org/package=asciiSetupReader"><img src="https://www.r-pkg.org/badges/version/asciiSetupReader" alt="CRAN_Status_Badge"></a> <a href="https://travis-ci.org/jacobkap/asciiSetupReader"><img src="https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master" alt="Travis-CI Build Status"></a> <a href="https://ci.appveyor.com/project/jacobkap/asciiSetupReader"><img src="https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a> <a href="https://codecov.io/github/jacobkap/asciiSetupReader?branch=master"><img src="https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg" alt="Coverage status"></a> <a href="https://cran.r-project.org/package=asciiSetupReader"><img src="http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue"></a> <a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a></p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -107,12 +108,12 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>To install this package, use the code</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"asciiSetupReader"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">install.packages</span>(<span class="st">"asciiSetupReader"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a></span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="co"># The development version is available on Github.</span></span>
 <span id="cb1-6"><a href="#cb1-6"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"jacobkap/asciiSetupReader"</span>)</span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"jacobkap/asciiSetupReader"</span>)</span></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
@@ -121,14 +122,16 @@
 <p><code>data</code> - A string containing the name of the data file</p>
 <p><code>setup_file</code> - A string containing the name of the setup file</p>
 <p>Both files must be in your working directory or the string must contain the path to the file. Below is an example of reading in the example dataset - the original data and setup files can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3"></a>setup_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>             <span class="dt">package =</span> <span class="st">"asciiSetupReader"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5"></a></span>
-<span id="cb2-6"><a href="#cb2-6"></a>example &lt;-<span class="st"> </span>asciiSetupReader<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/asciiSetupReader/man/read_ascii_setup.html">read_ascii_setup</a></span>(<span class="dt">data =</span> data,</span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="dt">setup_file =</span> setup_file)</span>
-<span id="cb2-8"><a href="#cb2-8"></a>example[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,
+             package = <span class="st">"asciiSetupReader"</span>)
+<span class="kw">setup_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,
+             package = <span class="st">"asciiSetupReader"</span>)
+
+<span class="kw">example</span> <span class="op">&lt;-</span> <span class="kw">asciiSetupReader</span>::<span class="fu"><a href="reference/read_ascii_setup.html">read_ascii_setup</a></span>(data = <span class="kw">data</span>,
+setup_file = <span class="kw">setup_file</span>)
+<span class="kw">example</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>] <span class="co"># Look at first 6 rows and first 4 columns</span>
+</pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">##   IDENTIFIER_CODE NUMERIC_STATE_CODE ORI_CODE             GROUP</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="co">## 1 SHR master file            Alabama  AL00112 Cit 50,000-99,999</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co">## 2 SHR master file            Alabama  AL00112 Cit 50,000-99,999</span></span>
@@ -140,13 +143,13 @@
 
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=asciiSetupReader">https://​cloud.r-project.org/​package=asciiSetupReader</a>
 </li>
-<li>Browse source code at <br><a href="https://github.com/jacobkap/asciiSetupReader">https://​github.com/​jacobkap/​asciiSetupReader</a>
+<li>Browse source code at <br><a href="https://github.com/jacobkap/asciiSetupReader/">https://​github.com/​jacobkap/​asciiSetupReader/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/jacobkap/asciiSetupReader/issues">https://​github.com/​jacobkap/​asciiSetupReader/​issues</a>
 </li>
@@ -169,22 +172,11 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Jacob Kaplan <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0601-0387" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Jacob Kaplan <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0601-0387" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=asciiSetupReader"><img src="https://www.r-pkg.org/badges/version/asciiSetupReader" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://travis-ci.org/jacobkap/asciiSetupReader"><img src="https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="https://ci.appveyor.com/project/jacobkap/asciiSetupReader"><img src="https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
-<li><a href="https://codecov.io/github/jacobkap/asciiSetupReader?branch=master"><img src="https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
-<li><a href="https://cran.r-project.org/package=asciiSetupReader"><img src="http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 
@@ -193,7 +185,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
