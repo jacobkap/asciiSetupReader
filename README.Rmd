@@ -1,12 +1,18 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
-html_preview: false
+output: github_document
 ---
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
-<img src="man/figures/asciiSetupReader_badge.png" align="right"  width = "120"/>
+# asciiSetupReader <img src="man/figures/asciiSetupReader_badge.png" align="right"  height = "139"/>
 
+<!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader)
 [![Travis-CI Build
 Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](https://travis-ci.org/jacobkap/asciiSetupReader) 
@@ -14,7 +20,7 @@ Status](https://travis-ci.org/jacobkap/asciiSetupReader.png?branch=master)](http
 [![Coverage status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://codecov.io/github/jacobkap/asciiSetupReader?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue)](https://cran.r-project.org/package=asciiSetupReader)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-
+<!-- badges: end -->
 
 ## Overview
 
