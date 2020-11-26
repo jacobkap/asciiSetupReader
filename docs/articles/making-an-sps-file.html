@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -85,13 +85,13 @@
 
       
 
-      </header><script src="making-an-sps-file_files/header-attrs-2.3.2/header-attrs.js"></script><script src="making-an-sps-file_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="making-an-sps-file_files/header-attrs-2.4/header-attrs.js"></script><script src="making-an-sps-file_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Making an .sps file</h1>
                         <h4 class="author">Jacob Kaplan</h4>
             
-            <h4 class="date">2020-10-01</h4>
+            <h4 class="date">2020-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/master/vignettes/making-an-sps-file.Rmd"><code>vignettes/making-an-sps-file.Rmd</code></a></small>
       <div class="hidden name"><code>making-an-sps-file.Rmd</code></div>
@@ -127,24 +127,21 @@
 <a href="#col_positions" class="anchor"></a>col_positions</h2>
 <p>This is a vector either of strings indicating the width of each column (starting at 1) or the starting and ending point of that column with a “-” between the start and end number.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw">col_positions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"1-1"</span>, <span class="st">"2-3"</span>, <span class="st">"4-5"</span>, <span class="st">"6-11"</span>)
-</pre></div>
+<span class="va">col_positions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1-1"</span>, <span class="st">"2-3"</span>, <span class="st">"4-5"</span>, <span class="st">"6-11"</span><span class="op">)</span></pre></div>
 </div>
 <div id="col_names" class="section level2">
 <h2 class="hasAnchor">
 <a href="#col_names" class="anchor"></a>col_names</h2>
 <p>This is a vector of strings with names for the column. Only useful if the guide you’re following to make this .sps file includes these names and you want to be exact. If you don’t include this, it will just name the columns V1:Vnumber_of_columns.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">col_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span>, <span class="st">"var4"</span>)
-</pre></div>
+<span class="va">col_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span>, <span class="st">"var4"</span><span class="op">)</span></pre></div>
 </div>
 <div id="col_labels" class="section level2">
 <h2 class="hasAnchor">
 <a href="#col_labels" class="anchor"></a>col_labels</h2>
 <p>This is the same as col_names but each column name should be the descriptive name of the column. These names are the ones that will be used if real_names = TRUE in read_ascii_setup.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">col_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"version_number"</span>, <span class="st">"victim_sex"</span>, <span class="st">"victim_race"</span>, <span class="st">"state"</span>)
-</pre></div>
+<span class="va">col_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"version_number"</span>, <span class="st">"victim_sex"</span>, <span class="st">"victim_race"</span>, <span class="st">"state"</span><span class="op">)</span></pre></div>
 </div>
 <div id="value_labels" class="section level2">
 <h2 class="hasAnchor">
@@ -152,7 +149,7 @@
 <p>This is a named vector with the column name as its own string followed by a string for each value-label pair in that column. The syntax is ‘value = label’. For the column name, the label is blank so it appears ‘column =’. For example, if ‘sex’ is the column name as it has value labels for M = Male and F = Female, the value_labels parameter will be:</p>
 <p>value_labels = c(“sex =”, “M = Male”, “F = Female”)</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">value_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"victim_sex = "</span>,
+<span class="va">value_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"victim_sex = "</span>,
                   <span class="st">"MA = male"</span>,
                   <span class="st">"FE = female"</span>,
                   <span class="st">"UN = unknown"</span>,
@@ -161,32 +158,29 @@
                   <span class="st">"BL = black"</span>,
                   <span class="st">"IA = american indian or alaskan native"</span>,
                   <span class="st">"AS = asian"</span>,
-                  <span class="st">"UN = unknown"</span>)
-</pre></div>
+                  <span class="st">"UN = unknown"</span><span class="op">)</span></pre></div>
 </div>
 <div id="missing_values" class="section level2">
 <h2 class="hasAnchor">
 <a href="#missing_values" class="anchor"></a>missing_values</h2>
 <p>This is a vector of strings with the column name (can be either the name in col_names or col_labels but must be consistent) followed by all the values that represent missing values, each in its own string.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">missing_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"victim_sex"</span>, 
+<span class="va">missing_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"victim_sex"</span>, 
                     <span class="st">"-9"</span>, 
                     <span class="st">"-8"</span>, 
                     <span class="st">"victim_race"</span>,
-                    <span class="st">"-8"</span>)
-</pre></div>
+                    <span class="st">"-8"</span><span class="op">)</span></pre></div>
 </div>
 <div id="putting-it-all-together" class="section level2">
 <h2 class="hasAnchor">
 <a href="#putting-it-all-together" class="anchor"></a>Putting it all together</h2>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">asciiSetupReader</span>::<span class="fu"><a href="../reference/make_sps_setup.html">make_sps_setup</a></span>(file_name = <span class="st">"setup_file_example"</span>,
-                                 col_positions  = <span class="kw">col_positions</span>,
-                                 col_names      = <span class="kw">col_names</span>,
-                                 col_labels     = <span class="kw">col_labels</span>,
-                                 value_labels   = <span class="kw">value_labels</span>,
-                                 missing_values = <span class="kw">missing_values</span>)
-</pre></div>
+<span class="fu">asciiSetupReader</span><span class="fu">::</span><span class="fu"><a href="../reference/make_sps_setup.html">make_sps_setup</a></span><span class="op">(</span>file_name <span class="op">=</span> <span class="st">"setup_file_example"</span>,
+                                 col_positions  <span class="op">=</span> <span class="va">col_positions</span>,
+                                 col_names      <span class="op">=</span> <span class="va">col_names</span>,
+                                 col_labels     <span class="op">=</span> <span class="va">col_labels</span>,
+                                 value_labels   <span class="op">=</span> <span class="va">value_labels</span>,
+                                 missing_values <span class="op">=</span> <span class="va">missing_values</span><span class="op">)</span></pre></div>
 </div>
   </div>
 

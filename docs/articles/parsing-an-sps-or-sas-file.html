@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -85,13 +85,13 @@
 
       
 
-      </header><script src="parsing-an-sps-or-sas-file_files/header-attrs-2.3.2/header-attrs.js"></script><script src="parsing-an-sps-or-sas-file_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="parsing-an-sps-or-sas-file_files/header-attrs-2.4/header-attrs.js"></script><script src="parsing-an-sps-or-sas-file_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Parsing an .sps or .sas file</h1>
                         <h4 class="author">Jacob Kaplan</h4>
             
-            <h4 class="date">2020-10-01</h4>
+            <h4 class="date">2020-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/master/vignettes/parsing-an-sps-or-sas-file.Rmd"><code>vignettes/parsing-an-sps-or-sas-file.Rmd</code></a></small>
       <div class="hidden name"><code>parsing-an-sps-or-sas-file.Rmd</code></div>
@@ -104,31 +104,29 @@
 <p>This will return a list of length 3 containing the objects “setup”, “value_labels”, and “missing”.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="co"># Using the example .sps setup file included with the package</span>
-<span class="kw">sps_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,
-                          package = <span class="st">"asciiSetupReader"</span>)
-<span class="kw">example</span> <span class="op">&lt;-</span> <span class="kw">asciiSetupReader</span>::<span class="fu"><a href="../reference/parse_setup.html">parse_setup</a></span>(<span class="kw">sps_name</span>)
-</pre></div>
+<span class="va">sps_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,
+                          package <span class="op">=</span> <span class="st">"asciiSetupReader"</span><span class="op">)</span>
+<span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">asciiSetupReader</span><span class="fu">::</span><span class="fu"><a href="../reference/parse_setup.html">parse_setup</a></span><span class="op">(</span><span class="va">sps_name</span><span class="op">)</span></pre></div>
 <div id="setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#setup" class="anchor"></a>setup</h2>
 <p>The first object in the returned list is a data.frame with 4 columns and as many rows as there are columns in the data. The “column_number” column is the non-descriptive name of the column while the “column_name” is the descriptive name of the column. In <code>read_ascii_setup</code>, setting <code>use_clean_names</code> to TRUE will set the data column names to the “column_name” names, otherwise it will remain as the “column_number” names. Since the data is in fixed-width format, you need to know the location of each column. The “begin” and “end” columns in this object provide that location for each column in the data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">example</span><span class="op">$</span><span class="kw">setup</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">example</span><span class="op">$</span><span class="va">setup</span><span class="op">)</span>
 <span class="co">#&gt;   column_number         column_name begin end</span>
 <span class="co">#&gt; 1            V1     IDENTIFIER_CODE     1   1</span>
 <span class="co">#&gt; 2            V2  NUMERIC_STATE_CODE     2   3</span>
 <span class="co">#&gt; 3            V3            ORI_CODE     4  10</span>
 <span class="co">#&gt; 4            V4               GROUP    11  12</span>
 <span class="co">#&gt; 5            V5 GEOGRAPHIC_DIVISION    13  13</span>
-<span class="co">#&gt; 6            V6                YEAR    14  17</span>
-</pre></div>
+<span class="co">#&gt; 6            V6                YEAR    14  17</span></pre></div>
 </div>
 <div id="value_labels" class="section level2">
 <h2 class="hasAnchor">
 <a href="#value_labels" class="anchor"></a>value_labels</h2>
 <p>To make the data more compact, the data often provides values that represent a label. For example, in a column about participant’s gender it may only include “M” and “F” which stands for “Male” and “Female”. The setup file will say the M = Male and F = Female. The value labels tell us that we need to convert M to Male in the given column. This is a list of named vectors indicating the value and its corresponding label. If there are no value labels this object will be NULL.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">example</span><span class="op">$</span><span class="kw">value_labels</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">3</span>]
+<span class="va">example</span><span class="op">$</span><span class="va">value_labels</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>
 <span class="co">#&gt; $V1</span>
 <span class="co">#&gt; SHR master file </span>
 <span class="co">#&gt;             "6" </span>
@@ -175,22 +173,19 @@
 <span class="co">#&gt;         MSA co. 100,000 +     MSA co. 25,000-99,999     MSA co. 10,000-24,999 </span>
 <span class="co">#&gt;                      "9A"                      "9B"                      "9C" </span>
 <span class="co">#&gt;          MSA co. &lt; 10,000             MSA St Police </span>
-<span class="co">#&gt;                      "9D"                      "9E"</span>
-</pre></div>
+<span class="co">#&gt;                      "9D"                      "9E"</span></pre></div>
 <p>There is one named vector for each column in the data that has value labels. We can see how many there are using <code><a href="https://rdrr.io/r/base/length.html">length()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw">example</span><span class="op">$</span><span class="kw">value_labels</span>)
-<span class="co">#&gt; [1] 141</span>
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">example</span><span class="op">$</span><span class="va">value_labels</span><span class="op">)</span>
+<span class="co">#&gt; [1] 141</span></pre></div>
 </div>
 <div id="missing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#missing" class="anchor"></a>missing</h2>
 <p>The final object in the list a data.frame with two columns and as many rows as there are missing values in the data. The column “variable” indicates the column in the data and the column “values” says that the value in that row is to be replaced with NA. For example, if there are 10 columns in the data with missing values and each column has two missing values (e.g. -8 and -9) there will be 20 rows in this data.frame. A missing value is when the data includes a value that should be replaced with NA. For example, data often includes negative values such as -8 or -9 mean that that value is missing and should be NA. If there are no missing values this object will be NULL.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">example</span><span class="op">$</span><span class="kw">missing</span>)
-<span class="co">#&gt; NULL</span>
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">example</span><span class="op">$</span><span class="va">missing</span><span class="op">)</span>
+<span class="co">#&gt; NULL</span></pre></div>
 </div>
   </div>
 
