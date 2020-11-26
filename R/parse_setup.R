@@ -131,7 +131,7 @@ parse_setup <- function(setup_file) {
 
 parse_missing_sps <- function(codebook, setup) {
 
-  start <- grep2("MISSING VALUES?$", codebook)
+  start <- grep2("MISSING VALUES?$|Convert missing data", codebook)
   if (length(start) == 0) {
     start <- grep2("MISSING VALUE RECODE", codebook)
   }
@@ -142,6 +142,12 @@ parse_missing_sps <- function(codebook, setup) {
     end <- min(end[end > start])
   }
   missing <- codebook[start:end]
+
+  missing <- gsub("\\*{10,}.*|.*Convert missing data to system missing.*|SAVE OUTFILE = .*", "", missing)
+  missing <- missing[missing != ""]
+  missing <- gsub("^RECODE ", "", missing)
+  missing <- gsub("^\\(-", " -", missing)
+
   missing <- gsub('\\"\\s+\\"', '""', missing)
   missing <- gsub("(\\S),(\\S)", "\\1, \\2", missing)
   missing <- gsub("\\s{3,}\\(", " \\(", missing)
@@ -152,6 +158,9 @@ parse_missing_sps <- function(codebook, setup) {
   missing <- gsub("^RECODE (V\\S*) *", "\\1 ", missing)
   missing <- gsub("=SYSMIS", "", missing)
   missing <- gsub("([0-9], ) +(-?[0-9])", "\\1\\2", missing)
+
+  missing <- gsub("([0-9])  (\\(.*\\)\\.)", "\\1 \\2", missing)
+
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
@@ -162,6 +171,8 @@ parse_missing_sps <- function(codebook, setup) {
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
+
+  missing <- missing[missing$variable != missing$values, ]
 
   for (i in 1:nrow(missing)) {
     if (tolower(missing$variable[i]) %in% tolower(setup$column_number)) {
@@ -365,3 +376,4 @@ parse_column_names <- function(codebook, type) {
   variables <- variables[!duplicated(variables$column_number), ]
   return(variables)
 }
+

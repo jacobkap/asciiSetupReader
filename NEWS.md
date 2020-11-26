@@ -1,3 +1,7 @@
+# asciiSetupReader 2.3.2
+
+* Fix bug on reading an atypical .sps file.
+
 # asciiSetupReader 2.3.1
 
 * Fix bug caused by `vroom` not handling embedded nulls.

@@ -57,6 +57,16 @@ test_that("Right number of missing values", {
   expect_equal(nrow(mtf_1979_parsed_sps$missing), 544)
 })
 
+test_that("CA SEDD 2005 has right missing values", {
+  expect_equal(ca_sedd_2005_ahal_parsed_sps$missing$variable,
+               c("HOSPSTCO", "HOSPSTCO", "HOSPSTCO", "HOSPSTCO"))
+  expect_equal(ca_sedd_2005_ahal_parsed_sps$missing$values,
+               c("-9999", "-8888", "-6666", "-5555"))
+
+  expect_equal(unique(ca_sedd_2005_ahal_parsed_sps$missing$variable),
+               "HOSPSTCO")
+
+})
 
 test_that("missing_value_no_s_parsed_sps has right missing values", {
   expect_equal(head(missing_value_no_s_parsed_sps$missing$variable),

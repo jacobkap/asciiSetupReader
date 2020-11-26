@@ -227,6 +227,9 @@ mtf_1979_sps_name     <- system.file("testdata",
 missing_value_no_s_name  <- system.file("testdata",
                                         "missing_value_no_s_setup_sps.zip",
                                         package = "asciiSetupReader")
+ca_sedd_2005_ahal_sps_name     <- system.file("testdata",
+                                     "CA_SEDD_2005_AHAL.sps",
+                                     package = "asciiSetupReader")
 
 
 cambridge_sas_name     <- system.file("testdata",
@@ -574,6 +577,7 @@ mtf_1991_parsed_sps      <- parse_setup(mtf_1991_sps_name)
 mtf_1992_parsed_sps      <- parse_setup(mtf_1992_sps_name)
 mtf_1979_parsed_sps      <- parse_setup(mtf_1979_sps_name)
 missing_value_no_s_parsed_sps <- parse_setup(missing_value_no_s_name)
+ca_sedd_2005_ahal_parsed_sps      <- parse_setup(ca_sedd_2005_ahal_sps_name)
 
 
 british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
@@ -615,3 +619,4 @@ jail_2010_parsed_sas        <- parse_setup(jail_2010_sas_name)
 corrections_parsed_sas      <- parse_setup(corrections_sas_name)
 SHR_parsed_sas              <- parse_setup(SHR_sas_name)
 #sadc_parsed_sas            <- parse_setup(sadc_sas_name)
+

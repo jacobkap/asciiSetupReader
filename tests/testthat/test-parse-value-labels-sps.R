@@ -49,6 +49,7 @@ test_that("Number of value label columns are correct", {
    expect_true(is.null(county_arrest_parsed_sps$value_labels))
 
    expect_true(is.null(escolar_2006_parsed_sps$value_labels))
+   expect_true(is.null(ca_sedd_2005_ahal_parsed_sps$value_labels))
 
 
    expect_equal(length(mtf_1999_parsed_sps$value_labels), 101)

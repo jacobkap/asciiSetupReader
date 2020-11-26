@@ -57,6 +57,8 @@ test_that("Right number of columns", {
   expect_equal(nrow(mtf_1992_parsed_sps$setup), 111)
   expect_equal(nrow(mtf_1979_parsed_sps$setup), 293)
 
+  expect_equal(nrow(ca_sedd_2005_ahal_parsed_sps$setup), 6)
+
 
 
 
@@ -64,6 +66,13 @@ test_that("Right number of columns", {
 
 test_that("Column numbers are correct", {
   skip_on_cran()
+
+  expect_equal(ca_sedd_2005_ahal_parsed_sps$setup$begin,
+               c(1, 8, 21,
+                 26, 28, 33))
+  expect_equal(ca_sedd_2005_ahal_parsed_sps$setup$end,
+               c(7, 20, 25,
+                 27, 32, 36))
 
 
   expect_equal(head(missing_value_no_s_parsed_sps$setup$begin),
@@ -764,6 +773,22 @@ test_that("Column numbers are correct", {
 
 test_that("Column names are correct", {
   skip_on_cran()
+
+
+  expect_equal(ca_sedd_2005_ahal_parsed_sps$setup$column_number,
+               c("AHAID",
+                 "DSHOSPID",
+                 "HOSPID",
+                 "HOSPST",
+                 "HOSPSTCO",
+                 "YEAR"))
+  expect_equal(ca_sedd_2005_ahal_parsed_sps$setup$column_name,
+               c("AHA_hospital_identifier_with_the_leading_6",
+                 "Data_source_hospital_identifier",
+                 "HCUP_hospital_identification_number",
+                 "Hospital_state_postal_code",
+                 "Hospital_modified_FIPS_state_county_code",
+                 "Calendar_year"))
 
 
   expect_equal(head(missing_value_no_s_parsed_sps$setup$column_number),
