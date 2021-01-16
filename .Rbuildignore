@@ -1,0 +1,13 @@
+^CRAN-RELEASE$
+^\.github$
+^LICENSE\.md$
+^codecov\.yml$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.travis\.yml$
+^appveyor\.yml$
+^packrat/
+^\.Rprofile$
+README.Rmd
+cran-comments.md
+^docs$

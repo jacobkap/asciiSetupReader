@@ -1,0 +1,45 @@
+Type: Package
+Package: asciiSetupReader
+Title: Reads Fixed-Width ASCII Data Files (.txt or .dat) that
+    Have Accompanying Setup Files (.sps or .sas)
+Version: 2.4.1 
+Authors@R: 
+    person(given = "Jacob",
+           family = "Kaplan",
+           role = c("aut", "cre"),
+           email = "jkkaplan6@gmail.com",
+           comment = c(ORCID = "0000-0002-0601-0387"))
+Description: Lets you open a fixed-width ASCII file (.txt or
+    .dat) that has an accompanying setup file (.sps or .sas). These file
+    combinations are sometimes referred to as .txt+.sps, .txt+.sas,
+    .dat+.sps, or .dat+.sas. This will only run in a txt-sps or txt-sas
+    pair in which the setup file contains instructions to open that text
+    file. It will NOT open other text files, .sav, .sas, or .por data
+    files. Fixed-width ASCII files with setup files are common in older
+    (pre-2000) government data.
+License: MIT + file LICENSE
+URL: https://github.com/jacobkap/asciiSetupReader
+BugReports: https://github.com/jacobkap/asciiSetupReader/issues
+Depends:
+    R (>= 3.1.0)
+Imports:
+    data.table,
+    haven,
+    readr,
+    vroom,
+    stringr,
+    zoo,
+    shiny (>= 0.13),
+    miniUI (>= 0.1.1),
+    rstudioapi (>= 0.5)
+Suggests: 
+    covr,
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0)
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+RoxygenNote: 7.1.1

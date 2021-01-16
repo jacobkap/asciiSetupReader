@@ -1,0 +1,5 @@
+Name: Read fixed-width ASCII files
+Description: Read fixed-width ASCII file using SPSS or SAS Setup file
+Binding: read_ascii_setup_addin
+Interactive: true
+
