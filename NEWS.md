@@ -1,4 +1,4 @@
-# asciiSetupReader 2.4.1
+# asciiSetupReader 2.4.0
 
 * Adds functionality to handle "low thru" missing values.
 * "low thru" and "thru high" missing values are now less (more) than and equal

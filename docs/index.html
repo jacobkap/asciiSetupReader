@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">asciiSetupReader</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
       </span>
     </div>
 
@@ -48,7 +48,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/jacobkap/asciiSetupReader/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -110,13 +110,13 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>To install this package, use the code</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">install.packages</span>(<span class="st">"asciiSetupReader"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># The development version is available on Github.</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"jacobkap/asciiSetupReader"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>To install this package, use the code</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"asciiSetupReader"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># The development version is available on Github.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"jacobkap/asciiSetupReader"</span>)</span></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
@@ -125,8 +125,8 @@
 <p><code>data</code> - A string containing the name of the data file</p>
 <p><code>setup_file</code> - A string containing the name of the setup file</p>
 <p>Both files must be in your working directory or the string must contain the path to the file. Below is an example of reading in the example dataset - the original data and setup files can be found <a href="https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&amp;restrictionType%5B0%5D=Public+Use&amp;classification%5B0%5D=NACJD.IX.*&amp;dataFormat%5B0%5D=SPSS">here</a>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_data.zip"</span>,
              package <span class="op">=</span> <span class="st">"asciiSetupReader"</span><span class="op">)</span>
 <span class="va">setup_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_setup.sps"</span>,
              package <span class="op">=</span> <span class="st">"asciiSetupReader"</span><span class="op">)</span>
@@ -140,7 +140,7 @@ setup_file <span class="op">=</span> <span class="va">setup_file</span><span cla
 <span class="co">#&gt; 3 SHR master file            Alabama  AL00112 Cit 50,000-99,999</span>
 <span class="co">#&gt; 4 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span>
 <span class="co">#&gt; 5 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span>
-<span class="co">#&gt; 6 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span></pre></div>
+<span class="co">#&gt; 6 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span></code></pre></div>
 </div>
 </div>
   </div>
