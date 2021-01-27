@@ -37,8 +37,8 @@ devtools::install_github("jacobkap/asciiSetupReader")
 
 ## Usage
 
-These parameters `data` and `setup_file` are the only ones requires to
-run the package though three optional parameters allow you to customize
+The parameters `data` and `setup_file` are the only ones requires to run
+the package though three optional parameters allow you to customize
 results.
 
 `data` - A string containing the name of the data file
@@ -49,6 +49,13 @@ Both files must be in your working directory or the string must contain
 the path to the file. Below is an example of reading in the example
 dataset - the original data and setup files can be found
 [here](https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&restrictionType%5B0%5D=Public+Use&classification%5B0%5D=NACJD.IX.*&dataFormat%5B0%5D=SPSS).
+
+Please note that I am only using `system.file()` here so the vignette
+builds in the package even not on my own computer. You will not use this
+in the function. Instead you’d simply input `data = "example_data.zip"`
+and `setup_file = "example_setup.sps"`. The data file does not have to
+be in a zip folder, it is only in a zip folder here to reduce the size
+of this package. In most cases it will be a .dat or a .txt file.
 
 ``` r
 data <- system.file("extdata", "example_data.zip",

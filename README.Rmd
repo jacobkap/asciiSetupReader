@@ -40,7 +40,7 @@ devtools::install_github("jacobkap/asciiSetupReader")
 
 ## Usage
 
-These parameters `data` and `setup_file` are the only ones requires to run the package though three optional parameters allow you to customize results.
+The parameters `data` and `setup_file` are the only ones requires to run the package though three optional parameters allow you to customize results.
 
 `data` - A string containing the name of the data file
 
