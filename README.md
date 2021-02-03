@@ -11,7 +11,7 @@ Status](https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupRe
 [![Coverage
 status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://codecov.io/github/jacobkap/asciiSetupReader?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue)](https://cran.r-project.org/package=asciiSetupReader)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 ## Overview
