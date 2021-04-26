@@ -75,6 +75,22 @@ test_that("Column numbers are correct", {
                  27, 32, 36))
 
 
+  expect_equal(tail(mtf_2019_parsed_sps$setup$begin),
+               c(1264, 1266, 1268,
+                 1270, 1272, 1274))
+  expect_equal(tail(mtf_2019_parsed_sps$setup$end),
+               c(1265, 1267, 1269,
+                 1271, 1273, 1275))
+
+
+  expect_equal(head(mtf_2019_parsed_sps$setup$begin),
+               c(1, 6, 11,
+                 16, 20, 21))
+  expect_equal(head(mtf_2019_parsed_sps$setup$end),
+               c(5, 10, 15,
+                 19, 20, 35))
+
+
   expect_equal(head(missing_value_no_s_parsed_sps$setup$begin),
                c(1, 5, 6,
                  9, 10, 14))
@@ -775,6 +791,21 @@ test_that("Column names are correct", {
   skip_on_cran()
 
 
+  expect_equal(mtf_2019_parsed_sps$setup$column_name[12:15],
+               c("X89977_MID_0_END_1",
+                 "X00760_A01a_EVR_SMK_CIG_REGL_F1234",
+                 "X00790_A01a_EVER_DRINK_F1234",
+                 "X00810_A01a_X_DRNK_LIFETIME_F1234"))
+
+  expect_equal(mtf_2019_parsed_sps$setup$column_name[595:600],
+               c("X20770_T02_OFTN_EXERCISE_F2",
+                 "X20780_T02_OFTN_7HRS_SLEEP_F2",
+                 "X20790_T02_OFTN_SLEEP_under_SHLD_F2",
+                 "X32520_T02_DA_WK_ACTV_60_MIN_F1",
+                 "X34030_T05_CONCUSSION_EVER_F1",
+                 "X00760_A01a_EVR_SMK_CIG_REGL_F1234_dichotomous_recode"))
+
+
   expect_equal(ca_sedd_2005_ahal_parsed_sps$setup$column_number,
                c("AHAID",
                  "DSHOSPID",
@@ -942,7 +973,7 @@ test_that("Column names are correct", {
                c("NUMERIC_VALUE_TOTAL_EXPENSE_IN_PAST_WEE",
                  "TOTAL_ITEMS_SELF_PRODUCED",
                  "NUMERIC_VALUE_TOTAL_SELF_PRODUCED_CONSU",
-                 "HHID_93_EA_HHNUM_00",
+                 "HHID_93_EA_plus_HHNUM_plus_00",
                  "HHID_case",
                  "COMMUNITY_ID_TO_MATCH_IFLS2_COMMID93"))
 

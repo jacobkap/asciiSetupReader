@@ -556,7 +556,7 @@ test_that("Column numbers are correct", {
                c("NUMERIC_VALUE_TOTAL_EXPENSE_IN_PAST_WEE",
                  "TOTAL_ITEMS_SELF_PRODUCED",
                  "NUMERIC_VALUE_TOTAL_SELF_PRODUCED_CONSU",
-                 "HHID_93_EA_HHNUM_00",
+                 "HHID_93_EA_plus_HHNUM_plus_00",
                  "case",
                  "COMMUNITY_ID_TO_MATCH_IFLS2_COMMID93"))
 
@@ -738,7 +738,7 @@ test_that("Column names are correct", {
                c("NUMERIC_VALUE_TOTAL_EXPENSE_IN_PAST_WEE",
                  "TOTAL_ITEMS_SELF_PRODUCED",
                  "NUMERIC_VALUE_TOTAL_SELF_PRODUCED_CONSU",
-                 "HHID_93_EA_HHNUM_00",
+                 "HHID_93_EA_plus_HHNUM_plus_00",
                  "case",
                  "COMMUNITY_ID_TO_MATCH_IFLS2_COMMID93"))
 

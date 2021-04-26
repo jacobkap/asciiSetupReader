@@ -366,6 +366,12 @@ parse_column_names <- function(codebook, type) {
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
 
 
+  variables <- gsub("<", "_under_", variables)
+  variables <- gsub(">", "_over_", variables)
+  variables <- gsub("\\$", "_dollar_", variables)
+  variables <- gsub("\\+", "_plus_", variables)
+  variables <- gsub("@", "_at_", variables)
+
   variables <- data.frame(column_name   = fix_names(variables),
                           column_number = gsub(" .*", "",
                                                variables),

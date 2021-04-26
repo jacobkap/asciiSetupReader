@@ -1,3 +1,9 @@
+# asciiSetupReader 2.5.0
+
+* In column names now replaces "<" with "_under_", ">" with "_over_", 
+ "$" with "_dollar_", "+" with "_plus_", "@" with "_at_".  Previously
+ these values would be replaced by "_". 
+
 # asciiSetupReader 2.4.0
 
 * Adds functionality to handle "low thru" missing values.

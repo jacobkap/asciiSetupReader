@@ -44,7 +44,7 @@ test_that("Numeric columns are Numeric - SPSS", {
 
   expect_is(UCR$POPULATION_1, "numeric")
   expect_is(UCR$POPULATION_3, "numeric")
-  expect_is(UCR$JAN_CLR_18_ALL_FIELDS, "numeric")
+  expect_is(UCR$JAN_CLR_under_18_ALL_FIELDS, "numeric")
   expect_is(UCR$JAN_ACT_VHC_THEFT_TO, "numeric")
   expect_is(UCR$JAN_ACT_AUTO_THEFT, "numeric")
 
@@ -109,7 +109,7 @@ test_that("Numeric columns are Numeric - SAS", {
 
   expect_is(UCR_sas$POPULATION_1, "numeric")
   expect_is(UCR_sas$POPULATION_3, "numeric")
-  expect_is(UCR_sas$JAN_CLR_18_ALL_FIELDS, "numeric")
+  expect_is(UCR_sas$JAN_CLR_under_18_ALL_FIELDS, "numeric")
   expect_is(UCR_sas$JAN_ACT_VHC_THEFT_TO, "numeric")
   expect_is(UCR_sas$JAN_ACT_AUTO_THEFT, "numeric")
 
