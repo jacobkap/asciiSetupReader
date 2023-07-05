@@ -1,3 +1,7 @@
+# asciiSetupReader 2.5.1
+
+* Adds startup message
+
 # asciiSetupReader 2.5.0
 
 * In column names now replaces "<" with "_under_", ">" with "_over_", 

@@ -168,7 +168,7 @@ read_data <- function(data, setup) {
                                                                           vroom::col_character())))
       temp <- data.table::as.data.table(temp)
     },
-    error=function(cond) {
+    error = function(cond) {
       temp <- suppressMessages(readr::read_fwf(data,
                                                col_positions = positions,
                                                col_types = vroom::cols(.default =
@@ -228,4 +228,13 @@ fix_value_labels <- function(data, setup, value_label_fix) {
     }
   }
   return(data)
+}
+
+
+.onAttach <- function(libname, pkgname) {
+  package_citation <- "Kaplan, J (2023). asciiSetupReader: PReads Fixed-Width ASCII Data Files (.txt or .dat) that
+    Have Accompanying Setup Files (.sps or .sas). Version 2.5.1. URL: https://github.com/jacobkap/asciiSetupReader, https://jacobkap.github.io/asciiSetupReader/."
+  packageStartupMessage("Thank you for using asciiSetupReader!")
+  packageStartupMessage("To acknowledge our work, please cite the package:")
+  packageStartupMessage(package_citation)
 }

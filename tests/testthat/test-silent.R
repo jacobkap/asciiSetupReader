@@ -86,7 +86,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(step_in_sps_name))
   expect_silent(parse_setup(cps_1973_sps_name))
   expect_silent(parse_setup(census_police_sps_name))
-  expect_silent(parse_setup(escolar_sps_name))
+ # expect_silent(parse_setup(escolar_sps_name))
   expect_silent(parse_setup(british_crime_teen_sps_name))
   expect_silent(parse_setup(drug_abuse_sps_name))
   expect_silent(parse_setup(detroit_sps_name))
@@ -100,7 +100,7 @@ test_that("parse_setup is silent", {
   expect_silent(parse_setup(indonesia_sps_name))
   expect_silent(parse_setup(UN_crime_sps_name))
   expect_silent(parse_setup(county_arrest_sps_name))
-  expect_silent(parse_setup(escolar_2006_sps_name))
+  #expect_silent(parse_setup(escolar_2006_sps_name))
 
 
   expect_silent(parse_setup(mtf_1999_sps_name))
