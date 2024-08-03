@@ -1,3 +1,7 @@
+# asciiSetupReader 2.5.2
+
+* Removes startup message
+
 # asciiSetupReader 2.5.1
 
 * Adds startup message
