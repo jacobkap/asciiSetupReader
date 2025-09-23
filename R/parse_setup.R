@@ -29,7 +29,7 @@
 #' }
 parse_setup <- function(setup_file) {
 
-  if (grepl(".sps(\\.zip)?$", setup_file, ignore.case = TRUE)) {
+  if (grepl(".sps(\\.zip)?$|.sps(\\.txt)?$", setup_file, ignore.case = TRUE)) {
     type <- "sps"
   } else {
     type <- "sas"
@@ -164,8 +164,8 @@ parse_missing_sps <- function(codebook, setup) {
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
-                        values = gsub(".*\\(|\\).*", "", missing),
-                        stringsAsFactors = FALSE)
+                        values = gsub(".*\\(|\\).*", "", missing)
+                        )
   missing$variable[missing$variable == ""] <- NA
   missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
   missing$values <- gsub('\\"', "\\'", missing$values)
@@ -230,12 +230,12 @@ parse_missing_sas <- function(codebook, setup) {
 
   # missing <- data.frame(variable = gsub("=.*", "", missing),
   #                       values = gsub(".*=", "", missing),
-  #                       stringsAsFactors = FALSE)  missing <- gsub("\\) ", "\\)   ", missing)
+  #                       )  missing <- gsub("\\) ", "\\)   ", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
-                        values = gsub(".*\\(|\\).*", "", missing),
-                        stringsAsFactors = FALSE)
+                        values = gsub(".*\\(|\\).*", "", missing)
+                        )
   missing$variable[missing$variable == ""] <- NA
   missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
   # missing$values <- gsub("\\.$", "", missing$values)
@@ -267,8 +267,8 @@ make_thru_missing_rows <- function(missing) {
     temp <- strsplit(temp, " thru | THRU ")[[1]]
     values <- temp[1]:temp[2]
     temp <- data.frame(variable = rep(thru_rows$variable[i], length(values)),
-                       values = values,
-                       stringsAsFactors = FALSE)
+                       values = values
+                       )
     missing <- rbind(missing, temp)
   }
 
@@ -372,10 +372,16 @@ parse_column_names <- function(codebook, type) {
   variables <- gsub("\\+", "_plus_", variables)
   variables <- gsub("@", "_at_", variables)
 
+  # New
+  variables <- gsub("^/", "", variables)
+  variables <- gsub('"\\s*(.*?)\\s*"', '"\\1"', variables)
+#  variables <- gsub('"', "", variables)
+
   variables <- data.frame(column_name   = fix_names(variables),
                           column_number = gsub(" .*", "",
-                                               variables),
-                          stringsAsFactors = FALSE)
+                                               variables)
+                          )
+
 
   if (any(grepl("^$", variables$column_name))) {
     variables <- variables[1:(grep("^$", variables$column_name)[1]), ]

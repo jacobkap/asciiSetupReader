@@ -1,4 +1,8 @@
 get_column_spaces <- function(setup, variables, codebook) {
+# New
+  setup <- gsub("^/[0-9]+$", "", setup)
+  setup <- setup[!setup %in% ""]
+  setup <- gsub("([0-9]+) -([0-9]+)", "\\1-\\2", setup)
 
 
   setup <- setup[grep("[0-9]-[0-9]| [0-9]| \\$[0-9]", setup)]
@@ -19,8 +23,8 @@ get_column_spaces <- function(setup, variables, codebook) {
   setup <- gsub("\\.$", "", setup)
   setup <- stringr::str_trim(setup)
   setup <- setup[grep("[0-9]$", setup)]
-  setup <- data.frame(column_number = setup,
-                      stringsAsFactors = FALSE)
+  setup <- data.frame(column_number = setup
+                      )
   setup$column_number <- gsub("^\\/", "", setup$column_number)
 
   setup$begin <- gsub(".* ", "", setup$column_number)

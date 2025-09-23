@@ -220,8 +220,8 @@ get_value_labels_sas <- function(codebook, setup) {
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
 
   value_labels <- data.frame(value_labels,
-                             column = value_labels[1],
-                             stringsAsFactors = FALSE)
+                             column = value_labels[1]
+                             )
 
   column <- value_labels$value_labels[1]
   for (i in 1:nrow(value_labels)) {
@@ -231,7 +231,7 @@ get_value_labels_sas <- function(codebook, setup) {
     }
   }
 
-  final_value_labels <- data.frame(stringsAsFactors = FALSE)
+  final_value_labels <- data.frame()
   for (col in unique(value_labels$column)) {
     single_value_label <- value_labels[value_labels$column %in% col, ]
     real_names <- unique(setup$column_number[setup$f_name %in% col])
@@ -294,8 +294,8 @@ get_value_labels_sps <- function(codebook, setup) {
   value_labels <- gsub("''''", "''", value_labels)
   value_labels <- gsub('\\"', "\\'", value_labels)
   value_labels <- data.frame(value_labels,
-                             column = value_labels,
-                             stringsAsFactors = FALSE)
+                             column = value_labels
+                             )
 
 
   column <- value_labels$value_labels[1]
