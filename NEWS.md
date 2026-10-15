@@ -1,3 +1,36 @@
+# asciiSetupReader 2.6.0
+
+## Bug fixes
+
+* `coerce_numeric = TRUE` now checks every row before converting a column to
+  numeric. Previously files over 50,000 rows only had a random sample of rows
+  checked (and a file of exactly 50,000 rows only 5,000), so a column with
+  rare text values could be converted to numeric, silently turning those
+  values into `NA`, differently on every run. The sampling also changed the
+  user's random number stream.
+* Values with bytes that are invalid in the current locale no longer cause
+  an error when checking for numeric columns; the column stays character.
+* `make_sps_setup()` works again on R >= 4.5.0 (it failed with "NA in
+  coercion to boolean"), works when `col_labels` isn't given, and no longer
+  leaves a `sink()` open if it fails.
+* Missing values given as "X thru highest" no longer fail with "`labels`
+  must be unique" when the value X itself appears in the data.
+
+## Speed
+
+* Parsing setup files is much faster, especially for files with many columns
+  (e.g. PSID setup files: from about 2 minutes to under 10 seconds).
+* Reading data is faster: the data is no longer copied twice, and value
+  labels and missing values are applied with a direct lookup.
+
+## Other changes
+
+* `spss_ascii_reader()` and `sas_ascii_reader()` now call
+  `read_ascii_setup()`; results and arguments are unchanged.
+* The package no longer depends on haven or zoo.
+* Requires R >= 3.6.0 (as vroom already did).
+* Examples now run, and the code is commented.
+
 # asciiSetupReader 2.5.3
 
 * Misc bug fixes

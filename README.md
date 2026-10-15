@@ -4,8 +4,6 @@
 <!-- badges: start -->
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/asciiSetupReader)](https://cran.r-project.org/package=asciiSetupReader)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/jacobkap/asciiSetupReader?branch=master&svg=true)](https://ci.appveyor.com/project/jacobkap/asciiSetupReader)
 [![Coverage
 status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://app.codecov.io/github/jacobkap/asciiSetupReader?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue)](https://cran.r-project.org/package=asciiSetupReader)
@@ -24,9 +22,8 @@ have both the fixed-width file and its accompanying setup file.
 ## Installation
 
 ``` r
-To install this package, use the code
+# To install this package, use the code
 install.packages("asciiSetupReader")
-
 
 # The development version is available on Github.
 # install.packages("devtools")
@@ -35,9 +32,10 @@ devtools::install_github("jacobkap/asciiSetupReader")
 
 ## Usage
 
-The parameters `data` and `setup_file` are the only ones requires to run
-the package though three optional parameters allow you to customize
-results.
+The parameters `data` and `setup_file` are the only ones required to run
+the package though four optional parameters (`use_value_labels`,
+`use_clean_names`, `select_columns` and `coerce_numeric`) allow you to
+customize results.
 
 `data` - A string containing the name of the data file
 
@@ -46,7 +44,7 @@ results.
 Both files must be in your working directory or the string must contain
 the path to the file. Below is an example of reading in the example
 dataset - the original data and setup files can be found
-[here](https://www.icpsr.umich.edu/icpsrweb/NACJD/studies/9327?q=&restrictionType%5B0%5D=Public+Use&classification%5B0%5D=NACJD.IX.*&dataFormat%5B0%5D=SPSS).
+[here](https://www.icpsr.umich.edu/web/NACJD/studies/9327).
 
 Please note that I am only using `system.file()` here so the vignette
 builds in the package even not on my own computer. You will not use this

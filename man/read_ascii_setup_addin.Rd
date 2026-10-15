@@ -13,7 +13,7 @@ read_ascii_setup() code to console with options based on user input
 Launch an RStudio addin to select options for read_ascii_setup().
 }
 \examples{
-\dontrun{
-read_ascii_setup_addin()
+if (interactive()) {
+  read_ascii_setup_addin()
 }
 }
