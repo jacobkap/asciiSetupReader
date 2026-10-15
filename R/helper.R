@@ -313,23 +313,25 @@ fix_names <- function(names) {
   return(names)
 }
 
-# Make numeric columns numeric
-all_numeric <- function(column) {
-  column_NAs <- sum(is.na(column))
-  column <- suppressWarnings(as.numeric(as.character(column)))
-  return(is.numeric(column) && sum(is.na(column)) == column_NAs)
+# Returns column as numeric, or NULL if any non-missing value isn't a number.
+as_numeric_or_null <- function(column) {
+  # as.numeric() errors (rather than returning NA) on bytes that are invalid
+  # in the current locale, which some older data files contain.
+  out <- tryCatch(suppressWarnings(as.numeric(as.character(column))),
+                  error = function(e) NULL)
+  if (is.null(out) || sum(is.na(out)) != sum(is.na(column))) return(NULL)
+  out
 }
 
+# Converts every column whose values are all numbers to numeric. Every row
+# is checked, so a column with even one text value stays character.
 make_cols_numeric <- function(dataset) {
-  times <- nrow(dataset) * .10
-  if (times < 50000 && nrow(dataset) > 50000)  times <- 50000
-  times <- sample(nrow(dataset), times, replace = FALSE)
-  if (nrow(dataset) < 50000) times <- 1:nrow(dataset)
   for (i in seq_along(dataset)) {
-    if ( (all_numeric(dataset[[i]][times])) ) {
-      suppressWarnings(data.table::set(dataset, j = i,
-                                       value = as.numeric(as.character(dataset[[i]]))))
-    }
+    # One text value in the first rows rules a column out cheaply; only
+    # columns that pass get every row checked.
+    if (is.null(as_numeric_or_null(utils::head(dataset[[i]], 1000)))) next
+    converted <- as_numeric_or_null(dataset[[i]])
+    if (!is.null(converted)) data.table::set(dataset, j = i, value = converted)
   }
   return(dataset)
 }
