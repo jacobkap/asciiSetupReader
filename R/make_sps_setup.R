@@ -76,7 +76,7 @@ make_sps_setup <- function(file_name,
                   " For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.")
   intro <- c(intro, "", "")
   line_break <- c(".", "")
-  file_name <- gsub(".sps$", "", file_name, "")
+  file_name <- gsub("\\.sps$", "", file_name, ignore.case = TRUE)
 
   # Takes the input of column widths and makes the column position strings
   if (is.numeric(col_positions)) {
@@ -161,18 +161,18 @@ make_sps_setup <- function(file_name,
     col_labels      <- paste0('"', col_labels, '"')
     variable_labels <- paste(variable_labels, col_labels)
     variable_labels <- c("variable labels", variable_labels, line_break)
+  } else {
+    variable_labels <- ""
   }
 
-
-  sink(paste0(file_name, ".sps"))
-  writeLines(file_name)
-  writeLines("")
-  writeLines(intro)
-  writeLines(data_list)
-  writeLines(variable_labels)
-  writeLines(value_labels)
-  writeLines(missing_values)
-  writeLines(c("", "execute"))
-  sink()
-
+  writeLines(c(file_name,
+               "",
+               intro,
+               data_list,
+               variable_labels,
+               value_labels,
+               missing_values,
+               "",
+               "execute"),
+             paste0(file_name, ".sps"))
 }
