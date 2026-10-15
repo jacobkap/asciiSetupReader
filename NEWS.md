@@ -39,8 +39,9 @@
 
 * `spss_ascii_reader()` and `sas_ascii_reader()` now call
   `read_ascii_setup()`; results and arguments are unchanged.
-* If vroom fails to read the data file, a message now says so before
-  retrying with readr (previously the vroom error was hidden).
+* Data files are read with vroom only. If vroom failed, the package used to
+  retry silently with readr, which since readr 2.0 reads with vroom too, so
+  the retry rarely helped and hid vroom's error. Now vroom's error is shown.
 * The package no longer depends on haven or zoo.
 * Requires R >= 3.6.0 (as vroom already did).
 * Examples now run, and the code is commented.

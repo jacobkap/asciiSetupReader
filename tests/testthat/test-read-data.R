@@ -1,15 +1,11 @@
-test_that("falling back from vroom to readr says so", {
+test_that("vroom's error reaches the user", {
   setup <- parse_setup(NIBRS_sps_name)
-  # readr >= 2.0 reads with vroom too, so this makes both attempts fail
   local_mocked_bindings(vroom_fwf = function(...) stop("simulated failure"),
                         .package = "vroom")
-  expect_error(
-    expect_message(read_data(NIBRS_dataset_name, setup),
-                   "vroom couldn't read 'nibrs_2000_batch_header1.zip' \\(simulated failure\\)"),
-    "simulated failure")
+  expect_error(read_data(NIBRS_dataset_name, setup), "simulated failure")
 })
 
-test_that("reading with vroom gives no message", {
+test_that("reading the data gives no message", {
   setup <- parse_setup(NIBRS_sps_name)
   expect_no_message(read_data(NIBRS_dataset_name, setup))
 })

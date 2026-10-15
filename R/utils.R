@@ -187,33 +187,19 @@ fix_missing <- function(data, missing) {
 }
 
 # Reads the fixed-width file with every column as character, using the
-# positions from the setup file. Falls back to readr if vroom fails.
+# positions from the setup file.
 read_data <- function(data, setup) {
   positions <- vroom::fwf_positions(setup$setup$begin,
                                     setup$setup$end,
                                     setup$setup$column_number)
 
-  out <- tryCatch(
-    {
-      temp <- suppressMessages(vroom::vroom_fwf(data,
-                                                col_positions = positions,
-                                                col_types = vroom::cols(.default =
-                                                                          vroom::col_character()),
-                                                altrep = FALSE))
-      # setDT() converts in place; as.data.table() would copy all the data
-      data.table::setDT(temp)
-    },
-    error = function(cond) {
-      message("vroom couldn't read '", basename(data), "' (",
-              conditionMessage(cond), "), so reading it with readr instead.")
-      temp <- suppressMessages(readr::read_fwf(data,
-                                               col_positions = positions,
-                                               col_types = vroom::cols(.default =
-                                                                         vroom::col_character())))
-      temp <- data.table::as.data.table(temp)
-    }
-  )
-
+  out <- suppressMessages(vroom::vroom_fwf(data,
+                                           col_positions = positions,
+                                           col_types = vroom::cols(.default =
+                                                                     vroom::col_character()),
+                                           altrep = FALSE))
+  # setDT() converts in place; as.data.table() would copy all the data
+  data.table::setDT(out)
   return(out)
 }
 
