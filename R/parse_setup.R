@@ -38,6 +38,10 @@ parse_setup <- function(setup_file) {
   codebook  <- parse_codebook(setup_file, type = type)
   variables <- parse_column_names(codebook, type = type)
 
+  # Column positions: SPSS "DATA LIST" section (up to "VARIABLE LABELS") or
+  # SAS "INPUT" section (up to the next blank line or ";"). Each is put
+  # into "name begin-end" pieces separated by 2+ spaces for
+  # get_column_spaces().
   if (type == "sps") {
     second_grep_value <- grep2("^variable labels$", codebook)
     second_grep_value <- second_grep_value[1]
@@ -79,6 +83,8 @@ parse_setup <- function(setup_file) {
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
   rownames(setup) <- 1:nrow(setup)
+
+  # Missing values and value labels both need the column list
   if (any(grepl2("MISSING VALUE", codebook))) {
     if (type == "sps") {
       missing <- parse_missing_sps(codebook, setup)
@@ -130,9 +136,16 @@ fill_down <- function(x) {
   x[last_value]
 }
 
+# Missing values ------------------------------------------------------------
+#
+# Both parsers return a data.frame with one row per column (variable) and
+# missing value (values), or NULL. Ranges like "1 thru 5" are expanded to
+# one row per value; open-ended ones ("8 thru highest") are left for
+# fix_missing(), which needs the data to expand them.
 
+# SPSS: "MISSING VALUES V1 (9, 99) V2 (-1)." or RECODE ... =SYSMIS
+# statements, up to the next EXECUTE.
 parse_missing_sps <- function(codebook, setup) {
-
   start <- grep2("MISSING VALUES?$|Convert missing data", codebook)
   if (length(start) == 0) {
     start <- grep2("MISSING VALUE RECODE", codebook)
@@ -163,6 +176,8 @@ parse_missing_sps <- function(codebook, setup) {
 
   missing <- gsub("([0-9])  (\\(.*\\)\\.)", "\\1 \\2", missing)
 
+  # Split into "V1 (9" / "99)" pieces; pieces without a column name belong
+  # to the column before them
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
@@ -188,11 +203,12 @@ parse_missing_sps <- function(codebook, setup) {
   return(missing)
 }
 
+# SAS: "IF V1 = 9 OR V1 = 99 THEN V1 = .;" statements after the MISSING
+# VALUE comment, rewritten into the same "V1 (9, 99)" form as SPSS.
 parse_missing_sas <- function(codebook, setup) {
-
   start <- grep2("MISSING VALUE", codebook)
   start <- grep2("^IF", codebook)[grep2("^IF", codebook) > max(start)][1]
-  # Some .sas files have "example" code at the beginnig which screws this up
+  # Some .sas files have "example" code at the beginning which screws this up
   if (is.na(start)) return(NULL)
   end <- grep2("\\*/", codebook)[grep2("\\*/", codebook) > start][1]
   if (is.na(end) | length(end) == 0 | all(end <= start)) {
@@ -245,10 +261,9 @@ parse_missing_sas <- function(codebook, setup) {
   return(missing)
 }
 
-
+# Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5).
 make_thru_missing_rows <- function(missing) {
   thru_rows <- missing[grep("[0-9] thru -?[0-9]", missing$values, ignore.case = TRUE), ]
-  # thru_highest_rows <- missing[grep("thru hi", missing$values, ignore.case = TRUE), ]
 
   if (nrow(thru_rows) < 1) {
     return(missing)
@@ -269,6 +284,8 @@ make_thru_missing_rows <- function(missing) {
   return(missing)
 }
 
+# Reads the setup file as trimmed lines. For SPSS files, anything before
+# DATA LIST is dropped.
 parse_codebook <- function(setup_file, type) {
   codebook <- readr::read_lines(setup_file)
   codebook <- stringr::str_trim(codebook)
@@ -281,9 +298,10 @@ parse_codebook <- function(setup_file, type) {
   return(codebook)
 }
 
-
+# Turns the value-label pieces from get_value_labels() into a named list
+# with one element per column (in setup file order), each a named vector
+# from value_label_matrixer().
 parse_value_labels <- function(setup, type) {
-
   value_labels <- setup$value_labels
   value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
 
@@ -301,8 +319,10 @@ parse_value_labels <- function(setup, type) {
   return(value_labels)
 }
 
+# Returns a data.frame of column_number (short name, e.g. V1) and
+# column_name (descriptive label made into a clean name) from the SPSS
+# VARIABLE LABELS or SAS LABEL/ATTRIB section. NULL if there isn't one.
 parse_column_names <- function(codebook, type) {
-  # Get the column names
   if (type == "sps") {
     variable_label_location <- grep2("^variable labels$", codebook)
     if (length(variable_label_location) == 0) {
@@ -321,7 +341,7 @@ parse_column_names <- function(codebook, type) {
     variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
                       variables)
     variables <- gsub("\'", "\"", variables)
-    # In case some variables are on multiple lines
+    # Labels continued on the next line end in "+
     plus <- grep('\\"\\+$', variables)
     if (length(plus) > 0) {
       for (n in 1:length(plus)) {
@@ -345,7 +365,7 @@ parse_column_names <- function(codebook, type) {
       next_location <- length(codebook)
     }
 
-
+    # V1 = "Label" (or V1 LABEL="Label" FORMAT=... in ATTRIB statements)
     variables <- codebook[variable_label_location:next_location]
     variables <- variables[grep("=", variables)]
     variables <- gsub('\\"\\s+FORMAT=.*$', '\\"', variables)
@@ -357,7 +377,7 @@ parse_column_names <- function(codebook, type) {
   }
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
 
-
+  # Keep the meaning of symbols that fix_names() would otherwise turn into _
   variables <- gsub("<", "_under_", variables)
   variables <- gsub(">", "_over_", variables)
   variables <- gsub("\\$", "_dollar_", variables)
@@ -372,7 +392,7 @@ parse_column_names <- function(codebook, type) {
                                                variables)
                           )
 
-
+  # Stop at the first empty label (the end of the section)
   if (any(grepl("^$", variables$column_name))) {
     variables <- variables[1:(grep("^$", variables$column_name)[1]), ]
   }

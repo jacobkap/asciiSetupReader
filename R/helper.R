@@ -1,7 +1,23 @@
+# Value labels --------------------------------------------------------------
+#
+# Setup files list value labels as value/label pairs, e.g. SPSS
+#   VALUE LABELS sex 1 'Male' 2 'Female' /
+# or SAS
+#   VALUE sexf 1='Male' 2='Female';
+# get_value_labels() pulls those lines out and splits them into pieces,
+# parse_value_labels() (in parse_setup.R) groups the pieces by column, and
+# value_label_matrixer() turns one column's pieces into a named vector.
+
+# Turns the value-label pieces for one column (the first piece is the column
+# name) into a named character vector: the values are the codes in the data
+# and the names are their labels, e.g. c(Male = "1", Female = "2").
+# Most of the steps below handle quirks of specific real setup files.
 value_label_matrixer <- function(value_label, type) {
   # Gets rid of column name row
   value_label <- value_label[2:length(value_label)]
 
+  # Normalize quoting: drop trailing periods, turn [label] into 'label' and
+  # use single quotes throughout
   value_label <- gsub("'\\.$", "'", value_label)
   value_label <- gsub("=\\[(.*)\\]", "='\\1'", value_label)
   value_label <- gsub('"\\.$', '"', value_label)
@@ -30,7 +46,9 @@ value_label_matrixer <- function(value_label, type) {
   value_label <- gsub("([[:alpha:]]) '([[:alpha:]]+ [[:alpha:]]+ .*[[:alpha:]]+)'",
                       "\\1 \\2", value_label)
 
-  # In case some labels are on multiple lines
+  # Labels split across lines: join continuation lines (starting with "+",
+  # with an unbalanced quote, with no quotes, or for SAS with no "=") onto
+  # the line before them
   plus <- grep("^\\+", value_label)
   # For cases where label is on multiple line but doesn't have a plus
   apostrophe_plus <- grep("\\'$|^\\'", value_label)
@@ -61,13 +79,12 @@ value_label_matrixer <- function(value_label, type) {
     value_label <- value_label[-plus]
   }
 
-
-
-
   value_label <- gsub('\\"', "\\'",
                       value_label)
   value_label <- gsub("A 'NECESSARY", "A NECESSARY",
                       value_label)
+  # Empty and single-space labels/values would disappear when the quotes
+  # are removed below, so hold their place until the end
   value_label <- gsub("^''", "'####BLANK####'",
                       value_label)
   value_label <- gsub("^' '", "'####SPACE####'",
@@ -79,11 +96,13 @@ value_label_matrixer <- function(value_label, type) {
   value_label <- gsub("'\\s+.$", "'", value_label)
   value_label <- gsub("'$|''", "", value_label,
                       perl = TRUE)
+  # SAS 1='Male': "=" separates value and label (but keep "<=" and ">=")
   value_label <- gsub("(?<![<>])=", " ", value_label, perl = TRUE)
   value_label <- gsub("\\s+", " ", value_label)
   value_label <- gsub("([[:alpha:]])\\'([[:alpha:]])", "\\1 \\2",
                       value_label)
 
+  # Split into alternating value, label, value, label, ...
   value_label <- unlist(stringr::str_split(value_label, "' '"))
   if (all(grepl("\\s", value_label))) {
     value_label <- unlist(stringr::str_split(value_label, "'"))
@@ -103,8 +122,10 @@ value_label_matrixer <- function(value_label, type) {
 }
 
 
+# Replaces the codes in one column of .data with their value labels.
 fix_variable_values <- function(.data, value_label_section, column) {
-
+  # Data are sometimes zero-padded differently from the setup file, so a
+  # label for "1" also applies to "01" and vice versa
   value_label_section <- single_digit(value_label_section)
   value_label_section <- double_digit(value_label_section)
   value_label_section <- value_label_section[!duplicated(value_label_section)]
@@ -114,6 +135,7 @@ fix_variable_values <- function(.data, value_label_section, column) {
   return(.data)
 }
 
+# Adds a "0"-padded copy of each single-digit value ("1" -> "01").
 single_digit <- function(value_label_section) {
   if (any(grepl("^[0-9]$", value_label_section))) {
     single_digit <- value_label_section[grep("^[0-9]$", value_label_section)]
@@ -125,6 +147,7 @@ single_digit <- function(value_label_section) {
   return(value_label_section)
 }
 
+# Adds an unpadded copy of each "0"-padded two-digit value ("01" -> "1").
 double_digit <- function(value_label_section) {
   if (any(grepl("^0[0-9]$", value_label_section))) {
     double_digit <- value_label_section[grep("^0[0-9]$", value_label_section)]
@@ -136,6 +159,9 @@ double_digit <- function(value_label_section) {
   return(value_label_section)
 }
 
+# Returns a data.frame with one row per value-label piece: value_labels is
+# the piece and column is the column it belongs to. NULL if the setup file
+# has no value labels.
 get_value_labels <- function(codebook, setup, type) {
   if (!any(grepl2("^value labels$|SAS FORMAT STATEMENT|^format$|\\/\\* format$",
                   codebook))) {
@@ -153,8 +179,10 @@ get_value_labels <- function(codebook, setup, type) {
   return(value_labels)
 }
 
+# SAS labels are defined per format ("VALUE sexf 1='Male' ...;") and the
+# FORMAT section says which columns use which format (setup$f_name).
 get_value_labels_sas <- function(codebook, setup) {
-  # Gets value labels
+  # The VALUE statements start at the first one for a format that is used
   f_names <- as.character(setup$f_name[!is.na(setup$f_name)])
   starting <- c()
   for (f_name in f_names) {
@@ -194,15 +222,14 @@ get_value_labels_sas <- function(codebook, setup) {
   value_labels <- stringr::str_trim(value_labels)
   value_labels <- gsub("&\\s+", "& ", value_labels)
 
-
+  # Collapse runs of spaces inside labels, then put 6 spaces before each
+  # "value=" so the split on 2+ spaces gives one piece per value/label pair
   value_labels <- gsub("([[:alpha:]]+)\\s+(<?[0-9]+)", "\\1 \\2",
                        value_labels)
   value_labels <- gsub("([[:alpha:]]+)\\s+([[:alpha:]]+)", "\\1 \\2",
                        value_labels)
   value_labels <- gsub("([[:alnum:]]+\\.[[:alnum:]]+=)", "      \\1",
                        value_labels)
-
-
   value_labels <- gsub("([^\\.]-?[[:alnum:]]+=[^A-z])", "      \\1",
                        value_labels)
 
@@ -236,6 +263,8 @@ get_value_labels_sas <- function(codebook, setup) {
   return(do.call(rbind, final_value_labels))
 }
 
+# SPSS labels follow "VALUE LABELS", listed under each column's name, and
+# end at the first "." or blank line after the last "VALUE LABELS" header.
 get_value_labels_sps <- function(codebook, setup) {
   value_start <- grep2("^value labels$",
                        codebook)
@@ -250,7 +279,7 @@ get_value_labels_sps <- function(codebook, setup) {
   value_labels <- gsub('\\/\\*.*\\*\\/', "", value_labels)
   value_labels <- stringr::str_trim(value_labels)
 
-
+  # Collapse spacing inside labels so that 2+ spaces only separate pieces
   value_labels <- gsub('\\s+\\"$', '"', value_labels)
   value_labels <- gsub('\\"\\s+([[:alnum:]])', '\\"\\1', value_labels)
   value_labels <- gsub("\\s+\\(", " \\(", value_labels)
@@ -280,6 +309,7 @@ get_value_labels_sps <- function(codebook, setup) {
                        "\\1 \\2", value_labels)
   value_labels <- gsub(":  ", ": ", value_labels)
 
+  # Split into pieces: column names and value/label pairs
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
   value_labels <- value_labels[!value_labels %in% c(".", "/")]
   value_labels <- value_labels[-1]
@@ -290,7 +320,6 @@ get_value_labels_sps <- function(codebook, setup) {
   value_labels <- data.frame(value_labels,
                              column = value_labels
                              )
-
 
   # A new column's labels start after a row ending in "' /", or before a
   # row that is a column name (or anything that isn't a quoted label or a
@@ -305,6 +334,9 @@ get_value_labels_sps <- function(codebook, setup) {
   return(value_labels)
 }
 
+# Turns column labels into clean column names: keeps the label text, turns
+# anything that isn't a letter, number or "_" into "_", trims extra "_" and
+# adds an "X" before names that start with a number.
 fix_names <- function(names) {
   names <- gsub('^.* = |^.* \\"|\\W|#|\\/', "_", names)
   names <- gsub("_+", "_", names)
