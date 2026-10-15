@@ -155,12 +155,7 @@ get_value_labels <- function(codebook, setup, type) {
     value_labels <- get_value_labels_sas(codebook, setup)
   }
 
-  for (i in 1:nrow(value_labels)) {
-    if (tolower(value_labels$column[i]) %in% tolower(setup$column_number)) {
-      value_labels$column[i] <-
-        setup$column_number[tolower(setup$column_number) %in% tolower(value_labels$column[i])]
-    }
-  }
+  value_labels$column <- match_case(value_labels$column, setup$column_number)
 
   return(value_labels)
 }
@@ -189,11 +184,16 @@ get_value_labels_sas <- function(codebook, setup) {
   value_labels <- unlist(strsplit(value_labels, ";"))
 
 
-  for (f_name in f_names) {
-    value_labels <- gsub(paste0("^VALUE ", f_name, " \\(\\S*\\)"),
-                         paste0("VALUE ", f_name), value_labels,
-                         ignore.case = TRUE)
-  }
+  # Drops options like "(default=30)" after a format name
+  has_option    <- grepl2("^VALUE \\S+ \\(\\S*\\)", value_labels)
+  option_f_name <- sub("^VALUE (\\S+) .*", "\\1", value_labels[has_option],
+                       ignore.case = TRUE)
+  f_name_match  <- match(tolower(option_f_name), tolower(f_names))
+  has_option[has_option] <- !is.na(f_name_match)
+  value_labels[has_option] <-
+    paste0("VALUE ", f_names[f_name_match[!is.na(f_name_match)]],
+           sub("^VALUE \\S+ \\(\\S*\\)", "", value_labels[has_option],
+               ignore.case = TRUE))
 
 
   value_labels <- gsub("^VALUE ", "", value_labels,
@@ -223,13 +223,10 @@ get_value_labels_sas <- function(codebook, setup) {
                              column = value_labels[1]
                              )
 
-  column <- value_labels$value_labels[1]
-  for (i in 1:nrow(value_labels)) {
-    value_labels$column[i] <- column
-    if (value_labels$value_labels[i + 1] %in% setup$f_name) {
-      column <- value_labels$value_labels[i + 1]
-    }
-  }
+  # A new format's labels start after any row followed by a format name
+  next_value <- c(value_labels$value_labels[-1], NA)
+  value_labels$column <- fill_section(value_labels$value_labels,
+                                      next_value %in% setup$f_name)
 
   final_value_labels <- data.frame()
   for (col in unique(value_labels$column)) {
@@ -272,11 +269,15 @@ get_value_labels_sps <- function(codebook, setup) {
   value_labels <- gsub('(\\s{2,})([0-9]+)\\s{2,}\\"', '\\1\\2 \\"',
                        value_labels)
 
-  add_spaces <- paste0(setup$column_number, "   ")
-  names(add_spaces) <- paste0('^', setup$column_number, " ")
-  add_spaces <- add_spaces[!duplicated(add_spaces)]
-  add_spaces <- add_spaces[!grepl("^\\*", add_spaces)]
-  value_labels <- stringr::str_replace_all(value_labels, add_spaces)
+  # Lines starting with a column name get extra spaces after the name so it
+  # is split off as its own element below.
+  first_word <- sub(" .*", "", value_labels)
+  starts_with_column <- grepl(" ", value_labels) &
+    first_word %in% setup$column_number & !grepl("^\\*", first_word)
+  value_labels[starts_with_column] <-
+    paste0(first_word[starts_with_column], "   ",
+           substring(value_labels[starts_with_column],
+                     nchar(first_word[starts_with_column]) + 2))
   value_labels <- gsub("\"([[:alnum:]]+)\\s+([0-9])", "\"\\1 \\2",
                        value_labels)
 
@@ -298,17 +299,16 @@ get_value_labels_sps <- function(codebook, setup) {
                              )
 
 
-  column <- value_labels$value_labels[1]
-  for (i in 1:nrow(value_labels)) {
-    value_labels$column[i] <- column
-    if (grepl("\\' \\/$", value_labels$value_labels[i]) |
-        value_labels$value_labels[i + 1] %in%
-        setup$column_number |
-        (!grepl("\\'", value_labels$value_labels[i + 1]) &
-         !grepl("^[0-9]+$", value_labels$value_labels[i + 1]))) {
-      column <- value_labels$value_labels[i + 1]
-    }
-  }
+  # A new column's labels start after a row ending in "' /", or before a
+  # row that is a column name (or anything that isn't a quoted label or a
+  # bare number).
+  current    <- value_labels$value_labels
+  next_value <- c(current[-1], NA)
+  value_labels$column <- fill_section(current,
+                                      grepl("\\' \\/$", current) |
+                                        next_value %in% setup$column_number |
+                                        (!grepl("\\'", next_value) &
+                                           !grepl("^[0-9]+$", next_value)))
   return(value_labels)
 }
 

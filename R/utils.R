@@ -39,13 +39,8 @@ get_column_spaces <- function(setup, variables, codebook) {
 
     # In the CDC SADC data set, the column number changes from lowercase
     # to uppercase depending on section of setup file.
-    for (i in 1:nrow(setup)) {
-      if (tolower(setup$column_number[i]) %in% tolower(variables$column_number)) {
-        setup$column_number[i] <-
-          variables$column_number[tolower(variables$column_number) %in%
-                                    tolower(setup$column_number[i])]
-      }
-    }
+    setup$column_number <- match_case(setup$column_number,
+                                      variables$column_number)
     setup <- merge(setup, variables,
                    by = "column_number", all.x = TRUE)
   } else {
@@ -107,6 +102,23 @@ selected_columns <- function(keep_columns, column_spaces) {
 
 grep2 <- function(pattern, x) grep(pattern, x, ignore.case = TRUE)
 grepl2 <- function(pattern, x) grepl(pattern, x, ignore.case = TRUE)
+
+# Replaces each value of x with its case-insensitive match in table, if any.
+# Setup files don't always use the same case for a column name in every
+# section (e.g. the CDC SADC files).
+match_case <- function(x, table) {
+  m <- match(tolower(x), tolower(table))
+  x[!is.na(m)] <- table[m[!is.na(m)]]
+  x
+}
+
+# Labels each element of x with the section it belongs to. A section starts
+# at the first element and after every element flagged in new_section, and
+# is named after its first element.
+fill_section <- function(x, new_section) {
+  starts <- c(1L, which(new_section) + 1L)
+  x[starts[findInterval(seq_along(x), starts)]]
+}
 
 
 

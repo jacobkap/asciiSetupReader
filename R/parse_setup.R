@@ -174,12 +174,7 @@ parse_missing_sps <- function(codebook, setup) {
 
   missing <- missing[missing$variable != missing$values, ]
 
-  for (i in 1:nrow(missing)) {
-    if (tolower(missing$variable[i]) %in% tolower(setup$column_number)) {
-      missing$variable[i] <-
-        setup$column_number[tolower(setup$column_number) %in% tolower(missing$variable[i])]
-    }
-  }
+  missing$variable <- match_case(missing$variable, setup$column_number)
 
   missing <- missing[missing$variable %in% c(setup$column_number), ]
   if (nrow(missing) > 0) {
