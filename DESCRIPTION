@@ -24,9 +24,8 @@ Depends:
     R (>= 3.1.0)
 Imports:
     data.table,
-    haven,
     readr,
-    vroom,
+    vroom (>= 1.1.0),
     stringr,
     zoo,
     shiny (>= 0.13),

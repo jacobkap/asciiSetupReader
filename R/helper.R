@@ -109,15 +109,8 @@ fix_variable_values <- function(.data, value_label_section, column) {
   value_label_section <- double_digit(value_label_section)
   value_label_section <- value_label_section[!duplicated(value_label_section)]
 
-  if (!is.character(.data[[column]])) {
-    data.table::set(.data, j = column, value = as.character(.data[[column]]))
-  }
   data.table::set(.data, j = column,
-                  value = haven::as_factor(haven::labelled(.data[[column]],
-                                                           value_label_section)))
-
-
-  data.table::set(.data, j = column, value = as.character(.data[[column]]))
+                  value = replace_values(.data[[column]], value_label_section))
   return(.data)
 }
 

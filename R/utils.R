@@ -120,6 +120,16 @@ fill_section <- function(x, new_section) {
   x[starts[findInterval(seq_along(x), starts)]]
 }
 
+# Replaces values of x found in labels with the names of labels (what
+# haven::as_factor() does for a labelled vector) and returns character.
+# Values with no label are kept as they are.
+replace_values <- function(x, labels) {
+  x <- as.character(x)
+  m <- match(x, labels, incomparables = NA)
+  x[!is.na(m)] <- names(labels)[m[!is.na(m)]]
+  x
+}
+
 
 
 fix_missing <- function(data, missing) {
@@ -155,17 +165,8 @@ fix_missing <- function(data, missing) {
     }
     names(missing_values) <- NA
 
-    # Sets character to column type in case it isn't already.
-    if (!is.character(data[[column]])) {
-      data.table::set(data, j = column, value = as.character(data[[column]]))
-    }
-
     data.table::set(data, j = column,
-                    value = haven::as_factor(haven::labelled(data[[column]],
-                                                             missing_values)))
-    # Re-saves as character type instead of factor type
-    data.table::set(data, j = column, value = as.character(data[[column]]))
-
+                    value = replace_values(data[[column]], missing_values))
   }
   return(data)
 }
@@ -181,8 +182,10 @@ read_data <- function(data, setup) {
       temp <- suppressMessages(vroom::vroom_fwf(data,
                                                 col_positions = positions,
                                                 col_types = vroom::cols(.default =
-                                                                          vroom::col_character())))
-      temp <- data.table::as.data.table(temp)
+                                                                          vroom::col_character()),
+                                                altrep = FALSE))
+      # setDT() converts in place; as.data.table() would copy all the data
+      data.table::setDT(temp)
     },
     error = function(cond) {
       temp <- suppressMessages(readr::read_fwf(data,
@@ -221,7 +224,8 @@ fix_names_missing_numeric <- function(data,
     data <- make_cols_numeric(data)
   }
   attributes(data)$spec <- NULL
-  data <- as.data.frame(data)
+  attributes(data)$problems <- NULL
+  data.table::setDF(data)
   return(data)
 }
 
