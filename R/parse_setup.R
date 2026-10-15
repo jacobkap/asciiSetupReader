@@ -295,8 +295,9 @@ parse_codebook <- function(setup_file, type) {
   codebook <- stringr::str_trim(codebook)
 
   if (type == "sps") {
-    if (any(grepl("^DATA LIST", codebook, ignore.case = TRUE))) {
-      codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]
+    data_list <- grep2("^DATA LIST", codebook)
+    if (length(data_list) > 0) {
+      codebook <- codebook[data_list[1]:length(codebook)]
     }
   }
   return(codebook)
