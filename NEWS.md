@@ -9,10 +9,16 @@
   values into `NA`, differently on every run. The sampling also changed the
   user's random number stream.
 * Values with bytes that are invalid in the current locale no longer cause
-  an error when checking for numeric columns; the column stays character.
+  an error when checking for numeric columns (the column stays character)
+  or when applying open-ended missing value ranges.
 * `make_sps_setup()` works again on R >= 4.5.0 (it failed with "NA in
   coercion to boolean"), works when `col_labels` isn't given, and no longer
-  leaves a `sink()` open if it fails.
+  leaves a `sink()` open if it fails. A `file_name` ending in ".SPS" no
+  longer gets a second extension, and one merely ending in "sps" (e.g.
+  "datasps") is no longer cut short.
+* In SAS setup files, options after a character format name (e.g.
+  `VALUE $SEXF (default=30)`) are now removed before reading its value
+  labels, as they already were for numeric formats.
 * Missing values given as "X thru highest" no longer fail with "`labels`
   must be unique" when the value X itself appears in the data.
 * Open-ended missing value ranges now match zero-padded data (e.g.
