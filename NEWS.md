@@ -15,6 +15,15 @@
   leaves a `sink()` open if it fails.
 * Missing values given as "X thru highest" no longer fail with "`labels`
   must be unique" when the value X itself appears in the data.
+* Open-ended missing value ranges now match zero-padded data (e.g.
+  "0000012" for "0000009 THRU HI"). Previously those values were left in
+  the data.
+* Missing value ranges written "LO THRU X" or "LOWEST THRU X" are now
+  applied. Previously only "low thru" was recognized, so these were ignored.
+* `make_sps_setup()`'s `missing_values` accepts column names as well as
+  labels. Previously a column name was treated as a missing value of the
+  column before it.
+* SPSS setup files whose first line is `DATA LIST` can now be read.
 
 ## Speed
 
@@ -30,6 +39,7 @@
 * The package no longer depends on haven or zoo.
 * Requires R >= 3.6.0 (as vroom already did).
 * Examples now run, and the code is commented.
+* Adds a GitHub Actions R CMD check workflow, replacing Travis and AppVeyor.
 
 # asciiSetupReader 2.5.3
 

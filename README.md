@@ -8,6 +8,7 @@
 status](https://codecov.io/gh/jacobkap/asciiSetupReader/branch/master/graph/badge.svg)](https://app.codecov.io/github/jacobkap/asciiSetupReader?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/asciiSetupReader?color=blue)](https://cran.r-project.org/package=asciiSetupReader)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![R-CMD-check](https://github.com/jacobkap/asciiSetupReader/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jacobkap/asciiSetupReader/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ## Overview
