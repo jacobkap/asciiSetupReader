@@ -16,9 +16,6 @@
   leaves a `sink()` open if it fails. A `file_name` ending in ".SPS" no
   longer gets a second extension, and one merely ending in "sps" (e.g.
   "datasps") is no longer cut short.
-* In SAS setup files, options after a character format name (e.g.
-  `VALUE $SEXF (default=30)`) are now removed before reading its value
-  labels, as they already were for numeric formats.
 * Missing values given as "X thru highest" no longer fail with "`labels`
   must be unique" when the value X itself appears in the data.
 * Open-ended missing value ranges now match zero-padded data (e.g.

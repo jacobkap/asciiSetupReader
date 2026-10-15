@@ -3,7 +3,6 @@ context("There are no warning or error messages")
 
 test_that("parse_setup is silent", {
   skip_on_cran()
-  skip_on_travis()
   expect_silent(parse_setup(crosswalk_sas_name))
   expect_silent(parse_setup(parole_sas_name))
   expect_silent(parse_setup(ucr1985_sas_name))
@@ -51,7 +50,6 @@ test_that("parse_setup is silent", {
 
 test_that("parse_setup is silent", {
   skip_on_cran()
-  skip_on_travis()
   expect_silent(parse_setup(crosswalk_sps_name))
   expect_silent(parse_setup(parole_sps_name))
   expect_silent(parse_setup(ucr1985_sps_name))
@@ -123,7 +121,6 @@ test_that("parse_setup is silent", {
 
 test_that("No messages or warnings or errors for file loads - SPSS", {
   skip_on_cran()
-  skip_on_travis()
 
   expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
                                  setup_file = jail_1987_sps_name))
@@ -203,7 +200,6 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
 
 test_that("No messages or warnings or errors for file loads - SAS", {
   skip_on_cran()
-  skip_on_travis()
 
 
   expect_silent(read_ascii_setup(data = SHR_dataset_name,

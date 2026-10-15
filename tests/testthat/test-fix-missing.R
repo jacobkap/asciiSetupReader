@@ -47,6 +47,13 @@ test_that("a column can have both an open-low and an open-high range", {
   expect_equal(fix_missing(data, missing)$a, c(NA, "0", "3", "97", NA))
 })
 
+test_that("bytes that are invalid in the locale don't stop open-ended ranges", {
+  data <- data.table::data.table(a = c("5", "12\xff", "99"))
+  missing <- data.frame(variable = "a", values = "90 THRU HI")
+  expect_no_error(result <- fix_missing(data, missing)$a)
+  expect_equal(result, c("5", "12\xff", NA))
+})
+
 test_that("open-ended ranges are read from a setup file", {
   dir <- tempfile()
   dir.create(dir)

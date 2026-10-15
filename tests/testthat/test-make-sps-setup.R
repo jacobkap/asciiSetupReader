@@ -37,6 +37,21 @@ test_that("make_sps_setup() doesn't add a second .sps extension", {
   unlink(file_name)
 })
 
+test_that("make_sps_setup() handles .SPS and names ending in 'sps'", {
+  upper <- file.path(tempdir(), "make_sps_setup_upper.SPS")
+  make_sps_setup(upper, col_positions = c("1-2", "3-5"))
+  expect_false(file.exists(paste0(upper, ".sps")))
+  expect_true(file.exists(file.path(tempdir(), "make_sps_setup_upper.sps")))
+
+  # Only a real ".sps" extension is removed, not any 4 characters ending
+  # in "sps"
+  ends_in_sps <- file.path(tempdir(), "make_sps_setup_datasps")
+  make_sps_setup(ends_in_sps, col_positions = c("1-2", "3-5"))
+  expect_true(file.exists(paste0(ends_in_sps, ".sps")))
+  unlink(c(file.path(tempdir(), "make_sps_setup_upper.sps"),
+           paste0(ends_in_sps, ".sps")))
+})
+
 test_that("make_sps_setup() works without column labels", {
   file_name <- file.path(tempdir(), "make_sps_setup_no_labels")
   sinks <- sink.number()
