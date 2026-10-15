@@ -65,27 +65,10 @@ spss_ascii_reader <- function(dataset_name,
                               keep_columns = NULL,
                               coerce_numeric = TRUE) {
 
-  #  .Deprecated("read_ascii_setup")
-
-  stopifnot(is.character(dataset_name), length(dataset_name) == 1,
-            is.character(sps_name), length(sps_name) == 1,
-            is.logical(value_label_fix), length(value_label_fix) == 1,
-            is.logical(real_names), length(real_names) == 1)
-
-  setup <- parse_setup(sps_name)
-  setup$setup <- selected_columns(keep_columns, setup$setup)
-
-  data <- read_data(dataset_name, setup)
-
-
-  data <- fix_value_labels(data, setup, value_label_fix)
-
-
-  data <- fix_names_missing_numeric(data,
-                                    setup,
-                                    missing,
-                                    real_names,
-                                    coerce_numeric)
-
-  return(data)
+  read_ascii_setup(data             = dataset_name,
+                   setup_file       = sps_name,
+                   use_value_labels = value_label_fix,
+                   use_clean_names  = real_names,
+                   select_columns   = keep_columns,
+                   coerce_numeric   = coerce_numeric)
 }

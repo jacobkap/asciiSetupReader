@@ -205,9 +205,6 @@ get_value_labels_sas <- function(codebook, setup) {
 
   value_labels <- gsub("([^\\.]-?[[:alnum:]]+=[^A-z])", "      \\1",
                        value_labels)
-  # value_labels <- gsub("(\\(?<=[^\\.]-?[[:alnum:]]+=[^A-z])", "      \\1",
-  #      value_labels)
-
 
   value_labels <- trimws(value_labels)
   value_labels <- unlist(strsplit(value_labels, "\\s{2,}"))
@@ -221,7 +218,9 @@ get_value_labels_sas <- function(codebook, setup) {
   value_labels$column <- fill_section(value_labels$value_labels,
                                       next_value %in% setup$f_name)
 
-  final_value_labels <- data.frame()
+  # One format can be used by several columns, so each format's labels are
+  # copied once for every column that uses it.
+  final_value_labels <- list()
   for (col in unique(value_labels$column)) {
     single_value_label <- value_labels[value_labels$column %in% col, ]
     real_names <- unique(setup$column_number[setup$f_name %in% col])
@@ -229,11 +228,12 @@ get_value_labels_sas <- function(codebook, setup) {
       temp <- single_value_label
       temp$value_labels[1] <- real_name
       temp$column <- real_name
-      final_value_labels <- rbind(final_value_labels, temp)
+      final_value_labels[[length(final_value_labels) + 1]] <- temp
     }
   }
+  if (length(final_value_labels) == 0) return(data.frame())
 
-  return(final_value_labels)
+  return(do.call(rbind, final_value_labels))
 }
 
 get_value_labels_sps <- function(codebook, setup) {

@@ -56,23 +56,20 @@ read_ascii_setup <- function(data,
                              select_columns   = NULL,
                              coerce_numeric   = TRUE) {
 
-  if (grepl(".sps(\\.zip)?$|.sps(\\.txt)?$", setup_file)) {
+  stopifnot(is.character(data), length(data) == 1,
+            is.character(setup_file), length(setup_file) == 1,
+            is.logical(use_value_labels), length(use_value_labels) == 1,
+            is.logical(use_clean_names), length(use_clean_names) == 1)
 
-    data <- spss_ascii_reader(dataset_name    = data,
-                              sps_name        = setup_file,
-                              value_label_fix = use_value_labels,
-                              real_names      = use_clean_names,
-                              keep_columns    = select_columns,
-                              coerce_numeric  = coerce_numeric)
-  } else {
+  # parse_setup() works out from the file name whether it's SPSS or SAS
+  setup <- parse_setup(setup_file)
+  setup$setup <- selected_columns(select_columns, setup$setup)
 
-    data <- sas_ascii_reader(dataset_name    = data,
-                             sas_name        = setup_file,
-                             value_label_fix = use_value_labels,
-                             real_names      = use_clean_names,
-                             keep_columns    = select_columns,
-                             coerce_numeric  = coerce_numeric)
-  }
-
+  data <- read_data(data, setup)
+  data <- fix_value_labels(data, setup, use_value_labels)
+  data <- fix_names_missing_numeric(data,
+                                    setup,
+                                    use_clean_names,
+                                    coerce_numeric)
   return(data)
 }

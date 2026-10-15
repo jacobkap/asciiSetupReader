@@ -27,7 +27,6 @@ Imports:
     readr,
     vroom (>= 1.1.0),
     stringr,
-    zoo,
     shiny (>= 0.13),
     miniUI (>= 0.1.1),
     rstudioapi (>= 0.5)

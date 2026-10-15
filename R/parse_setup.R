@@ -46,17 +46,7 @@ parse_setup <- function(setup_file) {
     }
     setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook):second_grep_value]
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
-
-    # If starts with a number, combine with previous row
-    start_with_number <- grep("^[0-9]", setup)
-    if (length(start_with_number) > 0) {
-      for (n in length(start_with_number):1) {
-        setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
-                                                 setup[start_with_number[n]],
-                                                 collapse = " ")
-      }
-      setup <- setup[-start_with_number]
-    }
+    setup <- join_number_lines(setup)
     setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
                   setup)
 
@@ -77,18 +67,7 @@ parse_setup <- function(setup_file) {
     }
     setup <- codebook[grep2("^INPUT$", codebook):second_grep_value]
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
-
-    # If starts with a number, combine with previous row
-    start_with_number <- grep("^[0-9]", setup)
-
-    if (length(start_with_number) > 0) {
-      for (n in length(start_with_number):1) {
-        setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
-                                                 setup[start_with_number[n]],
-                                                 collapse = " ")
-      }
-      setup <- setup[-start_with_number]
-    }
+    setup <- join_number_lines(setup)
 
     setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
                   setup)
@@ -112,10 +91,9 @@ parse_setup <- function(setup_file) {
   missing <- missing[!duplicated(missing), ]
 
   value_labels <- get_value_labels(codebook, setup, type = type)
-  setup <- stats::setNames(list(setup, value_labels, missing),
-                           c("setup",
-                             "value_labels",
-                             "missing"))
+  setup <- list(setup        = setup,
+                value_labels = value_labels,
+                missing      = missing)
   if (!is.null(setup$value_labels)) {
     setup$value_labels <- parse_value_labels(setup, type = type)
   }
@@ -126,6 +104,30 @@ parse_setup <- function(setup_file) {
 
   return(setup)
 
+}
+
+# A line in the column-position section that starts with a number continues
+# the line before it (e.g. a name on one line and its position on the next),
+# so it's pasted onto that line. Runs of such lines all join the line above.
+join_number_lines <- function(setup) {
+  start_with_number <- grep("^[0-9]", setup)
+  if (length(start_with_number) > 0) {
+    for (n in length(start_with_number):1) {
+      setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
+                                               setup[start_with_number[n]],
+                                               collapse = " ")
+    }
+    setup <- setup[-start_with_number]
+  }
+  setup
+}
+
+# Fills each NA with the most recent non-NA value before it (leading NAs
+# stay NA), like zoo::na.locf(x, na.rm = FALSE).
+fill_down <- function(x) {
+  last_value <- cummax(seq_along(x) * !is.na(x))
+  last_value[last_value == 0] <- NA
+  x[last_value]
 }
 
 
@@ -167,7 +169,7 @@ parse_missing_sps <- function(codebook, setup) {
                         values = gsub(".*\\(|\\).*", "", missing)
                         )
   missing$variable[missing$variable == ""] <- NA
-  missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
+  missing$variable <- fill_down(missing$variable)
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
@@ -222,18 +224,13 @@ parse_missing_sas <- function(codebook, setup) {
   missing <- gsub("\\' ", "\\') ", missing)
   missing <- gsub("\\'", "", missing)
 
-
-  # missing <- data.frame(variable = gsub("=.*", "", missing),
-  #                       values = gsub(".*=", "", missing),
-  #                       )  missing <- gsub("\\) ", "\\)   ", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
                         values = gsub(".*\\(|\\).*", "", missing)
                         )
   missing$variable[missing$variable == ""] <- NA
-  missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
-  # missing$values <- gsub("\\.$", "", missing$values)
+  missing$variable <- fill_down(missing$variable)
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
@@ -367,10 +364,8 @@ parse_column_names <- function(codebook, type) {
   variables <- gsub("\\+", "_plus_", variables)
   variables <- gsub("@", "_at_", variables)
 
-  # New
   variables <- gsub("^/", "", variables)
   variables <- gsub('"\\s*(.*?)\\s*"', '"\\1"', variables)
-#  variables <- gsub('"', "", variables)
 
   variables <- data.frame(column_name   = fix_names(variables),
                           column_number = gsub(" .*", "",

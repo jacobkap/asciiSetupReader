@@ -1,5 +1,4 @@
 get_column_spaces <- function(setup, variables, codebook) {
-# New
   setup <- gsub("^/[0-9]+$", "", setup)
   setup <- setup[!setup %in% ""]
   setup <- gsub("([0-9]+) -([0-9]+)", "\\1-\\2", setup)
@@ -60,11 +59,10 @@ get_column_spaces <- function(setup, variables, codebook) {
   }
 
 
+  # SAS files: the FORMAT section links each column to the format (f_name)
+  # whose VALUE statement holds its value labels.
   format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
-  if (any(grepl2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook))) {
-    # Get format - column names and column names with f ====================
-    format_section = grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
-
+  if (length(format_section) > 0) {
     format <- codebook[format_section[1]:length(codebook)]
     format <- gsub("^FORMAT ", "", format, ignore.case = TRUE)
     format <- unlist(strsplit(format, "\\."))
@@ -140,28 +138,27 @@ fix_missing <- function(data, missing) {
     missing_values <- as.character(trimws(missing_values))
     missing_values <- gsub("\\'", "", missing_values)
 
-    if (any(grepl("thru hi", missing, ignore.case = TRUE))) {
-      thru_higher <- missing_values[grep("thru hi", missing_values, ignore.case = TRUE)]
-      thru_higher <- gsub(" thru hi.*", "", thru_higher, ignore.case = TRUE)
-      thru_higher <- as.numeric(thru_higher)
-      unique_values_numeric <- suppressWarnings(as.numeric(unique(data[[column]])))
-      unique_values_numeric <- unique_values_numeric[!is.na(unique_values_numeric)]
-      missing_values <- c(missing_values,
-                          unique_values_numeric[unique_values_numeric >= thru_higher])
-      missing_values <- gsub(" thru hi.*", "", missing_values, ignore.case = TRUE)
-
+    # Open-ended ranges ("5 thru highest", "lowest thru 0") become the
+    # values in the data that fall in the range, plus the bound itself.
+    is_thru_hi  <- grepl("thru hi", missing_values, ignore.case = TRUE)
+    is_low_thru <- grepl("low thru", missing_values, ignore.case = TRUE)
+    if (any(is_thru_hi) || any(is_low_thru)) {
+      values <- unique(data[[column]])
+      values <- suppressWarnings(as.numeric(values[validEnc(values)]))
+      values <- values[!is.na(values)]
     }
-
-    if (any(grepl("low thru", missing, ignore.case = TRUE))) {
-      low_thru <- missing_values[grep("low thru", missing_values, ignore.case = TRUE)]
-      low_thru <- gsub(".*low thru ", "", low_thru, ignore.case = TRUE)
-      low_thru <- as.numeric(low_thru)
-      unique_values_numeric <- suppressWarnings(as.numeric(unique(data[[column]])))
-      unique_values_numeric <- unique_values_numeric[!is.na(unique_values_numeric)]
-      missing_values <- c(missing_values,
-                          unique_values_numeric[unique_values_numeric <= low_thru])
-      missing_values <- gsub(".*low thru ", "", missing_values, ignore.case = TRUE)
-
+    if (any(is_thru_hi)) {
+      lowest <- as.numeric(gsub(" thru hi.*", "", missing_values[is_thru_hi],
+                                ignore.case = TRUE))
+      missing_values <- c(gsub(" thru hi.*", "", missing_values, ignore.case = TRUE),
+                          values[values >= lowest])
+    }
+    is_low_thru <- grepl("low thru", missing_values, ignore.case = TRUE)
+    if (any(is_low_thru)) {
+      highest <- as.numeric(gsub(".*low thru ", "", missing_values[is_low_thru],
+                                 ignore.case = TRUE))
+      missing_values <- c(gsub(".*low thru ", "", missing_values, ignore.case = TRUE),
+                          values[values <= highest])
     }
     names(missing_values) <- NA
 
@@ -202,13 +199,10 @@ read_data <- function(data, setup) {
 
 fix_names_missing_numeric <- function(data,
                                       setup,
-                                      missing,
                                       real_names,
                                       coerce_numeric) {
-  # Fixes missing values ----------------------------------------------------
-  missing <- setup$missing
-  if (!is.null(missing)) {
-    data <- fix_missing(data, missing)
+  if (!is.null(setup$missing)) {
+    data <- fix_missing(data, setup$missing)
   }
   if (real_names) {
     # Fixes column names to real names
