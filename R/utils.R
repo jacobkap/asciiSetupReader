@@ -204,6 +204,8 @@ read_data <- function(data, setup) {
       data.table::setDT(temp)
     },
     error = function(cond) {
+      message("vroom couldn't read '", basename(data), "' (",
+              conditionMessage(cond), "), so reading it with readr instead.")
       temp <- suppressMessages(readr::read_fwf(data,
                                                col_positions = positions,
                                                col_types = vroom::cols(.default =
