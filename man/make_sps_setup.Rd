@@ -30,8 +30,8 @@ use_clean_names = TRUE in \code{\link{read_ascii_setup}}.}
 \item{value_labels}{A vector with the value first, then an ' = ' then the label. Each
 new column should have the column name (or label) followed by ' ='.}
 
-\item{missing_values}{A vector of strings with the column label followed by the values to be
-replaced by NA.}
+\item{missing_values}{A vector of strings with the column name or label followed by the values
+to be replaced by NA, e.g. c("var1", "9", "-8", "var2", "-8").}
 }
 \value{
 \code{NULL}, invisibly. Called to write the .sps file.

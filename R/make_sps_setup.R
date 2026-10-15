@@ -23,8 +23,8 @@
 #' A vector with the value first, then an ' = ' then the label. Each
 #' new column should have the column name (or label) followed by ' ='.
 #' @param missing_values
-#' A vector of strings with the column label followed by the values to be
-#' replaced by NA.
+#' A vector of strings with the column name or label followed by the values
+#' to be replaced by NA, e.g. c("var1", "9", "-8", "var2", "-8").
 #' @return
 #' \code{NULL}, invisibly. Called to write the .sps file.
 #' @export
@@ -131,15 +131,13 @@ make_sps_setup <- function(file_name,
 
   if (!is.null(missing_values)) {
 
-    temp <- rep(0, length(missing_values))
-    counter <- 0
-    for (i in 1:length(temp)) {
-      if (missing_values[i] %in% col_labels) {
-        counter <- counter + 1
-        missing_values[i] <- col_names[col_labels %in% missing_values[i]]
-      }
-      temp[i] <- counter
-    }
+    # Each column's values start with its name or label (labels are
+    # replaced with the name)
+    is_column   <- missing_values %in% c(col_names, col_labels)
+    label_match <- match(missing_values, col_labels)
+    missing_values[!is.na(label_match)] <-
+      col_names[label_match[!is.na(label_match)]]
+    temp <- cumsum(is_column)
     split_missing <- split(missing_values, as.factor(temp))
     missing_values <- c()
     for (i in 1:length(split_missing)) {

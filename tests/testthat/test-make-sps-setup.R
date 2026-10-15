@@ -49,3 +49,17 @@ test_that("make_sps_setup() works without column labels", {
   expect_equal(setup$setup$end, c(2, 5))
   unlink(paste0(file_name, ".sps"))
 })
+
+test_that("missing_values accepts column names as well as labels", {
+  file_name <- file.path(tempdir(), "make_sps_setup_missing_names")
+  make_sps_setup(file_name,
+                 col_positions  = c(2, 2, 2),
+                 col_names      = c("v1", "v2", "v3"),
+                 col_labels     = c("first", "second", "third"),
+                 missing_values = c("first", "9", "v3", "7", "-1", "v2", "0"))
+  missing <- parse_setup(paste0(file_name, ".sps"))$missing
+  expect_equal(missing$values[missing$variable == "v1"], "9")
+  expect_equal(missing$values[missing$variable == "v2"], "0")
+  expect_equal(missing$values[missing$variable == "v3"], c("7", "-1"))
+  unlink(paste0(file_name, ".sps"))
+})
