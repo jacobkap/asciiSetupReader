@@ -151,27 +151,32 @@ fix_missing <- function(data, missing) {
     missing_values <- as.character(trimws(missing_values))
     missing_values <- gsub("\\'", "", missing_values)
 
-    # Open-ended ranges ("5 thru highest", "low thru 0") become the values
-    # in the data that fall in the range, plus the bound itself.
-    is_thru_hi  <- grepl("thru hi", missing_values, ignore.case = TRUE)
-    is_low_thru <- grepl("low thru", missing_values, ignore.case = TRUE)
+    # Open-ended ranges ("5 THRU HI(GHEST)", "LO(WEST) THRU 0") become the
+    # values in the data that fall in the range. Values are compared as
+    # numbers but kept as they appear in the data, so zero-padded values
+    # (e.g. "0000012" for "0000009 THRU HI") match.
+    thru_hi_pattern  <- "\\s+thru\\s+hi.*$"
+    low_thru_pattern <- "^lo(w|west)?\\s+thru\\s+"
+    is_thru_hi  <- grepl(thru_hi_pattern, missing_values, ignore.case = TRUE)
+    is_low_thru <- grepl(low_thru_pattern, missing_values, ignore.case = TRUE)
     if (any(is_thru_hi) || any(is_low_thru)) {
-      values <- unique(data[[column]])
-      values <- suppressWarnings(as.numeric(values[validEnc(values)]))
-      values <- values[!is.na(values)]
-    }
-    if (any(is_thru_hi)) {
-      lowest <- as.numeric(gsub(" thru hi.*", "", missing_values[is_thru_hi],
+      values  <- unique(data[[column]])
+      values  <- values[!is.na(values) & validEnc(values)]
+      numbers <- suppressWarnings(as.numeric(values))
+      values  <- values[!is.na(numbers)]
+      numbers <- numbers[!is.na(numbers)]
+
+      lowest  <- as.numeric(sub(thru_hi_pattern, "", missing_values[is_thru_hi],
                                 ignore.case = TRUE))
-      missing_values <- c(gsub(" thru hi.*", "", missing_values, ignore.case = TRUE),
-                          values[values >= lowest])
-    }
-    is_low_thru <- grepl("low thru", missing_values, ignore.case = TRUE)
-    if (any(is_low_thru)) {
-      highest <- as.numeric(gsub(".*low thru ", "", missing_values[is_low_thru],
-                                 ignore.case = TRUE))
-      missing_values <- c(gsub(".*low thru ", "", missing_values, ignore.case = TRUE),
-                          values[values <= highest])
+      highest <- as.numeric(sub(low_thru_pattern, "", missing_values[is_low_thru],
+                                ignore.case = TRUE))
+      lowest   <- lowest[!is.na(lowest)]
+      highest  <- highest[!is.na(highest)]
+      in_range <- rep(FALSE, length(values))
+      if (length(lowest) > 0)  in_range <- in_range | numbers >= min(lowest)
+      if (length(highest) > 0) in_range <- in_range | numbers <= max(highest)
+      missing_values <- c(missing_values[!is_thru_hi & !is_low_thru],
+                          values[in_range])
     }
     names(missing_values) <- NA
 
