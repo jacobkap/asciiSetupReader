@@ -9,6 +9,9 @@
 README.Rmd
 cran-comments.md
 ^docs$
+^_pkgdown\.yml$
+^pkgdown$
 ^CRAN-SUBMISSION$
 revdep/
 ^revdep$
+^\.claude$

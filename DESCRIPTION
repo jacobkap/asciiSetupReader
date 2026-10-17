@@ -18,7 +18,8 @@ Description: Lets you open a fixed-width ASCII file (.txt or
     files. Fixed-width ASCII files with setup files are common in older
     (pre-2000) government data.
 License: MIT + file LICENSE
-URL: https://github.com/jacobkap/asciiSetupReader
+URL: https://jacobkap.github.io/asciiSetupReader/,
+    https://github.com/jacobkap/asciiSetupReader
 BugReports: https://github.com/jacobkap/asciiSetupReader/issues
 Depends:
     R (>= 3.6.0)
