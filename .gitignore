@@ -4,3 +4,4 @@
 .Ruserdata
 packrat/lib*/
 tests/testthat/_problems/
+.claude/

@@ -1,0 +1,18 @@
+url: https://jacobkap.github.io/asciiSetupReader/
+
+template:
+  bootstrap: 5
+
+reference:
+- title: Read data
+  contents:
+  - read_ascii_setup
+  - spss_ascii_reader
+  - sas_ascii_reader
+- title: Setup files
+  contents:
+  - parse_setup
+  - make_sps_setup
+- title: RStudio addin
+  contents:
+  - read_ascii_setup_addin
