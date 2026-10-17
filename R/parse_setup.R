@@ -1,24 +1,28 @@
 #' Parse the setup file (.sps or .sas).
 #'
-#' @param setup_file Name of the SPSS or SAS setup file - should be a .sps or .sas (.txt also accepted as are these files in zipped format)
+#' @param setup_file Name of the SPSS or SAS setup file - should be a .sps or
+#'   .sas (.txt also accepted as are these files in zipped format). Whether it
+#'   is SPSS or SAS is determined from the file name: names ending in .sps
+#'   (optionally followed by .zip or .txt) are SPSS and everything else is SAS.
 #'
 #' @return A list of length 3. The first object ("setup") is a data frame
-#' containing 4 columns: first the non-descriptive name of each column,
-#' The second column is the descriptive name of the column. Columns three
-#' and four and the beginning and ending number of the column (used to
-#' determine the columns location in the fixed-with data file).
+#' with 4 columns: column_number, the non-descriptive name of each column
+#' (e.g. V1); column_name, its descriptive name; and begin and end, the
+#' first and last character position of the column in the fixed-width data
+#' file.
 #'
-#' The second object ("value_labels") in the list is list of named vectors for the value labels. The
-#' list has a length equal to the number of columns with value labels. If there are
-#' no value labels, this will be NULL.
+#' The second object ("value_labels") is a list of named vectors for the
+#' value labels, one per column with value labels. The vector's values are
+#' the codes in the data and its names are the labels. If there are no
+#' value labels, this will be NULL.
 #'
-#' The third object ("missing") in the list is a data.frame with two columns. The first
-#' column says the variable name and the second column says the value that is missing
-#' and will be replaced with NA.
+#' The third object ("missing") is a data.frame with two columns. The first
+#' column (variable) says the column name and the second (values) says the
+#' value that is missing and will be replaced with NA. If there are no
+#' missing values, this will be NULL.
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' sas_name <- system.file("extdata", "example_setup.sas",
 #'                          package = "asciiSetupReader")
 #' sas_example <- parse_setup(sas_name)
@@ -26,7 +30,7 @@
 #' sps_name <- system.file("extdata", "example_setup.sps",
 #'                          package = "asciiSetupReader")
 #' sps_example <- parse_setup(sps_name)
-#' }
+#' head(sps_example$setup)
 parse_setup <- function(setup_file) {
 
   if (grepl(".sps(\\.zip)?$|.sps(\\.txt)?$", setup_file, ignore.case = TRUE)) {
@@ -38,6 +42,10 @@ parse_setup <- function(setup_file) {
   codebook  <- parse_codebook(setup_file, type = type)
   variables <- parse_column_names(codebook, type = type)
 
+  # Column positions: SPSS "DATA LIST" section (up to "VARIABLE LABELS") or
+  # SAS "INPUT" section (up to the next blank line or ";"). Each is put
+  # into "name begin-end" pieces separated by 2+ spaces for
+  # get_column_spaces().
   if (type == "sps") {
     second_grep_value <- grep2("^variable labels$", codebook)
     second_grep_value <- second_grep_value[1]
@@ -46,17 +54,7 @@ parse_setup <- function(setup_file) {
     }
     setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook):second_grep_value]
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
-
-    # If starts with a number, combine with previous row
-    start_with_number <- grep("^[0-9]", setup)
-    if (length(start_with_number) > 0) {
-      for (n in length(start_with_number):1) {
-        setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
-                                                 setup[start_with_number[n]],
-                                                 collapse = " ")
-      }
-      setup <- setup[-start_with_number]
-    }
+    setup <- join_number_lines(setup)
     setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
                   setup)
 
@@ -77,18 +75,7 @@ parse_setup <- function(setup_file) {
     }
     setup <- codebook[grep2("^INPUT$", codebook):second_grep_value]
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
-
-    # If starts with a number, combine with previous row
-    start_with_number <- grep("^[0-9]", setup)
-
-    if (length(start_with_number) > 0) {
-      for (n in length(start_with_number):1) {
-        setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
-                                                 setup[start_with_number[n]],
-                                                 collapse = " ")
-      }
-      setup <- setup[-start_with_number]
-    }
+    setup <- join_number_lines(setup)
 
     setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
                   setup)
@@ -100,6 +87,8 @@ parse_setup <- function(setup_file) {
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
   rownames(setup) <- 1:nrow(setup)
+
+  # Missing values and value labels both need the column list
   if (any(grepl2("MISSING VALUE", codebook))) {
     if (type == "sps") {
       missing <- parse_missing_sps(codebook, setup)
@@ -112,10 +101,9 @@ parse_setup <- function(setup_file) {
   missing <- missing[!duplicated(missing), ]
 
   value_labels <- get_value_labels(codebook, setup, type = type)
-  setup <- stats::setNames(list(setup, value_labels, missing),
-                           c("setup",
-                             "value_labels",
-                             "missing"))
+  setup <- list(setup        = setup,
+                value_labels = value_labels,
+                missing      = missing)
   if (!is.null(setup$value_labels)) {
     setup$value_labels <- parse_value_labels(setup, type = type)
   }
@@ -128,9 +116,40 @@ parse_setup <- function(setup_file) {
 
 }
 
+# A line in the column-position section that starts with a number continues
+# the line before it (e.g. a name on one line and its position on the next),
+# so it's pasted onto that line. Runs of such lines all join the line above.
+join_number_lines <- function(setup) {
+  start_with_number <- grep("^[0-9]", setup)
+  if (length(start_with_number) > 0) {
+    for (n in length(start_with_number):1) {
+      setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
+                                               setup[start_with_number[n]],
+                                               collapse = " ")
+    }
+    setup <- setup[-start_with_number]
+  }
+  setup
+}
 
+# Fills each NA with the most recent non-NA value before it (leading NAs
+# stay NA), like zoo::na.locf(x, na.rm = FALSE).
+fill_down <- function(x) {
+  last_value <- cummax(seq_along(x) * !is.na(x))
+  last_value[last_value == 0] <- NA
+  x[last_value]
+}
+
+# Missing values ------------------------------------------------------------
+#
+# Both parsers return a data.frame with one row per column (variable) and
+# missing value (values), or NULL. Ranges like "1 thru 5" are expanded to
+# one row per value; open-ended ones ("8 thru highest") are left for
+# fix_missing(), which needs the data to expand them.
+
+# SPSS: "MISSING VALUES V1 (9, 99) V2 (-1)." or RECODE ... =SYSMIS
+# statements, up to the next EXECUTE.
 parse_missing_sps <- function(codebook, setup) {
-
   start <- grep2("MISSING VALUES?$|Convert missing data", codebook)
   if (length(start) == 0) {
     start <- grep2("MISSING VALUE RECODE", codebook)
@@ -161,25 +180,22 @@ parse_missing_sps <- function(codebook, setup) {
 
   missing <- gsub("([0-9])  (\\(.*\\)\\.)", "\\1 \\2", missing)
 
+  # Split into "V1 (9" / "99)" pieces; pieces without a column name belong
+  # to the column before them
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
                         values = gsub(".*\\(|\\).*", "", missing)
                         )
   missing$variable[missing$variable == ""] <- NA
-  missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
+  missing$variable <- fill_down(missing$variable)
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
 
   missing <- missing[missing$variable != missing$values, ]
 
-  for (i in 1:nrow(missing)) {
-    if (tolower(missing$variable[i]) %in% tolower(setup$column_number)) {
-      missing$variable[i] <-
-        setup$column_number[tolower(setup$column_number) %in% tolower(missing$variable[i])]
-    }
-  }
+  missing$variable <- match_case(missing$variable, setup$column_number)
 
   missing <- missing[missing$variable %in% c(setup$column_number), ]
   if (nrow(missing) > 0) {
@@ -191,11 +207,12 @@ parse_missing_sps <- function(codebook, setup) {
   return(missing)
 }
 
+# SAS: "IF V1 = 9 OR V1 = 99 THEN V1 = .;" statements after the MISSING
+# VALUE comment, rewritten into the same "V1 (9, 99)" form as SPSS.
 parse_missing_sas <- function(codebook, setup) {
-
   start <- grep2("MISSING VALUE", codebook)
   start <- grep2("^IF", codebook)[grep2("^IF", codebook) > max(start)][1]
-  # Some .sas files have "example" code at the beginnig which screws this up
+  # Some .sas files have "example" code at the beginning which screws this up
   if (is.na(start)) return(NULL)
   end <- grep2("\\*/", codebook)[grep2("\\*/", codebook) > start][1]
   if (is.na(end) | length(end) == 0 | all(end <= start)) {
@@ -227,18 +244,13 @@ parse_missing_sas <- function(codebook, setup) {
   missing <- gsub("\\' ", "\\') ", missing)
   missing <- gsub("\\'", "", missing)
 
-
-  # missing <- data.frame(variable = gsub("=.*", "", missing),
-  #                       values = gsub(".*=", "", missing),
-  #                       )  missing <- gsub("\\) ", "\\)   ", missing)
   missing <- unlist(strsplit(missing, ",|\\s{2,}"))
 
   missing <- data.frame(variable = gsub(" .*", "", missing),
                         values = gsub(".*\\(|\\).*", "", missing)
                         )
   missing$variable[missing$variable == ""] <- NA
-  missing$variable <- zoo::na.locf(missing$variable, na.rm = FALSE)
-  # missing$values <- gsub("\\.$", "", missing$values)
+  missing$variable <- fill_down(missing$variable)
   missing$values <- gsub('\\"', "\\'", missing$values)
   missing$values <- gsub("\\'", "", missing$values)
   missing$values <- trimws(missing$values)
@@ -253,10 +265,9 @@ parse_missing_sas <- function(codebook, setup) {
   return(missing)
 }
 
-
+# Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5).
 make_thru_missing_rows <- function(missing) {
   thru_rows <- missing[grep("[0-9] thru -?[0-9]", missing$values, ignore.case = TRUE), ]
-  # thru_highest_rows <- missing[grep("thru hi", missing$values, ignore.case = TRUE), ]
 
   if (nrow(thru_rows) < 1) {
     return(missing)
@@ -277,21 +288,25 @@ make_thru_missing_rows <- function(missing) {
   return(missing)
 }
 
+# Reads the setup file as trimmed lines. For SPSS files, anything before
+# DATA LIST is dropped.
 parse_codebook <- function(setup_file, type) {
   codebook <- readr::read_lines(setup_file)
   codebook <- stringr::str_trim(codebook)
 
   if (type == "sps") {
-    if (any(grepl("^DATA LIST", codebook, ignore.case = TRUE))) {
-      codebook <- codebook[-c(1:(grep2("^DATA LIST", codebook) - 1))]
+    data_list <- grep2("^DATA LIST", codebook)
+    if (length(data_list) > 0) {
+      codebook <- codebook[data_list[1]:length(codebook)]
     }
   }
   return(codebook)
 }
 
-
+# Turns the value-label pieces from get_value_labels() into a named list
+# with one element per column (in setup file order), each a named vector
+# from value_label_matrixer().
 parse_value_labels <- function(setup, type) {
-
   value_labels <- setup$value_labels
   value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
 
@@ -309,8 +324,10 @@ parse_value_labels <- function(setup, type) {
   return(value_labels)
 }
 
+# Returns a data.frame of column_number (short name, e.g. V1) and
+# column_name (descriptive label made into a clean name) from the SPSS
+# VARIABLE LABELS or SAS LABEL/ATTRIB section. NULL if there isn't one.
 parse_column_names <- function(codebook, type) {
-  # Get the column names
   if (type == "sps") {
     variable_label_location <- grep2("^variable labels$", codebook)
     if (length(variable_label_location) == 0) {
@@ -329,7 +346,7 @@ parse_column_names <- function(codebook, type) {
     variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
                       variables)
     variables <- gsub("\'", "\"", variables)
-    # In case some variables are on multiple lines
+    # Labels continued on the next line end in "+
     plus <- grep('\\"\\+$', variables)
     if (length(plus) > 0) {
       for (n in 1:length(plus)) {
@@ -353,7 +370,7 @@ parse_column_names <- function(codebook, type) {
       next_location <- length(codebook)
     }
 
-
+    # V1 = "Label" (or V1 LABEL="Label" FORMAT=... in ATTRIB statements)
     variables <- codebook[variable_label_location:next_location]
     variables <- variables[grep("=", variables)]
     variables <- gsub('\\"\\s+FORMAT=.*$', '\\"', variables)
@@ -365,24 +382,22 @@ parse_column_names <- function(codebook, type) {
   }
   variables <- unlist(strsplit(variables, '"\\s{3,}'))
 
-
+  # Keep the meaning of symbols that fix_names() would otherwise turn into _
   variables <- gsub("<", "_under_", variables)
   variables <- gsub(">", "_over_", variables)
   variables <- gsub("\\$", "_dollar_", variables)
   variables <- gsub("\\+", "_plus_", variables)
   variables <- gsub("@", "_at_", variables)
 
-  # New
   variables <- gsub("^/", "", variables)
   variables <- gsub('"\\s*(.*?)\\s*"', '"\\1"', variables)
-#  variables <- gsub('"', "", variables)
 
   variables <- data.frame(column_name   = fix_names(variables),
                           column_number = gsub(" .*", "",
                                                variables)
                           )
 
-
+  # Stop at the first empty label (the end of the section)
   if (any(grepl("^$", variables$column_name))) {
     variables <- variables[1:(grep("^$", variables$column_name)[1]), ]
   }

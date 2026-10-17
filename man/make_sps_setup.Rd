@@ -14,8 +14,8 @@ make_sps_setup(
 )
 }
 \arguments{
-\item{file_name}{Name of the file to be saved (e.g. "setup_file1"). There is no need to put
-the .sps extension in the file name.}
+\item{file_name}{Name (or path) of the file to be saved (e.g. "setup_file1"). The .sps
+extension is added if it isn't already there.}
 
 \item{col_positions}{Either a vector of strings indicating the start and end position of each column
 (e.g. "1-3", "4-5") or a vector of the widths of the columns (e.g. 3, 2).}
@@ -25,16 +25,16 @@ create names based on column number (e.g. V1, V2, V3).}
 
 \item{col_labels}{A vector of labels for the columns. These are often longer and more descriptive
 than the col_names. These are the values used as column names if
-real_names = TRUE in reading in the data.}
+use_clean_names = TRUE in \code{\link{read_ascii_setup}}.}
 
 \item{value_labels}{A vector with the value first, then an ' = ' then the label. Each
-new column should have the column named followed by ' ='.}
+new column should have the column name (or label) followed by ' ='.}
 
-\item{missing_values}{A vector of strings with the column name followed by the values to be
-replaced by NA.}
+\item{missing_values}{A vector of strings with the column name or label followed by the values
+to be replaced by NA, e.g. c("var1", "9", "-8", "var2", "-8").}
 }
 \value{
-Does not return any object. Saves the .sps file that is created.
+\code{NULL}, invisibly. Called to write the .sps file.
 }
 \description{
 make_sps_setup() is used to create the setup file used in reading in
@@ -43,24 +43,26 @@ in some cases (usually with government data) you will need to create
 the setup file yourself.
 }
 \examples{
-\dontrun{
-  value_labels <- c("var1 = ",
-                     "1 = label 1",
-                     "2 = label 2",
-                     "3 = label 3",
-                     "4 = label 4",
-                     "5 = label 5",
-                     "var3 = ",
-                     "1A = alpha",
-                     "1B = bravo",
-                     "1C = cat")
+value_labels <- c("var1 = ",
+                  "1 = label 1",
+                  "2 = label 2",
+                  "3 = label 3",
+                  "4 = label 4",
+                  "5 = label 5",
+                  "var3 = ",
+                  "1A = alpha",
+                  "1B = bravo",
+                  "1C = cat")
 missing_values <- c("state name", "9", "-8", "county", "-8")
-make_sps_setup(file_name     = "example_name",
-               col_positions = c(1, 3, 4, 2),
-               col_names     = c("var1", "var2", "var3", "var4"),
-               col_labels    = c("state name", "county",
-                              "population", "census region code"),
-               value_labels  = value_labels,
+file_name <- file.path(tempdir(), "example_name")
+make_sps_setup(file_name      = file_name,
+               col_positions  = c(1, 3, 4, 2),
+               col_names      = c("var1", "var2", "var3", "var4"),
+               col_labels     = c("state name", "county",
+                                  "population", "census region code"),
+               value_labels   = value_labels,
                missing_values = missing_values)
-}
+
+# The new setup file can be used with parse_setup() and read_ascii_setup()
+parse_setup(paste0(file_name, ".sps"))
 }

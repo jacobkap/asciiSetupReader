@@ -1,3 +1,52 @@
+# asciiSetupReader 2.6.0
+
+## Bug fixes
+
+* `coerce_numeric = TRUE` now checks every row before converting a column to
+  numeric. Previously files over 50,000 rows only had a random sample of rows
+  checked (and a file of exactly 50,000 rows only 5,000), so a column with
+  rare text values could be converted to numeric, silently turning those
+  values into `NA`, differently on every run. The sampling also changed the
+  user's random number stream.
+* Values with bytes that are invalid in the current locale no longer cause
+  an error when checking for numeric columns (the column stays character)
+  or when applying open-ended missing value ranges.
+* `make_sps_setup()` works again on R >= 4.5.0 (it failed with "NA in
+  coercion to boolean"), works when `col_labels` isn't given, and no longer
+  leaves a `sink()` open if it fails. A `file_name` ending in ".SPS" no
+  longer gets a second extension, and one merely ending in "sps" (e.g.
+  "datasps") is no longer cut short.
+* Missing values given as "X thru highest" no longer fail with "`labels`
+  must be unique" when the value X itself appears in the data.
+* Open-ended missing value ranges now match zero-padded data (e.g.
+  "0000012" for "0000009 THRU HI"). Previously those values were left in
+  the data.
+* Missing value ranges written "LO THRU X" or "LOWEST THRU X" are now
+  applied. Previously only "low thru" was recognized, so these were ignored.
+* `make_sps_setup()`'s `missing_values` accepts column names as well as
+  labels. Previously a column name was treated as a missing value of the
+  column before it.
+* SPSS setup files whose first line is `DATA LIST` can now be read.
+
+## Speed
+
+* Parsing setup files is much faster, especially for files with many columns
+  (e.g. PSID setup files: from about 2 minutes to under 10 seconds).
+* Reading data is faster: the data is no longer copied twice, and value
+  labels and missing values are applied with a direct lookup.
+
+## Other changes
+
+* `spss_ascii_reader()` and `sas_ascii_reader()` now call
+  `read_ascii_setup()`; results and arguments are unchanged.
+* Data files are read with vroom only. If vroom failed, the package used to
+  retry silently with readr, which since readr 2.0 reads with vroom too, so
+  the retry rarely helped and hid vroom's error. Now vroom's error is shown.
+* The package no longer depends on haven or zoo.
+* Requires R >= 3.6.0 (as vroom already did).
+* Examples now run, and the code is commented.
+* Adds a GitHub Actions R CMD check workflow, replacing Travis and AppVeyor.
+
 # asciiSetupReader 2.5.3
 
 * Misc bug fixes

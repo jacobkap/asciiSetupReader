@@ -21,11 +21,10 @@ This file may be zipped with a file extension of .zip.}
 
 \item{value_label_fix}{If TRUE, fixes value labels of the data. e.g. If a
 column is "sex" and has values of 0 or 1, and the setup file says 0 = male
-and 1 = female, it will make that change. The reader is much faster is this
- parameter is FALSE.}
+and 1 = female, it will make that change.}
 
 \item{real_names}{If TRUE fixes column names from default column name in the
-SPSS setup file (e.g. V1, V2) to the name is says the column is called
+SPSS setup file (e.g. V1, V2) to the name it says the column is called
 (e.g. age, sex, etc.).}
 
 \item{keep_columns}{Specify which columns from the dataset you want. If
@@ -34,17 +33,26 @@ column name (e.g. V1, V2, etc.) or column label (e.g. VICTIM_NAME, CITY,
 etc.).}
 
 \item{coerce_numeric}{If TRUE (default) will make columns where all values can be made numeric
-into numeric columns.Useful as FALSE if variables have leading zeros - such
-as US Census FIPS codes.}
+into numeric columns. Every value is checked, so a column with any text
+value stays character. Useful as FALSE if variables have leading zeros -
+such as US Census FIPS codes.}
+}
+\value{
+Data.frame of the data from the ASCII file
 }
 \description{
 sas_ascii_reader() and spss_ascii_reader() are used when you need to
-read an fixed-width ASCII (text) file that comes with a setup file. These file
+read a fixed-width ASCII (text) file that comes with a setup file. These file
 combinations are sometimes referred to as .txt+.sps, .txt+.sas,
 .dat+.sps, or .dat+.sas.
 The setup file provides instructions on how to create and name the columns,
 and fix the key-value pairs (sometimes called value labels). This is common
-in government data, particular data produced before 2010.
+in government data, particularly data produced before 2010.
+}
+\details{
+sas_ascii_reader() gives the same result as \code{\link{read_ascii_setup}},
+which reads both SPSS and SAS setup files; its arguments just have older
+names.
 }
 \examples{
 # Text file is zipped to save space.
@@ -53,29 +61,19 @@ dataset_name <- system.file("extdata", "example_data.zip",
 sas_name <- system.file("extdata", "example_setup.sas",
   package = "asciiSetupReader")
 
-\dontrun{
 example <- sas_ascii_reader(dataset_name = dataset_name,
   sas_name = sas_name)
 
-
-# Does not fix value labels
-example2 <- sas_ascii_reader(dataset_name = dataset_name,
-  sas_name = sas_name, value_label_fix = FALSE)
-
-# Keeps original column names
-example3 <- sas_ascii_reader(dataset_name = dataset_name,
-  sas_name = sas_name, real_names = FALSE)
-
-}
 # Only returns the first 5 columns
-example <- sas_ascii_reader(dataset_name = dataset_name,
+example2 <- sas_ascii_reader(dataset_name = dataset_name,
   sas_name = sas_name, keep_columns = 1:5)
 
 }
 \seealso{
-\code{\link{spss_ascii_reader}} For using an SPSS setup file
+\code{\link{read_ascii_setup}}, \code{\link{spss_ascii_reader}} For
+  using an SPSS setup file
 
-Other ASCII Reader functions: 
-\code{\link{spss_ascii_reader}()}
+Other ASCII Reader functions:
+\code{\link[=spss_ascii_reader]{spss_ascii_reader()}}
 }
 \concept{ASCII Reader functions}

@@ -1,14 +1,20 @@
+# Turns the column-position lines of a setup file (e.g. "V1 1-3  V2 $ 4-5")
+# into a data.frame with one row per column: column_number (the short name
+# in the setup file, e.g. V1), column_name (its descriptive label, from
+# `variables`), begin and end (positions in the fixed-width file) and, for
+# SAS files with a FORMAT section, f_name (the format holding its value
+# labels). Rows are ordered by position.
 get_column_spaces <- function(setup, variables, codebook) {
-# New
   setup <- gsub("^/[0-9]+$", "", setup)
   setup <- setup[!setup %in% ""]
+
+  # Keep only lines with positions and standardize them to "begin-end"
   setup <- gsub("([0-9]+) -([0-9]+)", "\\1-\\2", setup)
-
-
   setup <- setup[grep("[0-9]-[0-9]| [0-9]| \\$[0-9]", setup)]
-
   setup <- gsub("([0-9])- +([0-9])", "\\1-\\2", setup)
 
+  # Drop SPSS format specs (F3.0, A10, (A)) and split the lines so each
+  # piece is one "name begin-end" pair
   setup <- gsub("\tF[0-9].0$|\tA[0-9]+$|\t\\(.*\\)$", "", setup)
   setup <- gsub("\t", " ", setup)
   setup <- gsub("([0-9]) - ([0-9])", "\\1-\\2", setup)
@@ -27,49 +33,42 @@ get_column_spaces <- function(setup, variables, codebook) {
                       )
   setup$column_number <- gsub("^\\/", "", setup$column_number)
 
+  # A single position ("V1 5") is a one-character column, so begin == end
   setup$begin <- gsub(".* ", "", setup$column_number)
   setup$end   <- gsub(".*-", "", setup$begin)
   setup$begin <- gsub("-.*", "", setup$begin)
   setup <- setup[setup$column_number != setup$begin, ]
 
   setup$column_number <- gsub(" .*", "", setup$column_number)
+
+  # Add the descriptive names, keeping only columns that have one
   if (!is.null(variables)) {
     setup <- setup[tolower(setup$column_number) %in%
                      tolower(variables$column_number), ]
 
     # In the CDC SADC data set, the column number changes from lowercase
     # to uppercase depending on section of setup file.
-    for (i in 1:nrow(setup)) {
-      if (tolower(setup$column_number[i]) %in% tolower(variables$column_number)) {
-        setup$column_number[i] <-
-          variables$column_number[tolower(variables$column_number) %in%
-                                    tolower(setup$column_number[i])]
-      }
-    }
+    setup$column_number <- match_case(setup$column_number,
+                                      variables$column_number)
     setup <- merge(setup, variables,
                    by = "column_number", all.x = TRUE)
   } else {
     setup$column_name <- setup$column_number
   }
 
-
   setup$begin <- as.numeric(setup$begin)
   setup$end   <- as.numeric(setup$end)
 
-  # Checks if any begin values are > than end values
   if (any(setup$begin > setup$end)) {
-
     stop(paste0("The following columns have a start number greater than the end number. Please check your setup file and fix this issue before rerunning this code.",
                 paste("\nColumns with issue: ",
                       setup$column_number[setup$begin > setup$end])))
   }
 
-
+  # SAS files: the FORMAT section links each column to the format (f_name)
+  # whose VALUE statement holds its value labels.
   format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
-  if (any(grepl2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook))) {
-    # Get format - column names and column names with f ====================
-    format_section = grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
-
+  if (length(format_section) > 0) {
     format <- codebook[format_section[1]:length(codebook)]
     format <- gsub("^FORMAT ", "", format, ignore.case = TRUE)
     format <- unlist(strsplit(format, "\\."))
@@ -86,6 +85,8 @@ get_column_spaces <- function(setup, variables, codebook) {
 }
 
 
+# Keeps the rows of column_spaces for the requested columns, given as row
+# numbers, column_number names (V1, V2) or column_name labels.
 selected_columns <- function(keep_columns, column_spaces) {
   if (is.null(keep_columns)) {
     return(column_spaces)
@@ -108,8 +109,40 @@ selected_columns <- function(keep_columns, column_spaces) {
 grep2 <- function(pattern, x) grep(pattern, x, ignore.case = TRUE)
 grepl2 <- function(pattern, x) grepl(pattern, x, ignore.case = TRUE)
 
+# Replaces each value of x with its case-insensitive match in table, if any.
+# Setup files don't always use the same case for a column name in every
+# section (e.g. the CDC SADC files).
+match_case <- function(x, table) {
+  m <- match(tolower(x), tolower(table))
+  x[!is.na(m)] <- table[m[!is.na(m)]]
+  x
+}
 
+# Labels each element of x with the section it belongs to. A section starts
+# at the first element and after every element flagged in new_section, and
+# is named after its first element.
+fill_section <- function(x, new_section) {
+  starts <- c(1L, which(new_section) + 1L)
+  x[starts[findInterval(seq_along(x), starts)]]
+}
 
+# Replaces values of x found in labels with the names of labels (what
+# haven::as_factor() does for a labelled vector) and returns character.
+# Values with no label are kept as they are.
+replace_values <- function(x, labels) {
+  x <- as.character(x)
+  m <- match(x, labels, incomparables = NA)
+  x[!is.na(m)] <- names(labels)[m[!is.na(m)]]
+  x
+}
+
+# Reading data --------------------------------------------------------------
+#
+# read_ascii_setup() runs: read_data() -> fix_value_labels() ->
+# fix_names_missing_numeric() (missing values, names, numeric columns).
+
+# Sets the setup file's missing values to NA. `missing` is the data.frame
+# from parse_setup(): one row per column (variable) and missing value.
 fix_missing <- function(data, missing) {
   missing <- missing[missing$variable %in% names(data), ]
 
@@ -118,104 +151,88 @@ fix_missing <- function(data, missing) {
     missing_values <- as.character(trimws(missing_values))
     missing_values <- gsub("\\'", "", missing_values)
 
-    if (any(grepl("thru hi", missing, ignore.case = TRUE))) {
-      thru_higher <- missing_values[grep("thru hi", missing_values, ignore.case = TRUE)]
-      thru_higher <- gsub(" thru hi.*", "", thru_higher, ignore.case = TRUE)
-      thru_higher <- as.numeric(thru_higher)
-      unique_values_numeric <- suppressWarnings(as.numeric(unique(data[[column]])))
-      unique_values_numeric <- unique_values_numeric[!is.na(unique_values_numeric)]
-      missing_values <- c(missing_values,
-                          unique_values_numeric[unique_values_numeric >= thru_higher])
-      missing_values <- gsub(" thru hi.*", "", missing_values, ignore.case = TRUE)
+    # Open-ended ranges ("5 THRU HI(GHEST)", "LO(WEST) THRU 0") become the
+    # values in the data that fall in the range. Values are compared as
+    # numbers but kept as they appear in the data, so zero-padded values
+    # (e.g. "0000012" for "0000009 THRU HI") match.
+    thru_hi_pattern  <- "\\s+thru\\s+hi.*$"
+    low_thru_pattern <- "^lo(w|west)?\\s+thru\\s+"
+    is_thru_hi  <- grepl(thru_hi_pattern, missing_values, ignore.case = TRUE)
+    is_low_thru <- grepl(low_thru_pattern, missing_values, ignore.case = TRUE)
+    if (any(is_thru_hi) || any(is_low_thru)) {
+      values  <- unique(data[[column]])
+      values  <- values[!is.na(values) & validEnc(values)]
+      numbers <- suppressWarnings(as.numeric(values))
+      values  <- values[!is.na(numbers)]
+      numbers <- numbers[!is.na(numbers)]
 
-    }
-
-    if (any(grepl("low thru", missing, ignore.case = TRUE))) {
-      low_thru <- missing_values[grep("low thru", missing_values, ignore.case = TRUE)]
-      low_thru <- gsub(".*low thru ", "", low_thru, ignore.case = TRUE)
-      low_thru <- as.numeric(low_thru)
-      unique_values_numeric <- suppressWarnings(as.numeric(unique(data[[column]])))
-      unique_values_numeric <- unique_values_numeric[!is.na(unique_values_numeric)]
-      missing_values <- c(missing_values,
-                          unique_values_numeric[unique_values_numeric <= low_thru])
-      missing_values <- gsub(".*low thru ", "", missing_values, ignore.case = TRUE)
-
+      lowest  <- as.numeric(sub(thru_hi_pattern, "", missing_values[is_thru_hi],
+                                ignore.case = TRUE))
+      highest <- as.numeric(sub(low_thru_pattern, "", missing_values[is_low_thru],
+                                ignore.case = TRUE))
+      lowest   <- lowest[!is.na(lowest)]
+      highest  <- highest[!is.na(highest)]
+      in_range <- rep(FALSE, length(values))
+      if (length(lowest) > 0)  in_range <- in_range | numbers >= min(lowest)
+      if (length(highest) > 0) in_range <- in_range | numbers <= max(highest)
+      missing_values <- c(missing_values[!is_thru_hi & !is_low_thru],
+                          values[in_range])
     }
     names(missing_values) <- NA
 
-    # Sets character to column type in case it isn't already.
-    if (!is.character(data[[column]])) {
-      data.table::set(data, j = column, value = as.character(data[[column]]))
-    }
-
     data.table::set(data, j = column,
-                    value = haven::as_factor(haven::labelled(data[[column]],
-                                                             missing_values)))
-    # Re-saves as character type instead of factor type
-    data.table::set(data, j = column, value = as.character(data[[column]]))
-
+                    value = replace_values(data[[column]], missing_values))
   }
   return(data)
 }
 
-
+# Reads the fixed-width file with every column as character, using the
+# positions from the setup file.
 read_data <- function(data, setup) {
   positions <- vroom::fwf_positions(setup$setup$begin,
                                     setup$setup$end,
                                     setup$setup$column_number)
 
-  out <- tryCatch(
-    {
-      temp <- suppressMessages(vroom::vroom_fwf(data,
-                                                col_positions = positions,
-                                                col_types = vroom::cols(.default =
-                                                                          vroom::col_character())))
-      temp <- data.table::as.data.table(temp)
-    },
-    error = function(cond) {
-      temp <- suppressMessages(readr::read_fwf(data,
-                                               col_positions = positions,
-                                               col_types = vroom::cols(.default =
-                                                                         vroom::col_character())))
-      temp <- data.table::as.data.table(temp)
-    }
-  )
-
+  out <- suppressMessages(vroom::vroom_fwf(data,
+                                           col_positions = positions,
+                                           col_types = vroom::cols(.default =
+                                                                     vroom::col_character()),
+                                           altrep = FALSE))
+  # setDT() converts in place; as.data.table() would copy all the data
+  data.table::setDT(out)
   return(out)
 }
 
-
+# Sets missing values to NA, renames columns from their short names (V1) to
+# their descriptive names if real_names, converts all-number columns to
+# numeric if coerce_numeric, and returns a plain data.frame.
 fix_names_missing_numeric <- function(data,
                                       setup,
-                                      missing,
                                       real_names,
                                       coerce_numeric) {
-  # Fixes missing values ----------------------------------------------------
-  missing <- setup$missing
-  if (!is.null(missing)) {
-    data <- fix_missing(data, missing)
+  if (!is.null(setup$missing)) {
+    data <- fix_missing(data, setup$missing)
   }
   if (real_names) {
-    # Fixes column names to real names
     variables <- setup$setup[setup$setup$column_number
                              %in% names(data), ]
     data.table::setnames(data, old = variables$column_number,
                          new = variables$column_name)
   }
 
-
-  # Makes columns that should be numeric numeric
   if (coerce_numeric) {
     data <- make_cols_numeric(data)
   }
   attributes(data)$spec <- NULL
-  data <- as.data.frame(data)
+  attributes(data)$problems <- NULL
+  data.table::setDF(data)
   return(data)
 }
 
+# Replaces codes with their value labels in every column that has them, if
+# value_label_fix.
 fix_value_labels <- function(data, setup, value_label_fix) {
-  # Value Labels ------------------------------------------------------------
-  # Removes columns not asked for
+  # Only columns that were read (see select_columns)
   value_labels <- setup$value_labels
   if (!is.null(value_labels)) {
     value_labels <- value_labels[names(value_labels) %in%
@@ -223,12 +240,10 @@ fix_value_labels <- function(data, setup, value_label_fix) {
   }
 
   if (value_label_fix && length(value_labels) > 0) {
-    column_order <- names(data)
     for (i in seq_along(value_labels)) {
       data <- fix_variable_values(data,
                                   value_labels[[i]],
                                   names(value_labels)[i])
-      data.table::setcolorder(data, column_order)
     }
   }
   return(data)

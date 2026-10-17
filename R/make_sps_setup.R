@@ -7,8 +7,8 @@
 #' the setup file yourself.
 #'
 #' @param file_name
-#' Name of the file to be saved (e.g. "setup_file1"). There is no need to put
-#' the .sps extension in the file name.
+#' Name (or path) of the file to be saved (e.g. "setup_file1"). The .sps
+#' extension is added if it isn't already there.
 #' @param col_positions
 #' Either a vector of strings indicating the start and end position of each column
 #' (e.g. "1-3", "4-5") or a vector of the widths of the columns (e.g. 3, 2).
@@ -18,38 +18,40 @@
 #' @param col_labels
 #' A vector of labels for the columns. These are often longer and more descriptive
 #' than the col_names. These are the values used as column names if
-#' real_names = TRUE in reading in the data.
+#' use_clean_names = TRUE in \code{\link{read_ascii_setup}}.
 #' @param value_labels
 #' A vector with the value first, then an ' = ' then the label. Each
-#' new column should have the column named followed by ' ='.
+#' new column should have the column name (or label) followed by ' ='.
 #' @param missing_values
-#' A vector of strings with the column name followed by the values to be
-#' replaced by NA.
+#' A vector of strings with the column name or label followed by the values
+#' to be replaced by NA, e.g. c("var1", "9", "-8", "var2", "-8").
 #' @return
-#' Does not return any object. Saves the .sps file that is created.
+#' \code{NULL}, invisibly. Called to write the .sps file.
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'   value_labels <- c("var1 = ",
-#'                      "1 = label 1",
-#'                      "2 = label 2",
-#'                      "3 = label 3",
-#'                      "4 = label 4",
-#'                      "5 = label 5",
-#'                      "var3 = ",
-#'                      "1A = alpha",
-#'                      "1B = bravo",
-#'                      "1C = cat")
+#' value_labels <- c("var1 = ",
+#'                   "1 = label 1",
+#'                   "2 = label 2",
+#'                   "3 = label 3",
+#'                   "4 = label 4",
+#'                   "5 = label 5",
+#'                   "var3 = ",
+#'                   "1A = alpha",
+#'                   "1B = bravo",
+#'                   "1C = cat")
 #' missing_values <- c("state name", "9", "-8", "county", "-8")
-#' make_sps_setup(file_name     = "example_name",
-#'                col_positions = c(1, 3, 4, 2),
-#'                col_names     = c("var1", "var2", "var3", "var4"),
-#'                col_labels    = c("state name", "county",
-#'                               "population", "census region code"),
-#'                value_labels  = value_labels,
+#' file_name <- file.path(tempdir(), "example_name")
+#' make_sps_setup(file_name      = file_name,
+#'                col_positions  = c(1, 3, 4, 2),
+#'                col_names      = c("var1", "var2", "var3", "var4"),
+#'                col_labels     = c("state name", "county",
+#'                                   "population", "census region code"),
+#'                value_labels   = value_labels,
 #'                missing_values = missing_values)
-#' }
+#'
+#' # The new setup file can be used with parse_setup() and read_ascii_setup()
+#' parse_setup(paste0(file_name, ".sps"))
 make_sps_setup <- function(file_name,
                            col_positions,
                            col_names = NULL,
@@ -76,7 +78,7 @@ make_sps_setup <- function(file_name,
                   " For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.")
   intro <- c(intro, "", "")
   line_break <- c(".", "")
-  file_name <- gsub(".sps$", "", file_name, "")
+  file_name <- gsub("\\.sps$", "", file_name, ignore.case = TRUE)
 
   # Takes the input of column widths and makes the column position strings
   if (is.numeric(col_positions)) {
@@ -129,15 +131,13 @@ make_sps_setup <- function(file_name,
 
   if (!is.null(missing_values)) {
 
-    temp <- rep(0, length(missing_values))
-    counter <- 0
-    for (i in 1:length(temp)) {
-      if (missing_values[i] %in% col_labels) {
-        counter <- counter + 1
-        missing_values[i] <- col_names[col_labels %in% missing_values[i]]
-      }
-      temp[i] <- counter
-    }
+    # Each column's values start with its name or label (labels are
+    # replaced with the name)
+    is_column   <- missing_values %in% c(col_names, col_labels)
+    label_match <- match(missing_values, col_labels)
+    missing_values[!is.na(label_match)] <-
+      col_names[label_match[!is.na(label_match)]]
+    temp <- cumsum(is_column)
     split_missing <- split(missing_values, as.factor(temp))
     missing_values <- c()
     for (i in 1:length(split_missing)) {
@@ -161,18 +161,19 @@ make_sps_setup <- function(file_name,
     col_labels      <- paste0('"', col_labels, '"')
     variable_labels <- paste(variable_labels, col_labels)
     variable_labels <- c("variable labels", variable_labels, line_break)
+  } else {
+    variable_labels <- ""
   }
 
-
-  sink(paste0(file_name, ".sps"))
-  writeLines(file_name)
-  writeLines("")
-  writeLines(intro)
-  writeLines(data_list)
-  writeLines(variable_labels)
-  writeLines(value_labels)
-  writeLines(missing_values)
-  writeLines(c("", "execute"))
-  sink()
-
+  writeLines(c(file_name,
+               "",
+               intro,
+               data_list,
+               variable_labels,
+               value_labels,
+               missing_values,
+               "",
+               "execute"),
+             paste0(file_name, ".sps"))
+  invisible(NULL)
 }

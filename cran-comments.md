@@ -1,18 +1,21 @@
+## Release summary
+
+This release fixes bugs (including `make_sps_setup()` failing on R >= 4.5.0,
+numeric columns being decided from a random sample of rows, and several
+missing-value cases), makes reading much faster, drops the haven and zoo
+dependencies, and makes all examples runnable.
+
 ## Test environments
 
-* local Windows install, R 4.5.1
-* Rhub 
-    + linux (R-devel)
-    + macos-arm64 (R-devel)
-    + macos (R-devel)
-    + windows (R-devel)
+* local Windows 11 install, R 4.6.1
+* GitHub Actions: macOS, Windows and Ubuntu (R devel, release, oldrel-1)
 * win-builder (devel)
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs or NOTES.
+0 errors | 0 warnings | 0 notes
 
 ## Reverse dependencies
 
-There is 1 reverse dependency. revdepcheck::revdep_check() returns OK for all 1.
-
+There is 1 reverse dependency (psidread). R CMD check of psidread 1.0.7
+with this version of asciiSetupReader returns Status: OK.

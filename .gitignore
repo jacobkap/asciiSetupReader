@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 packrat/lib*/
+tests/testthat/_problems/

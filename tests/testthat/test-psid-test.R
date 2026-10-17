@@ -1,8 +1,6 @@
 test_that("PSID tests", {
-  # PSID main take SUPER LONG so they are separate and
-  # skipped on both CRAN and TravisCI
+  # Skipped on CRAN to keep its check time down (about 25s locally)
   skip_on_cran()
-  skip_on_travis()
   psid_supplement_sps_name <- system.file("testdata",
                                           "psid_supplement.sps",
                                           package = "asciiSetupReader")
