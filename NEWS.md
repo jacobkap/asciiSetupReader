@@ -1,4 +1,28 @@
-# asciiSetupReader (development version)
+# asciiSetupReader 2.6.1
+
+## Bug fixes
+
+* Value labels keep apostrophes. Labels are now read by their quoting, so a
+  quote character inside a label is part of the label: before, an apostrophe
+  became a space or was dropped (`"anti-jehovah's witness"` became
+  "anti-jehovah s witness" and `'Don''t know'` became "Dont know"). This
+  affected both SPSS and SAS setup files.
+* Value labels are kept exactly as written between their quotes in other
+  ways too: a double quote inside a single-quoted label (`'Wife/"Wife"'`) is
+  kept, and so are `=` and `;`, which used to become a space or be dropped.
+* A variable whose value labels are written more than once in a setup file
+  no longer gets its name added to a label (e.g. "msa state police V9");
+  later copies only add codes that weren't already labelled.
+* Fixed labels being assigned to the wrong codes in some setup files: a
+  label of just 'Wife' (`2 'Wife' 3 'Common-law husband'` gave a code
+  "2 Wife 3"), a code written `''''`, quoted words inside a label
+  (`'farmer, ''profits'''`, `'Twelfth grade, "High School", GED'`), and
+  SAS labels split over several quoted pieces, whose end became a separate
+  code.
+* SPSS value labels with bare negative or decimal codes (`-9 "missing"`)
+  and labels continued with `+` on the next line are read correctly.
+* The 2017 YRBS SADC SAS setup file, which failed with "NA/NaN argument",
+  can be read.
 
 # asciiSetupReader 2.6.0
 

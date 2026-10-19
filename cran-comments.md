@@ -1,19 +1,23 @@
 ## Release summary
 
-This release fixes bugs (including `make_sps_setup()` failing on R >= 4.5.0,
-numeric columns being decided from a random sample of rows, and several
-missing-value cases), makes reading much faster, drops the haven and zoo
-dependencies, and makes all examples runnable.
+This is a bug-fix release. Value labels that contain an apostrophe (or
+other quote character) are now kept as written in the setup file, instead
+of having the apostrophe turned into a space; a few related value-label
+parsing errors are also fixed.
 
 ## Test environments
 
 * local Windows 11 install, R 4.6.1
-* GitHub Actions: macOS, Windows and Ubuntu (R devel, release, oldrel-1)
-* win-builder (devel)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+* Days since last update: 2
+
+  This release fixes value labels that were silently altered when reading
+  data (an apostrophe in a label became a space, and some labels gained a
+  variable name), so users get incorrect labels until it's updated.
 
 ## Reverse dependencies
 
