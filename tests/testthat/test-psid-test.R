@@ -60,7 +60,7 @@ test_that("PSID tests", {
                  "Release number 2, May 2019" = "2"))
   expect_equal(psid_main_parsed_sps$value_labels$ER30003,
                c("Head" = "1",
-                 "Wife/Wife" = "2",
+                 "Wife/\"Wife\"" = "2",
                  "Son or daughter" = "3",
                  "Brother or sister" = "4",
                  "Father or mother" = "5",
@@ -88,7 +88,7 @@ test_that("PSID tests", {
                  "Highest grade or year of schooling completed" = "16",
                  "At least one year of postgraduate work" = "17",
                  "NA; DK" = "99",
-                 "Preschool; born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003 0);..." = "0"))
+                 "Preschool; born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003=0);..." = "0"))
   expect_equal(psid_main_parsed_sps$value_labels$TA050372,
                c("Checked with a public employment agency" = "1",
                  "DK" = "8",
@@ -103,8 +103,8 @@ test_that("PSID tests", {
                  "Year" = "6",
                  "Other" = "7",
                  "DK" = "8",
-                 "NA; refused; NA, DK, RF how much money earned at job 5 in 2010 (TA110335 9999998 or 9999999 or -999999)" = "9",
-                 "Inap.: has not done any work for money since January 1, 2009 (TA110141 5); NA, DK, RF whether any work done for..." = "0"))
+                 "NA; refused; NA, DK, RF how much money earned at job 5 in 2010 (TA110335=9999998 or 9999999 or -999999)" = "9",
+                 "Inap.: has not done any work for money since January 1, 2009 (TA110141=5); NA, DK, RF whether any work done for..." = "0"))
   expect_equal(psid_main_parsed_sps$value_labels$TA131219,
                c("Actual value" = "1",
                  "Actual value" = "2",
@@ -113,7 +113,7 @@ test_that("PSID tests", {
                  "Actual value" = "5",
                  "Actual value" = "6",
                  "Actual value" = "7",
-                 "Has no children (TA130100 0)" = "0",
+                 "Has no children (TA130100=0)" = "0",
                  "All items are DK/NA/refused" = "9"))
   expect_equal(psid_main_parsed_sps$value_labels$TA151290,
                c("Never married, cohabiting" = "1",
@@ -139,12 +139,12 @@ test_that("PSID tests", {
                  "High school graduate, no college" = "3",
                  "GED plus some college" = "4",
                  "High school graduate plus some college" = "5",
-                 "GED plus Associates degree" = "6",
-                 "High school graduate plus Associates degree" = "7",
-                 "GED plus Bachelors degree" = "8",
-                 "High school graduate plus Bachelors degree" = "9",
-                 "GED plus Masters degree" = "10",
-                 "High school graduate plus Masters degree" = "11",
+                 "GED plus Associate's degree" = "6",
+                 "High school graduate plus Associate's degree" = "7",
+                 "GED plus Bachelor's degree" = "8",
+                 "High school graduate plus Bachelor's degree" = "9",
+                 "GED plus Master's degree" = "10",
+                 "High school graduate plus Master's degree" = "11",
                  "GED plus Doctoral degree" = "12",
                  "High school graduate plus Doctoral degree" = "13",
                  "GED plus Medical degree" = "14",
@@ -177,7 +177,7 @@ test_that("PSID tests", {
                  "Release number 2, May 2019" = "2"))
   expect_equal(psid_main_parsed_sas$value_labels$ER30003,
                c("Head" = "1",
-                 "Wife/Wife" = "2",
+                 "Wife/\"Wife\"" = "2",
                  "Son or daughter" = "3",
                  "Brother or sister" = "4",
                  "Father or mother" = "5",
@@ -185,17 +185,17 @@ test_that("PSID tests", {
                  "Other, including in-laws, other adult relatives" = "7",
                  "Husband or Wife of Head who moved out or died in the year prior to the 1968 interview" = "8",
                  "NA" = "9",
-                 "Individual from core sample who was born or moved in after the 1968 interview individual from Immigrant or Latino samples (ER30001 3001-3511, 4001-4462,7001-9308)" = "0"))
+                 "Individual from core sample who was born or moved in after the 1968 interview; individual from Immigrant or Latino samples (ER30001=3001-3511, 4001-4462,7001-9308)" = "0"))
   expect_equal(psid_main_parsed_sas$value_labels$ER30010,
                c("Highest grade or year of schooling completed" = "1 - 16",
                  "At least one year of postgraduate work" = "17",
-                 "NA DK" = "99",
-                 "Preschool born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003 0) still in school (ER30009 1 or 9)" = "0"))
+                 "NA; DK" = "99",
+                 "Preschool; born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003=0); still in school (ER30009=1 or 9)" = "0"))
   expect_equal(psid_main_parsed_sas$value_labels$TA050372,
                c("Checked with a public employment agency" = "1",
                  "DK" = "8",
-                 "NA refused" = "9",
-                 "Inap.: has not checked with a public employment agency has not been looking for work during the past four weeks (TA050371 5,8 or 9) not head or wife/Wife in 2005 PSID interview (TA050011 3)" = "0"))
+                 "NA; refused" = "9",
+                 "Inap.: has not checked with a public employment agency; has not been looking for work during the past four weeks (TA050371=5,8 or 9); not head or wife/\"wife\" in 2005 PSID interview (TA050011=3)" = "0"))
   expect_equal(psid_main_parsed_sas$value_labels$TA110336,
                c("Hour" = "1",
                  "Day" = "2",
@@ -205,11 +205,11 @@ test_that("PSID tests", {
                  "Year" = "6",
                  "Other" = "7",
                  "DK" = "8",
-                 "NA refused NA, DK, RF how much money earned at job 5 in 2010 (TA110335 9999998 or 9999999 or -999999)" = "9",
-                 "Inap.: has not done any work for money since January 1, 2009 (TA110141 5) NA, DK, RF whether any work done for money since January 1, 2009 (TA110141 8 or 9) fewer than five employers (TA110323 0)job 5 began after 2010 (TA110324 gt 2010) job 5 ended before 2010 (TA110326 lt 2010) NA, DK, RF year when job 5 ended (TA110326 9998 or 9999)" = "0"))
+                 "NA; refused; NA, DK, RF how much money earned at job 5 in 2010 (TA110335=9999998 or 9999999 or -999999)" = "9",
+                 "Inap.: has not done any work for money since January 1, 2009 (TA110141=5); NA, DK, RF whether any work done for money since January 1, 2009 (TA110141=8 or 9); fewer than five employers (TA110323=0); job 5 began after 2010 (TA110324 gt 2010); job 5 ended before 2010 (TA110326 lt 2010); NA, DK, RF year when job 5 ended (TA110326=9998 or 9999)" = "0"))
   expect_equal(psid_main_parsed_sas$value_labels$TA131219,
                c("Actual value" = "1 - 7",
-                 "Has no children (TA130100 0)" = "0",
+                 "Has no children (TA130100=0)" = "0",
                  "All items are DK/NA/refused" = "9"))
   expect_equal(psid_main_parsed_sas$value_labels$TA151290,
                c("Never married, cohabiting" = "1",
@@ -220,7 +220,7 @@ test_that("PSID tests", {
                  "Divorced, cohabiting" = "6",
                  "Divorced, not cohabiting" = "7",
                  "Widowed" = "8",
-                 "NA DK refused" = "9"))
+                 "NA; DK; refused" = "9"))
   expect_equal(psid_main_parsed_sas$value_labels$TA151291,
                c("Northeast" = "1",
                  "North Central" = "2",
@@ -228,19 +228,19 @@ test_that("PSID tests", {
                  "West" = "4",
                  "Alaska, Hawaii" = "5",
                  "Foreign country" = "6",
-                 "NA DK refused" = "9"))
+                 "NA; DK; refused" = "9"))
   expect_equal(psid_main_parsed_sas$value_labels$TA151301,
                c("Less than high school diploma" = "1",
                  "GED, no college" = "2",
                  "High school graduate, no college" = "3",
                  "GED plus some college" = "4",
                  "High school graduate plus some college" = "5",
-                 "GED plus Associates degree" = "6",
-                 "High school graduate plus Associates degree" = "7",
-                 "GED plus Bachelors degree" = "8",
-                 "High school graduate plus Bachelors degree" = "9",
-                 "GED plus Masters degree" = "10",
-                 "High school graduate plus Masters degree" = "11",
+                 "GED plus Associate's degree" = "6",
+                 "High school graduate plus Associate's degree" = "7",
+                 "GED plus Bachelor's degree" = "8",
+                 "High school graduate plus Bachelor's degree" = "9",
+                 "GED plus Master's degree" = "10",
+                 "High school graduate plus Master's degree" = "11",
                  "GED plus Doctoral degree" = "12",
                  "High school graduate plus Doctoral degree" = "13",
                  "GED plus Medical degree" = "14",
@@ -250,7 +250,7 @@ test_that("PSID tests", {
                  "GED plus other degree" = "18",
                  "High school graduate plus other degree" = "19",
                  "Skipped, asked in TA 2013" = "96",
-                 "NA DK refused" = "99"))
+                 "NA; DK; refused" = "99"))
 
 
   expect_equal(head(names(psid_all_parsed_sas$value_labels)),
@@ -273,7 +273,7 @@ test_that("PSID tests", {
                  "Release number 2, May 2019" = "2"))
   expect_equal(psid_all_parsed_sas$value_labels$ER30003,
                c("Head" = "1",
-                 "Wife/Wife" = "2",
+                 "Wife/\"Wife\"" = "2",
                  "Son or daughter" = "3",
                  "Brother or sister" = "4",
                  "Father or mother" = "5",
@@ -281,47 +281,47 @@ test_that("PSID tests", {
                  "Other, including in-laws, other adult relatives" = "7",
                  "Husband or Wife of Head who moved out or died in the year prior to the 1968 interview" = "8",
                  "NA" = "9",
-                 "Individual from core sample who was born or moved in after the 1968 interview individual from Immigrant or Latino samples (ER30001 3001-3511, 4001-4462,7001-9308)" = "0"))
+                 "Individual from core sample who was born or moved in after the 1968 interview; individual from Immigrant or Latino samples (ER30001=3001-3511, 4001-4462,7001-9308)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER30010,
                c("Highest grade or year of schooling completed" = "1 - 16",
                  "At least one year of postgraduate work" = "17",
-                 "NA DK" = "99",
-                 "Preschool born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003 0) still in school (ER30009 1 or 9)" = "0"))
+                 "NA; DK" = "99",
+                 "Preschool; born or moved in after the 1968 interview or individual from Immigrant or Latino samples (ER30003=0); still in school (ER30009=1 or 9)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER30382,
                c("Working now" = "1",
                  "Only temporarily laid off" = "2",
                  "Looking for work, unemployed" = "3",
                  "Retired" = "4",
                  "Permanently disabled" = "5",
-                 "HouseWife keeping house" = "6",
+                 "HouseWife; keeping house" = "6",
                  "Student" = "7",
                  "Other" = "8",
-                 "NA DK" = "9",
-                 "Inap.: from Immigrant or Latino samples (ER30001 3001-3511,4001-4462,7001-9308) born or moved in after the 1982 interview (ER30373>0 and ER30374 0) main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373 0) mover-out nonresponse for 1982 only if deceased (ER30374 81-89) in an institution in both 1981 and 1982 (ER30374 51-59 and ER30378 0) not a person aged 16 or older (ER30376 001-015)" = "0"))
+                 "NA; DK" = "9",
+                 "Inap.: from Immigrant or Latino samples (ER30001=3001-3511,4001-4462,7001-9308); born or moved in after the 1982 interview (ER30373>0 and ER30374=0); main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373=0); mover-out nonresponse for 1982 only if deceased (ER30374=81-89); in an institution in both 1981 and 1982 (ER30374=51-59 and ER30378=0); not a person aged 16 or older (ER30376=001-015)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER30383,
                c("Full-time student" = "1",
                  "Part-time student" = "3",
                  "Not enrolled in school" = "5",
-                 "NA DK" = "9",
-                 "Inap.: from Immigrant or Latino samples (ER30001 3001-3511,4001-4462,7001-9308) born or moved in after the 1982 interview (ER30373>0 and ER30374 0) main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373 0) Head or Wife in 1982 (ER30374 1-20 and ER30375 1 or 02) in an institution in both 1981 and 1982 (ER30374 51-59 and ER30378 0) not a person aged 16 or older (ER30376 001- 015)" = "0"))
+                 "NA; DK" = "9",
+                 "Inap.: from Immigrant or Latino samples (ER30001=3001-3511,4001-4462,7001-9308); born or moved in after the 1982 interview (ER30373>0 and ER30374=0); main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373=0); Head or Wife in 1982 (ER30374=1-20 and ER30375=1 or 02); in an institution in both 1981 and 1982 (ER30374=51-59 and ER30378=0); not a person aged 16 or older (ER30376=001- 015)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER30384,
                c("Highest grade or year of school completed" = "1 - 17",
-                 "NA DK" = "99",
-                 "Inap.: from Immigrant or Latino samples (ER30001 3001-3511,4001-4462,7001-9308) born or moved in after the 1982 interview (ER30373>0 and ER30374 0) main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373 0) in an institution in both 1981 and 1982 (ER30374 51-59 and ER30378 0) not a person aged 16 or older (ER30376 001-015)" = "0"))
+                 "NA; DK" = "99",
+                 "Inap.: from Immigrant or Latino samples (ER30001=3001-3511,4001-4462,7001-9308); born or moved in after the 1982 interview (ER30373>0 and ER30374=0); main family nonresponse by 1982 or mover-out nonr esponse by 1981 (ER30373=0); in an institution in both 1981 and 1982 (ER30374=51-59 and ER30378=0); not a person aged 16 or older (ER30376=001-015)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER33295,
                c("Yes" = "1",
                  "No" = "5",
-                 "Doesnt do" = "7",
+                 "Doesn't do" = "7",
                  "DK" = "8",
                  "NA" = "9",
-                 "Inap.: from Immigrant sample (ER30001 3001-3511,4001-4462) main family nonresponse by 1995 or mover-out nonresponse by 1994 (ER33201 0) born or moved in after the 1995 interview (ER33201>0 and ER33 202 0) in an institution or mover-out nonresponse in 1995 (ER33202 51-89) not a person age 55 or older (ER33204 001-054)" = "0"))
+                 "Inap.: from Immigrant sample (ER30001=3001-3511,4001-4462); main family nonresponse by 1995 or mover-out nonresponse by 1994 (ER33201=0); born or moved in after the 1995 interview (ER33201>0 and ER33 202=0); in an institution or mover-out nonresponse in 1995 (ER33202=51-89); not a person age 55 or older (ER33204=001-054)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER33296,
                c("Yes" = "1",
                  "No" = "5",
-                 "Doesnt do" = "7",
+                 "Doesn't do" = "7",
                  "DK" = "8",
                  "NA" = "9",
-                 "Inap.: from Immigrant sample (ER30001 3001-3511,4001-4462) main family nonresponse by 1995 or mover-out nonresponse by 1994 (ER33201 0) born or moved in after the 1995 interview (ER33201>0 and ER33 202 0) in an institution or mover-out nonresponse in 1995 (ER33202 51-89) not a person age 55 or older (ER33204 001-054)" = "0"))
+                 "Inap.: from Immigrant sample (ER30001=3001-3511,4001-4462); main family nonresponse by 1995 or mover-out nonresponse by 1994 (ER33201=0); born or moved in after the 1995 interview (ER33201>0 and ER33 202=0); in an institution or mover-out nonresponse in 1995 (ER33202=51-89); not a person age 55 or older (ER33204=001-054)" = "0"))
   expect_equal(psid_all_parsed_sas$value_labels$ER34648,
                c("This sample member was main family nonresponse and had been in the FU in 2015." = "1",
                  "This nonsample individual had been in the 2015 FU, and this FU became nonresponse in 2017." = "3",
@@ -332,9 +332,9 @@ test_that("PSID tests", {
                  "This individual had become nonresponse by the time of the 2017 interview." = "10",
                  "Main family recontact: this person was selected for recontact in 2017, but the family was not successfully interviewed." = "21",
                  "Splitoff recontact: this sample member moved out of a 2017 recontact main family but was not successfully interviewed." = "26",
-                 "Individual connected with the Latino sample (ER30001 7001-9308) this sample was dropped beginning in 1996. Individual dropped from the Census (SEO) sample due to budgetary constraints this group wa s dropped beginning in 1997." = "40",
-                 "DK NA" = "99",
-                 "Inap.: this individual was in a panel family in 2017 (ER34502 1-20)." = "0"))
+                 "Individual connected with the Latino sample (ER30001=7001-9308); this sample was dropped beginning in 1996. Individual dropped from the Census (SEO) sample due to budgetary constraints; this group wa s dropped beginning in 1997." = "40",
+                 "DK; NA" = "99",
+                 "Inap.: this individual was in a panel family in 2017 (ER34502=1-20)." = "0"))
 
 
   expect_true(is.null(psid_main_parsed_sps$missing))

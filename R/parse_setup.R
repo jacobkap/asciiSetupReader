@@ -100,13 +100,17 @@ parse_setup <- function(setup_file) {
   }
   missing <- missing[!duplicated(missing), ]
 
-  value_labels <- get_value_labels(codebook, setup, type = type)
+  if (type == "sps") {
+    value_labels <- parse_value_labels_sps(codebook, setup)
+  } else if (any(grepl2("^value labels$|SAS FORMAT STATEMENT|^format$|\\/\\* format$",
+                        codebook))) {
+    value_labels <- parse_value_labels_sas(codebook, setup)
+  } else {
+    value_labels <- NULL
+  }
   setup <- list(setup        = setup,
                 value_labels = value_labels,
                 missing      = missing)
-  if (!is.null(setup$value_labels)) {
-    setup$value_labels <- parse_value_labels(setup, type = type)
-  }
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
@@ -301,27 +305,6 @@ parse_codebook <- function(setup_file, type) {
     }
   }
   return(codebook)
-}
-
-# Turns the value-label pieces from get_value_labels() into a named list
-# with one element per column (in setup file order), each a named vector
-# from value_label_matrixer().
-parse_value_labels <- function(setup, type) {
-  value_labels <- setup$value_labels
-  value_labels <- value_labels[value_labels$column %in% setup$setup$column_number, ]
-
-  value_label_order <- unique(value_labels$column)
-  value_labels <- split.data.frame(value_labels, value_labels$column)
-  value_label_cols <- c()
-  for (i in seq_along(value_labels)) {
-    column <- unique(value_labels[[i]]$column)
-    value_labels[[i]] <- value_label_matrixer(value_labels[[i]][[1]], type)
-    value_label_cols <- c(value_label_cols, column)
-  }
-
-  names(value_labels) <- value_label_cols
-  value_labels <- value_labels[value_label_order]
-  return(value_labels)
 }
 
 # Returns a data.frame of column_number (short name, e.g. V1) and
