@@ -60,6 +60,11 @@
 #' any labels an earlier VALUE LABELS command gave a column, and ADD VALUE
 #' LABELS adds to them (changing the label of a code that already has one).
 #'
+#' @section Recodes:
+#' Only a setup file's layout, names, value labels and missing values are
+#' used. Statements that change values (SAS \code{IF v = 1 THEN v = 5;}, SPSS
+#' \code{RECODE v (1=5)}) aren't applied, and a message lists them.
+#'
 #' @section Blank values:
 #' A blank in a number column, or a lone "." or the letters NA, is NA. A
 #' blank in a text column is NA unless it has a value label.
@@ -76,7 +81,9 @@
 #'   \item uses only the last of several different sets of value labels a
 #'     column has (only when \code{use_value_labels = TRUE}),
 #'   \item skips SAS missing value statements it can't read (only when
-#'     \code{missing_values} isn't "none"), or
+#'     \code{missing_values} isn't "none"),
+#'   \item finds statements that change values (recodes), which aren't
+#'     applied, or
 #'   \item reads a setup file that isn't valid UTF-8 as Windows-1252.
 #' }
 #' \code{suppressMessages(read_ascii_setup(...))} silences them. They have
@@ -85,7 +92,8 @@
 #' silences only these messages. Each kind also has its own class:
 #' "asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
 #' "asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels",
-#' "asciiSetupReader_skipped_missing" and "asciiSetupReader_encoding".
+#' "asciiSetupReader_skipped_missing", "asciiSetupReader_recodes" and
+#' "asciiSetupReader_encoding".
 #'
 #' @section Errors:
 #' Setup files that can't be read stop with an error of class
@@ -205,6 +213,16 @@ read_ascii_setup <- function(data,
            " skipped (only \"IF v = ... THEN v = .;\" forms that set the ",
            "column they test to missing are used): ",
            list_items(paste0("\"", skipped, "\""), max = 5), ".")
+  }
+  recodes <- setup$recodes
+  if (length(recodes) > 0) {
+    inform("recodes", "In '", file_name, "', ", length(recodes),
+           ngettext(length(recodes), " statement changes", " statements change"),
+           " values rather than marking them missing, so ",
+           ngettext(length(recodes), "it wasn't", "they weren't"),
+           " applied (asciiSetupReader reads a setup file's layout, labels ",
+           "and missing values, not other changes to the data): ",
+           list_items(paste0("\"", recodes, "\""), max = 5), ".")
   }
   replaced <- intersect(setup$replaced_labels, setup$setup$column_number)
   if (use_value_labels && length(replaced) > 0) {

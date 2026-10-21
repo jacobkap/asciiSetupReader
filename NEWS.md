@@ -95,6 +95,10 @@ are now different (and correct).
   lines. Statements that aren't "IF v = ... THEN v = .;" (e.g. a recode to
   another value, or a condition on another column) used to be misread as
   missing values; they're now skipped, with a message.
+* Statements that change values rather than mark them missing (SAS
+  `IF v = 1 THEN v = 5;`, SPSS `RECODE v (1=5)`) aren't applied; a message
+  lists them. Only a setup file's layout, names, labels and missing values
+  are used, as before, but such statements used to be misread.
 * `SKIP` (SPSS DATA LIST), `/FIRSTCASE` (GET DATA) and `FIRSTOBS` (SAS
   INFILE) skip header lines in the data.
 * SAS formatted input without `@` pointers (`INPUT V1 2. V2 $3.;`), INPUT on

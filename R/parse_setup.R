@@ -52,6 +52,11 @@ parse_setup <- function(setup_file) {
 #     sections that are commented out
 #   replaced_labels: SPSS variables whose value labels in an earlier VALUE
 #     LABELS command were replaced by different ones in a later command
+#   skipped_missing: SAS IF statements about missing values that couldn't
+#     be read
+#   recodes: statements that change values rather than mark them missing
+#     (SAS "IF v = 1 THEN v = 5", SPSS "RECODE v (1=5)"), which aren't
+#     applied
 #   text_columns: columns the setup file says are text (SPSS "(A)" or "Aw",
 #     SAS "$"), whose missing values are matched exactly rather than as
 #     numbers
@@ -169,16 +174,16 @@ read_setup <- function(setup_file) {
   }
 
   # Missing values and value labels both need the column list
-  skipped_missing <- NULL
   if (type == "sps" && any(grepl2("MISSING VALUE", codebook))) {
     missing <- parse_missing_sps(codebook, setup)
   } else if (type == "sas") {
     missing <- parse_missing_sas(codebook, setup, after = input_end)
-    skipped_missing <- attr(missing, "skipped")
-    if (length(missing) == 0) missing <- NULL
   } else {
     missing <- NULL
   }
+  skipped_missing <- attr(missing, "skipped")
+  recodes <- attr(missing, "recodes")
+  if (length(missing) == 0) missing <- NULL
   commented_lines <- attr(missing, "line") + line_offset
   missing <- missing[!duplicated(missing), ]
 
@@ -199,6 +204,7 @@ read_setup <- function(setup_file) {
                 commented_lines = if (any(missing$commented)) commented_lines,
                 replaced_labels = replaced_labels,
                 skipped_missing = skipped_missing,
+                recodes         = recodes,
                 text_columns    = match_case(text_columns, setup$column_number),
                 skip            = lines_to_skip(codebook, type))
   setup$setup <- setup$setup[, c("column_number",
@@ -525,6 +531,7 @@ parse_missing_sps <- function(codebook, setup) {
     return(NULL)
   }
   ends <- grep2("EXECUTE|^\\*.*SPSS", codebook)
+  recodes <- character(0)
   sections <- lapply(seq_along(starts), function(k) {
     start <- starts[k]
     end <- ends[ends > start][1]
@@ -535,14 +542,28 @@ parse_missing_sps <- function(codebook, setup) {
       period <- which(endsWith(codebook[start:end], "."))[1]
       if (!is.na(period)) end <- start + period - 1
     }
-    section <- parse_missing_section_sps(codebook[start:end], setup, start)
+    lines <- codebook[start:end]
+    if (!command) {
+      # RECODE groups to a value other than SYSMIS, e.g. (1=5), change
+      # values rather than mark them missing; they aren't applied
+      group <- "\\([^()]*=(?![^()]*SYSMIS)[^()]*\\)"
+      has_recode <- grepl(group, lines, perl = TRUE, ignore.case = TRUE)
+      recodes <<- c(recodes, lines[has_recode])
+      lines <- gsub(group, " ", lines, perl = TRUE, ignore.case = TRUE)
+    }
+    section <- parse_missing_section_sps(lines, setup, start)
     if (!is.null(section)) {
       section$section <- k
       section$command <- command
     }
     section
   })
-  combine_missing(sections)
+  missing <- combine_missing(sections)
+  if (length(recodes) > 0) {
+    if (is.null(missing)) missing <- list()
+    attr(missing, "recodes") <- unique(recodes)
+  }
+  missing
 }
 
 # The marker for "V1 ()", which clears V1's missing values
@@ -732,10 +753,15 @@ parse_missing_sas <- function(codebook, setup, after = 0) {
 
   rows    <- list()
   skipped <- character(0)
+  recodes <- character(0)
   for (i in seq_len(nrow(statements))) {
     parsed <- sas_missing_statement(sub("^\\*\\s*", "", statements$text[i]))
     if (is.null(parsed)) {
-      skipped <- c(skipped, statements$text[i])
+      if (is_sas_recode(statements$text[i])) {
+        recodes <- c(recodes, statements$text[i])
+      } else {
+        skipped <- c(skipped, statements$text[i])
+      }
       next
     }
     parsed$commented <- statements$commented[i]
@@ -744,11 +770,13 @@ parse_missing_sas <- function(codebook, setup, after = 0) {
   }
   missing <- do.call(rbind, rows)
   if (is.null(missing)) {
-    return(structure(list(), skipped = skipped))
+    return(structure(list(), skipped = skipped, recodes = recodes))
   }
   missing$variable <- match_case(missing$variable, setup$column_number)
   missing <- missing[missing$variable %in% setup$column_number, ]
-  if (nrow(missing) == 0) return(structure(list(), skipped = skipped))
+  if (nrow(missing) == 0) {
+    return(structure(list(), skipped = skipped, recodes = recodes))
+  }
   # Values in both a commented-out and an active statement count as active
   key <- paste(missing$variable, missing$values, sep = "\r")
   missing <- missing[!(missing$commented & key %in% key[!missing$commented]), ]
@@ -773,7 +801,18 @@ parse_missing_sas <- function(codebook, setup, after = 0) {
   rownames(out) <- NULL
   attr(out, "line") <- commented_lines
   attr(out, "skipped") <- skipped
+  attr(out, "recodes") <- recodes
   out
+}
+
+# TRUE for a SAS IF statement that sets a column to a value rather than to
+# missing, e.g. "IF V1 = 1 THEN V1 = 5" (a recode, which isn't applied).
+is_sas_recode <- function(statement) {
+  target <- regmatches(statement,
+                       regexec("(?i)\\bTHEN\\s+[[:alpha:]_][[:alnum:]_]*\\s*=\\s*(.+)$",
+                               statement, perl = TRUE))[[1]]
+  length(target) == 2 &&
+    !grepl("^(\\.[[:alpha:]_]?|''|' '|\"\"|\" \")\\s*$", trimws(target[2]))
 }
 
 # Splits SAS code (from line `from` on) into statements ending in ";".

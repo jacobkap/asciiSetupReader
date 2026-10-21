@@ -31,12 +31,48 @@ test_that("IF statements that aren't missing value recodes are skipped and repor
   expect_equal(missing_of(statements), "V1 9")
   setup <- sas_file(c("INPUT", "  V1 1-2  V2 3-4  V3 $ 5-6", ";"),
                     c("* USER-DEFINED MISSING VALUE RECODE TO SAS SYSMIS;", statements))
-  expect_length(read_setup(setup)$skipped_missing, 3)
+  # The recode to 5 changes values; the other two test or set another
+  # column, which this can't read
+  parsed <- read_setup(setup)
+  expect_equal(parsed$recodes, "IF V1 = 1 THEN V1 = 5")
+  expect_equal(parsed$skipped_missing,
+               c("IF V1 = 1 AND V2 = 1 THEN V1 = .", "IF V1 = 1 THEN V2 = ."))
   data <- temp_file(c("0102AB", "0901CD"), ".txt")
-  expect_message(read_ascii_setup(data, setup),
-                 "3 missing value statements couldn't be read and were skipped",
-                 class = "asciiSetupReader_skipped_missing")
-  expect_silent(read_ascii_setup(data, setup, missing_values = "none"))
+  found <- messages_from(out <- read_ascii_setup(data, setup))
+  expect_equal(vapply(found, function(m) class(m)[1], ""),
+               c("asciiSetupReader_skipped_missing", "asciiSetupReader_recodes"))
+  expect_match(conditionMessage(found[[1]]),
+               "2 missing value statements couldn't be read and were skipped")
+  expect_equal(conditionMessage(found[[2]]), paste0(
+    "In '", basename(setup), "', 1 statement changes values rather than marking ",
+    "them missing, so it wasn't applied (asciiSetupReader reads a setup ",
+    "file's layout, labels and missing values, not other changes to the ",
+    "data): \"IF V1 = 1 THEN V1 = 5\".\n"))
+  # The 1 isn't changed to 5, and only V1's 9 is missing
+  expect_equal(out$first, c(1, NA))
+  # With missing_values = "none" only the recode message is left
+  expect_message(read_ascii_setup(data, setup, missing_values = "none"),
+                 class = "asciiSetupReader_recodes")
+  expect_true(is_sas_recode("IF V1 = 1 THEN V1 = 5"))
+  expect_false(is_sas_recode("IF V1 = 1 THEN V1 = .A"))
+  expect_false(is_sas_recode("IF V1 = 1 THEN V2 = ' '"))
+})
+
+test_that("SPSS RECODE to a value other than SYSMIS isn't applied or misread", {
+  setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2  V2 3-4", ".",
+                       "VARIABLE LABELS", "  V1 'first'", "  V2 'second'", ".",
+                       "* SPSS MISSING VALUE RECODE *.",
+                       "RECODE V1 (9=SYSMIS) (1=5).",
+                       "RECODE V2 (2=3).", "EXECUTE."), ".sps")
+  parsed <- read_setup(setup)
+  expect_equal(paste(parsed$missing$variable, parsed$missing$values), "V1 9")
+  expect_equal(parsed$recodes, c("RECODE V1 (9=SYSMIS) (1=5).", "RECODE V2 (2=3)."))
+  data <- temp_file(c("0102", "0902"), ".txt")
+  expect_message(out <- read_ascii_setup(data, setup),
+                 "2 statements change values rather than marking them missing",
+                 class = "asciiSetupReader_recodes")
+  expect_equal(out$first, c(1, NA))
+  expect_equal(out$second, c(2, 2))
 })
 
 test_that("every missing value section is read, each marked commented or not", {

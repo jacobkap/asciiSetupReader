@@ -86,6 +86,13 @@ any labels an earlier VALUE LABELS command gave a column, and ADD VALUE
 LABELS adds to them (changing the label of a code that already has one).
 }
 
+\section{Recodes}{
+
+Only a setup file's layout, names, value labels and missing values are
+used. Statements that change values (SAS \code{IF v = 1 THEN v = 5;}, SPSS
+\code{RECODE v (1=5)}) aren't applied, and a message lists them.
+}
+
 \section{Blank values}{
 
 A blank in a number column, or a lone "." or the letters NA, is NA. A
@@ -105,7 +112,9 @@ read_ascii_setup() tells you with a message when it:
   \item uses only the last of several different sets of value labels a
     column has (only when \code{use_value_labels = TRUE}),
   \item skips SAS missing value statements it can't read (only when
-    \code{missing_values} isn't "none"), or
+    \code{missing_values} isn't "none"),
+  \item finds statements that change values (recodes), which aren't
+    applied, or
   \item reads a setup file that isn't valid UTF-8 as Windows-1252.
 }
 \code{suppressMessages(read_ascii_setup(...))} silences them. They have
@@ -114,7 +123,8 @@ the class "asciiSetupReader_message", so
 silences only these messages. Each kind also has its own class:
 "asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
 "asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels",
-"asciiSetupReader_skipped_missing" and "asciiSetupReader_encoding".
+"asciiSetupReader_skipped_missing", "asciiSetupReader_recodes" and
+"asciiSetupReader_encoding".
 }
 
 \section{Errors}{
