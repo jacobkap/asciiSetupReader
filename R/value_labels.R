@@ -319,25 +319,48 @@ parse_value_labels_sas <- function(codebook, setup) {
     return(NULL)
   }
   # The VALUE statements start at the first one for a format that is used
-  # and run to the first blank (or ".", ";", "*/") line after the last one
-  named <- regmatches(toupper(codebook),
-                      regexec("(?:^|[[:space:];*/])VALUE\\s+(\\$?[[:alpha:]_][[:alnum:]_]*)",
-                              toupper(codebook), perl = TRUE))
-  named <- vapply(named, function(m) if (length(m)) m[2] else NA_character_, "")
+  # and run to the ";" that ends the last one
+  value_names <- function(lines) {
+    named <- regmatches(toupper(lines),
+                        regexec("(?:^|[[:space:];*/])VALUE\\s+(\\$?[[:alpha:]_][[:alnum:]_]*)",
+                                toupper(lines), perl = TRUE))
+    vapply(named, function(m) if (length(m)) m[2] else NA_character_, "")
+  }
+  named <- value_names(codebook)
   starts <- which(named %in% f_names)
   if (length(starts) == 0) {
     return(NULL)
   }
-  value_position <- which(!is.na(named))
-  value_position <- value_position[value_position >= min(starts)]
-  end <- grep2("^$|^\\.$|^\\*/$|^;$|^; ?\\*/$", codebook)
-  end <- end[end >= max(value_position)][1] - 1
-  if (is.na(end)) {
-    end <- length(codebook)
+  lines <- codebook[min(starts):length(codebook)]
+  # Comments aren't part of a code or label, and an apostrophe in one
+  # ("respondent's") isn't a quote: "/* ... */" (over several lines too)
+  # and "* ... ;" statements
+  lines <- strsplit(gsub("(?s)/\\*.*?\\*/", " ", paste(lines, collapse = "\n"), perl = TRUE),
+                    "\n", fixed = TRUE)[[1]]
+  in_star <- FALSE
+  for (k in seq_along(lines)) {
+    if (!in_star && grepl("^\\s*\\*", lines[k])) in_star <- TRUE
+    if (in_star) {
+      ends <- grepl(";", lines[k], fixed = TRUE)
+      lines[k] <- if (ends) sub("^[^;]*;", "", lines[k]) else ""
+      if (ends) in_star <- FALSE
+    }
   }
-  lines <- codebook[value_position[1]:end]
-  # A /* comment */ inside a VALUE statement isn't part of a code
-  lines <- gsub("/\\*.*?\\*/", " ", lines, perl = TRUE)
+  # The end: the first ";" (outside quotes) after the last VALUE, but not
+  # past the next PROC, DATA or RUN (a VALUE statement missing its ";"
+  # ends at a blank line, as before)
+  value_position <- which(!is.na(value_names(lines)))
+  last <- max(value_position)
+  masked <- mask_quotes(lines)
+  semicolon <- which(grepl(";", masked, fixed = TRUE) & seq_along(lines) >= last)[1]
+  next_step <- which(grepl("^\\s*(PROC|DATA|RUN)\\b", lines, ignore.case = TRUE) &
+                       seq_along(lines) > last)[1]
+  end <- if (!is.na(semicolon) && (is.na(next_step) || semicolon < next_step)) {
+    semicolon
+  } else {
+    c(which(lines == "" & seq_along(lines) > last) - 1, length(lines))[1]
+  }
+  lines <- lines[seq_len(end)]
 
   tokens <- tokenize(lines, c("=", ";"))
   quoted <- is_quoted(tokens)
@@ -351,13 +374,16 @@ parse_value_labels_sas <- function(codebook, setup) {
   i <- 1
   while (i <= length(tokens)) {
     if (!quoted[i] && toupper(tokens[i]) == "VALUE" && i < length(tokens)) {
-      # VALUE name, then any options in parentheses, e.g. (default=30)
-      f_name <- toupper(tokens[i + 1])
+      # VALUE name, then any options in parentheses, e.g. (default=30),
+      # which can follow the name without a space: "BF(MULTILABEL)"
+      f_name <- toupper(sub("\\(.*$", "", tokens[i + 1]))
       block  <- block + 1
       code   <- character()
       code_quoted <- logical()
       i <- i + 1
-      if (i < length(tokens) && startsWith(tokens[i + 1], "(")) {
+      if (grepl("(", tokens[i], fixed = TRUE)) {
+        while (i < length(tokens) && !endsWith(tokens[i], ")")) i <- i + 1
+      } else if (i < length(tokens) && startsWith(tokens[i + 1], "(")) {
         while (i < length(tokens) && !endsWith(tokens[i], ")")) i <- i + 1
       }
     } else if (!quoted[i] && tokens[i] == ";") {

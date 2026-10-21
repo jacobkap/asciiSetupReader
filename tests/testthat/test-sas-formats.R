@@ -129,3 +129,29 @@ test_that("numbered lists keep zero padding and can have _ and digits in the pre
                           input = "  Q08 1  Q09 2  Q10 3")
   expect_equal(names(labels), c("Q08", "Q09", "Q10"))
 })
+
+test_that("comments between and inside VALUE statements don't hide or change labels", {
+  labels <- labels_of_sas("FORMAT V1 AF. V2 BF. V3 CF.;",
+                          c("VALUE AF 1 = 'One';",
+                            "/* the respondent's answer,",
+                            "   over two lines */",
+                            "* the interviewer's code;",
+                            "VALUE BF 1 = 'Yes'",
+                            "  /* 2 = 'old code'",
+                            "     no longer used */",
+                            "  9 = 'NA';",
+                            "VALUE CF 3 = 'Three';"))
+  expect_equal(labels$V1, c(One = "1"))
+  expect_equal(labels$V2, c(Yes = "1", "NA" = "9"))
+  expect_equal(labels$V3, c(Three = "3"))
+})
+
+test_that("a blank line inside the last VALUE statement doesn't cut it off", {
+  labels <- labels_of_sas("FORMAT V1 AF.;", c("VALUE AF 1 = 'One'", "", "  2 = 'Two';"))
+  expect_equal(labels$V1, c(One = "1", Two = "2"))
+})
+
+test_that("VALUE options can follow the format name without a space", {
+  labels <- labels_of_sas("FORMAT V1 BF.;", "VALUE BF(MULTILABEL) 1 = 'One' 2 = 'Two';")
+  expect_equal(labels$V1, c(One = "1", Two = "2"))
+})
