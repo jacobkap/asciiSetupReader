@@ -94,6 +94,7 @@ test_that("SPSS GET DATA positions count from 0", {
   # IBM: GET DATA doesn't read implied decimals, so F4.1 doesn't make 0125
   # into 12.5
   expect_equal(parsed$decimals, c(0, 0, 0))
+  expect_equal(read_setup(setup)$text_columns, "NAME")
   data <- temp_file(c("01Maria0125", "02Joao 0990"), ".txt")
   expect_silent(out <- read_ascii_setup(data, setup))
   expect_equal(out$ID, c(1, 2))

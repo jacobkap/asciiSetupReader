@@ -76,6 +76,7 @@ read_setup <- function(setup_file) {
     }
     setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook)[1]:second_grep_value]
     decimals <- parse_decimals(setup, type)
+    text_columns <- parse_text_columns(setup, type)
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
     setup <- join_number_lines(setup)
     setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
@@ -107,8 +108,10 @@ read_setup <- function(setup_file) {
       if (is.na(input_end)) input_end <- length(codebook)
       setup <- formatted_input(codebook[input_start:input_end])
       decimals <- attr(setup, "decimals")
+      text_columns <- attr(setup, "text")
     } else {
       decimals <- parse_decimals(setup, type)
+      text_columns <- parse_text_columns(setup, type)
       setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
       setup <- join_number_lines(setup)
 
@@ -166,11 +169,12 @@ read_setup <- function(setup_file) {
   } else {
     value_labels <- NULL
   }
-  setup <- list(setup         = setup,
-                value_labels  = value_labels,
-                missing       = missing,
-                renamed       = renamed,
-                commented_lines = if (any(missing$commented)) commented_lines)
+  setup <- list(setup           = setup,
+                value_labels    = value_labels,
+                missing         = missing,
+                renamed         = renamed,
+                commented_lines = if (any(missing$commented)) commented_lines,
+                text_columns    = match_case(text_columns, setup$column_number))
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
@@ -245,6 +249,24 @@ parse_decimals <- function(lines, type) {
   }, integer(1))
   names(places) <- vapply(parts, `[`, character(1), 2)
   places[places > 0]
+}
+
+# The columns the setup file says are text: SPSS "V1 1-2 (A)" or, in GET
+# DATA files, "V1 0-1 A2"; SAS "V1 $ 1-2". Their missing values are
+# matched exactly, not as numbers.
+parse_text_columns <- function(lines, type) {
+  text <- paste(lines, collapse = " ")
+  if (type == "sps") {
+    # A bare "A2" is a format only in GET DATA files; in DATA LIST it could
+    # be the next column's name
+    get_data <- any(grepl("/VARIABLES", lines, ignore.case = TRUE))
+    pattern <- paste0("([[:alpha:]@#$][[:alnum:]@#$_.]*)\\s+[0-9]+(?:\\s*-\\s*[0-9]+)?",
+                      "\\s*(?:\\(A[0-9]*\\)", if (get_data) "|A[0-9]+\\b", ")")
+  } else {
+    pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s*\\$"
+  }
+  found <- regmatches(text, gregexpr(pattern, text, perl = TRUE, ignore.case = TRUE))[[1]]
+  unique(sub("^([^[:space:]$]+).*$", "\\1", found))
 }
 
 # SAS formatted input: "@1 V1 $2.  @3 V2 4.1  V3 2." means V1 starts at

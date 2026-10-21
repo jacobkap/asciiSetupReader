@@ -194,11 +194,11 @@ add_decimal_point <- function(values, places) {
 # fix_names_missing_numeric() (missing values, names, numeric columns).
 
 # Sets the setup file's missing values to NA. `missing` is the data.frame
-# from parse_setup(): one row per column (variable) and missing value. As
-# with value labels, one- and two-digit codes match however the data pad
-# them ("0" matches "00" and "08" matches "8"). Columns named in by_number
-# (those with implied decimal places) are also matched as numbers.
-fix_missing <- function(data, missing, by_number = character(0)) {
+# from parse_setup(): one row per column (variable) and missing value. As in
+# SPSS and SAS, codes are matched by value, so "9", "09" and "0000009" are
+# the same, except in text_columns (SPSS "(A)", SAS "$"), where they must
+# be the same text.
+fix_missing <- function(data, missing, text_columns = character(0)) {
   missing <- missing[missing$variable %in% names(data), ]
 
   for (column in unique(missing$variable)) {
@@ -234,12 +234,10 @@ fix_missing <- function(data, missing, by_number = character(0)) {
                           values[in_range])
     }
     names(missing_values) <- NA
-    missing_values <- double_digit(single_digit(missing_values))
-    missing_values <- missing_values[!duplicated(missing_values)]
 
     data.table::set(data, j = column,
                     value = replace_values(data[[column]], missing_values,
-                                           by_number = column %in% by_number))
+                                           by_number = !column %in% text_columns))
   }
   return(data)
 }
@@ -272,13 +270,13 @@ fix_names_missing_numeric <- function(data,
                                       coerce_numeric) {
   commented_na <- NULL
   if (!is.null(setup$missing)) {
-    by_number <- setup$setup$column_number[setup$setup$decimals > 0]
+    text_columns <- setup$text_columns
     commented <- setup$missing$commented %in% TRUE
-    data <- fix_missing(data, setup$missing[!commented, ], by_number)
+    data <- fix_missing(data, setup$missing[!commented, ], text_columns)
     if (any(commented)) {
       columns <- intersect(unique(setup$missing$variable[commented]), names(data))
       before  <- vapply(columns, function(x) sum(is.na(data[[x]])), numeric(1))
-      data <- fix_missing(data, setup$missing[commented, ], by_number)
+      data <- fix_missing(data, setup$missing[commented, ], text_columns)
       after   <- vapply(columns, function(x) sum(is.na(data[[x]])), numeric(1))
       commented_na <- (after - before)[after > before]
     }

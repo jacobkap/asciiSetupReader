@@ -153,13 +153,59 @@ test_that("one- and two-digit missing codes match however they're padded", {
   expect_equal(out$fourth, c(NA, NA, "10"))
 })
 
-test_that("three-digit codes aren't padded", {
+test_that("codes are matched by value, so padding never matters", {
+  # As in SPSS and SAS: 9, 009 and 0000009 are the same number
   setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-3", ".",
                        "VARIABLE LABELS", "  V1 'first'", ".",
-                       "MISSING VALUES", "  V1 (9)", ".", "EXECUTE."), ".sps")
-  data <- temp_file(c("009", "9  ", "090"), ".txt")
+                       "MISSING VALUES", "  V1 (0000009)", ".", "EXECUTE."), ".sps")
+  data <- temp_file(c("009", "9  ", "090", "9.0"), ".txt")
   out <- read_ascii_setup(data, setup, coerce_numeric = FALSE)
-  expect_equal(out$first, c("009", NA, "090"))
+  expect_equal(out$first, c(NA, NA, "090", NA))
+})
+
+test_that("codes of text columns must be the same text", {
+  # SPSS (A) and SAS $ columns are text, so "00" isn't "0"
+  setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2 (A)  V2 3-4", ".",
+                       "VARIABLE LABELS", "  V1 'code'", "  V2 'number'", ".",
+                       "MISSING VALUES", "  V1 ('0')  V2 (0)", ".", "EXECUTE."), ".sps")
+  data <- temp_file(c("0000", "0 0 ", "1010"), ".txt")
+  out <- read_ascii_setup(data, setup, coerce_numeric = FALSE)
+  expect_equal(out$code, c("00", NA, "10"))
+  expect_equal(out$number, c(NA, NA, "10"))
+
+  sas <- temp_file(c("DATA x;", "INFILE 'x';", "INPUT", "  V1 $ 1-2  V2 3-4", "", ";",
+                     "LABEL", "  V1 = 'code'", "  V2 = 'number'", ";", "",
+                     "* USER-DEFINED MISSING VALUE RECODE TO SAS SYSMIS;", "",
+                     "IF V1 = '0' THEN V1 = .;", "IF V2 = 0 THEN V2 = .;", "RUN;"), ".sas")
+  out <- read_ascii_setup(data, sas, coerce_numeric = FALSE)
+  expect_equal(out$code, c("00", NA, "10"))
+  expect_equal(out$number, c(NA, NA, "10"))
+  expect_equal(read_setup(sas)$text_columns, "V1")
+})
+
+test_that("a real file's zero-padded SAS codes match its unpadded data", {
+  # jail_survey_1987.sas writes "IF V156=0000009 THEN V156=.;" for a
+  # 1-column field holding 9; SAS compares them as numbers
+  raw <- substr(readr::read_lines(jail_1987_dataset_name), 609, 609)
+  expect_equal(sum(raw == "9"), 764)
+  missing <- parse_setup(jail_1987_sas_name)$missing
+  expect_equal(missing$values[missing$variable == "V156"], "0000009")
+  out <- allow_messages(read_ascii_setup(jail_1987_dataset_name, jail_1987_sas_name,
+                                         use_value_labels = FALSE,
+                                         use_clean_names = FALSE))
+  expect_equal(sum(is.na(out$V156)), 764)
+})
+
+test_that("a one-line MISSING VALUES command ends at its period", {
+  # It used to run on into the next command, so "(1)" in a label became a
+  # missing value
+  setup <- sps_with_missing(c("MISSING VALUES V1 (9).",
+                              "VALUE LABELS",
+                              "  V2 1 'Yes (1)' 2 'No'",
+                              "."))
+  missing <- parse_setup(setup)$missing
+  expect_equal(missing$variable, "V1")
+  expect_equal(missing$values, "9")
 })
 
 test_that("labelled missing codes keep their label, as before", {
