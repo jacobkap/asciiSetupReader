@@ -1,3 +1,8 @@
+# The fixture objects below are read once for all tests. Messages from
+# reading them (e.g. implied decimals) are tested in test-messages.R, so
+# they are kept out of the test log here.
+suppressMessages({
+
 SHR_dataset_name      <- system.file("extdata",
                                      "example_data.zip",
                                      package = "asciiSetupReader")
@@ -624,3 +629,5 @@ corrections_parsed_sas      <- parse_setup(corrections_sas_name)
 SHR_parsed_sas              <- parse_setup(SHR_sas_name)
 #sadc_parsed_sas            <- parse_setup(sadc_sas_name)
 
+
+})
