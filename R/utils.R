@@ -263,6 +263,7 @@ read_data <- function(data, setup) {
                                            col_types = vroom::cols(.default =
                                                                      vroom::col_character()),
                                            na = character(),
+                                           skip = if (is.null(setup$skip)) 0 else setup$skip,
                                            altrep = FALSE))
   # setDT() converts in place; as.data.table() would copy all the data
   data.table::setDT(out)

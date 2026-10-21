@@ -74,6 +74,24 @@ test_that("real files' blank, NA and zero-padded codes get their labels", {
   expect_equal(sum(parole$EMIN %in% "Not applicable"), 21)
 })
 
+test_that("SKIP, FIRSTCASE and FIRSTOBS skip lines before the first case", {
+  data <- temp_file(c("HEADER", "0102", "0304"), ".txt")
+  skip <- temp_file(c("DATA LIST FILE = 'x' SKIP = 1", "  V1 1-2  V2 3-4", ".",
+                      "EXECUTE."), ".sps")
+  expect_equal(read_ascii_setup(data, skip)$V1, c(1, 3))
+  first <- temp_file(c("GET DATA /TYPE = TXT /FILE = 'x' /ARRANGEMENT = FIXED",
+                       " /FIRSTCASE = 2", "/VARIABLES =", "V1 0-1 F2.0", "V2 2-3 F2.0",
+                       " .", "EXECUTE."), ".sps")
+  expect_equal(read_ascii_setup(data, first)$V2, c(2, 4))
+  sas <- temp_file(c("DATA x;", "INFILE 'x' FIRSTOBS = 2;", "INPUT", "  V1 1-2  V2 3-4",
+                     ";", "RUN;"), ".sas")
+  expect_equal(read_ascii_setup(data, sas)$V1, c(1, 3))
+  # No skip without one, and not from a comment
+  none <- temp_file(c("* SKIP = 1 is not used.", "DATA LIST FILE = 'x'", "  V1 1-2", ".",
+                      "EXECUTE."), ".sps")
+  expect_equal(read_setup(none)$skip, 0)
+})
+
 test_that("DATA LIST columns without a label are kept, with their short name", {
   setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2  V2 3-4  V3 5-6", ".",
                        "VARIABLE LABELS", "  V1 'first'", "  V3 'third'", ".",

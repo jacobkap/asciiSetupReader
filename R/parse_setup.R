@@ -198,7 +198,8 @@ read_setup <- function(setup_file) {
                 commented_lines = if (any(missing$commented)) commented_lines,
                 replaced_labels = replaced_labels,
                 skipped_missing = skipped_missing,
-                text_columns    = match_case(text_columns, setup$column_number))
+                text_columns    = match_case(text_columns, setup$column_number),
+                skip            = lines_to_skip(codebook, type))
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
@@ -247,6 +248,28 @@ check_setup_file <- function(codebook, setup_file, type) {
     abort("no_positions", "No column positions were found in '",
           file_name, "'. ", positions_needed(type))
   }
+}
+
+# The number of lines before the first case: SPSS DATA LIST SKIP = n or
+# GET DATA /FIRSTCASE = n, SAS INFILE FIRSTOBS = n.
+lines_to_skip <- function(codebook, type) {
+  if (type == "sps") {
+    # Only the DATA LIST or GET DATA command, before VARIABLE LABELS
+    end <- c(grep2("^variable labels", codebook), length(codebook))[1]
+    lines <- codebook[seq_len(end)]
+    lines <- lines[!startsWith(lines, "*")]
+    pattern <- "(?i)(?:\\bSKIP|/FIRSTCASE)\\s*=\\s*([0-9]+)"
+  } else {
+    lines <- codebook[grepl("^INFILE\\b", codebook, ignore.case = TRUE) &
+                        !sas_comment_state(codebook)]
+    pattern <- "(?i)\\bFIRSTOBS\\s*=\\s*([0-9]+)"
+  }
+  found <- regmatches(lines, regexec(pattern, lines, perl = TRUE))
+  found <- unlist(lapply(found, function(m) if (length(m)) m[1:2]))
+  if (length(found) == 0) return(0)
+  n <- as.numeric(found[2])
+  # SKIP = n skips n lines; FIRSTCASE / FIRSTOBS = n starts at line n
+  if (grepl("SKIP", found[1], ignore.case = TRUE)) n else max(n - 1, 0)
 }
 
 positions_needed <- function(type) {
