@@ -252,30 +252,48 @@ parse_decimals <- function(lines, type) {
 # decimal place, and V3 follows straight after V2. "@n" moves to column n
 # and "+n" moves n columns on. Columns can also be given as "V4 10-12".
 # Returns "name begin-end" lines for get_column_spaces(), with the implied
-# decimal places as the "decimals" attribute.
+# decimal places as the "decimals" attribute and the text ("$") columns as
+# the "text" attribute. Stops with an error for what it can't read (several
+# records per case, or lists of variables in parentheses) rather than
+# placing columns wrongly.
 formatted_input <- function(lines) {
   text <- paste(lines, collapse = " ")
   text <- gsub("/\\*.*?\\*/", " ", text, perl = TRUE)
   text <- gsub("^\\s*INPUT\\b|;", " ", text, ignore.case = TRUE)
   text <- gsub("@\\s+", "@", text)
   text <- gsub("\\$\\s+", "$", text)
+  text <- gsub("([0-9]+)\\s*-\\s*([0-9]+)", "\\1-\\2", text)
   tokens <- strsplit(trimws(text), "\\s+")[[1]]
 
-  informat <- "^\\$?[[:alpha:]]*([0-9]+)\\.([0-9]*)$"
+  # An informat: optional $, a name (e.g. COMMA, $CHAR, MMDDYY), the width
+  # and the decimal places. Only numeric informats imply decimal places.
+  informat <- "^(\\$?)([[:alpha:]_][[:alnum:]_]*?)?([0-9]+)\\.([0-9]*)$"
+  numeric_informats <- c("", "F", "BEST", "COMMA", "COMMAX", "DOLLAR",
+                         "DOLLARX", "NUMX", "BZ", "ZD")
   pointer  <- 1
   name     <- NA_character_
   out      <- character(0)
+  text_columns <- character(0)
   decimals <- stats::setNames(integer(0), character(0))
   for (token in tokens) {
     if (grepl("^@[0-9]+$", token)) {
       pointer <- as.numeric(substring(token, 2))
     } else if (grepl("^\\+[0-9]+$", token)) {
       pointer <- pointer + as.numeric(substring(token, 2))
-    } else if (!is.na(name) && grepl(informat, token)) {
-      width  <- as.numeric(sub(informat, "\\1", token))
-      places <- sub(informat, "\\2", token)
+    } else if (token %in% c("@", "@@")) {
+      # Holding the line for another INPUT statement: no columns
+    } else if (grepl("^#[0-9]+$|^/$", token)) {
+      abort("unsupported_input", "This SAS INPUT statement reads several ",
+            "lines (records) per case (", token, "), which asciiSetupReader ",
+            "can't read.")
+    } else if (!is.na(name) && grepl(informat, token, perl = TRUE)) {
+      parts  <- regmatches(token, regexec(informat, token, perl = TRUE))[[1]]
+      width  <- as.numeric(parts[4])
+      places <- parts[5]
       out <- c(out, paste0(name, " ", pointer, "-", pointer + width - 1))
-      if (nzchar(places) && as.integer(places) > 0) {
+      if (nzchar(parts[2])) text_columns <- c(text_columns, name)
+      if (nzchar(places) && as.integer(places) > 0 && !nzchar(parts[2]) &&
+          toupper(parts[3]) %in% numeric_informats) {
         decimals[name] <- as.integer(places)
       }
       pointer <- pointer + width
@@ -283,13 +301,21 @@ formatted_input <- function(lines) {
     } else if (!is.na(name) && grepl("^\\$?[0-9]+(-[0-9]+)?$", token)) {
       range <- as.numeric(strsplit(sub("^\\$", "", token), "-")[[1]])
       out <- c(out, paste0(name, " ", range[1], "-", range[length(range)]))
+      if (startsWith(token, "$")) text_columns <- c(text_columns, name)
       pointer <- range[length(range)] + 1
       name <- NA_character_
     } else if (grepl("^[[:alpha:]_][[:alnum:]_]*$", token)) {
       name <- token
+    } else if (grepl("^\\$", token) && !is.na(name)) {
+      # "$" on its own before a width or informat
+      text_columns <- c(text_columns, name)
+    } else {
+      abort("unsupported_input", "asciiSetupReader can't read this part of ",
+            "the SAS INPUT statement: '", token, "'.")
     }
   }
   attr(out, "decimals") <- decimals
+  attr(out, "text") <- unique(text_columns)
   out
 }
 

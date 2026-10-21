@@ -134,7 +134,24 @@ test_that("SAS formatted input with @ pointers and informats is read", {
   expect_equal(parsed$decimals, c(0, 0, 1, 0, 0, 0))
 
   expect_equal(formatted_input(c("INPUT @5 A 3. @ 10 B $CHAR2. C 4.2;")),
-               structure(c("A 5-7", "B 10-11", "C 12-15"), decimals = c(C = 2L)))
+               structure(c("A 5-7", "B 10-11", "C 12-15"), decimals = c(C = 2L),
+                         text = "B"))
+})
+
+test_that("SAS formatted input handles spaced ranges and named informats", {
+  out <- formatted_input("INPUT @1 Z 1 - 3 @4 P S370FPD4. T TIME8.2 M COMMA6.2 D MMDDYY8. @@;")
+  expect_equal(as.vector(out), c("Z 1-3", "P 4-7", "T 8-15", "M 16-21", "D 22-29"))
+  # Only numeric informats (COMMA6.2) imply decimal places; TIME8.2 doesn't
+  expect_equal(attr(out, "decimals"), c(M = 2L))
+})
+
+test_that("SAS INPUT the package can't read stops with a clear error", {
+  expect_error(formatted_input("INPUT #1 @1 A 2. #2 @1 B 2.;"),
+               "several lines \\(records\\) per case",
+               class = "asciiSetupReader_unsupported_input")
+  expect_error(formatted_input("INPUT @1 (Q1-Q3) (1.);"),
+               "can't read this part of the SAS INPUT statement: '\\(Q1-Q3\\)'",
+               class = "asciiSetupReader_unsupported_input")
 })
 
 test_that("Brazil's SAS and SPSS layouts give the same columns (GitHub #5)", {
