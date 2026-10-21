@@ -1,12 +1,15 @@
 ## Release summary
 
-This release fixes how setup files are read: value labels keep apostrophes
+This is a major release (3.0.0) because it changes results: setup files
+were silently read wrongly in several ways. Value labels keep apostrophes
 and other characters, columns with implied decimal places get their
 decimal point, column names are always unique, SPSS GET DATA positions are
 no longer off by one, and setup files that can't be read give a clear
-error. It adds a `missing_values` argument for setup files whose missing
-values are commented out. Changes that affect results are listed first in
-NEWS.md.
+error. The SPSS and SAS parsers now read setup files by their syntax rather
+than their spacing. It adds a `missing_values` argument for setup files
+whose missing values are commented out. Changes that affect results are
+listed first in NEWS.md. Test-only data moved from inst/ to tests/, so the
+installed package is smaller.
 
 ## Test environments
 
