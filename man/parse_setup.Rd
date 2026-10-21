@@ -8,9 +8,12 @@ parse_setup(setup_file)
 }
 \arguments{
 \item{setup_file}{Name of the SPSS or SAS setup file - should be a .sps or
-.sas (.txt also accepted as are these files in zipped format). Whether it
-is SPSS or SAS is determined from the file name: names ending in .sps
-(optionally followed by .zip or .txt) are SPSS and everything else is SAS.}
+  .sas (.txt also accepted as are these files in zipped format). Whether it
+  is SPSS or SAS is determined from the file name: names ending in .sps
+  (optionally followed by .zip or .txt) are SPSS and everything else is SAS.
+
+  A setup file that isn't valid UTF-8 text is read as Latin-1, with a
+  message.}
 }
 \value{
 A list of length 3. The first object ("setup") is a data frame

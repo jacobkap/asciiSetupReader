@@ -5,6 +5,9 @@
 #'   is SPSS or SAS is determined from the file name: names ending in .sps
 #'   (optionally followed by .zip or .txt) are SPSS and everything else is SAS.
 #'
+#'   A setup file that isn't valid UTF-8 text is read as Latin-1, with a
+#'   message.
+#'
 #' @return A list of length 3. The first object ("setup") is a data frame
 #' with 4 columns: column_number, the non-descriptive name of each column
 #' (e.g. V1); column_name, its descriptive name; and begin and end, the
@@ -32,6 +35,17 @@
 #' sps_example <- parse_setup(sps_name)
 #' head(sps_example$setup)
 parse_setup <- function(setup_file) {
+  setup <- read_setup(setup_file)
+  setup[c("setup", "value_labels", "missing")]
+}
+
+# Does the work of parse_setup(). Also returns:
+#   renamed: a data.frame of the columns whose descriptive name was made
+#     unique (column_number, name: the name it would have had, and
+#     column_name: the unique name), or NULL
+#   commented_lines: the line numbers in the setup file of the missing value
+#     sections that are commented out
+read_setup <- function(setup_file) {
 
   if (grepl(".sps(\\.zip)?$|.sps(\\.txt)?$", setup_file, ignore.case = TRUE)) {
     type <- "sps"
@@ -39,7 +53,11 @@ parse_setup <- function(setup_file) {
     type <- "sas"
   }
 
-  codebook  <- parse_codebook(setup_file, type = type)
+  lines     <- read_setup_lines(setup_file)
+  codebook  <- codebook_from_lines(lines, type = type)
+  # Line numbers in codebook are this much less than in the setup file
+  line_offset <- length(lines) - length(codebook)
+  check_setup_file(codebook, setup_file, type)
   variables <- parse_column_names(codebook, type = type)
 
   # Column positions: SPSS "DATA LIST" section (up to "VARIABLE LABELS") or
@@ -86,6 +104,10 @@ parse_setup <- function(setup_file) {
   }
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
+  if (nrow(setup) == 0) {
+    abort("no_positions", "No column positions were found in '",
+          basename(setup_file), "'. ", positions_needed(type))
+  }
   rownames(setup) <- 1:nrow(setup)
 
   # Missing values and value labels both need the column list
@@ -118,6 +140,45 @@ parse_setup <- function(setup_file) {
 
   return(setup)
 
+}
+
+# Stops with a clear error for setup files this package can't read: ones
+# for delimited (not fixed-width) data and ones with no column positions,
+# such as files that only have value labels.
+check_setup_file <- function(codebook, setup_file, type) {
+  file_name <- basename(setup_file)
+  if (type == "sps" && any(grepl2("/\\s*ARRANGEMENT\\s*=\\s*DELIMITED", codebook))) {
+    abort("delimited", "'", file_name, "' is for a delimited data file ",
+          "(GET DATA /ARRANGEMENT = DELIMITED), not a fixed-width one. ",
+          "asciiSetupReader only reads fixed-width files; read the data ",
+          "with a function for delimited files, such as read.delim() or ",
+          "readr::read_tsv(), instead.")
+  }
+  if (type == "sps") {
+    has_positions <- any(grepl2("DATA LIST|/VARIABLES =$", codebook))
+    has_labels    <- any(grepl2("^(ADD )?VALUE LABELS\\b", codebook))
+  } else {
+    has_positions <- any(grepl2("^INPUT$", codebook))
+    has_labels    <- any(grepl2("^PROC FORMAT\\b|^VALUE\\s", codebook))
+  }
+  if (!has_positions && has_labels) {
+    abort("no_positions", "'", file_name, "' has value labels but no ",
+          "column positions. ", positions_needed(type), " It looks like a ",
+          "file of formats (value labels) that goes with a separate setup ",
+          "file; use that setup file instead.")
+  }
+  if (!has_positions) {
+    abort("no_positions", "No column positions were found in '",
+          file_name, "'. ", positions_needed(type))
+  }
+}
+
+positions_needed <- function(type) {
+  if (type == "sps") {
+    "SPSS setup files need a DATA LIST section giving each column's position."
+  } else {
+    "SAS setup files need an INPUT section, on its own line, giving each column's position."
+  }
 }
 
 # A line in the column-position section that starts with a number continues
@@ -295,9 +356,23 @@ make_thru_missing_rows <- function(missing) {
 # Reads the setup file as trimmed lines. For SPSS files, anything before
 # DATA LIST is dropped.
 parse_codebook <- function(setup_file, type) {
-  codebook <- readr::read_lines(setup_file)
-  codebook <- stringr::str_trim(codebook)
+  codebook_from_lines(read_setup_lines(setup_file), type)
+}
 
+# Reads the setup file as trimmed lines. Files that aren't valid UTF-8
+# (often older files with accented letters) are read as Latin-1.
+read_setup_lines <- function(setup_file) {
+  lines <- readr::read_lines(setup_file)
+  if (!all(validUTF8(lines))) {
+    lines <- readr::read_lines(setup_file,
+                               locale = readr::locale(encoding = "latin1"))
+    inform("encoding", "'", basename(setup_file), "' isn't valid UTF-8 ",
+           "text, so it was read as Latin-1 (ISO-8859-1).")
+  }
+  stringr::str_trim(lines)
+}
+
+codebook_from_lines <- function(codebook, type) {
   if (type == "sps") {
     data_list <- grep2("^DATA LIST", codebook)
     if (length(data_list) > 0) {

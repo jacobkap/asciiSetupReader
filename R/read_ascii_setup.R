@@ -62,8 +62,8 @@ read_ascii_setup <- function(data,
             is.logical(use_value_labels), length(use_value_labels) == 1,
             is.logical(use_clean_names), length(use_clean_names) == 1)
 
-  # parse_setup() works out from the file name whether it's SPSS or SAS
-  setup <- parse_setup(setup_file)
+  # read_setup() works out from the file name whether it's SPSS or SAS
+  setup <- read_setup(setup_file)
   setup$setup <- selected_columns(select_columns, setup$setup)
 
   data <- read_data(data, setup)
