@@ -159,6 +159,11 @@ are now different (and correct).
   `97 THRU HI`, `LO THRU -1`, SAS `IF V1 >= 97 THEN V1 = .;`) no longer
   stops `read_ascii_setup()` with "'names' attribute [1] must be the same
   length as the vector [0]".
+* SAS column input (`INPUT V1 1-2 V2 $ 3-4 V3 5-8 .2;`) is read token by
+  token, as formatted input is, so a statement or comment after the `;` on
+  INPUT's line (`INPUT V1 1-2 V2 3-4; RUN;`), a `/* */` comment inside
+  INPUT and single-spaced columns (`SEX $ 8 INCOME 9-15`) no longer drop or
+  misplace columns.
 * Every missing value range is compared with the data as numbers, so values
   between whole numbers are in it too: 97.5 is missing for `97 THRU 99`.
   `parse_setup()$missing` still lists a range of whole numbers value by

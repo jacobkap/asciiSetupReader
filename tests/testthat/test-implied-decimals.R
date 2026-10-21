@@ -33,12 +33,11 @@ test_that("SPSS (d) and (F,d) specs are read, not GET DATA formats", {
   expect_equal(decimals_of("V9 12 (1)"), c(V9 = 1L))
 })
 
-test_that("parse_decimals() reads SAS .d informats", {
-  expect_equal(parse_decimals(c("V13 31-31   V14 32-35 .3   V15 36-40"), "sas"),
-               c(V14 = 3L))
-  expect_equal(parse_decimals("V1 1-2 .1  V2 $ 3-4  V3 5-8 .2", "sas"),
-               c(V1 = 1L, V3 = 2L))
-  expect_length(parse_decimals("V1 1-2   V2 $ 3-8", "sas"), 0)
+test_that("SAS column input's .d decimals are read", {
+  decimals_of <- function(...) attr(formatted_input(c("INPUT", ...)), "decimals")
+  expect_equal(decimals_of("V13 31-31   V14 32-35 .3   V15 36-40"), c(V14 = 3L))
+  expect_equal(decimals_of("V1 1-2 .1  V2 $ 3-4  V3 5-8 .2"), c(V1 = 1L, V3 = 2L))
+  expect_length(decimals_of("V1 1-2   V2 $ 3-8"), 0)
 })
 
 test_that("parse_setup() gives each column's decimal places", {

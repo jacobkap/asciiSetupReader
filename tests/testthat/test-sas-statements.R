@@ -135,3 +135,37 @@ test_that("statements and comment state are found across lines", {
   expect_equal(sas_comment_state(c("x", "/* a", "b */", "y", "'/*'", "z")),
                c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE))
 })
+
+# Found by the 3.0.0 challenge review: SAS column input is read token by
+# token, as formatted input is
+
+positions_of <- function(input) {
+  setup <- temp_file(c("DATA x;", "INFILE 'x';", input, "RUN;"), ".sas")
+  s <- parse_setup(setup)$setup
+  stats::setNames(paste0(s$begin, "-", s$end), s$column_number)
+}
+
+test_that("a statement or comment after INPUT's ; on its line isn't read as columns", {
+  expect_equal(positions_of("INPUT V1 1-2 V2 3-4; RUN;"), c(V1 = "1-2", V2 = "3-4"))
+  expect_equal(positions_of("INPUT ID 1-3 AGE 4-5; LABEL AGE = 'Age 2';"),
+               c(ID = "1-3", AGE = "4-5"))
+  expect_equal(positions_of("INPUT V1 1-2 V2 3-4 V3 5-6; * read 3 vars;"),
+               c(V1 = "1-2", V2 = "3-4", V3 = "5-6"))
+})
+
+test_that("a comment inside INPUT isn't a column", {
+  expect_equal(positions_of(c("INPUT", "  V1 1-2", "  /* the next 2 columns are 10 years old */",
+                              "  V2 3-4", "  /* spread",
+                              "     over lines 5 */", "  V3 5-6", ";")),
+               c(V1 = "1-2", V2 = "3-4", V3 = "5-6"))
+})
+
+test_that("single-spaced column input is read", {
+  # 2.6.0 read SEX at 9-15 and dropped INCOME
+  expect_equal(positions_of("INPUT ID 1-7 SEX $ 8 INCOME 9-15;"),
+               c(ID = "1-7", SEX = "8-8", INCOME = "9-15"))
+  expect_equal(positions_of("INPUT A1_1 1 A1_2 2 A1_3 3;"),
+               c(A1_1 = "1-1", A1_2 = "2-2", A1_3 = "3-3"))
+  expect_equal(positions_of(c("INPUT", "V1 1-2 V2 3-4; LENGTH V3 8;")),
+               c(V1 = "1-2", V2 = "3-4"))
+})
