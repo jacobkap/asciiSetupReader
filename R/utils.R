@@ -64,16 +64,10 @@ get_column_spaces <- function(setup, variables, codebook) {
                       setup$column_number[setup$begin > setup$end])))
   }
 
-  # SAS files: the FORMAT section links each column to the format (f_name)
+  # SAS files: the FORMAT statement links each column to the format (f_name)
   # whose VALUE statement holds its value labels.
-  format_section <- grep2("^FORMAT$|SAS FORMAT STATEMENT|\\/\\* format$", codebook)
-  if (length(format_section) > 0) {
-    format <- codebook[format_section[1]:length(codebook)]
-    format <- gsub("^FORMAT ", "", format, ignore.case = TRUE)
-    format <- unlist(strsplit(format, "\\."))
-    format <- stringr::str_trim(format)
-    format <- data.frame(column_name = gsub(" .*", "", format),
-                         f_name      = gsub(".* ", "", format))
+  format <- sas_formats(codebook, setup$column_number)
+  if (!is.null(format)) {
     setup <- merge(setup, format, by.x = "column_number",
                    by.y = "column_name", all.x = TRUE)
   }
@@ -83,6 +77,75 @@ get_column_spaces <- function(setup, variables, codebook) {
   return(setup)
 }
 
+
+# SAS FORMAT statements ("FORMAT V1 V2 YNF. V3-V5 AGEF. V6 8.2;") and
+# ATTRIB ... FORMAT= link columns to formats. Each format applies to every
+# column named since the last format; "V3-V5" is V3, V4 and V5 and "V3--V5"
+# every column from V3 to V5 in file order. Returns a data.frame of
+# column_name and f_name (the format's name without its width), or NULL.
+sas_formats <- function(codebook, columns) {
+  text <- gsub("/\\*|\\*/", " ", codebook)
+  starts <- grep("^\\s*(FORMAT|ATTRIB)\\b", text, ignore.case = TRUE)
+  if (length(starts) == 0) return(NULL)
+  semicolons <- grep(";", text)
+  rows <- list()
+  for (s in starts) {
+    e <- c(semicolons[semicolons >= s], length(text))[1]
+    statement <- paste(text[s:e], collapse = " ")
+    statement <- sub(";.*$", "", statement)
+    attrib <- grepl("^\\s*ATTRIB\\b", statement, ignore.case = TRUE)
+    statement <- sub("^\\s*(FORMAT|ATTRIB)\\b", "", statement, ignore.case = TRUE)
+    if (attrib) {
+      # ATTRIB V1 LABEL = '...' FORMAT = V1F. V2 ...
+      statement <- gsub("'[^']*'|\"[^\"]*\"", " ", statement)
+      statement <- gsub("\\b(LABEL|LENGTH|INFORMAT)\\s*=\\s*\\S+", " ", statement,
+                        ignore.case = TRUE)
+      statement <- gsub("\\bFORMAT\\s*=\\s*", " ", statement, ignore.case = TRUE)
+    }
+    tokens <- strsplit(trimws(statement), "\\s+")[[1]]
+    pending <- character(0)
+    for (token in tokens) {
+      if (grepl("^\\$?([[:alpha:]_][[:alnum:]_]*?)?[0-9]*\\.[0-9]*$", token)) {
+        # A format: its name (if any) without the width and "."
+        f_name <- sub("[0-9]*\\.[0-9]*$", "", token)
+        if (length(pending) > 0 && nzchar(sub("^\\$", "", f_name))) {
+          rows[[length(rows) + 1]] <- data.frame(column_name = pending, f_name = f_name)
+        }
+        pending <- character(0)
+      } else {
+        pending <- c(pending, sas_variable_list(token, columns))
+      }
+    }
+  }
+  if (length(rows) == 0) return(NULL)
+  format <- do.call(rbind, rows)
+  format$column_name <- match_case(format$column_name, columns)
+  # A column given a format twice keeps the last, as in SAS
+  format <- format[!duplicated(format$column_name, fromLast = TRUE), ]
+  format <- format[format$column_name %in% columns, ]
+  if (nrow(format) == 0) NULL else format
+}
+
+# The columns a SAS variable list token means: "V3-V5" is V3, V4 and V5,
+# "V3--V5" every column from V3 to V5 in file order, anything else itself.
+sas_variable_list <- function(token, columns) {
+  positional <- regmatches(token, regexec(
+    "^([[:alpha:]_][[:alnum:]_]*)--([[:alpha:]_][[:alnum:]_]*)$", token))[[1]]
+  if (length(positional) == 3) {
+    from <- match(tolower(positional[2]), tolower(columns))
+    to   <- match(tolower(positional[3]), tolower(columns))
+    if (!is.na(from) && !is.na(to) && to >= from) return(columns[from:to])
+  }
+  numbered <- regmatches(token, regexec(
+    "^([[:alpha:]_]+)([0-9]+)-([[:alpha:]_]+)?([0-9]+)$", token))[[1]]
+  if (length(numbered) == 5 &&
+      (numbered[4] == "" || toupper(numbered[4]) == toupper(numbered[2]))) {
+    from <- as.numeric(numbered[3])
+    to   <- as.numeric(numbered[5])
+    if (to >= from && to - from < 10000) return(paste0(numbered[2], seq(from, to)))
+  }
+  token
+}
 
 # Keeps the rows of column_spaces for the requested columns, given as row
 # numbers, column_number names (V1, V2) or column_name labels.

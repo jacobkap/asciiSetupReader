@@ -224,13 +224,30 @@ read_ascii_setup <- function(data,
            "and missing values, not other changes to the data): ",
            list_items(paste0("\"", recodes, "\""), max = 5), ".")
   }
+  ranges <- setup$label_ranges
+  ranges <- ranges[ranges$column %in% setup$setup$column_number, ]
+  if (use_value_labels && NROW(ranges) > 0) {
+    columns <- unique(ranges$column)
+    inform("label_ranges", "In '", file_name, "', ", length(columns),
+           ngettext(length(columns), " column has", " columns have"),
+           " value labels for ranges of values, which weren't applied so ",
+           "the values are kept (a range such as 1 - 97 = \"Actual hours\" ",
+           "describes the numbers in it): ",
+           list_items(paste0(final_name(ranges$column), " ", ranges$code, " = \"",
+                             ranges$label, "\"")), ".")
+  }
   replaced <- intersect(setup$replaced_labels, setup$setup$column_number)
   if (use_value_labels && length(replaced) > 0) {
+    if (identical(setup$type, "sas")) {
+      where <- "a format defined in more than one VALUE statement, with "
+      rule  <- "different labels; as in SAS, only the last definition is used: "
+    } else {
+      where <- "value labels in more than one VALUE LABELS command, with "
+      rule  <- "different labels; as in SPSS, only the last command's labels are used: "
+    }
     inform("replaced_labels", "In '", file_name, "', ", length(replaced),
-           ngettext(length(replaced), " column has", " columns have"),
-           " value labels in more than one VALUE LABELS command, with ",
-           "different labels; as in SPSS, only the last command's labels ",
-           "are used: ", list_items(final_name(replaced)),
+           ngettext(length(replaced), " column has", " columns have"), " ",
+           where, rule, list_items(final_name(replaced)),
            ". parse_setup()$value_labels shows the labels used.")
   }
   return(data)

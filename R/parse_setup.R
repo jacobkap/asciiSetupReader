@@ -52,6 +52,8 @@ parse_setup <- function(setup_file) {
 #     sections that are commented out
 #   replaced_labels: SPSS variables whose value labels in an earlier VALUE
 #     LABELS command were replaced by different ones in a later command
+#   label_ranges: SAS value ranges and OTHER (column, code, label), which
+#     aren't applied
 #   skipped_missing: SAS IF statements about missing values that couldn't
 #     be read
 #   recodes: statements that change values rather than mark them missing
@@ -189,23 +191,26 @@ read_setup <- function(setup_file) {
 
   if (type == "sps") {
     value_labels <- parse_value_labels_sps(codebook, setup)
-  } else if (any(grepl2("^value labels$|SAS FORMAT STATEMENT|^format$|\\/\\* format$",
-                        codebook))) {
+  } else if (!is.null(setup$f_name)) {
     value_labels <- parse_value_labels_sas(codebook, setup)
   } else {
     value_labels <- NULL
   }
   replaced_labels <- attr(value_labels, "replaced")
   attr(value_labels, "replaced") <- NULL
+  label_ranges <- attr(value_labels, "ranges")
+  attr(value_labels, "ranges") <- NULL
   setup <- list(setup           = setup,
                 value_labels    = value_labels,
                 missing         = missing,
                 renamed         = renamed,
                 commented_lines = if (any(missing$commented)) commented_lines,
                 replaced_labels = replaced_labels,
+                label_ranges    = label_ranges,
                 skipped_missing = skipped_missing,
                 recodes         = recodes,
                 text_columns    = match_case(text_columns, setup$column_number),
+                type            = type,
                 skip            = lines_to_skip(codebook, type))
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",

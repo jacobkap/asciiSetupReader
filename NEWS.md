@@ -114,10 +114,16 @@ are now different (and correct).
   given by format only (`ID (F3) NAME (A5)`) or SAS variable lists in
   parentheses. These used to fail with "invalid 'row.names' length" or
   "argument of length 0", or read the wrong columns.
+* SAS FORMAT statements are read as whole statements: one format for a list
+  of columns (`FORMAT V1 V2 YNF.;`), numbered and positional lists
+  (`V1-V5`, `V1--V5`), formats without value labels (`8.2`, `DATE9.`) and
+  `ATTRIB ... FORMAT=`. Format names match in any case, and a format defined
+  twice uses the later definition, as in SAS.
+* SAS code lists (`VALUE F 1, 2, 3 = 'Low';`) give each code the label.
+  Value ranges (`1 - 97 = 'Actual hours'`) and `OTHER` aren't applied, so
+  the real numbers are kept; a message lists them.
 * Known limits, for a later version: tightly spaced DATA LIST layouts
-  (`AA 1-4(A) BB 5-8(A)`), SAS FORMAT statements that give one format to a
-  list of columns, and SAS value ranges and `OTHER` in PROC FORMAT (which
-  aren't applied).
+  (`AA 1-4(A) BB 5-8(A)`).
 
 ## Package
 

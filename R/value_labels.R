@@ -301,25 +301,28 @@ drop_comment_commands <- function(lines) {
 
 # Returns the value labels of a SAS setup file (see
 # pairs_to_value_labels()), or NULL if it has none. Each format's labels go
-# to every column the FORMAT section gives that format.
+# to every column the FORMAT statement gives that format (format names in
+# any case). A code list ("1, 2, 3 = 'x'") gives each code the label. Ranges
+# ("1 - 97", "LOW - 0", "OTHER") are kept as written, so they never match a
+# value: they describe what a span of real numbers means (e.g. PSID's
+# "1 - 97 = 'Actual hours'"), and replacing the numbers would lose them.
+# The "ranges" attribute lists them by column (see read_ascii_setup()).
 parse_value_labels_sas <- function(codebook, setup) {
-  f_names <- unique(as.character(setup$f_name[!is.na(setup$f_name)]))
+  f_names <- unique(toupper(as.character(setup$f_name[!is.na(setup$f_name)])))
   if (length(f_names) == 0) {
     return(NULL)
   }
   # The VALUE statements start at the first one for a format that is used
   # and run to the first blank (or ".", ";", "*/") line after the last one
-  starts <- unlist(lapply(f_names, function(f_name) {
-    found <- grep(paste("VALUE", f_name), codebook, fixed = TRUE)
-    if (length(found) == 0) {
-      found <- grep(paste("value", f_name), codebook, fixed = TRUE)
-    }
-    found
-  }))
+  named <- regmatches(toupper(codebook),
+                      regexec("(?:^|[[:space:];*/])VALUE\\s+(\\$?[[:alpha:]_][[:alnum:]_]*)",
+                              toupper(codebook), perl = TRUE))
+  named <- vapply(named, function(m) if (length(m)) m[2] else NA_character_, "")
+  starts <- which(named %in% f_names)
   if (length(starts) == 0) {
     return(NULL)
   }
-  value_position <- grep2("^VALUE ", codebook)
+  value_position <- which(!is.na(named))
   value_position <- value_position[value_position >= min(starts)]
   end <- grep2("^$|^\\.$|^\\*/$|^;$|^; ?\\*/$", codebook)
   end <- end[end >= max(value_position)][1] - 1
@@ -338,13 +341,15 @@ parse_value_labels_sas <- function(codebook, setup) {
   f_name <- NA_character_
   block  <- 0
   code   <- character()
+  code_quoted <- logical()
   i <- 1
   while (i <= length(tokens)) {
     if (!quoted[i] && toupper(tokens[i]) == "VALUE" && i < length(tokens)) {
       # VALUE name, then any options in parentheses, e.g. (default=30)
-      f_name <- tokens[i + 1]
+      f_name <- toupper(tokens[i + 1])
       block  <- block + 1
       code   <- character()
+      code_quoted <- logical()
       i <- i + 1
       if (i < length(tokens) && startsWith(tokens[i + 1], "(")) {
         while (i < length(tokens) && !endsWith(tokens[i], ")")) i <- i + 1
@@ -352,6 +357,7 @@ parse_value_labels_sas <- function(codebook, setup) {
     } else if (!quoted[i] && tokens[i] == ";") {
       f_name <- NA_character_
       code   <- character()
+      code_quoted <- logical()
     } else if (is.na(f_name)) {
       # Anything between statements (comments, PROC FORMAT, ...)
     } else if (!quoted[i] && tokens[i] == "=") {
@@ -366,10 +372,14 @@ parse_value_labels_sas <- function(codebook, setup) {
         i <- i + 1
       }
       # (The format's name goes in the "column" field for now)
-      found$add(f_name, block, paste(code, collapse = " "), label)
+      for (one_code in sas_code_list(code, code_quoted)) {
+        found$add(f_name, block, one_code, label)
+      }
       code <- character()
+      code_quoted <- logical()
     } else {
       code <- c(code, text[i])
+      code_quoted <- c(code_quoted, quoted[i])
     }
     i <- i + 1
   }
@@ -378,8 +388,9 @@ parse_value_labels_sas <- function(codebook, setup) {
     return(pairs_to_value_labels(NULL))
   }
   names(pairs)[names(pairs) == "column"] <- "f_name"
-  # SPSS's rules for repeated commands (spss_label_commands()) don't apply
-  pairs$command <- NULL
+  # As in SAS, a format defined again replaces the earlier definition: each
+  # VALUE statement is a "command" for spss_label_commands()
+  pairs$command <- pairs$block
 
   # Copy each format's pairs to the columns that use it, formats in the
   # order they're defined and columns in file order
@@ -387,11 +398,45 @@ parse_value_labels_sas <- function(codebook, setup) {
   rows_by_format <- split(seq_len(nrow(pairs)),
                           factor(pairs$f_name, levels = formats))
   uses <- data.frame(column = setup$column_number,
-                     f_name = as.character(setup$f_name))
+                     f_name = toupper(as.character(setup$f_name)))
   uses <- uses[uses$f_name %in% formats & !duplicated(uses), ]
   uses <- uses[order(match(uses$f_name, formats)), ]
   rows <- rows_by_format[uses$f_name]
   by_column <- pairs[unlist(rows), ]
   by_column$column <- rep(uses$column, lengths(rows))
-  pairs_to_value_labels(by_column)
+  value_labels <- pairs_to_value_labels(by_column)
+  ranges <- by_column[is_sas_range(by_column$code), c("column", "code", "label")]
+  if (nrow(ranges) > 0) attr(value_labels, "ranges") <- ranges
+  value_labels
+}
+
+# The codes in a SAS VALUE statement before "=": several codes separated by
+# commas ("1, 2, 3" or "'A', 'B'") are a list; anything else is one code
+# (e.g. "1 - 5", kept as written).
+sas_code_list <- function(code, quoted) {
+  groups <- list(character())
+  for (k in seq_along(code)) {
+    if (!quoted[k] && grepl(",", code[k], fixed = TRUE)) {
+      parts <- strsplit(paste0(code[k], " "), ",", fixed = TRUE)[[1]]
+      for (p in seq_along(parts)) {
+        if (p > 1) groups[[length(groups) + 1]] <- character()
+        if (nzchar(trimws(parts[p]))) {
+          groups[[length(groups)]] <- c(groups[[length(groups)]], trimws(parts[p]))
+        }
+      }
+    } else {
+      groups[[length(groups)]] <- c(groups[[length(groups)]], code[k])
+    }
+  }
+  codes <- vapply(groups, paste, character(1), collapse = " ")
+  if (length(codes) > 1) codes <- codes[nzchar(trimws(codes))]
+  codes
+}
+
+# TRUE for a SAS value range or OTHER ("1 - 97", "LOW - 0", "5 <- HIGH",
+# "OTHER"), which this package doesn't apply.
+is_sas_range <- function(code) {
+  number <- "(?:LOW|LO|HIGH|HI|-?[0-9]*\\.?[0-9]+)"
+  grepl(paste0("^\\s*", number, "\\s*<?-<?\\s*", number, "\\s*$|^\\s*OTHER\\s*$"),
+        code, ignore.case = TRUE, perl = TRUE)
 }
