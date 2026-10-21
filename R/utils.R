@@ -128,12 +128,64 @@ fill_section <- function(x, new_section) {
 
 # Replaces values of x found in labels with the names of labels (what
 # haven::as_factor() does for a labelled vector) and returns character.
-# Values with no label are kept as they are.
-replace_values <- function(x, labels) {
+# Values with no label are kept as they are. If by_number, values that
+# don't match a label's code as text are also matched as numbers, so
+# "000078.5" matches a code of "78.5".
+replace_values <- function(x, labels, by_number = FALSE) {
   x <- as.character(x)
   m <- match(x, labels, incomparables = NA)
+  if (by_number && anyNA(m)) {
+    as_number <- function(v) {
+      tryCatch(suppressWarnings(as.numeric(v)), error = function(e) {
+        rep(NA_real_, length(v))
+      })
+    }
+    unmatched <- is.na(m)
+    m[unmatched] <- match(as_number(x[unmatched]), as_number(labels),
+                          incomparables = NA)
+  }
   x[!is.na(m)] <- names(labels)[m[!is.na(m)]]
   x
+}
+
+# Implied decimal places ------------------------------------------------------
+
+# Adds the decimal point to the values of columns with implied decimal
+# places (setup$setup$decimals), e.g. "0000785" with 1 place becomes
+# "000078.5" and "5" with 2 places "0.05". Only whole numbers are changed:
+# a value that already has a decimal point keeps it, as in SPSS and SAS.
+# Returns a list of the data and `changed`, a data.frame of the columns
+# changed (column_number, decimals, and an example value before and
+# after), or NULL.
+fix_implied_decimals <- function(data, setup) {
+  columns <- setup$setup[setup$setup$decimals > 0 &
+                           setup$setup$column_number %in% names(data), ]
+  changed <- list()
+  for (i in seq_len(nrow(columns))) {
+    column <- columns$column_number[i]
+    places <- columns$decimals[i]
+    values <- data[[column]]
+    whole  <- !is.na(values) & grepl("^[+-]?[0-9]+$", values)
+    if (!any(whole)) next
+    new_values <- add_decimal_point(values[whole], places)
+    changed[[length(changed) + 1]] <- data.frame(
+      column_number = column, decimals = places,
+      example = values[whole][1], example_new = new_values[1])
+    values[whole] <- new_values
+    data.table::set(data, j = column, value = values)
+  }
+  list(data = data, changed = do.call(rbind, changed))
+}
+
+add_decimal_point <- function(values, places) {
+  sign   <- sub("^([+-]?).*$", "\\1", values)
+  digits <- sub("^[+-]", "", values)
+  short  <- nchar(digits) <= places
+  digits[short] <- paste0(strrep("0", places + 1 - nchar(digits[short])),
+                          digits[short])
+  n <- nchar(digits)
+  paste0(sign, substr(digits, 1, n - places), ".",
+         substr(digits, n - places + 1, n))
 }
 
 # Reading data --------------------------------------------------------------
@@ -142,8 +194,11 @@ replace_values <- function(x, labels) {
 # fix_names_missing_numeric() (missing values, names, numeric columns).
 
 # Sets the setup file's missing values to NA. `missing` is the data.frame
-# from parse_setup(): one row per column (variable) and missing value.
-fix_missing <- function(data, missing) {
+# from parse_setup(): one row per column (variable) and missing value. As
+# with value labels, one- and two-digit codes match however the data pad
+# them ("0" matches "00" and "08" matches "8"). Columns named in by_number
+# (those with implied decimal places) are also matched as numbers.
+fix_missing <- function(data, missing, by_number = character(0)) {
   missing <- missing[missing$variable %in% names(data), ]
 
   for (column in unique(missing$variable)) {
@@ -181,7 +236,8 @@ fix_missing <- function(data, missing) {
     names(missing_values) <- NA
 
     data.table::set(data, j = column,
-                    value = replace_values(data[[column]], missing_values))
+                    value = replace_values(data[[column]], missing_values,
+                                           by_number = column %in% by_number))
   }
   return(data)
 }
@@ -211,7 +267,8 @@ fix_names_missing_numeric <- function(data,
                                       real_names,
                                       coerce_numeric) {
   if (!is.null(setup$missing)) {
-    data <- fix_missing(data, setup$missing)
+    by_number <- setup$setup$column_number[setup$setup$decimals > 0]
+    data <- fix_missing(data, setup$missing, by_number)
   }
   if (real_names) {
     variables <- setup$setup[setup$setup$column_number
@@ -240,10 +297,14 @@ fix_value_labels <- function(data, setup, value_label_fix) {
   }
 
   if (value_label_fix && length(value_labels) > 0) {
+    # Codes of columns with implied decimal places are written as numbers
+    # (e.g. "1.0" for data of "0000010"), so they're also matched as numbers
+    by_number <- setup$setup$column_number[setup$setup$decimals > 0]
     for (i in seq_along(value_labels)) {
       data <- fix_variable_values(data,
                                   value_labels[[i]],
-                                  names(value_labels)[i])
+                                  names(value_labels)[i],
+                                  by_number = names(value_labels)[i] %in% by_number)
     }
   }
   return(data)

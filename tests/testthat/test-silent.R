@@ -122,8 +122,12 @@ test_that("parse_setup is silent", {
 test_that("No messages or warnings or errors for file loads - SPSS", {
   skip_on_cran()
 
-  expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
-                                 setup_file = jail_1987_sps_name))
+  # This file has implied decimal places, which read_ascii_setup() reports
+  # with a message (tested in test-messages.R); anything else is noise
+  expect_silent(allow_messages(
+    read_ascii_setup(data = jail_1987_dataset_name,
+                     setup_file = jail_1987_sps_name),
+    classes = "asciiSetupReader_implied_decimals"))
   expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
                                  setup_file = jail_1987_sps_name,
                                  select_columns = 1:5))

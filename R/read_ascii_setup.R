@@ -67,10 +67,27 @@ read_ascii_setup <- function(data,
   setup$setup <- selected_columns(select_columns, setup$setup)
 
   data <- read_data(data, setup)
-  data <- fix_value_labels(data, setup, use_value_labels)
+  decimals <- fix_implied_decimals(data, setup)
+  data <- fix_value_labels(decimals$data, setup, use_value_labels)
   data <- fix_names_missing_numeric(data,
                                     setup,
                                     use_clean_names,
                                     coerce_numeric)
+  file_name <- basename(setup_file)
+  final_name <- function(column_number) {
+    if (!use_clean_names) return(column_number)
+    setup$setup$column_name[match(column_number, setup$setup$column_number)]
+  }
+  if (!is.null(decimals$changed)) {
+    changed <- decimals$changed
+    inform("implied_decimals", "In '", file_name, "', ", nrow(changed),
+           ngettext(nrow(changed), " column has", " columns have"),
+           " implied decimal places, so a decimal point was added to ",
+           "values without one (e.g. ", final_name(changed$column_number[1]),
+           ": \"", changed$example[1], "\" became \"",
+           changed$example_new[1], "\"). Columns (decimal places): ",
+           paste0(final_name(changed$column_number), " (",
+                  changed$decimals, ")", collapse = ", "), ".")
+  }
   return(data)
 }

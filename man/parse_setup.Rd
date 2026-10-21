@@ -17,10 +17,13 @@ parse_setup(setup_file)
 }
 \value{
 A list of length 3. The first object ("setup") is a data frame
-with 4 columns: column_number, the non-descriptive name of each column
-(e.g. V1); column_name, its descriptive name; and begin and end, the
-first and last character position of the column in the fixed-width data
-file.
+with 5 columns: column_number, the non-descriptive name of each column
+(e.g. V1); column_name, its descriptive name; begin and end, the first
+and last character position of the column in the fixed-width data file;
+and decimals, the number of implied decimal places the setup file gives
+the column (0 if none; see \code{\link{read_ascii_setup}}). Descriptive
+names are made unique by adding "_2", "_3", ... to names already used by
+an earlier column.
 
 The second object ("value_labels") is a list of named vectors for the
 value labels, one per column with value labels. The vector's values are

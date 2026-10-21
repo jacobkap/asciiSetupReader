@@ -9,10 +9,13 @@
 #'   message.
 #'
 #' @return A list of length 3. The first object ("setup") is a data frame
-#' with 4 columns: column_number, the non-descriptive name of each column
-#' (e.g. V1); column_name, its descriptive name; and begin and end, the
-#' first and last character position of the column in the fixed-width data
-#' file.
+#' with 5 columns: column_number, the non-descriptive name of each column
+#' (e.g. V1); column_name, its descriptive name; begin and end, the first
+#' and last character position of the column in the fixed-width data file;
+#' and decimals, the number of implied decimal places the setup file gives
+#' the column (0 if none; see \code{\link{read_ascii_setup}}). Descriptive
+#' names are made unique by adding "_2", "_3", ... to names already used by
+#' an earlier column.
 #'
 #' The second object ("value_labels") is a list of named vectors for the
 #' value labels, one per column with value labels. The vector's values are
@@ -70,7 +73,8 @@ read_setup <- function(setup_file) {
     if (is.na(second_grep_value)) {
       second_grep_value <- length(codebook)
     }
-    setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook):second_grep_value]
+    setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook)[1]:second_grep_value]
+    decimals <- parse_decimals(setup, type)
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
     setup <- join_number_lines(setup)
     setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
@@ -91,16 +95,29 @@ read_setup <- function(setup_file) {
     if (is.na(second_grep_value)) {
       second_grep_value <- length(codebook)
     }
-    setup <- codebook[grep2("^INPUT$", codebook):second_grep_value]
-    setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
-    setup <- join_number_lines(setup)
+    input_start <- grep2("^INPUT$", codebook)[1]
+    setup <- codebook[input_start:second_grep_value]
+    if (any(grepl("@\\s*[0-9]", setup))) {
+      # Formatted input: "@37 V7 7.1" (see formatted_input()). The INPUT
+      # statement runs to its ";", even past blank lines.
+      uncommented <- gsub("/\\*.*?\\*/", "", codebook, perl = TRUE)
+      input_end <- grep(";", uncommented)
+      input_end <- input_end[input_end > input_start][1]
+      if (is.na(input_end)) input_end <- length(codebook)
+      setup <- formatted_input(codebook[input_start:input_end])
+      decimals <- attr(setup, "decimals")
+    } else {
+      decimals <- parse_decimals(setup, type)
+      setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
+      setup <- join_number_lines(setup)
 
-    setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
-                  setup)
-    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+) ", "\\1 \\2 ", setup)
-    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+)$", "\\1 \\2", setup)
-    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+) ", "\\1 \\2 ", setup)
-    setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+)$", "\\1 \\2", setup)
+      setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
+                    setup)
+      setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+) ", "\\1 \\2 ", setup)
+      setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+)$", "\\1 \\2", setup)
+      setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+) ", "\\1 \\2 ", setup)
+      setup <- gsub("([[:alnum:]])\\s{2,}([0-9]+-[0-9]+)$", "\\1 \\2", setup)
+    }
   }
   setup <- get_column_spaces(setup, variables, codebook)
   setup <- setup[setup$column_number != "*", ]
@@ -109,6 +126,16 @@ read_setup <- function(setup_file) {
           basename(setup_file), "'. ", positions_needed(type))
   }
   rownames(setup) <- 1:nrow(setup)
+
+  # SPSS GET DATA files count columns from 0 rather than 1
+  if (type == "sps" && !any(grepl2("^DATA LIST", codebook))) {
+    setup$begin <- setup$begin + 1
+    setup$end   <- setup$end + 1
+  }
+
+  setup$decimals <- unname(decimals[match(tolower(setup$column_number),
+                                          tolower(names(decimals)))])
+  setup$decimals[is.na(setup$decimals)] <- 0
 
   # Missing values and value labels both need the column list
   if (any(grepl2("MISSING VALUE", codebook))) {
@@ -136,7 +163,8 @@ read_setup <- function(setup_file) {
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
-                                 "end")]
+                                 "end",
+                                 "decimals")]
 
   return(setup)
 
@@ -179,6 +207,78 @@ positions_needed <- function(type) {
   } else {
     "SAS setup files need an INPUT section, on its own line, giving each column's position."
   }
+}
+
+# Implied decimal places, as a vector of the number of places named by
+# column. SPSS writes them in parentheses after the position,
+# "V7 37-43 (1)" (or "(F,1)"), or as a format, "V7 36-42 F7.1" (GET DATA
+# files); SAS writes them as an informat after the position, "V7 37-43 .1".
+# A value with 1 implied decimal place written "0000785" is 78.5.
+parse_decimals <- function(lines, type) {
+  text <- paste(lines, collapse = " ")
+  if (type == "sps") {
+    pattern <- paste0("([[:alpha:]@#$][[:alnum:]@#$_.]*)\\s+[0-9]+(?:\\s*-\\s*[0-9]+)?",
+                      "\\s*(?:\\((?:[[:alpha:]]+\\s*,\\s*)?([0-9]+)\\)|F[0-9]+\\.([0-9]+))")
+  } else {
+    pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s+\\$?\\s*[0-9]+(?:\\s*-\\s*[0-9]+)?\\s+\\.([0-9]+)"
+  }
+  found <- regmatches(text, gregexpr(pattern, text, perl = TRUE))[[1]]
+  if (length(found) == 0) {
+    return(stats::setNames(integer(0), character(0)))
+  }
+  parts <- regmatches(found, regexec(pattern, found, perl = TRUE))
+  places <- vapply(parts, function(p) {
+    p <- p[-(1:2)]
+    as.integer(p[nzchar(p)][1])
+  }, integer(1))
+  names(places) <- vapply(parts, `[`, character(1), 2)
+  places[places > 0]
+}
+
+# SAS formatted input: "@1 V1 $2.  @3 V2 4.1  V3 2." means V1 starts at
+# column 1 and is 2 wide, V2 starts at 3 and is 4 wide with 1 implied
+# decimal place, and V3 follows straight after V2. "@n" moves to column n
+# and "+n" moves n columns on. Columns can also be given as "V4 10-12".
+# Returns "name begin-end" lines for get_column_spaces(), with the implied
+# decimal places as the "decimals" attribute.
+formatted_input <- function(lines) {
+  text <- paste(lines, collapse = " ")
+  text <- gsub("/\\*.*?\\*/", " ", text, perl = TRUE)
+  text <- gsub("^\\s*INPUT\\b|;", " ", text, ignore.case = TRUE)
+  text <- gsub("@\\s+", "@", text)
+  text <- gsub("\\$\\s+", "$", text)
+  tokens <- strsplit(trimws(text), "\\s+")[[1]]
+
+  informat <- "^\\$?[[:alpha:]]*([0-9]+)\\.([0-9]*)$"
+  pointer  <- 1
+  name     <- NA_character_
+  out      <- character(0)
+  decimals <- stats::setNames(integer(0), character(0))
+  for (token in tokens) {
+    if (grepl("^@[0-9]+$", token)) {
+      pointer <- as.numeric(substring(token, 2))
+    } else if (grepl("^\\+[0-9]+$", token)) {
+      pointer <- pointer + as.numeric(substring(token, 2))
+    } else if (!is.na(name) && grepl(informat, token)) {
+      width  <- as.numeric(sub(informat, "\\1", token))
+      places <- sub(informat, "\\2", token)
+      out <- c(out, paste0(name, " ", pointer, "-", pointer + width - 1))
+      if (nzchar(places) && as.integer(places) > 0) {
+        decimals[name] <- as.integer(places)
+      }
+      pointer <- pointer + width
+      name <- NA_character_
+    } else if (!is.na(name) && grepl("^\\$?[0-9]+(-[0-9]+)?$", token)) {
+      range <- as.numeric(strsplit(sub("^\\$", "", token), "-")[[1]])
+      out <- c(out, paste0(name, " ", range[1], "-", range[length(range)]))
+      pointer <- range[length(range)] + 1
+      name <- NA_character_
+    } else if (grepl("^[[:alpha:]_][[:alnum:]_]*$", token)) {
+      name <- token
+    }
+  }
+  attr(out, "decimals") <- decimals
+  out
 }
 
 # A line in the column-position section that starts with a number continues

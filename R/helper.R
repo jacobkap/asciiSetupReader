@@ -1,6 +1,7 @@
 # Replaces the codes in one column of .data with their value labels (from
 # parse_setup()$value_labels).
-fix_variable_values <- function(.data, value_label_section, column) {
+fix_variable_values <- function(.data, value_label_section, column,
+                                by_number = FALSE) {
   # Data are sometimes zero-padded differently from the setup file, so a
   # label for "1" also applies to "01" and vice versa
   value_label_section <- single_digit(value_label_section)
@@ -8,7 +9,8 @@ fix_variable_values <- function(.data, value_label_section, column) {
   value_label_section <- value_label_section[!duplicated(value_label_section)]
 
   data.table::set(.data, j = column,
-                  value = replace_values(.data[[column]], value_label_section))
+                  value = replace_values(.data[[column]], value_label_section,
+                                         by_number = by_number))
   return(.data)
 }
 

@@ -502,18 +502,20 @@ test_that("Column numbers are correct", {
                  1027, 1028, 1029))
 
 
+  # GET DATA files count columns from 0, so these are 1 more than the
+  # file's numbers ("MASCARA 0-7" is columns 1 to 8)
   expect_equal(head(escolar_parsed_sps$setup$begin),
-               c(0, 8, 13,
-                 25, 75, 77))
+               c(1, 9, 14,
+                 26, 76, 78))
   expect_equal(tail(escolar_parsed_sps$setup$begin),
-               c(8359, 8365, 8371,
-                 8377, 8383, 8389))
+               c(8360, 8366, 8372,
+                 8378, 8384, 8390))
   expect_equal(head(escolar_parsed_sps$setup$end),
-               c(7, 12, 24,
-                 74, 76, 126))
+               c(8, 13, 25,
+                 75, 77, 127))
   expect_equal(tail(escolar_parsed_sps$setup$end),
-               c(8364, 8370, 8376,
-                 8382, 8388, 8394))
+               c(8365, 8371, 8377,
+                 8383, 8389, 8395))
 
 
 
