@@ -27,11 +27,24 @@ are now different (and correct).
 * **`%` in a label becomes `_percent_`** in the name, as `<` already became
   `_under_` (e.g. "1919 RT % VOTES CAST" is `X1919_RT_percent_VOTES_CAST`,
   not `X1919_RT_VOTES_CAST`, which "1919 RT VOTES CAST" could also be).
-* **One- and two-digit missing values match however they're padded**, as
-  value labels already did: a missing value of `0` also makes `00` NA.
+* **Missing values are matched by value**, as SPSS and SAS do: a missing
+  value written `9`, `09` or `0000009` matches any of them in the data.
+  Before, they had to be written exactly as in the data, so
+  `IF V156=0000009 THEN V156=.;` never matched the `9`s in a 1-column field.
+  Columns the setup file says are text (SPSS `(A)`, SAS `$`) still need
+  exactly the same text.
+* **A later VALUE LABELS command replaces a column's earlier labels**, as
+  in SPSS (`ADD VALUE LABELS` adds to them instead). Before, the first set
+  was kept. A message lists the columns whose earlier, different labels were
+  replaced.
 * **SPSS GET DATA files are read at the right positions.** Their column
   positions count from 0, so every column used to be read one position too
-  early.
+  early. As in SPSS, GET DATA formats such as `F7.1` don't imply decimal
+  places.
+* Setup files that aren't valid UTF-8 are read as Windows-1252, so curly
+  quotes and dashes in labels are read correctly (see below).
+* asciiSetupReader now needs R 4.1.0 or later (its dependencies vroom,
+  readr and stringr already did).
 
 ## New features
 
@@ -45,20 +58,28 @@ are now different (and correct).
   they are and how many values they made NA. `parse_setup()$missing` has a
   new `commented` column.
 * Messages tell you about implied decimal places, commented-out missing
-  values, renamed columns and setup files read as Latin-1. They have the
-  class `"asciiSetupReader_message"` (and one for each kind), so they can
-  be silenced with `suppressMessages()`.
+  values, renamed columns, replaced value labels and setup files that aren't
+  UTF-8. They have the class `"asciiSetupReader_message"` (and one for each
+  kind), so they can be silenced with `suppressMessages()`. Missing values
+  that also have a value label keep the label (as before); the
+  documentation now says so.
 * More SPSS and SAS syntax is understood: VALUE LABELS and MISSING VALUES
   for lists of variables (`V1 V2 1 'Yes'`, `V1 TO V5 (9)`) and starting on
   the command's own line, `ADD VALUE LABELS`, several MISSING VALUES
-  sections in one file, and SAS formatted input (`@1 V1 $CHAR2. @3 V2 4.1`).
-* Setup files that aren't valid UTF-8 are read as Latin-1, with a message,
-  instead of failing with "input string 3 is invalid" (GitHub #5).
-* Setup files the package can't read now say why: a file for delimited data
+  sections in one file, commented-out VALUE LABELS between other sections,
+  variables named VALUE or LABELS, and SAS formatted input
+  (`@1 V1 $CHAR2. @3 V2 4.1`).
+* Setup files that aren't valid UTF-8 are read as Windows-1252 (Latin-1
+  plus curly quotes and dashes), with a message, instead of failing with
+  "input string 3 is invalid" (GitHub #5).
+* Setup files the package can't read now say why, with an error of class
+  `"asciiSetupReader_error"`: a file for delimited data
   (`GET DATA /ARRANGEMENT = DELIMITED`, GitHub #13), a file of value labels
-  without column positions (such as PSID's separate formats files), or a
-  file without a DATA LIST or INPUT section. These used to fail with
-  "invalid 'row.names' length" or "argument of length 0".
+  without column positions (such as PSID's separate formats files), a file
+  without a DATA LIST or INPUT section, or SAS INPUT the package can't read
+  (several records per case, variable lists in parentheses). These used to
+  fail with "invalid 'row.names' length" or "argument of length 0", or put
+  columns in the wrong place.
 
 ## Bug fixes
 
@@ -71,8 +92,9 @@ are now different (and correct).
   ways too: a double quote inside a single-quoted label (`'Wife/"Wife"'`) is
   kept, and so are `=` and `;`, which used to become a space or be dropped.
 * A variable whose value labels are written more than once in a setup file
-  no longer gets its name added to a label (e.g. "msa state police V9");
-  later copies only add codes that weren't already labelled.
+  no longer gets its name added to a label (e.g. "msa state police V9").
+  Within one VALUE LABELS command, later copies only add codes that weren't
+  already labelled; a later command replaces the labels (see above).
 * Fixed labels being assigned to the wrong codes in some setup files: a
   label of just 'Wife' (`2 'Wife' 3 'Common-law husband'` gave a code
   "2 Wife 3"), a code written `''''`, quoted words inside a label

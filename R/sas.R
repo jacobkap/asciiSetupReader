@@ -1,4 +1,4 @@
-#' Read fixed-width ASCII file using SAS Setup file.
+#' Read fixed-width ASCII file using SAS Setup file
 #'
 #' sas_ascii_reader() and spss_ascii_reader() are used when you need to
 #' read a fixed-width ASCII (text) file that comes with a setup file. These file

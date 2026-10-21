@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_ascii_setup.R
 \name{read_ascii_setup}
 \alias{read_ascii_setup}
-\title{Read fixed-width ASCII file using SPSS or SAS Setup file.}
+\title{Read fixed-width ASCII file using SPSS or SAS Setup file}
 \usage{
 read_ascii_setup(
   data,
@@ -58,7 +58,13 @@ the codes stay in the data unless the user chooses otherwise.
   \item{"active"}{Use only the missing values that aren't commented
     out, as SPSS and SAS would.}
   \item{"none"}{Don't use any missing values; every code is kept.}
-}}
+}
+Missing values are matched by value, as in SPSS and SAS, so a missing
+value written 9 also matches 09 or 0000009 in the data, except in
+columns the setup file says are text (SPSS "(A)", SAS "$"), where it
+must be the same text. Value labels are applied first, so a missing
+value that also has a value label (e.g. 9 = "Unknown") keeps its label
+rather than becoming NA unless \code{use_value_labels = FALSE}.}
 }
 \value{
 data.frame of the data from the ASCII file
@@ -70,6 +76,13 @@ The setup file provides instructions on how to create and name the columns,
 and fix the key-value pairs (sometimes called value labels). This is common
 in government data, particularly data produced before 2010.
 }
+\section{Value labels}{
+
+As in SPSS, a VALUE LABELS command replaces any labels an earlier VALUE
+LABELS command gave a column, and ADD VALUE LABELS adds to them (changing
+the label of a code that already has one).
+}
+
 \section{Messages}{
 
 read_ascii_setup() tells you with a message when it:
@@ -79,15 +92,28 @@ read_ascii_setup() tells you with a message when it:
   \item sets values to NA because of missing values that are commented
     out in the setup file (only when \code{missing_values = "all"}),
   \item makes column names unique because two columns would have had
-    the same name (only when \code{use_clean_names = TRUE}), or
-  \item reads a setup file that isn't valid UTF-8 as Latin-1.
+    the same name (only when \code{use_clean_names = TRUE}),
+  \item uses only the last of several different sets of value labels a
+    column has (only when \code{use_value_labels = TRUE}), or
+  \item reads a setup file that isn't valid UTF-8 as Windows-1252.
 }
 \code{suppressMessages(read_ascii_setup(...))} silences them. They have
 the class "asciiSetupReader_message", so on R 4.0 or later
 \code{suppressMessages(read_ascii_setup(...), classes = "asciiSetupReader_message")}
 silences only these messages. Each kind also has its own class:
 "asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
-"asciiSetupReader_unique_names" and "asciiSetupReader_encoding".
+"asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels" and
+"asciiSetupReader_encoding".
+}
+
+\section{Errors}{
+
+Setup files that can't be read stop with an error of class
+"asciiSetupReader_error" and a more specific class:
+"asciiSetupReader_delimited" (a file for delimited, not fixed-width,
+data), "asciiSetupReader_no_positions" (no column positions, e.g. a file
+of value labels only) or "asciiSetupReader_unsupported_input" (a SAS
+INPUT statement this package can't read).
 }
 
 \examples{

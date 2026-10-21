@@ -2,7 +2,7 @@
 % Please edit documentation in R/spss.R
 \name{spss_ascii_reader}
 \alias{spss_ascii_reader}
-\title{Read fixed-width ASCII file using SPSS Setup file.}
+\title{Read fixed-width ASCII file using SPSS Setup file}
 \usage{
 spss_ascii_reader(
   dataset_name,
@@ -51,7 +51,13 @@ the codes stay in the data unless the user chooses otherwise.
   \item{"active"}{Use only the missing values that aren't commented
     out, as SPSS and SAS would.}
   \item{"none"}{Don't use any missing values; every code is kept.}
-}}
+}
+Missing values are matched by value, as in SPSS and SAS, so a missing
+value written 9 also matches 09 or 0000009 in the data, except in
+columns the setup file says are text (SPSS "(A)", SAS "$"), where it
+must be the same text. Value labels are applied first, so a missing
+value that also has a value label (e.g. 9 = "Unknown") keeps its label
+rather than becoming NA unless \code{use_value_labels = FALSE}.}
 }
 \value{
 Data.frame of the data from the ASCII file

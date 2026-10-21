@@ -1,4 +1,4 @@
-#' Parse the setup file (.sps or .sas).
+#' Parse the setup file (.sps or .sas)
 #'
 #' @param setup_file Name of the SPSS or SAS setup file - should be a .sps or
 #'   .sas (.txt also accepted as are these files in zipped format). Whether it
@@ -14,8 +14,9 @@
 #' and last character position of the column in the fixed-width data file;
 #' and decimals, the number of implied decimal places the setup file gives
 #' the column (0 if none; see \code{\link{read_ascii_setup}}). Descriptive
-#' names are made unique by adding "_2", "_3", ... to names already used by
-#' an earlier column.
+#' names are made unique: a name already used by an earlier column (in any
+#' case) gets the column's short name added, e.g. the second "CLOTHING"
+#' column, V93, is "CLOTHING_V93".
 #'
 #' The second object ("value_labels") is a list of named vectors for the
 #' value labels, one per column with value labels. The vector's values are
