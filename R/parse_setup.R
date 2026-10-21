@@ -154,7 +154,8 @@ read_setup <- function(setup_file) {
   if (type == "sps" && any(grepl2("MISSING VALUE", codebook))) {
     missing <- parse_missing_sps(codebook, setup)
   } else if (type == "sas") {
-    missing <- parse_missing_sas(codebook, setup, after = input_end)
+    missing <- parse_missing_sas(codebook, setup, after = input_end,
+                                 text_columns = text_columns)
   } else {
     missing <- NULL
   }
@@ -892,8 +893,11 @@ finish_missing <- function(missing, commented, line) {
 # used, with conditions made of "=" (EQ), "IN (...)", ">=" (GE), "<=" (LE),
 # ">= a AND <= b" and OR; others are listed in the "skipped" attribute
 # rather than misread.
-parse_missing_sas <- function(codebook, setup, after = 0) {
+parse_missing_sas <- function(codebook, setup, after = 0, text_columns = character(0)) {
   statements <- sas_statements(codebook, from = after + 1)
+  # "ELSE IF" is read as "IF"
+  statements$text <- sub("^(\\*?\\s*)ELSE\\s+(?=IF\\b)", "\\1", statements$text,
+                         ignore.case = TRUE, perl = TRUE)
   statements <- statements[grepl("^\\*?\\s*IF\\b", statements$text, ignore.case = TRUE), ]
   if (nrow(statements) == 0) return(NULL)
 
@@ -927,10 +931,15 @@ parse_missing_sas <- function(codebook, setup, after = 0) {
   key <- paste(missing$variable, missing$values, sep = "\r")
   missing <- missing[!(missing$commented & key %in% key[!missing$commented]), ]
   # Codes that are the same number (9 and 0000009, as in a file with the
-  # same section written twice) only need to be listed once: the last
+  # same section written twice) only need to be listed once: the last, or
+  # the last active one. In text columns codes are matched as text, so
+  # '9' and '09' are different codes.
   number <- suppressWarnings(as.numeric(missing$values))
-  same <- paste(missing$variable, ifelse(is.na(number), missing$values, number),
-                sep = "\r")
+  as_text <- is.na(number) | tolower(missing$variable) %in% tolower(text_columns)
+  same <- paste(missing$variable, ifelse(as_text, missing$values, number), sep = "\r")
+  commented_copy <- missing$commented & same %in% same[!missing$commented]
+  missing <- missing[!commented_copy, ]
+  same <- same[!commented_copy]
   missing <- missing[!duplicated(same, fromLast = TRUE), ]
   # The line each run of commented-out statements starts on
   commented_lines <- missing$line[missing$commented]

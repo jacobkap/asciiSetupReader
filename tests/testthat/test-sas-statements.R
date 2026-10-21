@@ -196,3 +196,21 @@ test_that("SPSS RECODE outside a missing values section is reported too", {
   # Commented out, or only to SYSMIS (a missing value): not a recode
   expect_null(read_setup(sps_with("* RECODE V1 (1=5).", "RECODE V2 (9=SYSMIS)."))$recodes)
 })
+
+test_that("SAS missing codes: text codes stay apart, active ones win, ELSE IF is read", {
+  sas_missing_of <- function(input, statements) {
+    setup <- temp_file(c("DATA x;", "INFILE 'x';", input, statements, "RUN;"), ".sas")
+    m <- parse_setup(setup)$missing
+    paste(m$variable, m$values, m$commented)
+  }
+  # In a text column '9' and '09' are different codes
+  expect_setequal(sas_missing_of("INPUT V1 $ 1-2;", "IF V1 IN ('9', '09') THEN V1 = ' ';"),
+                  c("V1 9 FALSE", "V1 09 FALSE"))
+  # The same number active and commented out: the active one is kept
+  expect_equal(sas_missing_of("INPUT V1 1-2;", c("IF V1 = 9 THEN V1 = .;",
+                                                 "/* IF V1 = 09 THEN V1 = .; */")),
+               "V1 9 FALSE")
+  expect_equal(sas_missing_of("INPUT V1 1-2 V2 3-4;",
+                              c("IF V1 = 98 THEN V1 = .;", "ELSE IF V1 = 99 THEN V1 = .;")),
+               c("V1 98 FALSE", "V1 99 FALSE"))
+})
