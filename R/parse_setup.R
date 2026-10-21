@@ -98,20 +98,33 @@ read_setup <- function(setup_file) {
                   setup)
     setup <- unlist(strsplit(setup, '"\\s{3,}'))
   } else {
-    second_grep_value <- grep("^$|^;$", codebook)[grep("^$|^;$", codebook) > grep2("^INPUT$", codebook) + 5]
-    second_grep_value <- second_grep_value[1]
-    if (is.na(second_grep_value)) {
-      second_grep_value <- length(codebook)
+    # The INPUT statement that isn't commented out, on its own line or with
+    # the first column after it, up to its ";" (blank lines don't end it)
+    comment_open <- sas_comment_state(codebook)
+    input_start <- grep2("^INPUT$", codebook)
+    if (length(input_start) == 0) {
+      input_start <- grep2("^INPUT\\s+[[:alpha:]_@]", codebook)
     }
-    input_start <- grep2("^INPUT$", codebook)[1]
-    setup <- codebook[input_start:second_grep_value]
-    if (any(grepl("@\\s*[0-9]", setup))) {
-      # Formatted input: "@37 V7 7.1" (see formatted_input()). The INPUT
-      # statement runs to its ";", even past blank lines.
-      uncommented <- gsub("/\\*.*?\\*/", "", codebook, perl = TRUE)
-      input_end <- grep(";", uncommented)
-      input_end <- input_end[input_end > input_start][1]
-      if (is.na(input_end)) input_end <- length(codebook)
+    input_start <- c(input_start[!comment_open[input_start]], input_start)[1]
+    uncommented <- gsub("/\\*.*?\\*/", "", codebook, perl = TRUE)
+    input_end <- grep(";", uncommented)
+    input_end <- input_end[input_end >= input_start][1]
+    if (is.na(input_end)) {
+      input_end <- grep("^$|^;$", codebook)
+      input_end <- c(input_end[input_end > input_start + 5], length(codebook))[1]
+    }
+    setup <- codebook[input_start:input_end]
+    setup[1] <- sub("^INPUT\\s*", "", setup[1], ignore.case = TRUE)
+    words <- strsplit(trimws(gsub("/\\*.*?\\*/|;", " ", paste(setup, collapse = " "),
+                                  perl = TRUE)), "\\s+")[[1]]
+    if (any(grepl("^#[0-9]+$|^/$", words))) {
+      abort("unsupported_input", "The SAS INPUT statement in '",
+            basename(setup_file), "' reads several lines (records) per ",
+            "case (#n or /), which asciiSetupReader can't read.")
+    }
+    informat <- "^\\$?([[:alpha:]_][[:alnum:]_]*?)?[0-9]+\\.[0-9]*$"
+    if (any(grepl("@\\s*[0-9]", setup)) || any(grepl(informat, words))) {
+      # Formatted input: "@37 V7 7.1" or "V7 7.1" (see formatted_input())
       setup <- formatted_input(codebook[input_start:input_end])
       decimals <- attr(setup, "decimals")
       text_columns <- attr(setup, "text")
@@ -155,12 +168,13 @@ read_setup <- function(setup_file) {
   }
 
   # Missing values and value labels both need the column list
-  if (any(grepl2("MISSING VALUE", codebook))) {
-    if (type == "sps") {
-      missing <- parse_missing_sps(codebook, setup)
-    } else {
-      missing <- parse_missing_sas(codebook, setup)
-    }
+  skipped_missing <- NULL
+  if (type == "sps" && any(grepl2("MISSING VALUE", codebook))) {
+    missing <- parse_missing_sps(codebook, setup)
+  } else if (type == "sas") {
+    missing <- parse_missing_sas(codebook, setup, after = input_end)
+    skipped_missing <- attr(missing, "skipped")
+    if (length(missing) == 0) missing <- NULL
   } else {
     missing <- NULL
   }
@@ -183,6 +197,7 @@ read_setup <- function(setup_file) {
                 renamed         = renamed,
                 commented_lines = if (any(missing$commented)) commented_lines,
                 replaced_labels = replaced_labels,
+                skipped_missing = skipped_missing,
                 text_columns    = match_case(text_columns, setup$column_number))
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
@@ -210,7 +225,16 @@ check_setup_file <- function(codebook, setup_file, type) {
     has_positions <- any(grepl2("DATA LIST|/VARIABLES =$", codebook))
     has_labels    <- any(grepl2("^(ADD )?VALUE LABELS\\b", codebook))
   } else {
-    has_positions <- any(grepl2("^INPUT$", codebook))
+    infile <- grep2("^INFILE\\b", codebook)
+    infile <- infile[!sas_comment_state(codebook)[infile]]
+    if (any(grepl2("\\b(DLM|DELIMITER|DSD)\\b", codebook[infile]))) {
+      abort("delimited", "'", file_name, "' is for a delimited data file ",
+            "(INFILE ... DLM= or DSD), not a fixed-width one. ",
+            "asciiSetupReader only reads fixed-width files; read the data ",
+            "with a function for delimited files, such as read.csv() or ",
+            "readr::read_delim(), instead.")
+    }
+    has_positions <- any(grepl2("^INPUT$|^INPUT\\s+[[:alpha:]_@]", codebook))
     has_labels    <- any(grepl2("^PROC FORMAT\\b|^VALUE\\s", codebook))
   }
   if (!has_positions && has_labels) {
@@ -635,56 +659,176 @@ finish_missing <- function(missing, commented, line) {
   missing
 }
 
-# SAS: "IF V1 = 9 OR V1 = 99 THEN V1 = .;" statements after the MISSING
-# VALUE comment, rewritten into the same "V1 (9, 99)" form as SPSS.
-parse_missing_sas <- function(codebook, setup) {
-  start <- grep2("MISSING VALUE", codebook)
-  start <- grep2("^IF", codebook)[grep2("^IF", codebook) > max(start)][1]
-  # Some .sas files have "example" code at the beginning which screws this up
-  if (is.na(start)) return(NULL)
-  end <- grep2("\\*/", codebook)[grep2("\\*/", codebook) > start][1]
-  if (is.na(end) | length(end) == 0 | all(end <= start)) {
-    end <- length(codebook)
-  } else {
-    end <- min(end[end > start])
+# SAS: "IF V1 = 9 OR V1 = 99 THEN V1 = .;" statements after the INPUT
+# statement (line `after`), whether commented out or not. Only statements
+# that set the column they test to missing (". ", ".A", "''" or "' '") are
+# used, with conditions made of "=" (EQ), "IN (...)", ">=" (GE), "<=" (LE),
+# ">= a AND <= b" and OR; others are listed in the "skipped" attribute
+# rather than misread.
+parse_missing_sas <- function(codebook, setup, after = 0) {
+  statements <- sas_statements(codebook, from = after + 1)
+  statements <- statements[grepl("^\\*?\\s*IF\\b", statements$text, ignore.case = TRUE), ]
+  if (nrow(statements) == 0) return(NULL)
+
+  rows    <- list()
+  skipped <- character(0)
+  for (i in seq_len(nrow(statements))) {
+    parsed <- sas_missing_statement(sub("^\\*\\s*", "", statements$text[i]))
+    if (is.null(parsed)) {
+      skipped <- c(skipped, statements$text[i])
+      next
+    }
+    parsed$commented <- statements$commented[i]
+    parsed$line <- statements$line[i]
+    rows[[length(rows) + 1]] <- parsed
   }
-  missing <- codebook[start:end]
-  missing <- unlist(strsplit(missing, ";"))
-  missing <- trimws(missing)
-  missing <- missing[grepl2("^IF", missing)]
-  missing <- gsub(" then.*= ?\\..*| then.*= ?\\''.*|^IF ", "", missing, ignore.case = TRUE)
-  missing <- gsub(" >= (.+) AND [[:alnum:]]+ <= (.*)", " \\1 thru \\2", missing,
-                  ignore.case = TRUE)
-  missing <- gsub(" (.*) thru ", " (\\1 thru ", missing,
-                  ignore.case = TRUE)
-  missing <- gsub("^\\(", "", missing,
-                  ignore.case = TRUE)
-
-  missing <- gsub("(\\S),(\\S)", "\\1, \\2", missing)
-  missing <- gsub(" = ", "=", missing)
-  missing <- gsub("=", " \\(", missing)
-  missing <- paste0(missing, ")")
-  missing <- gsub("\\)\\)$", "\\)", missing)
-  missing <- gsub(" in \\(", " \\(", missing, ignore.case = TRUE)
-  missing <- gsub(" GE ([0-9]+)(\\s|\\))", " \\(\\1 thru highest\\) ", missing, ignore.case = TRUE)
-  missing <- gsub(" OR ", "    ", missing, ignore.case = TRUE)
-  missing <- gsub('\\"', "\\'", missing)
-  missing <- gsub("\\' ", "\\') ", missing)
-  missing <- gsub("\\'", "", missing)
-
-  missing <- unlist(strsplit(missing, ",|\\s{2,}"))
-
-  missing <- data.frame(variable = gsub(" .*", "", missing),
-                        values = gsub(".*\\(|\\).*", "", missing)
-                        )
-  missing$variable[missing$variable == ""] <- NA
-  missing$variable <- fill_down(missing$variable)
-  missing$values <- gsub('\\"', "\\'", missing$values)
-  missing$values <- gsub("\\'", "", missing$values)
-  missing$values <- trimws(missing$values)
-
+  missing <- do.call(rbind, rows)
+  if (is.null(missing)) {
+    return(structure(list(), skipped = skipped))
+  }
+  missing$variable <- match_case(missing$variable, setup$column_number)
   missing <- missing[missing$variable %in% setup$column_number, ]
-  finish_missing(missing, in_sas_comment(codebook, start), start)
+  if (nrow(missing) == 0) return(structure(list(), skipped = skipped))
+  # Values in both a commented-out and an active statement count as active
+  key <- paste(missing$variable, missing$values, sep = "\r")
+  missing <- missing[!(missing$commented & key %in% key[!missing$commented]), ]
+  # Codes that are the same number (9 and 0000009, as in a file with the
+  # same section written twice) only need to be listed once: the last
+  number <- suppressWarnings(as.numeric(missing$values))
+  same <- paste(missing$variable, ifelse(is.na(number), missing$values, number),
+                sep = "\r")
+  missing <- missing[!duplicated(same, fromLast = TRUE), ]
+  # The line each run of commented-out statements starts on
+  commented_lines <- missing$line[missing$commented]
+  commented_lines <- sort(unique(commented_lines))
+  commented_lines <- commented_lines[c(TRUE, diff(commented_lines) > 3)]
+
+  out <- make_thru_missing_rows(missing[c("variable", "values")])
+  out$commented <- missing$commented[match(out$variable, missing$variable)]
+  # Row-level commented status (a column could have both)
+  key_out <- paste(out$variable, out$values, sep = "\r")
+  key_in  <- paste(missing$variable, missing$values, sep = "\r")
+  known   <- key_out %in% key_in
+  out$commented[known] <- missing$commented[match(key_out[known], key_in)]
+  rownames(out) <- NULL
+  attr(out, "line") <- commented_lines
+  attr(out, "skipped") <- skipped
+  out
+}
+
+# Splits SAS code (from line `from` on) into statements ending in ";".
+# Returns a data.frame of each statement's text (with /* */ comments and
+# their markers removed), the line its first word is on, and whether that
+# word is inside a /* */ comment or the statement is a "* ...;" comment.
+sas_statements <- function(codebook, from = 1) {
+  if (from > length(codebook)) {
+    return(data.frame(text = character(0), line = integer(0), commented = logical(0)))
+  }
+  lines <- codebook[from:length(codebook)]
+  open_at_start <- sas_comment_state(lines)
+  text <- character(0); line <- integer(0); commented <- logical(0)
+  buffer <- ""; first_line <- NA_integer_; first_commented <- NA
+  for (i in seq_along(lines)) {
+    pieces <- strsplit(paste0(lines[i], " "), ";", fixed = TRUE)[[1]]
+    for (k in seq_along(pieces)) {
+      piece <- pieces[k]
+      # A comment that opens and closes here isn't the statement's start
+      blanked <- piece
+      closed <- gregexpr("/\\*.*?\\*/", blanked, perl = TRUE)
+      regmatches(blanked, closed) <- lapply(regmatches(blanked, closed),
+                                            function(m) strrep(" ", nchar(m)))
+      visible <- trimws(gsub("/\\*|\\*/", " ", blanked))
+      if (is.na(first_line) && nzchar(visible)) {
+        first_line <- i
+        # Is the first word inside a comment? Follow the /* and */ markers
+        # on this line up to it
+        word_at <- regexpr("[^[:space:]/*]", blanked)
+        before  <- paste0(paste(pieces[seq_len(k - 1)], collapse = ";"),
+                          if (k > 1) ";", substr(piece, 1, word_at - 1))
+        first_commented <- sas_comment_state(c(lines[i], ""),
+                                             prefix = before,
+                                             open = open_at_start[i])[2] ||
+          startsWith(visible, "*")
+      }
+      buffer <- paste(buffer, piece)
+      if (k < length(pieces)) {
+        if (!is.na(first_line)) {
+          clean <- gsub("/\\*.*?\\*/", " ", buffer, perl = TRUE)
+          clean <- trimws(gsub("\\s+", " ", gsub("/\\*|\\*/", " ", clean)))
+          text <- c(text, clean)
+          line <- c(line, first_line + from - 1)
+          commented <- c(commented, first_commented)
+        }
+        buffer <- ""; first_line <- NA_integer_; first_commented <- NA
+      }
+    }
+  }
+  data.frame(text = text, line = line, commented = commented)
+}
+
+# Whether a /* */ comment is open at the start of each line, given whether
+# one is open before the first (`open`). Quoted text can't open or close
+# one. If `prefix` is given, only that much of the first line is followed.
+sas_comment_state <- function(lines, prefix = NULL, open = FALSE) {
+  state <- logical(length(lines))
+  for (i in seq_along(lines)) {
+    state[i] <- open
+    line <- if (i == 1 && !is.null(prefix)) prefix else lines[i]
+    line <- gsub("'[^']*'|\"[^\"]*\"", "", line)
+    for (m in regmatches(line, gregexpr("/\\*|\\*/", line))[[1]]) {
+      open <- m == "/*"
+    }
+  }
+  state
+}
+
+# Reads one SAS "IF ... THEN v = .;" statement (without the ";") into a
+# data.frame of variable and values, in the "1 thru 5", "5 thru highest"
+# and "lowest thru 5" forms the SPSS reader also gives. NULL if it isn't a
+# statement this reads correctly.
+sas_missing_statement <- function(statement) {
+  name  <- "[[:alpha:]_][[:alnum:]_]*"
+  number <- "-?(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)"
+  value <- paste0("(?:", number, "|'[^']*'|\"[^\"]*\")")
+  list_ <- paste0("\\(\\s*", value, "(?:\\s*,?\\s*", value, ")*\\s*\\)")
+  atom  <- paste0("(?:", name, "\\s*(?:=|\\bEQ\\b)\\s*", value,
+                  "|", name, "\\s+IN\\s*", list_,
+                  "|", name, "\\s*(?:>=|\\bGE\\b)\\s*", value,
+                  "(?:\\s+AND\\s+", name, "\\s*(?:<=|\\bLE\\b)\\s*", value, ")?",
+                  "|", name, "\\s*(?:<=|\\bLE\\b)\\s*", value, ")")
+  atom_p <- paste0("\\(?\\s*", atom, "\\s*\\)?")
+  pattern <- paste0("^IF\\s+(", atom_p, "(?:\\s+OR\\s+", atom_p, ")*)\\s+THEN\\s+(",
+                    name, ")\\s*=\\s*(?:\\.[[:alpha:]_]?|''|' '|\"\"|\" \")$")
+  if (!grepl(pattern, statement, ignore.case = TRUE, perl = TRUE)) return(NULL)
+  parts <- regmatches(statement, regexec(pattern, statement, ignore.case = TRUE, perl = TRUE))[[1]]
+  condition <- parts[2]
+  target <- parts[3]
+  # Every column the condition tests must be the one set to missing
+  words <- regmatches(gsub("'[^']*'|\"[^\"]*\"", " ", condition),
+                      gregexpr(name, gsub("'[^']*'|\"[^\"]*\"", " ", condition)))[[1]]
+  words <- words[!toupper(words) %in% c("IN", "OR", "AND", "EQ", "GE", "LE")]
+  if (!all(tolower(words) == tolower(target))) return(NULL)
+
+  values <- character(0)
+  token <- paste0("'[^']*'|\"[^\"]*\"|", name, "|", number)
+  for (a in strsplit(condition, "(?i)\\s+OR\\s+", perl = TRUE)[[1]]) {
+    a <- trimws(gsub("^\\(|\\)$", "", trimws(a)))
+    # The values are the tokens that aren't names (so V1's 1 isn't one)
+    found <- regmatches(a, gregexpr(token, a, perl = TRUE))[[1]]
+    found <- found[!grepl(paste0("^", name, "$"), found)]
+    found <- gsub("^['\"]|['\"]$", "", found)
+    if (grepl("\\bIN\\b", a, ignore.case = TRUE)) {
+      values <- c(values, trimws(found))
+    } else if (grepl(">=|\\bGE\\b", a, ignore.case = TRUE)) {
+      values <- c(values, if (length(found) == 2) paste(found[1], "thru", found[2])
+                          else paste(found[1], "thru highest"))
+    } else if (grepl("<=|\\bLE\\b", a, ignore.case = TRUE)) {
+      values <- c(values, paste("lowest thru", found[1]))
+    } else {
+      values <- c(values, trimws(found))
+    }
+  }
+  data.frame(variable = target, values = values)
 }
 
 # TRUE if line `line` of codebook is inside a /* ... */ comment or is a

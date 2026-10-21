@@ -188,6 +188,15 @@ read_ascii_setup <- function(data,
            list_items(paste(renamed$column_number, "->", renamed$column_name)),
            ". parse_setup() shows every column's name.")
   }
+  skipped <- setup$skipped_missing
+  if (missing_values != "none" && length(skipped) > 0) {
+    inform("skipped_missing", "In '", file_name, "', ", length(skipped),
+           ngettext(length(skipped), " missing value statement", " missing value statements"),
+           " couldn't be read and ", ngettext(length(skipped), "was", "were"),
+           " skipped (only \"IF v = ... THEN v = .;\" forms that set the ",
+           "column they test to missing are used): ",
+           list_items(paste0("\"", skipped, "\""), max = 5), ".")
+  }
   replaced <- intersect(setup$replaced_labels, setup$setup$column_number)
   if (use_value_labels && length(replaced) > 0) {
     inform("replaced_labels", "In '", file_name, "', ", length(replaced),
