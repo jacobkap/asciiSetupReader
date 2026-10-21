@@ -211,9 +211,12 @@ fix_missing <- function(data, missing, text_columns = character(0)) {
     # (e.g. "0000012" for "0000009 THRU HI") match.
     thru_hi_pattern  <- "\\s+thru\\s+hi.*$"
     low_thru_pattern <- "^lo(w|west)?\\s+thru\\s+"
+    # Ranges too large to list, or of decimals ("99.5 thru 99.9")
+    range_pattern    <- "^(-?[0-9]*\\.?[0-9]+)\\s+thru\\s+(-?[0-9]*\\.?[0-9]+)$"
     is_thru_hi  <- grepl(thru_hi_pattern, missing_values, ignore.case = TRUE)
     is_low_thru <- grepl(low_thru_pattern, missing_values, ignore.case = TRUE)
-    if (any(is_thru_hi) || any(is_low_thru)) {
+    is_range    <- grepl(range_pattern, missing_values, ignore.case = TRUE)
+    if (any(is_thru_hi) || any(is_low_thru) || any(is_range)) {
       values  <- unique(data[[column]])
       values  <- values[!is.na(values) & validEnc(values)]
       numbers <- suppressWarnings(as.numeric(values))
@@ -229,7 +232,12 @@ fix_missing <- function(data, missing, text_columns = character(0)) {
       in_range <- rep(FALSE, length(values))
       if (length(lowest) > 0)  in_range <- in_range | numbers >= min(lowest)
       if (length(highest) > 0) in_range <- in_range | numbers <= max(highest)
-      missing_values <- c(missing_values[!is_thru_hi & !is_low_thru],
+      for (r in missing_values[is_range]) {
+        ends <- as.numeric(sub(range_pattern, "\\1", r, ignore.case = TRUE))
+        ends <- c(ends, as.numeric(sub(range_pattern, "\\2", r, ignore.case = TRUE)))
+        in_range <- in_range | (numbers >= ends[1] & numbers <= ends[2])
+      }
+      missing_values <- c(missing_values[!is_thru_hi & !is_low_thru & !is_range],
                           values[in_range])
     }
     names(missing_values) <- NA

@@ -90,3 +90,34 @@ test_that("a label mentioning missing values doesn't end VARIABLE LABELS", {
                c("first", "Number_of_missing_values_in_grid", "third"))
 })
 
+test_that("SPSS MISSING VALUES follow SPSS's rules", {
+  run <- function(missing) {
+    setup <- sps_file("  V1 1-2  V2 3-4", missing)
+    m <- parse_setup(setup)$missing
+    if (is.null(m)) return(character(0))
+    sort(paste(m$variable, m$values))
+  }
+  # A later command replaces a column's missing values
+  expect_equal(run(c("MISSING VALUES V1 (9).", "MISSING VALUES V1 (99) V2 (8).")),
+               c("V1 99", "V2 8"))
+  # () clears them
+  expect_equal(run(c("MISSING VALUES V1 (9) V2 (8).", "MISSING VALUES V1 ().")),
+               "V2 8")
+  # ALL is every column; / can separate columns on one line
+  expect_equal(run("MISSING VALUES ALL (9)."), c("V1 9", "V2 9"))
+  expect_equal(run("MISSING VALUES V1 (9) /V2 (8)."), c("V1 9", "V2 8"))
+  # THRU in any case; long or decimal ranges stay as ranges
+  expect_equal(run("MISSING VALUES V1 (90 Thru 92)."), c("V1 90", "V1 91", "V1 92"))
+  expect_equal(run("MISSING VALUES V1 (1000000 THRU 9999999)."), "V1 1000000 THRU 9999999")
+  expect_equal(run("MISSING VALUES V1 (99.5 thru 99.9)."), "V1 99.5 thru 99.9")
+})
+
+test_that("ranges kept as one row are compared as numbers", {
+  data <- data.table::data.table(a = c("1500000", "999999", "99.7", "99.4", "5"))
+  missing <- data.frame(variable = c("a", "a"),
+                        values = c("1000000 THRU 9999999", "99.5 thru 99.9"))
+  expect_equal(fix_missing(data, missing)$a, c(NA, "999999", NA, "99.4", "5"))
+  expect_lt(system.time(make_thru_missing_rows(
+    data.frame(variable = "a", values = "1000000 THRU 9999999")))[["elapsed"]], 2)
+})
+

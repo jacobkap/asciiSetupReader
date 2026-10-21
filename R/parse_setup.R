@@ -432,7 +432,7 @@ parse_missing_sps <- function(codebook, setup) {
   # VALUES command also ends at the "." that ends its last line
   starts <- grep2("MISSING VALUES?$|Convert missing data", codebook)
   starts <- sort(unique(c(starts, same_line_start(codebook, "MISSING VALUES?",
-                                                  setup$column_number))))
+                                                  c(setup$column_number, "ALL")))))
   if (length(starts) == 0) {
     starts <- grep2("MISSING VALUE RECODE", codebook)[1]
   }
@@ -446,14 +446,23 @@ parse_missing_sps <- function(codebook, setup) {
     end <- ends[ends > start][1]
     if (is.na(end)) end <- length(codebook)
     if (k < length(starts)) end <- min(end, starts[k + 1] - 1)
-    if (grepl2("^\\*?\\s*MISSING VALUES?\\b", codebook[start])) {
+    command <- grepl2("^\\*?\\s*MISSING VALUES?\\b", codebook[start])
+    if (command) {
       period <- which(endsWith(codebook[start:end], "."))[1]
       if (!is.na(period)) end <- start + period - 1
     }
-    parse_missing_section_sps(codebook[start:end], setup, start)
+    section <- parse_missing_section_sps(codebook[start:end], setup, start)
+    if (!is.null(section)) {
+      section$section <- k
+      section$command <- command
+    }
+    section
   })
   combine_missing(sections)
 }
+
+# The marker for "V1 ()", which clears V1's missing values
+clear_marker <- "\001clear\001"
 
 # Parses one missing values section (the lines of codebook from line
 # `start`) of an SPSS file.
@@ -469,6 +478,13 @@ parse_missing_section_sps <- function(missing, setup, start) {
   missing <- gsub("\\*{10,}.*|.*Convert missing data to system missing.*|SAVE OUTFILE = .*", "", missing)
   missing <- missing[missing != ""]
   missing <- gsub("^RECODE ", "", missing)
+  # "V1 ()" clears V1's missing values; "/" can separate columns on a line;
+  # ALL is every column
+  missing <- gsub("\\(\\s*\\)", paste0("(", clear_marker, ")"), missing)
+  missing <- gsub("\\)\\s*/\\s*", ")   ", missing)
+  missing <- gsub("^/\\s*", "", missing)
+  missing <- sub("^ALL\\s*\\(", paste0(paste(setup$column_number, collapse = " "), " ("),
+                 missing, ignore.case = TRUE)
   missing <- expand_column_lists(missing, setup$column_number)
   missing <- gsub("^\\(-", " -", missing)
 
@@ -506,9 +522,12 @@ parse_missing_section_sps <- function(missing, setup, start) {
   finish_missing(missing, commented, start)
 }
 
-# Joins the missing values of several sections. A value in both a
-# commented-out section and one that isn't counts as not commented out. The
-# "line" attribute is the first line of each commented-out section used.
+# Joins the missing values of several sections. As in SPSS, a MISSING
+# VALUES command replaces the missing values earlier commands gave a column
+# (compared separately among commented-out and active commands), and
+# "V1 ()" leaves it none. A value in both a commented-out section and one
+# that isn't counts as not commented out. The "line" attribute is the first
+# line of each commented-out section used.
 combine_missing <- function(sections) {
   sections <- Filter(Negate(is.null), sections)
   if (length(sections) == 0) {
@@ -518,6 +537,16 @@ combine_missing <- function(sections) {
     if (all(s$commented)) attr(s, "line")
   }))
   missing <- do.call(rbind, sections)
+  if (!is.null(missing$section)) {
+    group <- paste(missing$variable, missing$commented)
+    last  <- stats::ave(ifelse(missing$command, missing$section, -Inf), group,
+                        FUN = max)
+    missing <- missing[!missing$command | missing$section == last, ]
+    missing <- missing[missing$values != clear_marker, ]
+    missing$section <- NULL
+    missing$command <- NULL
+    if (nrow(missing) == 0) return(NULL)
+  }
   key  <- paste(missing$variable, missing$values, sep = "\r")
   drop <- missing$commented & key %in% key[!missing$commented]
   missing <- missing[!drop, ]
@@ -672,26 +701,32 @@ in_sas_comment <- function(codebook, line) {
 }
 
 # Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5).
+# Only ranges of up to 1,000 whole numbers are expanded; others (such as
+# "1000000 thru 9999999" or "99.5 thru 99.9") stay as one row, which
+# fix_missing() compares with the data as numbers.
 make_thru_missing_rows <- function(missing) {
-  thru_rows <- missing[grep("[0-9] thru -?[0-9]", missing$values, ignore.case = TRUE), ]
-
-  if (nrow(thru_rows) < 1) {
+  pattern <- "^\\s*(-?[0-9]*\\.?[0-9]+)\\s+thru\\s+(-?[0-9]*\\.?[0-9]+)\\s*$"
+  is_thru <- grepl(pattern, missing$values, ignore.case = TRUE)
+  if (!any(is_thru)) {
+    return(missing)
+  }
+  from <- as.numeric(sub(pattern, "\\1", missing$values, ignore.case = TRUE))
+  to   <- as.numeric(sub(pattern, "\\2", missing$values, ignore.case = TRUE))
+  expand <- is_thru & from == round(from) & to == round(to) & to >= from &
+    to - from < 1000
+  expand[is.na(expand)] <- FALSE
+  if (!any(expand)) {
     return(missing)
   }
 
-  for (i in 1:nrow(thru_rows)) {
-    temp <- thru_rows$values[i]
-    temp <- strsplit(temp, " thru | THRU ")[[1]]
-    values <- temp[1]:temp[2]
-    temp <- data.frame(variable = rep(thru_rows$variable[i], length(values)),
-                       values = values
-                       )
-    missing <- rbind(missing, temp)
+  for (i in which(expand)) {
+    values <- seq(from[i], to[i])
+    missing <- rbind(missing,
+                     data.frame(variable = rep(missing$variable[i], length(values)),
+                                values = as.character(values)))
   }
-
-  # Removes all rows with "thru"
-  missing <- missing[-grep("[0-9] thru -?[0-9]", missing$values, ignore.case = TRUE), ]
-  return(missing)
+  # Removes the expanded "thru" rows
+  missing[-which(expand), ]
 }
 
 # Reads the setup file as trimmed lines. For SPSS files, anything before

@@ -188,6 +188,7 @@ test_that("a real file's zero-padded SAS codes match its unpadded data", {
   # 1-column field holding 9; SAS compares them as numbers
   raw <- substr(readr::read_lines(jail_1987_dataset_name), 609, 609)
   expect_equal(sum(raw == "9"), 764)
+  # The file has the section twice, with 9 and 0000009; one is enough
   missing <- parse_setup(jail_1987_sas_name)$missing
   expect_equal(missing$values[missing$variable == "V156"], "0000009")
   out <- allow_messages(read_ascii_setup(jail_1987_dataset_name, jail_1987_sas_name,

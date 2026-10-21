@@ -45,7 +45,9 @@ test_that("Right number of missing values", {
   expect_true(is.null(escolar_2006_parsed_sps$missing))
 
 
-  expect_true(is.null(mtf_1999_parsed_sps$missing))
+  # Its (commented-out) MISSING VALUES are "ALL(-9).", which wasn't read
+  expect_equal(nrow(mtf_1999_parsed_sps$missing), nrow(mtf_1999_parsed_sps$setup))
+  expect_equal(unique(mtf_1999_parsed_sps$missing$values), "-9")
   expect_equal(nrow(mtf_2003_parsed_sps$missing), 108)
   expect_equal(nrow(mtf_1990_parsed_sps$missing), 206)
   expect_equal(nrow(mtf_1989_parsed_sps$missing), 224)
