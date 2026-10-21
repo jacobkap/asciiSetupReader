@@ -154,7 +154,7 @@ read_setup <- function(setup_file) {
     abort("no_positions", "No column positions were found in '",
           basename(setup_file), "'. ", positions_needed(type))
   }
-  rownames(setup) <- 1:nrow(setup)
+  rownames(setup) <- seq_len(nrow(setup))
 
   # SPSS GET DATA files count columns from 0 rather than 1
   if (type == "sps" && any(grepl2("^GET DATA", codebook)) &&
@@ -484,7 +484,7 @@ unique_names <- function(setup) {
 join_number_lines <- function(setup) {
   start_with_number <- grep("^[0-9]", setup)
   if (length(start_with_number) > 0) {
-    for (n in length(start_with_number):1) {
+    for (n in rev(seq_along(start_with_number))) {
       setup[start_with_number[n] - 1] <- paste(setup[start_with_number[n] - 1],
                                                setup[start_with_number[n]],
                                                collapse = " ")
@@ -734,7 +734,7 @@ finish_missing <- function(missing, commented, line) {
     return(NULL)
   }
   missing <- make_thru_missing_rows(missing)
-  rownames(missing) <- 1:nrow(missing)
+  rownames(missing) <- seq_len(nrow(missing))
   missing$commented <- commented
   attr(missing, "line") <- line
   missing
@@ -1034,7 +1034,7 @@ parse_column_names <- function(codebook, type) {
     # Labels continued on the next line end in "+
     plus <- grep('\\"\\+$', variables)
     if (length(plus) > 0) {
-      for (n in 1:length(plus)) {
+      for (n in seq_along(plus)) {
         variables[plus[n] + 1] <- paste(variables[plus[n]],
                                         variables[plus[n] + 1],
                                         collapse = " ")
