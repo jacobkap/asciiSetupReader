@@ -133,8 +133,9 @@ Setup files that can't be read stop with an error of class
 "asciiSetupReader_error" and a more specific class:
 "asciiSetupReader_delimited" (a file for delimited, not fixed-width,
 data), "asciiSetupReader_no_positions" (no column positions, e.g. a file
-of value labels only) or "asciiSetupReader_unsupported_input" (a SAS
-INPUT statement this package can't read).
+of value labels only) or "asciiSetupReader_unsupported_input" (an SPSS
+DATA LIST or SAS INPUT statement this package can't read, e.g. one with
+several records per case).
 }
 
 \examples{

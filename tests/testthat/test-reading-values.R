@@ -113,9 +113,8 @@ test_that("DATA LIST forms the package can't read stop with clear errors", {
                          "EXECUTE."), ".sps")
   expect_error(parse_setup(records), "several lines \\(records\\) per case",
                class = "asciiSetupReader_unsupported_input")
-  shared <- temp_file(c("DATA LIST FILE = 'x'", "  Q1 TO Q3 3-5", ".", "EXECUTE."), ".sps")
-  expect_error(parse_setup(shared), "one column range",
-               class = "asciiSetupReader_unsupported_input")
+  # (Several variables sharing one range, "Q1 TO Q3 3-5", are read since
+  # 3.0.0's DATA LIST reader; see test-data-list.R)
   formats <- temp_file(c("DATA LIST FILE = 'x'", "  ID 1-3 AGE (F2) SEX (A1)", ".",
                          "EXECUTE."), ".sps")
   expect_error(parse_setup(formats), "by format only",

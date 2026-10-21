@@ -82,29 +82,11 @@ read_setup <- function(setup_file) {
   # into "name begin-end" pieces separated by 2+ spaces for
   # get_column_spaces().
   if (type == "sps") {
-    second_grep_value <- grep2("^variable labels$", codebook)
-    second_grep_value <- second_grep_value[1]
-    if (is.na(second_grep_value)) {
-      second_grep_value <- length(codebook)
-    }
-    setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook)[1]:second_grep_value]
-    check_data_list(setup, setup_file)
-    decimals <- parse_decimals(setup, type)
-    text_columns <- parse_text_columns(setup, type)
-    setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
-    setup <- join_number_lines(setup)
-    setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
-                  setup)
-
-    setup <- gsub("([[:alpha:]]+[0-9]*)\\s+", "\\1 ",
-                  setup)
-
-    setup <- gsub(" \\(A\\) ", " ", setup)
-    setup <- gsub(" ([0-9]+-[0-9]+) ([[:alpha:]])", " \\1   \\2",
-                  setup)
-    setup <- gsub(" ([0-9]+) ([[:alpha:]])", " \\1   \\2",
-                  setup)
-    setup <- unlist(strsplit(setup, '"\\s{3,}'))
+    lines <- data_list_lines(codebook)
+    check_data_list(lines, setup_file)
+    setup <- data_list_sps(lines, setup_file)
+    decimals <- attr(setup, "decimals")
+    text_columns <- attr(setup, "text")
   } else {
     # The INPUT statement that isn't commented out, on its own line or with
     # the first column after it, up to its ";" (blank lines don't end it)
@@ -262,16 +244,162 @@ check_setup_file <- function(codebook, setup_file, type) {
   }
 }
 
+# The SPSS DATA LIST (or GET DATA) command: from its first line to the line
+# that ends with its closing period, or up to the next command if the
+# period is missing. Comments ("/* ... */") are removed and so is the
+# period.
+data_list_lines <- function(codebook) {
+  start <- grep2("^DATA LIST\\b", codebook)
+  if (length(start) == 0) start <- grep2("^GET DATA\\b", codebook)
+  if (length(start) == 0) start <- grep2("DATA LIST|/VARIABLES =$", codebook)
+  lines <- codebook[start[1]:length(codebook)]
+  lines <- gsub("/\\*.*?(\\*/|$)", " ", lines, perl = TRUE)
+  unquoted <- trimws(gsub("'[^']*'|\"[^\"]*\"", "", lines))
+  next_command <- grep(paste0("^\\*|^(ADD )?VALUE LABELS\\b|^(VARIABLE|VAR) LABELS?\\b|",
+                              "^MISSING VALUES?\\b|^EXECUTE\\b|^FORMATS?\\b|",
+                              "^RECODE\\b|^SAVE\\b|^COMPUTE\\b"),
+                       unquoted, ignore.case = TRUE)
+  next_command <- next_command[next_command > 1]
+  end <- min(which(endsWith(unquoted, ".")), next_command - 1, length(lines))
+  lines <- lines[seq_len(end)]
+  if (endsWith(unquoted[end], ".")) lines[end] <- sub("\\.\\s*$", "", lines[end])
+  lines
+}
+
+# SPSS DATA LIST (or GET DATA /VARIABLES) column positions, read token by
+# token so spacing doesn't matter: "V1 1-2 (A) V2 3 V3 4-9 (2)", or written
+# "V1 1-2(A) V2 3 V3 4-9(2)", has V1 in columns 1-2 (text), V2 in column 3
+# and V3 in 4-9 with 2 implied decimal places ("(F,2)" too). As in SPSS,
+# names listed before one range share it equally: "A B C 1-6" is 2 columns
+# each, and "Q1 TO Q3 3-5" is Q1, Q2 and Q3 in one column each. GET DATA
+# gives a format after each range ("V1 0-1 A2"; its columns count from 0,
+# see read_setup()). Returns "name begin-end" lines for
+# get_column_spaces(), with the implied decimal places as the "decimals"
+# attribute and the text columns as the "text" attribute. Stops with an
+# error for what it can't read rather than placing columns wrongly.
+data_list_sps <- function(lines, setup_file) {
+  text <- paste(lines, collapse = " ")
+  tokens <- regmatches(text, gregexpr(paste0(double_quoted, "|", single_quoted,
+                                             "|\\([^)]*\\)|[0-9]+\\s*-\\s*[0-9]+",
+                                             "|/[0-9]*|=|[^\\s()/=]+"),
+                                      text, perl = TRUE))[[1]]
+  file_name <- basename(setup_file)
+  cant_read <- function(...) {
+    abort("unsupported_input", "asciiSetupReader can't read the DATA LIST ",
+          "command in '", file_name, "': ", ...)
+  }
+  # The command can follow another on its line ("FILE HANDLE ... . DATA LIST")
+  upper <- toupper(tokens)
+  start <- which((upper == "DATA" & c(upper[-1], "") == "LIST") |
+                   (upper == "GET" & c(upper[-1], "") == "DATA"))[1]
+  if (!is.na(start)) tokens <- tokens[start:length(tokens)]
+  upper <- toupper(tokens)
+  get_data <- upper[1] == "GET"
+  if (get_data) {
+    # The columns follow "/VARIABLES ="
+    at <- which(upper == "VARIABLES" & c("", tokens[-length(tokens)]) == "/")
+    i <- if (length(at)) at[1] + 1 else length(tokens) + 1
+    if (i <= length(tokens) && tokens[i] == "=") i <- i + 1
+  } else {
+    # Skip DATA LIST and its options (FILE = 'x', FIXED, SKIP = 1, ...)
+    i <- 3
+    while (i <= length(tokens)) {
+      if (upper[i] %in% c("FREE", "LIST")) {
+        abort("delimited", "'", file_name, "' is for a delimited data file ",
+              "(DATA LIST ", upper[i], "), not a fixed-width one. ",
+              "asciiSetupReader only reads fixed-width files; read the data ",
+              "with a function for delimited files, such as read.table() or ",
+              "readr::read_table(), instead.")
+      }
+      if (upper[i] %in% c("FILE", "ENCODING", "RECORDS", "SKIP", "END") &&
+          isTRUE(tokens[i + 1] == "=")) {
+        i <- i + 3
+      } else if (upper[i] %in% c("FIXED", "TABLE", "NOTABLE")) {
+        i <- i + 1
+      } else {
+        break
+      }
+    }
+  }
+
+  name_pattern <- "^[[:alpha:]@#$][[:alnum:]_.@#$]*$"
+  names    <- character(0)  # names waiting for their position
+  last     <- character(0)  # names given the latest position
+  out      <- character(0)
+  text_columns <- character(0)
+  decimals <- stats::setNames(integer(0), character(0))
+  while (i <= length(tokens)) {
+    token <- tokens[i]
+    if (startsWith(token, "/")) {
+      # A record ("/", "/1" or "/ 1"); several records per case stop in
+      # check_data_list()
+      if (token == "/" && isTRUE(tokens[i + 1] == "1")) i <- i + 1
+      last <- character(0)
+    } else if (grepl("^[0-9]+(\\s*-\\s*[0-9]+)?$", token)) {
+      if (length(names) == 0) cant_read("the position ", token, " has no name.")
+      range <- as.numeric(strsplit(token, "\\s*-\\s*")[[1]])
+      begin <- range[1]
+      width <- (range[length(range)] - begin + 1) / length(names)
+      # (A start after the end stops in get_column_spaces())
+      if (length(names) > 1 && (width < 1 || width != round(width))) {
+        cant_read("columns ", token, " can't be shared equally by ",
+                  paste(names, collapse = " "), ".")
+      }
+      starts <- begin + width * (seq_along(names) - 1)
+      out <- c(out, paste0(names, " ", starts, "-", starts + width - 1))
+      last  <- names
+      names <- character(0)
+    } else if (startsWith(token, "(")) {
+      format <- toupper(gsub("[()[:space:]]", "", token))
+      if (length(last) == 0) {
+        cant_read("the format ", token, " has no column position before it.")
+      }
+      if (grepl("^A[0-9]*$", format)) {
+        text_columns <- c(text_columns, last)
+      } else if (grepl("^([[:alpha:]]+,)?[0-9]+$", format)) {
+        places <- as.integer(sub("^.*,", "", format))
+        if (places > 0) decimals[last] <- places
+      }
+      last <- character(0)
+    } else if (get_data && length(last) &&
+               grepl("^[[:alpha:]]+[0-9]+(\\.[0-9]+)?$", token)) {
+      # GET DATA format, e.g. A2 or F7.1 (which has no implied decimals)
+      if (startsWith(toupper(token), "A")) text_columns <- c(text_columns, last)
+      last <- character(0)
+    } else if (toupper(token) == "TO" && length(names) &&
+               isTRUE(grepl(name_pattern, tokens[i + 1]))) {
+      # "Q1 TO Q3" is Q1, Q2 and Q3
+      from <- regmatches(names[length(names)], regexec("^(.*?)([0-9]+)$", names[length(names)]))[[1]]
+      to   <- regmatches(tokens[i + 1], regexec("^(.*?)([0-9]+)$", tokens[i + 1]))[[1]]
+      if (length(from) == 0 || length(to) == 0 || toupper(from[2]) != toupper(to[2]) ||
+          as.numeric(from[3]) > as.numeric(to[3])) {
+        cant_read("'", names[length(names)], " TO ", tokens[i + 1], "' isn't a ",
+                  "numbered list of names.")
+      }
+      numbers <- (as.numeric(from[3]) + 1):as.numeric(to[3])
+      names <- c(names, paste0(from[2], formatC(numbers, width = nchar(from[3]), flag = "0")))
+      i <- i + 1
+    } else if (grepl(name_pattern, token)) {
+      names <- c(names, token)
+      last  <- character(0)
+    } else {
+      cant_read("'", token, "' isn't a name, a column position or a format.")
+    }
+    i <- i + 1
+  }
+  if (length(names)) {
+    cant_read(paste(names, collapse = " "), " has no column position.")
+  }
+  attr(out, "decimals") <- decimals
+  attr(out, "text") <- unique(text_columns)
+  out
+}
+
 # Stops with a clear error for SPSS DATA LIST forms this package can't
 # read, rather than reading the wrong columns: several records (lines) per
-# case, several variables sharing one column range ("Q1 TO Q3 3-5") and
-# positions implied by formats ("ID (F3) NAME (A5)").
+# case and positions implied by formats ("ID (F3) NAME (A5)"). `lines` is
+# the command, from data_list_lines().
 check_data_list <- function(lines, setup_file) {
-  # Only the DATA LIST (or GET DATA) command itself, up to its closing
-  # period; a FORMATS command after it can have "V1 (F7.3)"
-  lines <- gsub("/\\*.*?(\\*/|$)", " ", lines, perl = TRUE)
-  end <- which(endsWith(trimws(lines), "."))[1]
-  if (!is.na(end)) lines <- lines[seq_len(end)]
   text <- paste(lines, collapse = " ")
   file_name <- basename(setup_file)
   records <- regmatches(text, regexec("(?i)RECORDS\\s*=\\s*([0-9]+)", text, perl = TRUE))[[1]]
@@ -281,12 +409,6 @@ check_data_list <- function(lines, setup_file) {
       grepl("(^|\\s)/\\s*([2-9]|[1-9][0-9]+)\\b", text, perl = TRUE)) {
     abort("unsupported_input", "'", file_name, "' reads several lines ",
           "(records) per case, which asciiSetupReader can't read.")
-  }
-  if (grepl("(?i)\\b[[:alpha:]][[:alnum:]_.]*\\s+TO\\s+[[:alpha:]][[:alnum:]_.]*\\s+[0-9]+",
-            text, perl = TRUE)) {
-    abort("unsupported_input", "'", file_name, "' gives several variables ",
-          "one column range (e.g. \"Q1 TO Q3 3-5\"), which asciiSetupReader ",
-          "can't read.")
   }
   if (!grepl("(?i)/VARIABLES", text, perl = TRUE) &&
       grepl(paste0("(?i)\\b[[:alpha:]][[:alnum:]_.]*\\s*\\((?:F|A|N|E|Z|DOLLAR|",
@@ -302,10 +424,8 @@ check_data_list <- function(lines, setup_file) {
 # GET DATA /FIRSTCASE = n, SAS INFILE FIRSTOBS = n.
 lines_to_skip <- function(codebook, type) {
   if (type == "sps") {
-    # Only the DATA LIST or GET DATA command, before VARIABLE LABELS
-    end <- c(grep2("^variable labels", codebook), length(codebook))[1]
-    lines <- codebook[seq_len(end)]
-    lines <- lines[!startsWith(lines, "*")]
+    # Only the DATA LIST or GET DATA command
+    lines <- data_list_lines(codebook)
     pattern <- "(?i)(?:\\bSKIP|/FIRSTCASE)\\s*=\\s*([0-9]+)"
   } else {
     lines <- codebook[grepl("^INFILE\\b", codebook, ignore.case = TRUE) &
@@ -329,19 +449,12 @@ positions_needed <- function(type) {
 }
 
 # Implied decimal places, as a vector of the number of places named by
-# column. SPSS DATA LIST writes them in parentheses after the position,
-# "V7 37-43 (1)" (or "(F,1)"); SAS writes them as an informat after the
-# position, "V7 37-43 .1". A value with 1 implied decimal place written
-# "0000785" is 78.5. SPSS GET DATA files have none: IBM says GET DATA
-# doesn't read implied decimals, so its "F7.1" formats are ignored.
+# column. SAS writes them as an informat after the position, "V7 37-43 .1":
+# a value with 1 implied decimal place written "0000785" is 78.5. (SPSS
+# DATA LIST's "(1)" is read by data_list_sps().)
 parse_decimals <- function(lines, type) {
   text <- paste(lines, collapse = " ")
-  if (type == "sps") {
-    pattern <- paste0("([[:alpha:]@#$][[:alnum:]@#$_.]*)\\s+[0-9]+(?:\\s*-\\s*[0-9]+)?",
-                      "\\s*\\((?:[[:alpha:]]+\\s*,\\s*)?([0-9]+)\\)")
-  } else {
-    pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s+\\$?\\s*[0-9]+(?:\\s*-\\s*[0-9]+)?\\s+\\.([0-9]+)"
-  }
+  pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s+\\$?\\s*[0-9]+(?:\\s*-\\s*[0-9]+)?\\s+\\.([0-9]+)"
   found <- regmatches(text, gregexpr(pattern, text, perl = TRUE))[[1]]
   if (length(found) == 0) {
     return(stats::setNames(integer(0), character(0)))
@@ -355,20 +468,12 @@ parse_decimals <- function(lines, type) {
   places[places > 0]
 }
 
-# The columns the setup file says are text: SPSS "V1 1-2 (A)" or, in GET
-# DATA files, "V1 0-1 A2"; SAS "V1 $ 1-2". Their missing values are
-# matched exactly, not as numbers.
+# The columns the setup file says are text, SAS "V1 $ 1-2". Their missing
+# values are matched exactly, not as numbers. (SPSS DATA LIST's "(A)" is
+# read by data_list_sps().)
 parse_text_columns <- function(lines, type) {
   text <- paste(lines, collapse = " ")
-  if (type == "sps") {
-    # A bare "A2" is a format only in GET DATA files; in DATA LIST it could
-    # be the next column's name
-    get_data <- any(grepl("/VARIABLES", lines, ignore.case = TRUE))
-    pattern <- paste0("([[:alpha:]@#$][[:alnum:]@#$_.]*)\\s+[0-9]+(?:\\s*-\\s*[0-9]+)?",
-                      "\\s*(?:\\(A[0-9]*\\)", if (get_data) "|A[0-9]+\\b", ")")
-  } else {
-    pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s*\\$"
-  }
+  pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s*\\$"
   found <- regmatches(text, gregexpr(pattern, text, perl = TRUE, ignore.case = TRUE))[[1]]
   unique(sub("^([^[:space:]$]+).*$", "\\1", found))
 }

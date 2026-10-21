@@ -112,12 +112,12 @@ are now different (and correct).
   commented-out INPUT statements are handled.
 * Setup files the package can't read now say why, with an error of class
   `"asciiSetupReader_error"`: a file for delimited data
-  (`GET DATA /ARRANGEMENT = DELIMITED` or SAS `DLM=`/`DSD`, GitHub #13), a
+  (`GET DATA /ARRANGEMENT = DELIMITED`, `DATA LIST FREE` or `LIST`, or SAS
+  `DLM=`/`DSD`, GitHub #13), a
   file of value labels without column positions (such as PSID's separate
   formats files), a file without a DATA LIST or INPUT section, or a layout
   the package can't read: several records per case (`RECORDS=`, `/2`,
-  SAS `#2`), several columns sharing one range (`Q1 TO Q3 3-5`), columns
-  given by format only (`ID (F3) NAME (A5)`) or SAS variable lists in
+  SAS `#2`), columns given by format only (`ID (F3) NAME (A5)`) or SAS variable lists in
   parentheses. These used to fail with "invalid 'row.names' length" or
   "argument of length 0", or read the wrong columns.
 * SAS FORMAT statements are read as whole statements: one format for a list
@@ -134,8 +134,14 @@ are now different (and correct).
 * SAS code lists (`VALUE F 1, 2, 3 = 'Low';`) give each code the label.
   Value ranges (`1 - 97 = 'Actual hours'`) and `OTHER` aren't applied, so
   the real numbers are kept; a message lists them.
-* Known limits, for a later version: tightly spaced DATA LIST layouts
-  (`AA 1-4(A) BB 5-8(A)`).
+* SPSS DATA LIST is read token by token, so its spacing and layout don't
+  matter: tightly spaced columns (`AA 1-4(A) BB 5-8(A)`), formats and
+  decimals anywhere on a line (`V1 1-5 (F,2) V2 6-7`), columns on the DATA
+  LIST line itself, a name and its position on different lines, `/* */`
+  comments, names with `@`, `#` or `$`, and a missing closing period. As in
+  SPSS, names listed before one range share it equally (`A B C 1-6`,
+  `Q1 TO Q3 3-5`). All 157 setup
+  files the package is tested on are read exactly as before.
 
 ## Package
 

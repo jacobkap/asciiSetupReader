@@ -16,19 +16,21 @@ sps_with_decimals <- function(data_list, value_labels = NULL, missing = NULL) {
               "EXECUTE."), ".sps")
 }
 
-test_that("parse_decimals() reads SPSS (d) and (F,d) specs, not GET DATA formats", {
-  expect_equal(parse_decimals(c("V1 1-2   V2 3-9 (1)   V3 10-14 (3)"), "sps"),
-               c(V2 = 1L, V3 = 3L))
-  expect_equal(parse_decimals("V1 1-2 (F,2)", "sps"), c(V1 = 2L))
+test_that("SPSS (d) and (F,d) specs are read, not GET DATA formats", {
+  decimals_of <- function(...) attr(data_list_sps(c("DATA LIST /", ...), "x.sps"), "decimals")
+  expect_equal(decimals_of("V1 1-2   V2 3-9 (1)   V3 10-14 (3)"), c(V2 = 1L, V3 = 3L))
+  expect_equal(decimals_of("V1 1-2 (F,2)"), c(V1 = 2L))
   # IBM: "GET DATA /TYPE=TEXT do[es] not read implied decimals", so a GET
   # DATA format like F8.2 doesn't move the decimal point
-  expect_length(parse_decimals("MASCARA 0-7 F8.2   ANO 8-12 F5.0", "sps"), 0)
+  get_data <- data_list_sps(c("GET DATA /TYPE = TXT /VARIABLES =",
+                              "MASCARA 0-7 F8.2   ANO 8-12 F5.0"), "x.sps")
+  expect_length(attr(get_data, "decimals"), 0)
   # (A) is a text column and (0) has no decimal places
-  expect_length(parse_decimals("V1 1-2 (A)   V2 3-4 (0)   V3 5-6", "sps"), 0)
+  expect_length(decimals_of("V1 1-2 (A)   V2 3-4 (0)   V3 5-6"), 0)
   # Spaces inside the position are allowed
-  expect_equal(parse_decimals("V1 1 - 5 (2)", "sps"), c(V1 = 2L))
+  expect_equal(decimals_of("V1 1 - 5 (2)"), c(V1 = 2L))
   # A one-column variable can have them too
-  expect_equal(parse_decimals("V9 12 (1)", "sps"), c(V9 = 1L))
+  expect_equal(decimals_of("V9 12 (1)"), c(V9 = 1L))
 })
 
 test_that("parse_decimals() reads SAS .d informats", {
