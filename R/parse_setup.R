@@ -129,7 +129,8 @@ read_setup <- function(setup_file) {
   rownames(setup) <- 1:nrow(setup)
 
   # SPSS GET DATA files count columns from 0 rather than 1
-  if (type == "sps" && !any(grepl2("^DATA LIST", codebook))) {
+  if (type == "sps" && any(grepl2("^GET DATA", codebook)) &&
+      !any(grepl2("DATA LIST", codebook))) {
     setup$begin <- setup$begin + 1
     setup$end   <- setup$end + 1
   }
@@ -220,15 +221,16 @@ positions_needed <- function(type) {
 }
 
 # Implied decimal places, as a vector of the number of places named by
-# column. SPSS writes them in parentheses after the position,
-# "V7 37-43 (1)" (or "(F,1)"), or as a format, "V7 36-42 F7.1" (GET DATA
-# files); SAS writes them as an informat after the position, "V7 37-43 .1".
-# A value with 1 implied decimal place written "0000785" is 78.5.
+# column. SPSS DATA LIST writes them in parentheses after the position,
+# "V7 37-43 (1)" (or "(F,1)"); SAS writes them as an informat after the
+# position, "V7 37-43 .1". A value with 1 implied decimal place written
+# "0000785" is 78.5. SPSS GET DATA files have none: IBM says GET DATA
+# doesn't read implied decimals, so its "F7.1" formats are ignored.
 parse_decimals <- function(lines, type) {
   text <- paste(lines, collapse = " ")
   if (type == "sps") {
     pattern <- paste0("([[:alpha:]@#$][[:alnum:]@#$_.]*)\\s+[0-9]+(?:\\s*-\\s*[0-9]+)?",
-                      "\\s*(?:\\((?:[[:alpha:]]+\\s*,\\s*)?([0-9]+)\\)|F[0-9]+\\.([0-9]+))")
+                      "\\s*\\((?:[[:alpha:]]+\\s*,\\s*)?([0-9]+)\\)")
   } else {
     pattern <- "([[:alpha:]_][[:alnum:]_]*)\\s+\\$?\\s*[0-9]+(?:\\s*-\\s*[0-9]+)?\\s+\\.([0-9]+)"
   }

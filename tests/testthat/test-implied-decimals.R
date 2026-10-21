@@ -16,12 +16,13 @@ sps_with_decimals <- function(data_list, value_labels = NULL, missing = NULL) {
               "EXECUTE."), ".sps")
 }
 
-test_that("parse_decimals() reads SPSS (d), (F,d) and Fw.d specs", {
+test_that("parse_decimals() reads SPSS (d) and (F,d) specs, not GET DATA formats", {
   expect_equal(parse_decimals(c("V1 1-2   V2 3-9 (1)   V3 10-14 (3)"), "sps"),
                c(V2 = 1L, V3 = 3L))
   expect_equal(parse_decimals("V1 1-2 (F,2)", "sps"), c(V1 = 2L))
-  expect_equal(parse_decimals("MASCARA 0-7 F8.2   ANO 8-12 F5.0", "sps"),
-               c(MASCARA = 2L))
+  # IBM: "GET DATA /TYPE=TEXT do[es] not read implied decimals", so a GET
+  # DATA format like F8.2 doesn't move the decimal point
+  expect_length(parse_decimals("MASCARA 0-7 F8.2   ANO 8-12 F5.0", "sps"), 0)
   # (A) is a text column and (0) has no decimal places
   expect_length(parse_decimals("V1 1-2 (A)   V2 3-4 (0)   V3 5-6", "sps"), 0)
   # Spaces inside the position are allowed

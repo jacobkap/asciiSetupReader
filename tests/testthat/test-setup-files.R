@@ -91,12 +91,25 @@ test_that("SPSS GET DATA positions count from 0", {
   expect_equal(parsed$column_number, c("ID", "NAME", "RATE"))
   expect_equal(parsed$begin, c(1, 3, 8))
   expect_equal(parsed$end, c(2, 7, 11))
-  expect_equal(parsed$decimals, c(0, 0, 1))
+  # IBM: GET DATA doesn't read implied decimals, so F4.1 doesn't make 0125
+  # into 12.5
+  expect_equal(parsed$decimals, c(0, 0, 0))
   data <- temp_file(c("01Maria0125", "02Joao 0990"), ".txt")
-  out <- suppressMessages(read_ascii_setup(data, setup))
+  expect_silent(out <- read_ascii_setup(data, setup))
   expect_equal(out$ID, c(1, 2))
   expect_equal(out$NAME, c("Maria", "Joao"))
-  expect_equal(out$RATE, c(12.5, 99))
+  expect_equal(out$RATE, c(125, 990))
+})
+
+test_that("DATA LIST positions are never shifted, even with GET DATA in a comment", {
+  # "DATA LIST" not at the start of its line
+  setup <- temp_file(c("FILE HANDLE IN /NAME='x.txt'. DATA LIST FILE=IN FIXED /",
+                       "V1 1-2 V2 3-4 .", "VARIABLE LABELS", "V1 'a'", "V2 'b'",
+                       ".", "EXECUTE."), ".sps")
+  expect_equal(parse_setup(setup)$setup$begin, c(1, 3))
+  setup <- temp_file(c("* GET DATA is not used here.", "DATA LIST FILE='x' /",
+                       "V1 1-2 V2 3-4 .", "EXECUTE."), ".sps")
+  expect_equal(parse_setup(setup)$setup$begin, c(1, 3))
 })
 
 test_that("SAS formatted input with @ pointers and informats is read", {
