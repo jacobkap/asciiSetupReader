@@ -130,7 +130,9 @@ are now different (and correct).
   columns on one line, `/` between columns, the first column on the
   command's own line and labels joined with `+`; in SAS LABEL, several
   columns on one line, blank lines, labels over several lines, a `;` inside
-  a label, and `ATTRIB V1 LABEL = '...'` whatever else ATTRIB sets.
+  a label, LABEL after another statement on its line, and
+  `ATTRIB V1 V2 LABEL = '...'` (for every column listed) whatever else
+  ATTRIB sets. A LABEL statement inside a `/* */` comment isn't used.
 * SAS code lists (`VALUE F 1, 2, 3 = 'Low';`) give each code the label.
   Value ranges (`1 - 97 = 'Actual hours'`) and `OTHER` aren't applied, so
   the real numbers are kept; a message lists them.

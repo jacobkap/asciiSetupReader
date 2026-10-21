@@ -74,3 +74,26 @@ test_that("name_from_label() keeps the meaning of symbols", {
                c("Age_under_5", "Income_over_dollar_10", "X50_percent_or_more",
                  "A_plus_B_at_C", ""))
 })
+
+# Found by the independent review of the label reader
+
+test_that("a SAS LABEL statement after another on the same line is read", {
+  expect_equal(names_of(c("LENGTH V1 8; LABEL V1 = 'One' V2 = 'Two';", "LABEL V3 = 'Three';"),
+                        ".sas"),
+               c("One", "Two", "Three"))
+})
+
+test_that("a SAS LABEL statement inside a /* */ comment isn't used", {
+  expect_equal(names_of(c("/*", "LABEL V1 = 'bad';", "*/", "LABEL V2 = 'Two';"), ".sas"),
+               c("V1", "Two", "V3"))
+})
+
+test_that("SAS ATTRIB gives a label to every column listed before it", {
+  expect_equal(names_of("ATTRIB V1 V2 LABEL = 'Shared' FORMAT = F8. V3 LABEL = 'Three';", ".sas"),
+               c("Shared", "Shared_V2", "Three"))
+})
+
+test_that("an SPSS label can be on the line after its column's name", {
+  expect_equal(names_of(c("VARIABLE LABELS V1", "'Age'", "/V2 'Income'", "."), ".sps"),
+               c("Age", "Income", "V3"))
+})

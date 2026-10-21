@@ -1174,8 +1174,13 @@ name_from_label <- function(label) {
 variable_labels_sps <- function(codebook) {
   # On its own line, or with the first column and its quoted label after it
   # (not a note that starts with the command's name)
-  starts <- grep("^(VARIABLE|VAR) LABELS?$|^(VARIABLE|VAR) LABELS?\\s+/?[[:alpha:]@#$][[:alnum:]_.@#$]*\\s+['\"]",
+  first <- "^(VARIABLE|VAR) LABELS?\\s+/?[[:alpha:]@#$][[:alnum:]_.@#$]*"
+  starts <- grep(paste0("^(VARIABLE|VAR) LABELS?$|", first, "\\s+['\"]"),
                  codebook, ignore.case = TRUE)
+  # or with the first column alone, its label on the next line
+  alone <- grep(paste0(first, "$"), codebook, ignore.case = TRUE)
+  alone <- alone[grepl("^['\"]", c(codebook, "")[alone + 1])]
+  starts <- sort(c(starts, alone))
   if (length(starts) == 0) {
     return(NULL)
   }
@@ -1217,34 +1222,57 @@ variable_labels_sps <- function(codebook) {
 # LABEL = '...': each column's name and label, read to the ";". Returns a
 # data.frame of column_number and label, or NULL.
 variable_labels_sas <- function(codebook) {
-  starts <- grep("^\\s*(LABEL|ATTRIB)\\b", codebook, ignore.case = TRUE)
+  # Statements start a line or follow a ";" ("LENGTH V1 8; LABEL V1 = ...")
+  masked <- mask_quotes(codebook)
+  at <- regexpr("(^|;)\\s*\\K(LABEL|ATTRIB)\\b", masked, ignore.case = TRUE, perl = TRUE)
+  starts <- which(at > 0)
+  # Not ones inside a /* */ comment
+  starts <- starts[!sas_comment_state(codebook)[starts]]
   if (length(starts) == 0) {
     return(NULL)
   }
   keywords <- c("LABEL", "ATTRIB", "FORMAT", "INFORMAT", "LENGTH", "TRANSCODE")
   # The line each statement's ";" is on (not one inside quotes)
-  unquoted <- gsub("'[^']*'|\"[^\"]*\"", "", codebook)
-  semicolons <- grep(";", unquoted)
+  semicolons <- grep(";", masked)
   out <- list()
   for (s in starts) {
-    end <- c(semicolons[semicolons >= s], length(codebook))[1]
-    statement <- sas_statements(codebook[s:end])
+    first <- substring(codebook[s], at[s])
+    end <- if (grepl(";", substring(masked[s], at[s]))) s else
+      c(semicolons[semicolons > s], length(codebook))[1]
+    statement <- sas_statements(c(first, if (end > s) codebook[(s + 1):end]))
     if (nrow(statement) == 0) next
     tokens <- tokenize(statement$text[1], c("=", ";"))
     quoted <- is_quoted(tokens)
     text <- unquote(tokens)
-    column <- NA_character_
+    # The columns the next label is for: in LABEL, the last name; in
+    # ATTRIB, every name listed before its attributes ("ATTRIB V1 V2
+    # LABEL = 'x'")
+    columns <- character(0)
+    attributes_started <- TRUE
     for (i in seq_along(tokens)) {
-      if (!quoted[i] && tokens[i] != "=" && !toupper(tokens[i]) %in% keywords &&
-          grepl("^[[:alpha:]_][[:alnum:]_]*$", tokens[i]) &&
-          !(i > 1 && tokens[i - 1] == "=")) {
-        column <- tokens[i]
-      } else if (quoted[i] && i > 1 && tokens[i - 1] == "=" && !is.na(column) &&
-                 (i < 3 || toupper(tokens[i - 2]) %in% c("LABEL", toupper(column)))) {
-        out[[length(out) + 1]] <- data.frame(column_number = column,
+      if (!quoted[i] && toupper(tokens[i]) %in% keywords) {
+        attributes_started <- TRUE
+      } else if (!quoted[i] && tokens[i] != "=" &&
+                 grepl("^[[:alpha:]_][[:alnum:]_]*$", tokens[i]) &&
+                 !(i > 1 && tokens[i - 1] == "=")) {
+        if (attributes_started || toupper(tokens[1]) == "LABEL") columns <- character(0)
+        columns <- c(columns, tokens[i])
+        attributes_started <- FALSE
+      } else if (quoted[i] && i > 2 && tokens[i - 1] == "=" && length(columns) &&
+                 toupper(tokens[i - 2]) %in% c("LABEL", toupper(columns))) {
+        out[[length(out) + 1]] <- data.frame(column_number = columns,
                                              label = trimws(gsub("\\s+", " ", text[i])))
       }
     }
   }
   do.call(rbind, out)
+}
+
+# Replaces each quoted string in x with as many "x"s, so what's outside
+# quotes can be searched without moving any positions.
+mask_quotes <- function(x) {
+  quoted <- gregexpr("'[^']*'|\"[^\"]*\"", x)
+  regmatches(x, quoted) <- lapply(regmatches(x, quoted),
+                                  function(m) strrep("x", nchar(m)))
+  x
 }
