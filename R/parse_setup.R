@@ -738,7 +738,9 @@ parse_column_names <- function(codebook, type) {
     if (length(variable_label_location) == 0) {
       return(NULL)
     }
-    next_location <- grep2("^value labels$|missing values|user-defined missing values|^execute$|^.$|\\*RECODE$",
+    # (Anchored, so a label such as "Number of missing values" doesn't end
+    # the section)
+    next_location <- grep2("^value labels$|^\\*?\\s*(SPSS\\s+)?missing values?\\b|^\\*?\\s*user-defined missing values|^execute$|^.$|\\*RECODE$",
                            codebook)
     next_location <- next_location[next_location > variable_label_location]
     next_location <- next_location[1]

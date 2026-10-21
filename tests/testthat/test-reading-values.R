@@ -74,3 +74,19 @@ test_that("real files' blank, NA and zero-padded codes get their labels", {
   expect_equal(sum(parole$EMIN %in% "Not applicable"), 21)
 })
 
+test_that("DATA LIST columns without a label are kept, with their short name", {
+  setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2  V2 3-4  V3 5-6", ".",
+                       "VARIABLE LABELS", "  V1 'first'", "  V3 'third'", ".",
+                       "EXECUTE."), ".sps")
+  expect_equal(parse_setup(setup)$setup$column_name, c("first", "V2", "third"))
+})
+
+test_that("a label mentioning missing values doesn't end VARIABLE LABELS", {
+  setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2  V2 3-4  V3 5-6", ".",
+                       "VARIABLE LABELS", "  V1 'first'",
+                       "  V2 'Number of missing values in grid'", "  V3 'third'", ".",
+                       "EXECUTE."), ".sps")
+  expect_equal(parse_setup(setup)$setup$column_name,
+               c("first", "Number_of_missing_values_in_grid", "third"))
+})
+

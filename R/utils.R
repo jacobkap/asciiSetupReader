@@ -41,17 +41,16 @@ get_column_spaces <- function(setup, variables, codebook) {
 
   setup$column_number <- gsub(" .*", "", setup$column_number)
 
-  # Add the descriptive names, keeping only columns that have one
+  # Add the descriptive names; a column without one keeps its short name
   if (!is.null(variables)) {
-    setup <- setup[tolower(setup$column_number) %in%
-                     tolower(variables$column_number), ]
-
     # In the CDC SADC data set, the column number changes from lowercase
     # to uppercase depending on section of setup file.
     setup$column_number <- match_case(setup$column_number,
                                       variables$column_number)
     setup <- merge(setup, variables,
                    by = "column_number", all.x = TRUE)
+    no_name <- is.na(setup$column_name)
+    setup$column_name[no_name] <- setup$column_number[no_name]
   } else {
     setup$column_name <- setup$column_number
   }
