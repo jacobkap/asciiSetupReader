@@ -108,16 +108,14 @@ test_that("an = inside a label is kept in the name", {
   sadc <- parse_setup(sadc_sas_name)$setup
   expect_equal(sadc$column_name[sadc$column_number == "qcoffeetea"],
                "Coffee_tea_drinking_over_1_time_day")
-  expect_equal(fix_names('V1 = "Age < = 5"'), "Age_5")
-  expect_equal(fix_names('V1 "Age = 5"'), "Age_5")
-  # parse_column_names() puts spaces around every "=" before fix_names(), so
-  # indonesia's HHID='HHID(=case)' arrives like this (2.6.0 gave "case")
-  expect_equal(fix_names("HHID = 'HHID( = case)'"), "HHID_case")
+  expect_equal(name_from_label("Age = 5"), "Age_5")
+  # indonesia's HHID='HHID(=case)' (2.6.0 gave "case")
   setup <- temp_file(c("DATA x;", "INFILE 'x';", "INPUT", "  HHID 1-9", "", ";",
                        "LABEL", "  HHID='HHID(=case)'", ";"), ".sas")
   expect_equal(parse_setup(setup)$setup$column_name, "HHID_case")
-  # Only the column's short name and the first " = " or ' "' are removed
-  expect_equal(fix_names('V1 = "a = b = c"'), "a_b_c")
+  setup <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2", ".", "VARIABLE LABELS",
+                       "  V1 'a = b = c'", "."), ".sps")
+  expect_equal(parse_setup(setup)$setup$column_name, "a_b_c")
 })
 
 test_that("% becomes _percent_", {

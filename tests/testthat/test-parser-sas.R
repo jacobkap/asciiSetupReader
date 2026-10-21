@@ -971,7 +971,9 @@ test_that("Column names are correct", {
                c("POSSESSION_OF_STOLEN_PROPERTY_FLAG",
                  "S4QIV_4_1F_ESCAPE_OR_ATTEMPTED_ESCAPE",
                  "ESCAPE_OR_ATTEMPTED_ESCAPE_FLAG",
-                 "S4QIV_4_1G_ANY_OTHER_MAJOR_VIOLATION_INCLUDING_WORK_SLOWDOWNS_FOOD_STRIKES_SETTING_FIRE",
+                 # The label continues on the next line ("RIOTING, ETC."),
+                 # which versions before 3.0.0 left off
+                 "S4QIV_4_1G_ANY_OTHER_MAJOR_VIOLATION_INCLUDING_WORK_SLOWDOWNS_FOOD_STRIKES_SETTING_FIRE_RIOTING_ETC",
                  "ANY_OTHER_MAJOR_VIOLATION_INCLUDING_WORK_SLOWDOWNS_FOOD_STRIKES_SETTING_FIRE_RIOTING_ETC_FLAG",
                  "NONCONFINED_POPULATION_CALCULATED"))
 

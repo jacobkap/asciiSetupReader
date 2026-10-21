@@ -839,7 +839,7 @@ sas_statements <- function(codebook, from = 1) {
   text <- character(0); line <- integer(0); commented <- logical(0)
   buffer <- ""; first_line <- NA_integer_; first_commented <- NA
   for (i in seq_along(lines)) {
-    pieces <- strsplit(paste0(lines[i], " "), ";", fixed = TRUE)[[1]]
+    pieces <- split_outside_quotes(paste0(lines[i], " "), ";")
     for (k in seq_along(pieces)) {
       piece <- pieces[k]
       # A comment that opens and closes here isn't the statement's start
@@ -874,6 +874,18 @@ sas_statements <- function(codebook, from = 1) {
     }
   }
   data.frame(text = text, line = line, commented = commented)
+}
+
+# Splits a line at each `separator` that isn't inside quotes, like
+# strsplit(line, separator, fixed = TRUE) but keeping "a; b" in 'a; b'.
+split_outside_quotes <- function(line, separator) {
+  masked <- line
+  quoted <- gregexpr("'[^']*'|\"[^\"]*\"", line)
+  regmatches(masked, quoted) <- lapply(regmatches(masked, quoted),
+                                       function(m) strrep("x", nchar(m)))
+  at <- gregexpr(separator, masked, fixed = TRUE)[[1]]
+  if (at[1] == -1) return(line)
+  substring(line, c(1, at + 1), c(at - 1, nchar(line)))
 }
 
 # Whether a /* */ comment is open at the start of each line, given whether
@@ -1022,89 +1034,112 @@ codebook_from_lines <- function(codebook, type) {
 # column_name (descriptive label made into a clean name) from the SPSS
 # VARIABLE LABELS or SAS LABEL/ATTRIB section. NULL if there isn't one.
 parse_column_names <- function(codebook, type) {
-  if (type == "sps") {
-    variable_label_location <- grep2("^variable labels$", codebook)
-    if (length(variable_label_location) == 0) {
-      return(NULL)
-    }
-    # (Anchored, so a label such as "Number of missing values" doesn't end
-    # the section)
-    next_location <- grep2("^value labels$|^\\*?\\s*(SPSS\\s+)?missing values?\\b|^\\*?\\s*user-defined missing values|^execute$|^.$|\\*RECODE$",
-                           codebook)
-    next_location <- next_location[next_location > variable_label_location]
-    next_location <- next_location[1]
-    next_location <- next_location - 1
-    if (is.na(next_location)) {
-      next_location <- length(codebook) + 1
-    }
-    variables <- codebook[variable_label_location:next_location]
-    variables <- gsub("\\'\\'", "\\'", variables)
-    variables <- gsub("( \\'[[:alnum:]])\\'([[:alnum:]])", "\\1\\2",
-                      variables)
-    variables <- gsub("\'", "\"", variables)
-    # Labels continued on the next line end in "+
-    plus <- grep('\\"\\+$', variables)
-    if (length(plus) > 0) {
-      for (n in seq_along(plus)) {
-        variables[plus[n] + 1] <- paste(variables[plus[n]],
-                                        variables[plus[n] + 1],
-                                        collapse = " ")
-        variables[plus[n] + 1] <- gsub('\\"\\+ *\\"', "",
-                                       variables[plus[n] + 1])
-      }
-      variables <- variables[-plus]
-    }
-  } else if (type == "sas") {
-    variable_label_location <- grep2("^LABEL$|^ATTRIB$", codebook)
-    if (length(variable_label_location) == 0) {
-      return(NULL)
-    }
-    next_location <- grep2("^$|^;", codebook)
-    next_location <- next_location[next_location > variable_label_location]
-    next_location <- next_location[1]
-    if (is.na(next_location)) {
-      next_location <- length(codebook)
-    }
-
-    # V1 = "Label" (or V1 LABEL="Label" FORMAT=... in ATTRIB statements)
-    variables <- codebook[variable_label_location:next_location]
-    variables <- variables[grep("=", variables)]
-    variables <- gsub('\\"\\s+FORMAT=.*$', '\\"', variables)
-    variables <- gsub("(\\S)=", "\\1 =", variables)
-    variables <- gsub("=(\\S)", "= \\1", variables)
-    variables <- gsub('([[:alpha:]]+\\") ', '\\1   ', variables)
-
-    variables <- gsub(' LABEL =\\"', '  "', variables)
+  labels <- if (type == "sps") variable_labels_sps(codebook) else variable_labels_sas(codebook)
+  if (is.null(labels)) {
+    return(NULL)
   }
-  variables <- unlist(strsplit(variables, '"\\s{3,}'))
-
-  # Keep the meaning of symbols that fix_names() would otherwise turn into _
-  variables <- gsub("<", "_under_", variables)
-  variables <- gsub(">", "_over_", variables)
-  variables <- gsub("\\$", "_dollar_", variables)
-  variables <- gsub("\\+", "_plus_", variables)
-  variables <- gsub("@", "_at_", variables)
-  variables <- gsub("%", "_percent_", variables)
-
-  variables <- gsub("^/", "", variables)
-  variables <- gsub('"\\s*(.*?)\\s*"', '"\\1"', variables)
-  variables_raw <- variables
-
-  variables <- data.frame(column_name   = fix_names(variables),
-                          column_number = gsub(" .*", "",
-                                               variables)
-                          )
+  names <- name_from_label(labels$label)
   # A label of only punctuation (e.g. "...") has no clean name, so the
-  # column keeps its short name rather than ending the section below
-  no_name <- variables$column_name == "" & grepl('"[^"]+"|\'[^\']+\'', variables_raw)
-  variables$column_name[no_name] <- variables$column_number[no_name]
-
-  # Stop at the first empty label (the end of the section)
-  if (any(grepl("^$", variables$column_name))) {
-    variables <- variables[1:(grep("^$", variables$column_name)[1]), ]
-  }
-  variables <- variables[!variables$column_number %in% "*", ]
-  variables <- variables[!duplicated(variables$column_number), ]
-  return(variables)
+  # column keeps its short name
+  names[names == ""] <- labels$column_number[names == ""]
+  variables <- data.frame(column_name = names, column_number = labels$column_number)
+  variables[!duplicated(tolower(variables$column_number)), ]
 }
 
+# Turns a column's label into a clean name: symbols with a meaning become
+# words ("<" is "_under_", "%" "_percent_", ...), anything else that isn't a
+# letter, number or "_" becomes "_", and a name can't start with a number.
+name_from_label <- function(label) {
+  label <- gsub("<", "_under_", label)
+  label <- gsub(">", "_over_", label)
+  label <- gsub("\\$", "_dollar_", label)
+  label <- gsub("\\+", "_plus_", label)
+  label <- gsub("@", "_at_", label)
+  label <- gsub("%", "_percent_", label)
+  name <- gsub("\\W|#|\\/", "_", label)
+  name <- gsub("_+", "_", name)
+  name <- gsub("^_|_$", "", name)
+  sub("^([0-9])", "X\\1", name)
+}
+
+# SPSS VARIABLE LABELS commands ("VAR LABELS" too): each column's name and
+# its quoted label (pieces joined by "+"), with "/" between columns and a
+# "." ending the command. Returns a data.frame of column_number and label,
+# or NULL.
+variable_labels_sps <- function(codebook) {
+  # On its own line, or with the first column and its quoted label after it
+  # (not a note that starts with the command's name)
+  starts <- grep("^(VARIABLE|VAR) LABELS?$|^(VARIABLE|VAR) LABELS?\\s+/?[[:alpha:]@#$][[:alnum:]_.@#$]*\\s+['\"]",
+                 codebook, ignore.case = TRUE)
+  if (length(starts) == 0) {
+    return(NULL)
+  }
+  out <- list()
+  for (s in starts) {
+    # The command runs to its "." (a "." token) or the next command
+    end <- grep(paste0("^\\*|^(ADD )?VALUE LABELS|^MISSING VALUES?\\b|^EXECUTE\\b|",
+                       "^FORMATS?\\b|^RECODE\\b|^SAVE\\b|^(VARIABLE|VAR) LABELS?"),
+                codebook, ignore.case = TRUE)
+    end <- c(end[end > s] - 1, length(codebook))[1]
+    lines <- codebook[s:end]
+    lines[1] <- sub("^(VARIABLE|VAR) LABELS?\\s*", "", lines[1], ignore.case = TRUE)
+    tokens <- tokenize(lines, c("/", "+"))
+    quoted <- is_quoted(tokens)
+    text <- unquote(tokens)
+    column <- NA_character_
+    i <- 1
+    while (i <= length(tokens)) {
+      if (!quoted[i] && tokens[i] == ".") break
+      if (!quoted[i] && !tokens[i] %in% c("/", "+")) {
+        column <- tokens[i]
+      } else if (quoted[i] && !is.na(column)) {
+        label <- text[i]
+        while (i + 2 <= length(tokens) && tokens[i + 1] == "+" && quoted[i + 2]) {
+          label <- paste0(label, text[i + 2])
+          i <- i + 2
+        }
+        out[[length(out) + 1]] <- data.frame(column_number = column,
+                                             label = trimws(label))
+        column <- NA_character_
+      }
+      i <- i + 1
+    }
+  }
+  do.call(rbind, out)
+}
+
+# SAS LABEL statements ("LABEL V1 = 'Age' V2 = 'Sex';") and ATTRIB ...
+# LABEL = '...': each column's name and label, read to the ";". Returns a
+# data.frame of column_number and label, or NULL.
+variable_labels_sas <- function(codebook) {
+  starts <- grep("^\\s*(LABEL|ATTRIB)\\b", codebook, ignore.case = TRUE)
+  if (length(starts) == 0) {
+    return(NULL)
+  }
+  keywords <- c("LABEL", "ATTRIB", "FORMAT", "INFORMAT", "LENGTH", "TRANSCODE")
+  # The line each statement's ";" is on (not one inside quotes)
+  unquoted <- gsub("'[^']*'|\"[^\"]*\"", "", codebook)
+  semicolons <- grep(";", unquoted)
+  out <- list()
+  for (s in starts) {
+    end <- c(semicolons[semicolons >= s], length(codebook))[1]
+    statement <- sas_statements(codebook[s:end])
+    if (nrow(statement) == 0) next
+    tokens <- tokenize(statement$text[1], c("=", ";"))
+    quoted <- is_quoted(tokens)
+    text <- unquote(tokens)
+    column <- NA_character_
+    for (i in seq_along(tokens)) {
+      if (!quoted[i] && tokens[i] != "=" && !toupper(tokens[i]) %in% keywords &&
+          grepl("^[[:alpha:]_][[:alnum:]_]*$", tokens[i]) &&
+          !(i > 1 && tokens[i - 1] == "=")) {
+        column <- tokens[i]
+      } else if (quoted[i] && i > 1 && tokens[i - 1] == "=" && !is.na(column) &&
+                 (i < 3 || toupper(tokens[i - 2]) %in% c("LABEL", toupper(column)))) {
+        out[[length(out) + 1]] <- data.frame(column_number = column,
+                                             label = trimws(gsub("\\s+", " ", text[i])))
+      }
+    }
+  }
+  do.call(rbind, out)
+}

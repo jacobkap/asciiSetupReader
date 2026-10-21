@@ -44,6 +44,12 @@ are now different (and correct).
   `.` is missing (a lone `.` used to be kept).
 * **Columns without a label in VARIABLE LABELS or LABEL are kept**, named
   by their short name; they used to be dropped.
+* **A SAS label continued on the next line is read in full**, so names that
+  used to be cut short at the line's end are longer: e.g. the prisoners
+  file's `LFM` and `LFF` were `..._LOCAL_AUTHORITY` and
+  `..._LOCAL_AUTHORITY_LFF` (one name, made unique) and are now
+  `..._LOCAL_AUTHORITY_MALE` and `..._LOCAL_AUTHORITY_FEMALE`. 24 names in 6
+  of the 157 setup files the package is tested on changed this way.
 * **A later VALUE LABELS command replaces a column's earlier labels**, as
   in SPSS (`ADD VALUE LABELS` adds to them instead). Before, the first set
   was kept. A message lists the columns whose earlier, different labels were
@@ -119,6 +125,12 @@ are now different (and correct).
   (`V1-V5`, `V1--V5`), formats without value labels (`8.2`, `DATE9.`) and
   `ATTRIB ... FORMAT=`. Format names match in any case, and a format defined
   twice uses the later definition, as in SAS.
+* Column labels are read by their quoting, so they can be laid out any way
+  SPSS and SAS allow: in SPSS VARIABLE LABELS (or `VAR LABELS`), several
+  columns on one line, `/` between columns, the first column on the
+  command's own line and labels joined with `+`; in SAS LABEL, several
+  columns on one line, blank lines, labels over several lines, a `;` inside
+  a label, and `ATTRIB V1 LABEL = '...'` whatever else ATTRIB sets.
 * SAS code lists (`VALUE F 1, 2, 3 = 'Low';`) give each code the label.
   Value ranges (`1 - 97 = 'Actual hours'`) and `OTHER` aren't applied, so
   the real numbers are kept; a message lists them.
