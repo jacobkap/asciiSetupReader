@@ -31,7 +31,6 @@
 # read here with a simple pattern, and every cell's expected value is worked
 # out from the raw record text.
 
-fixture <- function(name) test_path("fixtures", name)
 
 # The code/label pairs written in a cdap setup file, by variable. The first
 # time a variable's pairs are written is used (repeated blocks are copies).
