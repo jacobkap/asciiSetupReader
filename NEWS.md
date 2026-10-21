@@ -33,6 +33,17 @@ are now different (and correct).
   `IF V156=0000009 THEN V156=.;` never matched the `9`s in a 1-column field.
   Columns the setup file says are text (SPSS `(A)`, SAS `$`) still need
   exactly the same text.
+* **Value labels of number columns are matched by value** too, so a label
+  for `0` now labels data written `0000000` (e.g. 7,997 "Not updated"
+  values in the 1960 UCR file that used to stay as `0000000`).
+* **Blanks and the letters `NA` in text columns are values, not missing**,
+  as in SPSS and SAS, so their labels are used: e.g. 166,650 blanks in the
+  1960 UCR file are now "No return received" and 15,555 in the 2000 NIBRS
+  batch header "Inactive", where they used to be `NA`. Blank text values
+  without a label are still `NA`. In number columns a blank, `NA` or a lone
+  `.` is missing (a lone `.` used to be kept).
+* **Columns without a label in VARIABLE LABELS or LABEL are kept**, named
+  by their short name; they used to be dropped.
 * **A later VALUE LABELS command replaces a column's earlier labels**, as
   in SPSS (`ADD VALUE LABELS` adds to them instead). Before, the first set
   was kept. A message lists the columns whose earlier, different labels were
@@ -72,14 +83,37 @@ are now different (and correct).
 * Setup files that aren't valid UTF-8 are read as Windows-1252 (Latin-1
   plus curly quotes and dashes), with a message, instead of failing with
   "input string 3 is invalid" (GitHub #5).
+* SPSS MISSING VALUES follow SPSS's rules more closely: a later command
+  replaces a column's missing values, `V1 ()` clears them, `ALL` means
+  every column, `/` can separate columns on one line, `THRU` can be in any
+  case, and long or decimal ranges (`1000000 THRU 9999999`,
+  `99.5 THRU 99.9`) are compared as numbers instead of being listed one
+  value at a time.
+* SAS missing value recodes are read as whole statements, from every
+  section after INPUT: `>=`/`GE` alone (`98 thru highest`), `<=`/`LE`,
+  `GE a AND LE b`, `EQ`, lower-case names and statements over several
+  lines. Statements that aren't "IF v = ... THEN v = .;" (e.g. a recode to
+  another value, or a condition on another column) used to be misread as
+  missing values; they're now skipped, with a message.
+* `SKIP` (SPSS DATA LIST), `/FIRSTCASE` (GET DATA) and `FIRSTOBS` (SAS
+  INFILE) skip header lines in the data.
+* SAS formatted input without `@` pointers (`INPUT V1 2. V2 $3.;`), INPUT on
+  the same line as the first column, blank lines inside INPUT and
+  commented-out INPUT statements are handled.
 * Setup files the package can't read now say why, with an error of class
   `"asciiSetupReader_error"`: a file for delimited data
-  (`GET DATA /ARRANGEMENT = DELIMITED`, GitHub #13), a file of value labels
-  without column positions (such as PSID's separate formats files), a file
-  without a DATA LIST or INPUT section, or SAS INPUT the package can't read
-  (several records per case, variable lists in parentheses). These used to
-  fail with "invalid 'row.names' length" or "argument of length 0", or put
-  columns in the wrong place.
+  (`GET DATA /ARRANGEMENT = DELIMITED` or SAS `DLM=`/`DSD`, GitHub #13), a
+  file of value labels without column positions (such as PSID's separate
+  formats files), a file without a DATA LIST or INPUT section, or a layout
+  the package can't read: several records per case (`RECORDS=`, `/2`,
+  SAS `#2`), several columns sharing one range (`Q1 TO Q3 3-5`), columns
+  given by format only (`ID (F3) NAME (A5)`) or SAS variable lists in
+  parentheses. These used to fail with "invalid 'row.names' length" or
+  "argument of length 0", or read the wrong columns.
+* Known limits, for a later version: tightly spaced DATA LIST layouts
+  (`AA 1-4(A) BB 5-8(A)`), SAS FORMAT statements that give one format to a
+  list of columns, and SAS value ranges and `OTHER` in PROC FORMAT (which
+  aren't applied).
 
 ## Bug fixes
 

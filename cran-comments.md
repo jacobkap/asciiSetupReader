@@ -16,7 +16,7 @@ NEWS.md.
 
 0 errors | 0 warnings | 1 note
 
-* Days since last update: 3
+* Days since last update: 4
 
   This release fixes values that were silently read wrongly: numbers with
   implied decimal places (e.g. 78.5 read as 785), value labels with an

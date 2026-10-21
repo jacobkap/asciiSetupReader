@@ -53,9 +53,16 @@
 #'   rather than becoming NA unless \code{use_value_labels = FALSE}.
 #'
 #' @section Value labels:
-#' As in SPSS, a VALUE LABELS command replaces any labels an earlier VALUE
-#' LABELS command gave a column, and ADD VALUE LABELS adds to them (changing
-#' the label of a code that already has one).
+#' As in SPSS and SAS, codes of number columns are matched by value (a label
+#' for 0 labels 0000000), and codes of text columns (SPSS "(A)", SAS "$")
+#' must be the same text; a blank or the letters NA in a text column are
+#' values that can have a label. As in SPSS, a VALUE LABELS command replaces
+#' any labels an earlier VALUE LABELS command gave a column, and ADD VALUE
+#' LABELS adds to them (changing the label of a code that already has one).
+#'
+#' @section Blank values:
+#' A blank in a number column, or a lone "." or the letters NA, is NA. A
+#' blank in a text column is NA unless it has a value label.
 #'
 #' @section Messages:
 #' read_ascii_setup() tells you with a message when it:
@@ -67,16 +74,18 @@
 #'   \item makes column names unique because two columns would have had
 #'     the same name (only when \code{use_clean_names = TRUE}),
 #'   \item uses only the last of several different sets of value labels a
-#'     column has (only when \code{use_value_labels = TRUE}), or
+#'     column has (only when \code{use_value_labels = TRUE}),
+#'   \item skips SAS missing value statements it can't read (only when
+#'     \code{missing_values} isn't "none"), or
 #'   \item reads a setup file that isn't valid UTF-8 as Windows-1252.
 #' }
 #' \code{suppressMessages(read_ascii_setup(...))} silences them. They have
-#' the class "asciiSetupReader_message", so on R 4.0 or later
+#' the class "asciiSetupReader_message", so
 #' \code{suppressMessages(read_ascii_setup(...), classes = "asciiSetupReader_message")}
 #' silences only these messages. Each kind also has its own class:
 #' "asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
-#' "asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels" and
-#' "asciiSetupReader_encoding".
+#' "asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels",
+#' "asciiSetupReader_skipped_missing" and "asciiSetupReader_encoding".
 #'
 #' @section Errors:
 #' Setup files that can't be read stop with an error of class
