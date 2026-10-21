@@ -249,14 +249,41 @@ read_data <- function(data, setup) {
                                     setup$setup$end,
                                     setup$setup$column_number)
 
+  # Nothing is made NA while reading: in text columns a blank or the
+  # letters "NA" are values that can have a label (see blanks_to_na())
   out <- suppressMessages(vroom::vroom_fwf(data,
                                            col_positions = positions,
                                            col_types = vroom::cols(.default =
                                                                      vroom::col_character()),
+                                           na = character(),
                                            altrep = FALSE))
   # setDT() converts in place; as.data.table() would copy all the data
   data.table::setDT(out)
+  # In number columns a blank, "NA" or a lone "." is missing, as in SPSS
+  # and SAS
+  for (column in setdiff(names(out), setup$text_columns)) {
+    values <- out[[column]]
+    empty <- values %in% c("", "NA", ".")
+    if (any(empty)) {
+      values[empty] <- NA
+      data.table::set(out, j = column, value = values)
+    }
+  }
   return(out)
+}
+
+# Makes blank text values that weren't labelled or set missing NA, as
+# earlier versions did.
+blanks_to_na <- function(data) {
+  for (column in names(data)) {
+    values <- data[[column]]
+    blank <- !is.na(values) & values == ""
+    if (any(blank)) {
+      values[blank] <- NA
+      data.table::set(data, j = column, value = values)
+    }
+  }
+  data
 }
 
 # Sets missing values to NA, renames columns from their short names (V1) to
@@ -281,6 +308,7 @@ fix_names_missing_numeric <- function(data,
       commented_na <- (after - before)[after > before]
     }
   }
+  data <- blanks_to_na(data)
   if (real_names) {
     variables <- setup$setup[setup$setup$column_number
                              %in% names(data), ]

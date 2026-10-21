@@ -6,6 +6,11 @@ fix_variable_values <- function(.data, value_label_section, column,
   # label for "1" also applies to "01" and vice versa
   value_label_section <- single_digit(value_label_section)
   value_label_section <- double_digit(value_label_section)
+  # A blank code (" ") labels blank fields, which are read as ""
+  blank <- value_label_section[value_label_section == " "]
+  if (length(blank) > 0) {
+    value_label_section <- c(value_label_section, stats::setNames("", names(blank)[1]))
+  }
   value_label_section <- value_label_section[!duplicated(value_label_section)]
 
   data.table::set(.data, j = column,
