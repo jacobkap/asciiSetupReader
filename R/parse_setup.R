@@ -364,6 +364,9 @@ data_list_sps <- function(lines, setup_file) {
                   paste(names, collapse = " "), ".")
       }
       starts <- begin + width * (seq_along(names) - 1)
+      # Columns before any "/" are on the first record, so a "/" after
+      # them starts the second ("V1 1-2 / V2 3-4")
+      if (record == 0) record <- 1
       out_names <- c(out_names, names)
       out_begin <- c(out_begin, starts)
       out_end   <- c(out_end, starts + width - 1)

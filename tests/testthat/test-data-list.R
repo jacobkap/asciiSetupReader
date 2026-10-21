@@ -147,3 +147,16 @@ test_that("a missing period ends DATA LIST at the next command", {
   expect_equal(positions(data_list("/V1 1-2", "TITLE 3-30", ".")),
                c(V1 = "1-2", TITLE = "3-30"))
 })
+
+# Found by the 3.0.0 challenge review
+
+test_that("a / after columns given without a leading / starts the second record", {
+  no_slash <- temp_file(c("DATA LIST FIXED V1 1-2 / V2 3-4."), ".sps")
+  expect_error(parse_setup(no_slash), "several lines \\(records\\) per case",
+               class = "asciiSetupReader_unsupported_input")
+  # One record, with or without the leading /
+  expect_equal(positions(temp_file("DATA LIST FIXED / V1 1-2 V2 3-4.", ".sps")),
+               c(V1 = "1-2", V2 = "3-4"))
+  expect_equal(positions(temp_file("DATA LIST FIXED V1 1-2 V2 3-4.", ".sps")),
+               c(V1 = "1-2", V2 = "3-4"))
+})
