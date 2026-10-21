@@ -283,18 +283,24 @@ parse_value_labels_sps <- function(codebook, setup) {
 # and the lines after it, up to and including one that ends in "." or a
 # blank line, which ends a command in SPSS.
 drop_comment_commands <- function(lines) {
-  keep <- rep(TRUE, length(lines))
+  lines[!in_comment_command(lines)]
+}
+
+# TRUE for each line that is part of an SPSS comment command ("*" or
+# COMMENT, which runs to a line ending in "." or a blank line).
+in_comment_command <- function(lines) {
+  out <- rep(FALSE, length(lines))
   in_comment <- FALSE
   for (i in seq_along(lines)) {
     if (!in_comment && grepl("^(\\*|COMMENT\\b)", lines[i], ignore.case = TRUE)) {
       in_comment <- TRUE
     }
     if (in_comment) {
-      keep[i] <- FALSE
+      out[i] <- TRUE
       if (lines[i] == "" || endsWith(lines[i], ".")) in_comment <- FALSE
     }
   }
-  lines[keep]
+  out
 }
 
 # SAS -------------------------------------------------------------------------

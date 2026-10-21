@@ -159,7 +159,7 @@ read_setup <- function(setup_file) {
     missing <- NULL
   }
   skipped_missing <- attr(missing, "skipped")
-  recodes <- attr(missing, "recodes")
+  recodes <- if (type == "sps") spss_recodes(codebook) else attr(missing, "recodes")
   if (length(missing) == 0) missing <- NULL
   commented_lines <- attr(missing, "line") + line_offset
   missing <- missing[!duplicated(missing), ]
@@ -659,7 +659,6 @@ parse_missing_sps <- function(codebook, setup) {
     return(NULL)
   }
   ends <- grep2("EXECUTE|^\\*.*SPSS", codebook)
-  recodes <- character(0)
   sections <- lapply(seq_along(starts), function(k) {
     start <- starts[k]
     end <- ends[ends > start][1]
@@ -673,11 +672,9 @@ parse_missing_sps <- function(codebook, setup) {
     lines <- codebook[start:end]
     if (!command) {
       # RECODE groups to a value other than SYSMIS, e.g. (1=5), change
-      # values rather than mark them missing; they aren't applied
-      group <- "\\([^()]*=(?![^()]*SYSMIS)[^()]*\\)"
-      has_recode <- grepl(group, lines, perl = TRUE, ignore.case = TRUE)
-      recodes <<- c(recodes, lines[has_recode])
-      lines <- gsub(group, " ", lines, perl = TRUE, ignore.case = TRUE)
+      # values rather than mark them missing; they aren't applied (and are
+      # reported by spss_recodes())
+      lines <- gsub(recode_group, " ", lines, perl = TRUE, ignore.case = TRUE)
     }
     section <- parse_missing_section_sps(lines, setup, start)
     if (!is.null(section)) {
@@ -686,12 +683,33 @@ parse_missing_sps <- function(codebook, setup) {
     }
     section
   })
-  missing <- combine_missing(sections)
-  if (length(recodes) > 0) {
-    if (is.null(missing)) missing <- list()
-    attr(missing, "recodes") <- unique(recodes)
+  combine_missing(sections)
+}
+
+# A RECODE group to a value other than SYSMIS, e.g. "(1=5)"
+recode_group <- "\\([^()]*=(?![^()]*SYSMIS)[^()]*\\)"
+
+# SPSS RECODE commands that change values rather than mark them missing
+# ("RECODE V1 (1=5)."), wherever they are in the file, each from RECODE to
+# its "." (or a blank line or the next command). Ones that only recode to
+# SYSMIS, and commented-out ones, aren't listed.
+spss_recodes <- function(codebook) {
+  active <- !in_comment_command(codebook)
+  starts <- which(active & grepl("^RECODE\\b", codebook, ignore.case = TRUE))
+  next_command <- grepl(paste0("^(\\*|RECODE|EXECUTE|MISSING VALUES?|(ADD )?VALUE LABELS|",
+                               "VARIABLE LABELS|FORMATS|COMPUTE|SAVE)\\b"),
+                        codebook, ignore.case = TRUE)
+  out <- character(0)
+  for (s in starts) {
+    end <- s
+    while (end < length(codebook) && !endsWith(codebook[end], ".") &&
+           codebook[end + 1] != "" && !next_command[end + 1]) {
+      end <- end + 1
+    }
+    text <- paste(codebook[s:end], collapse = " ")
+    if (grepl(recode_group, text, perl = TRUE, ignore.case = TRUE)) out <- c(out, text)
   }
-  missing
+  if (length(out)) unique(out)
 }
 
 # The marker for "V1 ()", which clears V1's missing values

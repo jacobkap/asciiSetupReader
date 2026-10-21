@@ -186,3 +186,13 @@ test_that("DLM or DSD anywhere in INFILE, but not in its file name, means delimi
                class = "asciiSetupReader_delimited")
   expect_equal(parse_setup(setup("INFILE 'c:/dsd/dlm.txt';"))$setup$column_number, "V1")
 })
+
+test_that("SPSS RECODE outside a missing values section is reported too", {
+  sps_with <- function(...) {
+    temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2  V2 3-4", ".", ..., "EXECUTE."), ".sps")
+  }
+  expect_equal(read_setup(sps_with("RECODE V1 (1=5).", "recode v2 (2=3)", "  (4=6)."))$recodes,
+               c("RECODE V1 (1=5).", "recode v2 (2=3) (4=6)."))
+  # Commented out, or only to SYSMIS (a missing value): not a recode
+  expect_null(read_setup(sps_with("* RECODE V1 (1=5).", "RECODE V2 (9=SYSMIS)."))$recodes)
+})
