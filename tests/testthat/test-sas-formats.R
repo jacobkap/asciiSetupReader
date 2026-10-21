@@ -109,3 +109,23 @@ test_that("a format defined twice uses the later definition, as in SAS", {
                  class = "asciiSetupReader_replaced_labels")
   expect_equal(out$V1, c("one", "2"))
 })
+
+# Found by the 3.0.0 challenge review
+
+test_that("ATTRIB with LABEL before FORMAT, with no spaces, keeps the format", {
+  labels <- labels_of_sas(c("ATTRIB V1 LABEL='Sex' FORMAT=SEXF.",
+                            "       V2 LABEL=\"Age; in years\" LENGTH=8 FORMAT=AGEF.;"),
+                          c("VALUE SEXF 1 = 'Male' 2 = 'Female';", "VALUE AGEF 9 = 'Unknown';"))
+  expect_equal(labels$V1, c(Male = "1", Female = "2"))
+  expect_equal(labels$V2, c(Unknown = "9"))
+})
+
+test_that("numbered lists keep zero padding and can have _ and digits in the prefix", {
+  expect_equal(sas_variable_list("Q08-Q10", character(0)), c("Q08", "Q09", "Q10"))
+  expect_equal(sas_variable_list("A1_1-A1_3", character(0)), c("A1_1", "A1_2", "A1_3"))
+  expect_equal(sas_variable_list("V99999-V100001", character(0)),
+               c("V99999", "V100000", "V100001"))
+  labels <- labels_of_sas("FORMAT Q08-Q10 YNF.;", "VALUE YNF 1 = 'Yes' 2 = 'No';",
+                          input = "  Q08 1  Q09 2  Q10 3")
+  expect_equal(names(labels), c("Q08", "Q09", "Q10"))
+})

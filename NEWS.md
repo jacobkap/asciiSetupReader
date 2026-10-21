@@ -122,8 +122,8 @@ are now different (and correct).
   "argument of length 0", or read the wrong columns.
 * SAS FORMAT statements are read as whole statements: one format for a list
   of columns (`FORMAT V1 V2 YNF.;`), numbered and positional lists
-  (`V1-V5`, `V1--V5`), formats without value labels (`8.2`, `DATE9.`) and
-  `ATTRIB ... FORMAT=`. Format names match in any case, and a format defined
+  (`V1-V5`, `Q08-Q10`, `A1_1-A1_3`, `V1--V5`), formats without value labels
+  (`8.2`, `DATE9.`) and `ATTRIB ... FORMAT=` (also after `LABEL='...'`). Format names match in any case, and a format defined
   twice uses the later definition, as in SAS.
 * Column labels are read by their quoting, so they can be laid out any way
   SPSS and SAS allow: in SPSS VARIABLE LABELS (or `VAR LABELS`), several

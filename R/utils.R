@@ -95,6 +95,9 @@ sas_formats <- function(codebook, columns) {
   text <- gsub("/\\*|\\*/", " ", codebook)
   starts <- grep("^\\s*(FORMAT|ATTRIB)\\b", text, ignore.case = TRUE)
   if (length(starts) == 0) return(NULL)
+  # A quoted label becomes one word, so a ";" inside it doesn't end the
+  # statement and "LABEL='Sex' FORMAT=SEXF." keeps its format
+  text <- gsub("'[^']*'|\"[^\"]*\"", " _quoted_ ", text)
   semicolons <- grep(";", text)
   rows <- list()
   for (s in starts) {
@@ -105,8 +108,7 @@ sas_formats <- function(codebook, columns) {
     statement <- sub("^\\s*(FORMAT|ATTRIB)\\b", "", statement, ignore.case = TRUE)
     if (attrib) {
       # ATTRIB V1 LABEL = '...' FORMAT = V1F. V2 ...
-      statement <- gsub("'[^']*'|\"[^\"]*\"", " ", statement)
-      statement <- gsub("\\b(LABEL|LENGTH|INFORMAT)\\s*=\\s*\\S+", " ", statement,
+      statement <- gsub("\\b(LABEL|LENGTH|INFORMAT|TRANSCODE)\\s*=\\s*\\S+", " ", statement,
                         ignore.case = TRUE)
       statement <- gsub("\\bFORMAT\\s*=\\s*", " ", statement, ignore.case = TRUE)
     }
@@ -134,7 +136,8 @@ sas_formats <- function(codebook, columns) {
   if (nrow(format) == 0) NULL else format
 }
 
-# The columns a SAS variable list token means: "V3-V5" is V3, V4 and V5,
+# The columns a SAS variable list token means: "V3-V5" is V3, V4 and V5
+# ("Q08-Q10" is Q08, Q09 and Q10; "A1_1-A1_3" is A1_1, A1_2 and A1_3),
 # "V3--V5" every column from V3 to V5 in file order, anything else itself.
 sas_variable_list <- function(token, columns) {
   positional <- regmatches(token, regexec(
@@ -145,12 +148,21 @@ sas_variable_list <- function(token, columns) {
     if (!is.na(from) && !is.na(to) && to >= from) return(columns[from:to])
   }
   numbered <- regmatches(token, regexec(
-    "^([[:alpha:]_]+)([0-9]+)-([[:alpha:]_]+)?([0-9]+)$", token))[[1]]
+    "^([[:alpha:]_][[:alnum:]_]*?)([0-9]+)-([[:alpha:]_][[:alnum:]_]*?)?([0-9]+)$",
+    token, perl = TRUE))[[1]]
   if (length(numbered) == 5 &&
       (numbered[4] == "" || toupper(numbered[4]) == toupper(numbered[2]))) {
     from <- as.numeric(numbered[3])
     to   <- as.numeric(numbered[5])
-    if (to >= from && to - from < 10000) return(paste0(numbered[2], seq(from, to)))
+    if (to >= from && to - from < 10000) {
+      numbers <- as.character(as.integer(seq(from, to)))
+      # Zero-padded numbers keep their width
+      if (startsWith(numbered[3], "0")) {
+        numbers <- formatC(as.integer(seq(from, to)), width = nchar(numbered[3]),
+                           flag = "0", format = "d")
+      }
+      return(paste0(numbered[2], numbers))
+    }
   }
   token
 }
