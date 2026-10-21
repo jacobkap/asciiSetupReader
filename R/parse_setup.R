@@ -382,7 +382,8 @@ formatted_input <- function(lines) {
   text <- gsub("/\\*.*?\\*/", " ", text, perl = TRUE)
   text <- gsub("^\\s*INPUT\\b|;", " ", text, ignore.case = TRUE)
   text <- gsub("@\\s+", "@", text)
-  text <- gsub("\\$\\s+", "$", text)
+  # "$ 2." and "$ 1-2" are one token, but not "$ V2" (list input)
+  text <- gsub("\\$\\s+(?=[0-9]|[[:alpha:]_][[:alnum:]_]*?[0-9]+\\.)", "$", text, perl = TRUE)
   text <- gsub("([0-9]+)\\s*-\\s*([0-9]+)", "\\1-\\2", text)
   tokens <- strsplit(trimws(text), "\\s+")[[1]]
 
@@ -425,11 +426,16 @@ formatted_input <- function(lines) {
       if (startsWith(token, "$")) text_columns <- c(text_columns, name)
       pointer <- range[length(range)] + 1
       name <- NA_character_
-    } else if (grepl("^[[:alpha:]_][[:alnum:]_]*$", token)) {
+    } else if (grepl("^[[:alpha:]_][[:alnum:]_]*$", token) || token == "$") {
+      # A name (or a lone $) while the last name still has no position is
+      # list input ("V1 $ V2 2."), which reads values separated by blanks,
+      # not columns
+      if (!is.na(name) || token == "$") {
+        abort("unsupported_input", "This SAS INPUT statement reads '",
+              if (is.na(name)) token else name, "' as list input (no ",
+              "column position), which asciiSetupReader can't read.")
+      }
       name <- token
-    } else if (grepl("^\\$", token) && !is.na(name)) {
-      # "$" on its own before a width or informat
-      text_columns <- c(text_columns, name)
     } else {
       abort("unsupported_input", "asciiSetupReader can't read this part of ",
             "the SAS INPUT statement: '", token, "'.")
