@@ -31,8 +31,8 @@ test_that("Fixed (real names) columns are correct - SPSS", {
                                     "UNIT_OF_ANALYSIS_NAME",
                                     "X1919_RT_NR_ELIGIBLE_VTRS",
                                     "X1919_RT_NR_VOTES_CAST",
-                                    "X1919_RT_VOTES_CAST",
-                                    "X1919_RT_OTHER_PARTIES"))
+                                    "X1919_RT_percent_VOTES_CAST",
+                                    "X1919_RT_percent_OTHER_PARTIES"))
 
 })
 
@@ -88,8 +88,8 @@ test_that("Fixed (real names) columns are correct - SAS", {
                                    "UNIT_OF_ANALYSIS_NAME",
                                    "X1919_RT_NR_ELIGIBLE_VTRS",
                                    "X1919_RT_NR_VOTES_CAST",
-                                   "X1919_RT_VOTES_CAST",
-                                   "X1919_RT_OTHER_PARTIES"))
+                                   "X1919_RT_percent_VOTES_CAST",
+                                   "X1919_RT_percent_OTHER_PARTIES"))
 
 
 })

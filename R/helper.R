@@ -40,9 +40,12 @@ double_digit <- function(value_label_section) {
 
 # Turns column labels into clean column names: keeps the label text, turns
 # anything that isn't a letter, number or "_" into "_", trims extra "_" and
-# adds an "X" before names that start with a number.
+# adds an "X" before names that start with a number. The label is what
+# follows the column's short name and the first ' = ' or ' "' (e.g.
+# V1 = "Age < = 5" or V1 "Age < = 5"), so an "=" inside the label is kept.
 fix_names <- function(names) {
-  names <- gsub('^.* = |^.* \\"|\\W|#|\\/', "_", names)
+  names <- sub('^.*?( = | ")', "", names)
+  names <- gsub("\\W|#|\\/", "_", names)
   names <- gsub("_+", "_", names)
   names <- gsub("^_|_$", "", names)
   names <- gsub("^([0-9])", "X\\1", names)

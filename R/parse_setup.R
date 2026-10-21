@@ -137,6 +137,12 @@ read_setup <- function(setup_file) {
                                           tolower(names(decimals)))])
   setup$decimals[is.na(setup$decimals)] <- 0
 
+  renamed <- unique_names(setup)
+  if (!is.null(renamed)) {
+    setup$column_name[match(renamed$column_number, setup$column_number)] <-
+      renamed$column_name
+  }
+
   # Missing values and value labels both need the column list
   if (any(grepl2("MISSING VALUE", codebook))) {
     if (type == "sps") {
@@ -157,9 +163,10 @@ read_setup <- function(setup_file) {
   } else {
     value_labels <- NULL
   }
-  setup <- list(setup        = setup,
-                value_labels = value_labels,
-                missing      = missing)
+  setup <- list(setup         = setup,
+                value_labels  = value_labels,
+                missing       = missing,
+                renamed       = renamed)
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
@@ -279,6 +286,36 @@ formatted_input <- function(lines) {
   }
   attr(out, "decimals") <- decimals
   out
+}
+
+# Gives every column a different descriptive name: a name already used by
+# an earlier column (in any case) gets that column's short name added, e.g.
+# the second "CLOTHING" column, V93, becomes "CLOTHING_V93". The short name
+# says which column it is (in PSID files, which wave), and doesn't depend on
+# which other columns are read. Returns a data.frame of the renamed columns
+# (see read_setup()), or NULL if the names were already unique.
+unique_names <- function(setup) {
+  names <- setup$column_name
+  key   <- tolower(names)
+  if (!anyDuplicated(key)) {
+    return(NULL)
+  }
+  changed <- duplicated(key)
+  new_names <- names
+  new_names[changed] <- paste0(names[changed], "_", setup$column_number[changed])
+  # If that is still another column's name, add a number too
+  n <- 1
+  repeat {
+    lower <- tolower(new_names)
+    clash <- changed & (duplicated(lower) | duplicated(lower, fromLast = TRUE))
+    if (!any(clash)) break
+    n <- n + 1
+    new_names[clash] <- paste0(names[clash], "_", setup$column_number[clash],
+                               "_", n)
+  }
+  data.frame(column_number = setup$column_number[changed],
+             name          = names[changed],
+             column_name   = new_names[changed])
 }
 
 # A line in the column-position section that starts with a number continues
@@ -546,14 +583,20 @@ parse_column_names <- function(codebook, type) {
   variables <- gsub("\\$", "_dollar_", variables)
   variables <- gsub("\\+", "_plus_", variables)
   variables <- gsub("@", "_at_", variables)
+  variables <- gsub("%", "_percent_", variables)
 
   variables <- gsub("^/", "", variables)
   variables <- gsub('"\\s*(.*?)\\s*"', '"\\1"', variables)
+  variables_raw <- variables
 
   variables <- data.frame(column_name   = fix_names(variables),
                           column_number = gsub(" .*", "",
                                                variables)
                           )
+  # A label of only punctuation (e.g. "...") has no clean name, so the
+  # column keeps its short name rather than ending the section below
+  no_name <- variables$column_name == "" & grepl('"[^"]+"|\'[^\']+\'', variables_raw)
+  variables$column_name[no_name] <- variables$column_number[no_name]
 
   # Stop at the first empty label (the end of the section)
   if (any(grepl("^$", variables$column_name))) {

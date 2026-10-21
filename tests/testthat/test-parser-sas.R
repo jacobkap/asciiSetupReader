@@ -444,9 +444,9 @@ test_that("Column numbers are correct", {
                  "V878", "V879", "V880"))
   expect_equal(tail(cambridge_parsed_sas$setup$column_name),
                c("DEL_DAMAGE_PROP_W_O_STL",
-                 "STEAL_FRM_SLOT_MACHINES",
+                 "STEAL_FRM_SLOT_MACHINES_V876",
                  "SHOPLIFT_FROM_SHOPS",
-                 "READING_ABILITY",
+                 "READING_ABILITY_V878",
                  "TAX_EVASION",
                  "POOR_LIVING_CONDITIONS"))
 
@@ -457,7 +457,7 @@ test_that("Column numbers are correct", {
   expect_equal(head(guam_parsed_sas$setup$column_name),
                c("RESERVED_POSITIONS",
                  "CERTIFICATE_NUMBER",
-                 "RESERVED_POSITIONS",
+                 "RESERVED_POSITIONS_RESVD2",
                  "SEQUENCE_NUMBER",
                  "RECORD_TYPE",
                  "RESIDENT_STATUS"))
@@ -465,12 +465,12 @@ test_that("Column numbers are correct", {
                c("RCOND15", "RCOND16", "RCOND17",
                  "RCOND18", "RCOND19", "RCOND20"))
   expect_equal(tail(guam_parsed_sas$setup$column_name),
-               c("RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION"))
+               c("RECORD_CONDITION_RCOND15",
+                 "RECORD_CONDITION_RCOND16",
+                 "RECORD_CONDITION_RCOND17",
+                 "RECORD_CONDITION_RCOND18",
+                 "RECORD_CONDITION_RCOND19",
+                 "RECORD_CONDITION_RCOND20"))
 
 
   expect_equal(head(china_2002_parsed_sas$setup$column_number),
@@ -488,9 +488,9 @@ test_that("Column numbers are correct", {
                  "V3_710B", "V3_8OLD", "V3_8NEW"))
   expect_equal(tail(china_2002_parsed_sas$setup$column_name),
                c("The_amount_loan_for_poverty_relief_in_1998",
-                 "The_amount_loan_for_poverty_relief_in_1998",
+                 "The_amount_loan_for_poverty_relief_in_1998_V3_709B",
                  "The_amount_loan_for_poverty_relief_in_1997",
-                 "The_amount_loan_for_poverty_relief_in_1997",
+                 "The_amount_loan_for_poverty_relief_in_1997_V3_710B",
                  "V3_8OLD",
                  "V3_8NEW"))
 
@@ -531,11 +531,11 @@ test_that("Column numbers are correct", {
                c("IT07M", "IT07E", "IT08T",
                  "IT08M", "IT08E", "NHHMEM"))
   expect_equal(tail(china_1998_parsed_sas$setup$column_name),
-               c("ESTIMATED_MARKET_PRICE_YUAN",
-                 "AMOUNT_PAID_BY_MEMBER_YUAN",
-                 "ITEM_TYPE",
-                 "ESTIMATED_MARKET_PRICE_YUAN",
-                 "AMOUNT_PAID_BY_MEMBER_YUAN",
+               c("ESTIMATED_MARKET_PRICE_YUAN_IT07M",
+                 "AMOUNT_PAID_BY_MEMBER_YUAN_IT07E",
+                 "ITEM_TYPE_IT08T",
+                 "ESTIMATED_MARKET_PRICE_YUAN_IT08M",
+                 "AMOUNT_PAID_BY_MEMBER_YUAN_IT08E",
                  "OF_MEMBERS_IN_HOUSEHOLD"))
 
 
@@ -557,7 +557,7 @@ test_that("Column numbers are correct", {
                  "TOTAL_ITEMS_SELF_PRODUCED",
                  "NUMERIC_VALUE_TOTAL_SELF_PRODUCED_CONSU",
                  "HHID_93_EA_plus_HHNUM_plus_00",
-                 "case",
+                 "HHID_case",
                  "COMMUNITY_ID_TO_MATCH_IFLS2_COMMID93"))
 
 
@@ -626,9 +626,9 @@ test_that("Column names are correct", {
                  "V878", "V879", "V880"))
   expect_equal(tail(cambridge_parsed_sas$setup$column_name),
                c("DEL_DAMAGE_PROP_W_O_STL",
-                 "STEAL_FRM_SLOT_MACHINES",
+                 "STEAL_FRM_SLOT_MACHINES_V876",
                  "SHOPLIFT_FROM_SHOPS",
-                 "READING_ABILITY",
+                 "READING_ABILITY_V878",
                  "TAX_EVASION",
                  "POOR_LIVING_CONDITIONS"))
 
@@ -639,7 +639,7 @@ test_that("Column names are correct", {
   expect_equal(head(guam_parsed_sas$setup$column_name),
                c("RESERVED_POSITIONS",
                  "CERTIFICATE_NUMBER",
-                 "RESERVED_POSITIONS",
+                 "RESERVED_POSITIONS_RESVD2",
                  "SEQUENCE_NUMBER",
                  "RECORD_TYPE",
                  "RESIDENT_STATUS"))
@@ -647,12 +647,12 @@ test_that("Column names are correct", {
                c("RCOND15", "RCOND16", "RCOND17",
                  "RCOND18", "RCOND19", "RCOND20"))
   expect_equal(tail(guam_parsed_sas$setup$column_name),
-               c("RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION",
-                 "RECORD_CONDITION"))
+               c("RECORD_CONDITION_RCOND15",
+                 "RECORD_CONDITION_RCOND16",
+                 "RECORD_CONDITION_RCOND17",
+                 "RECORD_CONDITION_RCOND18",
+                 "RECORD_CONDITION_RCOND19",
+                 "RECORD_CONDITION_RCOND20"))
 
 
   expect_equal(head(china_2002_parsed_sas$setup$column_number),
@@ -670,9 +670,9 @@ test_that("Column names are correct", {
                  "V3_710B", "V3_8OLD", "V3_8NEW"))
   expect_equal(tail(china_2002_parsed_sas$setup$column_name),
                c("The_amount_loan_for_poverty_relief_in_1998",
-                 "The_amount_loan_for_poverty_relief_in_1998",
+                 "The_amount_loan_for_poverty_relief_in_1998_V3_709B",
                  "The_amount_loan_for_poverty_relief_in_1997",
-                 "The_amount_loan_for_poverty_relief_in_1997",
+                 "The_amount_loan_for_poverty_relief_in_1997_V3_710B",
                  "V3_8OLD",
                  "V3_8NEW"))
 
@@ -713,11 +713,11 @@ test_that("Column names are correct", {
                c("IT07M", "IT07E", "IT08T",
                  "IT08M", "IT08E", "NHHMEM"))
   expect_equal(tail(china_1998_parsed_sas$setup$column_name),
-               c("ESTIMATED_MARKET_PRICE_YUAN",
-                 "AMOUNT_PAID_BY_MEMBER_YUAN",
-                 "ITEM_TYPE",
-                 "ESTIMATED_MARKET_PRICE_YUAN",
-                 "AMOUNT_PAID_BY_MEMBER_YUAN",
+               c("ESTIMATED_MARKET_PRICE_YUAN_IT07M",
+                 "AMOUNT_PAID_BY_MEMBER_YUAN_IT07E",
+                 "ITEM_TYPE_IT08T",
+                 "ESTIMATED_MARKET_PRICE_YUAN_IT08M",
+                 "AMOUNT_PAID_BY_MEMBER_YUAN_IT08E",
                  "OF_MEMBERS_IN_HOUSEHOLD"))
 
 
@@ -739,7 +739,7 @@ test_that("Column names are correct", {
                  "TOTAL_ITEMS_SELF_PRODUCED",
                  "NUMERIC_VALUE_TOTAL_SELF_PRODUCED_CONSU",
                  "HHID_93_EA_plus_HHNUM_plus_00",
-                 "case",
+                 "HHID_case",
                  "COMMUNITY_ID_TO_MATCH_IFLS2_COMMID93"))
 
 
