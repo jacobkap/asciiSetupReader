@@ -157,3 +157,13 @@ test_that("ranges kept as one row are compared as numbers", {
     data.frame(variable = "a", values = "1000000 THRU 9999999")))[["elapsed"]], 2)
 })
 
+test_that("an inline /* */ comment in VALUE LABELS doesn't hide labels", {
+  setup <- sps_file("  V1 1-2  V2 3-4",
+                    c("VALUE LABELS",
+                      "  V1 1 'Yes' /* a */ 2 'No' /* b */",
+                      "  3 'Maybe' /* don't use",
+                      "  /V2 1 'Male' 2 'Female'", "."))
+  labels <- parse_setup(setup)$value_labels
+  expect_equal(labels$V1, c(Yes = "1", No = "2", Maybe = "3"))
+  expect_equal(labels$V2, c(Male = "1", Female = "2"))
+})

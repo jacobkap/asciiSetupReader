@@ -184,9 +184,10 @@ parse_value_labels_sps <- function(codebook, setup) {
     end <- length(codebook)
   }
   lines <- codebook[start[1]:end]
-  # Drop /* comments */ (PSID files note truncated labels this way) and
-  # comment commands ("* ..." up to a line ending in "." or a blank line)
-  lines <- gsub("/\\*.*\\*/", "", lines)
+  # Drop /* comments */ (PSID files note truncated labels this way; one
+  # without its */ runs to the end of the line) and comment commands
+  # ("* ..." up to a line ending in "." or a blank line)
+  lines <- gsub("/\\*.*?(\\*/|$)", "", lines, perl = TRUE)
   lines <- drop_comment_commands(lines)
 
   tokens <- tokenize(lines, c("/", "+"))
@@ -326,6 +327,8 @@ parse_value_labels_sas <- function(codebook, setup) {
     end <- length(codebook)
   }
   lines <- codebook[value_position[1]:end]
+  # A /* comment */ inside a VALUE statement isn't part of a code
+  lines <- gsub("/\\*.*?\\*/", " ", lines, perl = TRUE)
 
   tokens <- tokenize(lines, c("=", ";"))
   quoted <- is_quoted(tokens)

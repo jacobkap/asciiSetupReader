@@ -84,6 +84,13 @@ test_that("SAS forms the package can't read stop with clear errors", {
                class = "asciiSetupReader_delimited")
 })
 
+test_that("a comment inside a SAS VALUE statement isn't part of a code", {
+  setup <- sas_file(c("INPUT", "  V1 1-2", ";"),
+                    c("PROC FORMAT;", "VALUE V1F", "  /* note */ 5 = 'five'", "  6 = 'six';",
+                      "", "FORMAT", "  V1 V1F.;"))
+  expect_equal(parse_setup(setup)$value_labels$V1, c(five = "5", six = "6"))
+})
+
 test_that("statements and comment state are found across lines", {
   st <- sas_statements(c("a = 1;", "/*", "IF V1 = 9", "THEN V1 = .;", "*/", "b = 2; c = 3;"))
   expect_equal(st$text, c("a = 1", "IF V1 = 9 THEN V1 = .", "b = 2", "c = 3"))
