@@ -1,27 +1,20 @@
 test_that("PSID tests", {
   # Skipped on CRAN to keep its check time down (about 25s locally)
   skip_on_cran()
-  psid_supplement_sps_name <- system.file("testdata",
-                                          "psid_supplement.sps",
-                                          package = "asciiSetupReader")
-  psid_core_sps_name       <- system.file("testdata",
-                                          "psid_core_sps.zip",
-                                          package = "asciiSetupReader")
-  psid_main_sps_name       <- system.file("testdata",
-                                          "psid_main_sps.zip",
-                                          package = "asciiSetupReader")
-  psid_all_sas_name        <- system.file("testdata",
-                                          "psid_all_sas.zip",
-                                          package = "asciiSetupReader")
-  psid_main_sas_name       <- system.file("testdata",
-                                          "psid_main_sas.zip",
-                                          package = "asciiSetupReader")
-  psid_supplement_sas_name <- system.file("testdata",
-                                          "psid_supplement.sas",
-                                          package = "asciiSetupReader")
-  psid_core_sas_name       <- system.file("testdata",
-                                          "psid_core_sas.zip",
-                                          package = "asciiSetupReader")
+  psid_supplement_sps_name <- test_path("testdata",
+                                          "psid_supplement.sps")
+  psid_core_sps_name       <- test_path("testdata",
+                                          "psid_core_sps.zip")
+  psid_main_sps_name       <- test_path("testdata",
+                                          "psid_main_sps.zip")
+  psid_all_sas_name        <- test_path("testdata",
+                                          "psid_all_sas.zip")
+  psid_main_sas_name       <- test_path("testdata",
+                                          "psid_main_sas.zip")
+  psid_supplement_sas_name <- test_path("testdata",
+                                          "psid_supplement.sas")
+  psid_core_sas_name       <- test_path("testdata",
+                                          "psid_core_sas.zip")
 
   psid_supplement_parsed_sps  <- parse_setup(psid_supplement_sps_name)
   psid_core_parsed_sps        <- parse_setup(psid_core_sps_name)

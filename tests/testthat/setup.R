@@ -12,390 +12,266 @@ SHR_sps_name          <- system.file("extdata",
 SHR_sas_name          <- system.file("extdata",
                                      "example_setup.sas",
                                      package = "asciiSetupReader")
-UCR_dataset_name      <- system.file("testdata",
-                                     "ucr1960.zip",
-                                     package = "asciiSetupReader")
-UCR_sps_name          <- system.file("testdata",
-                                     "ucr1960_sps.zip",
-                                     package = "asciiSetupReader")
-UCR_sas_name          <- system.file("testdata",
-                                     "ucr1960_sas.zip",
-                                     package = "asciiSetupReader")
-NIBRS_dataset_name    <- system.file("testdata",
-                                     "nibrs_2000_batch_header1.zip",
-                                     package = "asciiSetupReader")
-NIBRS_sps_name        <- system.file("testdata",
-                                     "nibrs_2000_batch_header1_sps.zip",
-                                     package = "asciiSetupReader")
-NIBRS_sas_name        <- system.file("testdata",
-                                     "nibrs_2000_batch_header1_sas.zip",
-                                     package = "asciiSetupReader")
-weimar_dataset_name   <- system.file("testdata",
-                                     "weimar.txt",
-                                     package = "asciiSetupReader")
-weimar_sps_name       <- system.file("testdata",
-                                     "weimar_sps.zip",
-                                     package = "asciiSetupReader")
-weimar_sas_name       <- system.file("testdata",
-                                     "weimar_sas.zip",
-                                     package = "asciiSetupReader")
+UCR_dataset_name      <- test_path("testdata",
+                                     "ucr1960.zip")
+UCR_sps_name          <- test_path("testdata",
+                                     "ucr1960_sps.zip")
+UCR_sas_name          <- test_path("testdata",
+                                     "ucr1960_sas.zip")
+NIBRS_dataset_name    <- test_path("testdata",
+                                     "nibrs_2000_batch_header1.zip")
+NIBRS_sps_name        <- test_path("testdata",
+                                     "nibrs_2000_batch_header1_sps.zip")
+NIBRS_sas_name        <- test_path("testdata",
+                                     "nibrs_2000_batch_header1_sas.zip")
+weimar_dataset_name   <- test_path("testdata",
+                                     "weimar.txt")
+weimar_sps_name       <- test_path("testdata",
+                                     "weimar_sps.zip")
+weimar_sas_name       <- test_path("testdata",
+                                     "weimar_sas.zip")
 # crosswalk_dataset_name     <- system.file("testdata",
 #                                           "crosswalk.zip",
 #                                           package = "asciiSetupReader")
-crosswalk_sps_name         <- system.file("testdata",
-                                          "crosswalk.sps",
-                                          package = "asciiSetupReader")
-ucr1985_sps_name           <- system.file("testdata",
-                                          "1985_UCR_offenses_known_sps.zip",
-                                          package = "asciiSetupReader")
-ucr1986_sps_name           <- system.file("testdata",
-                                          "1986_UCR_offenses_known_sps.zip",
-                                          package = "asciiSetupReader")
-ucr2000_sps_name           <- system.file("testdata",
-                                          "2000_UCR_offenses_known_sps.zip",
-                                          package = "asciiSetupReader")
-ucr2006_sps_name           <- system.file("testdata",
-                                          "2006_UCR_offenses_known_sps.zip",
-                                          package = "asciiSetupReader")
-sac_sps_name               <- system.file("testdata",
-                                          "sacramento_sps.zip",
-                                          package = "asciiSetupReader")
-sex_offender_sps_name      <- system.file("testdata",
-                                          "sex_offender_notification.sps",
-                                          package = "asciiSetupReader")
-ucr1960_sps_name           <- system.file("testdata",
-                                          "ucr1960_sps.zip",
-                                          package = "asciiSetupReader")
-acs_sps_name               <- system.file("testdata",
-                                          "acs_sps.zip",
-                                          package = "asciiSetupReader")
-nibrs_sps_name             <- system.file("testdata",
-                                          "nibrs_2000_batch_header1_sps.zip",
-                                          package = "asciiSetupReader")
-prisoners_sps_name         <- system.file("testdata",
-                                          "prisoners_sps.zip",
-                                          package = "asciiSetupReader")
-SHR1987_sps_name           <- system.file("testdata",
-                                          "1987_SHR_sps.zip",
-                                          package = "asciiSetupReader")
-SHR1988_sps_name           <- system.file("testdata",
-                                          "1988_SHR_sps.zip",
-                                          package = "asciiSetupReader")
-SHR1981_sps_name           <- system.file("testdata",
-                                          "1981_SHR_sps.zip",
-                                          package = "asciiSetupReader")
-ca_vital_sps_name          <- system.file("testdata",
-                                          "ca_vital.sps",
-                                          package = "asciiSetupReader")
-parole_sps_name            <- system.file("testdata",
-                                          "parole_survey.sps",
-                                          package = "asciiSetupReader")
-parole_survey_dataset_name <- system.file("testdata",
-                                          "parole_survey.txt",
-                                          package = "asciiSetupReader")
-SHR1987_sps_name           <- system.file("testdata",
-                                          "1987_SHR_sps.zip",
-                                          package = "asciiSetupReader")
-SHR1988_sps_name           <- system.file("testdata",
-                                          "1988_SHR_sps.zip",
-                                          package = "asciiSetupReader")
-SHR1981_sps_name           <- system.file("testdata",
-                                          "1981_SHR_sps.zip",
-                                          package = "asciiSetupReader")
-leoka1980_sps_name         <- system.file("testdata",
-                                          "1980_leoka_sps.zip",
-                                          package = "asciiSetupReader")
-property_stolen_sps_name   <- system.file("testdata",
-                                          "ucr_property_stolen_1998_sps.zip",
-                                          package = "asciiSetupReader")
-ncvs_sps_name              <- system.file("testdata",
-                                          "ncvs_1979_sps.zip",
-                                          package = "asciiSetupReader")
-jail_1987_sps_name         <- system.file("testdata",
-                                          "jail_survey_1987.sps",
-                                          package = "asciiSetupReader")
-jail_2010_sps_name         <- system.file("testdata",
-                                          "jail_survey_2010.sps",
-                                          package = "asciiSetupReader")
-jail_1987_dataset_name     <- system.file("testdata",
-                                          "jail_survey_1987.zip",
-                                          package = "asciiSetupReader")
-corrections_sps_name       <- system.file("testdata",
-                                          "corrections_prison_admissions_1991_2016.sps",
-                                          package = "asciiSetupReader")
-sadc_sps_name              <- system.file("testdata",
-                                          "2017_sadc_spss_input_program.sps",
-                                          package = "asciiSetupReader")
-crosswalk2012_sps_name     <- system.file("testdata",
-                                          "crosswalk2012.sps",
-                                          package = "asciiSetupReader")
-dutch_election_sps_name    <- system.file("testdata",
-                                          "dutch_election_study_sps.zip",
-                                          package = "asciiSetupReader")
-well_being_sps_name        <- system.file("testdata",
-                                          "WB2016.sps",
-                                          package = "asciiSetupReader")
-escolar_sps_name           <- system.file("testdata",
-                                          "escolar.SPS",
-                                          package = "asciiSetupReader")
+crosswalk_sps_name         <- test_path("testdata",
+                                          "crosswalk.sps")
+ucr1985_sps_name           <- test_path("testdata",
+                                          "1985_UCR_offenses_known_sps.zip")
+ucr1986_sps_name           <- test_path("testdata",
+                                          "1986_UCR_offenses_known_sps.zip")
+ucr2000_sps_name           <- test_path("testdata",
+                                          "2000_UCR_offenses_known_sps.zip")
+ucr2006_sps_name           <- test_path("testdata",
+                                          "2006_UCR_offenses_known_sps.zip")
+sac_sps_name               <- test_path("testdata",
+                                          "sacramento_sps.zip")
+sex_offender_sps_name      <- test_path("testdata",
+                                          "sex_offender_notification.sps")
+ucr1960_sps_name           <- test_path("testdata",
+                                          "ucr1960_sps.zip")
+acs_sps_name               <- test_path("testdata",
+                                          "acs_sps.zip")
+nibrs_sps_name             <- test_path("testdata",
+                                          "nibrs_2000_batch_header1_sps.zip")
+prisoners_sps_name         <- test_path("testdata",
+                                          "prisoners_sps.zip")
+SHR1987_sps_name           <- test_path("testdata",
+                                          "1987_SHR_sps.zip")
+SHR1988_sps_name           <- test_path("testdata",
+                                          "1988_SHR_sps.zip")
+SHR1981_sps_name           <- test_path("testdata",
+                                          "1981_SHR_sps.zip")
+ca_vital_sps_name          <- test_path("testdata",
+                                          "ca_vital.sps")
+parole_sps_name            <- test_path("testdata",
+                                          "parole_survey.sps")
+parole_survey_dataset_name <- test_path("testdata",
+                                          "parole_survey.txt")
+SHR1987_sps_name           <- test_path("testdata",
+                                          "1987_SHR_sps.zip")
+SHR1988_sps_name           <- test_path("testdata",
+                                          "1988_SHR_sps.zip")
+SHR1981_sps_name           <- test_path("testdata",
+                                          "1981_SHR_sps.zip")
+leoka1980_sps_name         <- test_path("testdata",
+                                          "1980_leoka_sps.zip")
+property_stolen_sps_name   <- test_path("testdata",
+                                          "ucr_property_stolen_1998_sps.zip")
+ncvs_sps_name              <- test_path("testdata",
+                                          "ncvs_1979_sps.zip")
+jail_1987_sps_name         <- test_path("testdata",
+                                          "jail_survey_1987.sps")
+jail_2010_sps_name         <- test_path("testdata",
+                                          "jail_survey_2010.sps")
+jail_1987_dataset_name     <- test_path("testdata",
+                                          "jail_survey_1987.zip")
+corrections_sps_name       <- test_path("testdata",
+                                          "corrections_prison_admissions_1991_2016.sps")
+sadc_sps_name              <- test_path("testdata",
+                                          "2017_sadc_spss_input_program.sps")
+crosswalk2012_sps_name     <- test_path("testdata",
+                                          "crosswalk2012.sps")
+dutch_election_sps_name    <- test_path("testdata",
+                                          "dutch_election_study_sps.zip")
+well_being_sps_name        <- test_path("testdata",
+                                          "WB2016.sps")
+escolar_sps_name           <- test_path("testdata",
+                                          "escolar.SPS")
 
-ad_health_sps_name        <- system.file("testdata",
-                                         "study_of_adolescent_health.sps",
-                                         package = "asciiSetupReader")
-health_nutrition_sps_name <- system.file("testdata",
-                                         "health_and_nutrition.sps",
-                                         package = "asciiSetupReader")
-india_human_sps_name  <- system.file("testdata",
-                                     "india_human_development_sps.zip",
-                                     package = "asciiSetupReader")
-british_crime_teen_sps_name  <- system.file("testdata",
-                                            "british_crime_teen_sps.zip",
-                                            package = "asciiSetupReader")
-drug_abuse_sps_name          <- system.file("testdata",
-                                            "drug_abuse_sps.zip",
-                                            package = "asciiSetupReader")
-worry_sps_name               <- system.file("testdata",
-                                            "worry_sps.zip",
-                                            package = "asciiSetupReader")
-cps_1973_sps_name            <- system.file("testdata",
-                                            "cps_1973_sps.zip",
-                                            package = "asciiSetupReader")
-cps_2004_sps_name           <- system.file("testdata",
-                                           "cps_2004_sps.zip",
-                                           package = "asciiSetupReader")
-census_police_sps_name      <- system.file("testdata",
-                                           "census_of_police.sps",
-                                           package = "asciiSetupReader")
-detroit_sps_name            <- system.file("testdata",
-                                           "detroit_sps.zip",
-                                           package = "asciiSetupReader")
-step_in_sps_name            <- system.file("testdata",
-                                           "step_in.sps",
-                                           package = "asciiSetupReader")
-cambridge_sps_name     <- system.file("testdata",
-                                      "cambridge_sps.zip",
-                                      package = "asciiSetupReader")
-guam_sps_name          <- system.file("testdata",
-                                      "guam_sps.zip",
-                                      package = "asciiSetupReader")
-china_2002_sps_name    <- system.file("testdata",
-                                      "china_2002.sps",
-                                      package = "asciiSetupReader")
-china_1995_sps_name    <- system.file("testdata",
-                                      "china_1995.sps",
-                                      package = "asciiSetupReader")
-china_1998_sps_name    <- system.file("testdata",
-                                      "china_1998.sps",
-                                      package = "asciiSetupReader")
-indonesia_sps_name     <- system.file("testdata",
-                                      "indonesia.sps",
-                                      package = "asciiSetupReader")
-UN_crime_sps_name      <- system.file("testdata",
-                                      "UN_crime.sps",
-                                      package = "asciiSetupReader")
-county_arrest_sps_name <- system.file("testdata",
-                                      "county_arrest.sps",
-                                      package = "asciiSetupReader")
-escolar_2006_sps_name <- system.file("testdata",
-                                     "escolar_2006_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1999_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1999_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_2003_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_2003_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1990_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1990_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1989_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1989_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_2004_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_2004_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_2002_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_2002_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1993_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1993_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1991_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1991_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1992_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1992_sps.zip",
-                                     package = "asciiSetupReader")
-mtf_1979_sps_name     <- system.file("testdata",
-                                     "monitoring_the_future_1979_sps.zip",
-                                     package = "asciiSetupReader")
-missing_value_no_s_name  <- system.file("testdata",
-                                        "missing_value_no_s_setup_sps.zip",
-                                        package = "asciiSetupReader")
-ca_sedd_2005_ahal_sps_name     <- system.file("testdata",
-                                     "CA_SEDD_2005_AHAL.sps",
-                                     package = "asciiSetupReader")
-mtf_2019_sps_name     <- system.file("testdata",
-                                     "mtf_2019_8_10_sps.zip",
-                                     package = "asciiSetupReader")
+ad_health_sps_name        <- test_path("testdata",
+                                         "study_of_adolescent_health.sps")
+health_nutrition_sps_name <- test_path("testdata",
+                                         "health_and_nutrition.sps")
+india_human_sps_name  <- test_path("testdata",
+                                     "india_human_development_sps.zip")
+british_crime_teen_sps_name  <- test_path("testdata",
+                                            "british_crime_teen_sps.zip")
+drug_abuse_sps_name          <- test_path("testdata",
+                                            "drug_abuse_sps.zip")
+worry_sps_name               <- test_path("testdata",
+                                            "worry_sps.zip")
+cps_1973_sps_name            <- test_path("testdata",
+                                            "cps_1973_sps.zip")
+cps_2004_sps_name           <- test_path("testdata",
+                                           "cps_2004_sps.zip")
+census_police_sps_name      <- test_path("testdata",
+                                           "census_of_police.sps")
+detroit_sps_name            <- test_path("testdata",
+                                           "detroit_sps.zip")
+step_in_sps_name            <- test_path("testdata",
+                                           "step_in.sps")
+cambridge_sps_name     <- test_path("testdata",
+                                      "cambridge_sps.zip")
+guam_sps_name          <- test_path("testdata",
+                                      "guam_sps.zip")
+china_2002_sps_name    <- test_path("testdata",
+                                      "china_2002.sps")
+china_1995_sps_name    <- test_path("testdata",
+                                      "china_1995.sps")
+china_1998_sps_name    <- test_path("testdata",
+                                      "china_1998.sps")
+indonesia_sps_name     <- test_path("testdata",
+                                      "indonesia.sps")
+UN_crime_sps_name      <- test_path("testdata",
+                                      "UN_crime.sps")
+county_arrest_sps_name <- test_path("testdata",
+                                      "county_arrest.sps")
+escolar_2006_sps_name <- test_path("testdata",
+                                     "escolar_2006_sps.zip")
+mtf_1999_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1999_sps.zip")
+mtf_2003_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_2003_sps.zip")
+mtf_1990_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1990_sps.zip")
+mtf_1989_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1989_sps.zip")
+mtf_2004_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_2004_sps.zip")
+mtf_2002_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_2002_sps.zip")
+mtf_1993_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1993_sps.zip")
+mtf_1991_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1991_sps.zip")
+mtf_1992_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1992_sps.zip")
+mtf_1979_sps_name     <- test_path("testdata",
+                                     "monitoring_the_future_1979_sps.zip")
+missing_value_no_s_name  <- test_path("testdata",
+                                        "missing_value_no_s_setup_sps.zip")
+ca_sedd_2005_ahal_sps_name     <- test_path("testdata",
+                                     "CA_SEDD_2005_AHAL.sps")
+mtf_2019_sps_name     <- test_path("testdata",
+                                     "mtf_2019_8_10_sps.zip")
 
 
-cambridge_sas_name     <- system.file("testdata",
-                                      "cambridge_sas.zip",
-                                      package = "asciiSetupReader")
-guam_sas_name          <- system.file("testdata",
-                                      "guam_sas.zip",
-                                      package = "asciiSetupReader")
-china_2002_sas_name    <- system.file("testdata",
-                                      "china_2002.sas",
-                                      package = "asciiSetupReader")
-china_1995_sas_name    <- system.file("testdata",
-                                      "china_1995.sas",
-                                      package = "asciiSetupReader")
-china_1998_sas_name    <- system.file("testdata",
-                                      "china_1998.sas",
-                                      package = "asciiSetupReader")
-indonesia_sas_name     <- system.file("testdata",
-                                      "indonesia.sas",
-                                      package = "asciiSetupReader")
-UN_crime_sas_name      <- system.file("testdata",
-                                      "UN_crime.sas",
-                                      package = "asciiSetupReader")
-county_arrest_sas_name <- system.file("testdata",
-                                      "county_arrest.sas",
-                                      package = "asciiSetupReader")
+cambridge_sas_name     <- test_path("testdata",
+                                      "cambridge_sas.zip")
+guam_sas_name          <- test_path("testdata",
+                                      "guam_sas.zip")
+china_2002_sas_name    <- test_path("testdata",
+                                      "china_2002.sas")
+china_1995_sas_name    <- test_path("testdata",
+                                      "china_1995.sas")
+china_1998_sas_name    <- test_path("testdata",
+                                      "china_1998.sas")
+indonesia_sas_name     <- test_path("testdata",
+                                      "indonesia.sas")
+UN_crime_sas_name      <- test_path("testdata",
+                                      "UN_crime.sas")
+county_arrest_sas_name <- test_path("testdata",
+                                      "county_arrest.sas")
 
 
 
 
 
-british_crime_teen_sas_name  <- system.file("testdata",
-                                            "british_crime_teen_sas.zip",
-                                            package = "asciiSetupReader")
-drug_abuse_sas_name          <- system.file("testdata",
-                                            "drug_abuse_sas.zip",
-                                            package = "asciiSetupReader")
-worry_sas_name               <- system.file("testdata",
-                                            "worry_sas.zip",
-                                            package = "asciiSetupReader")
-cps_1973_sas_name            <- system.file("testdata",
-                                            "cps_1973_sas.zip",
-                                            package = "asciiSetupReader")
-education_1985_sas_name     <- system.file("testdata",
-                                           "education_1985.sas",
-                                           package = "asciiSetupReader")
-education_1995_sas_name     <- system.file("testdata",
-                                           "education_1995.sas",
-                                           package = "asciiSetupReader")
-cps_2004_sas_name           <- system.file("testdata",
-                                           "cps_2004_sas.zip",
-                                           package = "asciiSetupReader")
-census_police_sas_name      <- system.file("testdata",
-                                           "census_of_police.sas",
-                                           package = "asciiSetupReader")
-detroit_sas_name            <- system.file("testdata",
-                                           "detroit_sas.zip",
-                                           package = "asciiSetupReader")
-step_in_sas_name            <- system.file("testdata",
-                                           "step_in.sas",
-                                           package = "asciiSetupReader")
-psid_toy_sas_name          <- system.file("testdata",
-                                          "psid_toy.sas",
-                                          package = "asciiSetupReader")
+british_crime_teen_sas_name  <- test_path("testdata",
+                                            "british_crime_teen_sas.zip")
+drug_abuse_sas_name          <- test_path("testdata",
+                                            "drug_abuse_sas.zip")
+worry_sas_name               <- test_path("testdata",
+                                            "worry_sas.zip")
+cps_1973_sas_name            <- test_path("testdata",
+                                            "cps_1973_sas.zip")
+education_1985_sas_name     <- test_path("testdata",
+                                           "education_1985.sas")
+education_1995_sas_name     <- test_path("testdata",
+                                           "education_1995.sas")
+cps_2004_sas_name           <- test_path("testdata",
+                                           "cps_2004_sas.zip")
+census_police_sas_name      <- test_path("testdata",
+                                           "census_of_police.sas")
+detroit_sas_name            <- test_path("testdata",
+                                           "detroit_sas.zip")
+step_in_sas_name            <- test_path("testdata",
+                                           "step_in.sas")
+psid_toy_sas_name          <- test_path("testdata",
+                                          "psid_toy.sas")
 
-health_nutrition_sas_name  <- system.file("testdata",
-                                          "health_and_nutrition.sas",
-                                          package = "asciiSetupReader")
-india_human_sas_name       <- system.file("testdata",
-                                          "india_human_development_sas.zip",
-                                          package = "asciiSetupReader")
-well_being_sas_name        <- system.file("testdata",
-                                          "WB2016.sas",
-                                          package = "asciiSetupReader")
-crosswalk_sas_name         <- system.file("testdata",
-                                          "crosswalk.sas",
-                                          package = "asciiSetupReader")
-ucr1985_sas_name           <- system.file("testdata",
-                                          "1985_UCR_offenses_known_sas.zip",
-                                          package = "asciiSetupReader")
-ucr1986_sas_name           <- system.file("testdata",
-                                          "1986_UCR_offenses_known_sas.zip",
-                                          package = "asciiSetupReader")
-ucr2000_sas_name           <- system.file("testdata",
-                                          "2000_UCR_offenses_known_sas.zip",
-                                          package = "asciiSetupReader")
-ucr2006_sas_name           <- system.file("testdata",
-                                          "2006_UCR_offenses_known_sas.zip",
-                                          package = "asciiSetupReader")
-sac_sas_name               <- system.file("testdata",
-                                          "sacramento_sas.zip",
-                                          package = "asciiSetupReader")
-sex_offender_sas_name      <- system.file("testdata",
-                                          "sex_offender_notification.sas",
-                                          package = "asciiSetupReader")
-ucr1960_sas_name           <- system.file("testdata",
-                                          "ucr1960_sas.zip",
-                                          package = "asciiSetupReader")
-acs_sas_name               <- system.file("testdata",
-                                          "acs_sas.zip",
-                                          package = "asciiSetupReader")
-nibrs_sas_name             <- system.file("testdata",
-                                          "nibrs_2000_batch_header1_sas.zip",
-                                          package = "asciiSetupReader")
-prisoners_sas_name         <- system.file("testdata",
-                                          "prisoners_sas.zip",
-                                          package = "asciiSetupReader")
-SHR1987_sas_name           <- system.file("testdata",
-                                          "1987_SHR_sas.zip",
-                                          package = "asciiSetupReader")
-SHR1988_sas_name           <- system.file("testdata",
-                                          "1988_SHR_sas.zip",
-                                          package = "asciiSetupReader")
-SHR1981_sas_name           <- system.file("testdata",
-                                          "1981_SHR_sas.zip",
-                                          package = "asciiSetupReader")
-ca_vital_sas_name          <- system.file("testdata",
-                                          "ca_vital.sas",
-                                          package = "asciiSetupReader")
-parole_sas_name            <- system.file("testdata",
-                                          "parole_survey.sas",
-                                          package = "asciiSetupReader")
-SHR1987_sas_name           <- system.file("testdata",
-                                          "1987_SHR_sas.zip",
-                                          package = "asciiSetupReader")
-SHR1988_sas_name           <- system.file("testdata",
-                                          "1988_SHR_sas.zip",
-                                          package = "asciiSetupReader")
-SHR1981_sas_name           <- system.file("testdata",
-                                          "1981_SHR_sas.zip",
-                                          package = "asciiSetupReader")
-leoka1980_sas_name         <- system.file("testdata",
-                                          "1980_leoka_sas.zip",
-                                          package = "asciiSetupReader")
-property_stolen_sas_name   <- system.file("testdata",
-                                          "ucr_property_stolen_1998_sas.zip",
-                                          package = "asciiSetupReader")
-ncvs_sas_name              <- system.file("testdata",
-                                          "ncvs_1979_sas.zip",
-                                          package = "asciiSetupReader")
-jail_1987_sas_name         <- system.file("testdata",
-                                          "jail_survey_1987.sas",
-                                          package = "asciiSetupReader")
-jail_2010_sas_name         <- system.file("testdata",
-                                          "jail_survey_2010.sas",
-                                          package = "asciiSetupReader")
-jail_1987_dataset_name     <- system.file("testdata",
-                                          "jail_survey_1987.zip",
-                                          package = "asciiSetupReader")
-corrections_sas_name       <- system.file("testdata",
-                                          "corrections_prison_admissions_1991_2016.sas",
-                                          package = "asciiSetupReader")
-sadc_sas_name              <- system.file("testdata",
-                                          "2017_sadc_sas_input_program.sas",
-                                          package = "asciiSetupReader")
-starting_number_bigger_than_ending_number <- system.file("testdata",
-                                          "starting_number_bigger_than_ending_number.sps",
-                                          package = "asciiSetupReader")
+health_nutrition_sas_name  <- test_path("testdata",
+                                          "health_and_nutrition.sas")
+india_human_sas_name       <- test_path("testdata",
+                                          "india_human_development_sas.zip")
+well_being_sas_name        <- test_path("testdata",
+                                          "WB2016.sas")
+crosswalk_sas_name         <- test_path("testdata",
+                                          "crosswalk.sas")
+ucr1985_sas_name           <- test_path("testdata",
+                                          "1985_UCR_offenses_known_sas.zip")
+ucr1986_sas_name           <- test_path("testdata",
+                                          "1986_UCR_offenses_known_sas.zip")
+ucr2000_sas_name           <- test_path("testdata",
+                                          "2000_UCR_offenses_known_sas.zip")
+ucr2006_sas_name           <- test_path("testdata",
+                                          "2006_UCR_offenses_known_sas.zip")
+sac_sas_name               <- test_path("testdata",
+                                          "sacramento_sas.zip")
+sex_offender_sas_name      <- test_path("testdata",
+                                          "sex_offender_notification.sas")
+ucr1960_sas_name           <- test_path("testdata",
+                                          "ucr1960_sas.zip")
+acs_sas_name               <- test_path("testdata",
+                                          "acs_sas.zip")
+nibrs_sas_name             <- test_path("testdata",
+                                          "nibrs_2000_batch_header1_sas.zip")
+prisoners_sas_name         <- test_path("testdata",
+                                          "prisoners_sas.zip")
+SHR1987_sas_name           <- test_path("testdata",
+                                          "1987_SHR_sas.zip")
+SHR1988_sas_name           <- test_path("testdata",
+                                          "1988_SHR_sas.zip")
+SHR1981_sas_name           <- test_path("testdata",
+                                          "1981_SHR_sas.zip")
+ca_vital_sas_name          <- test_path("testdata",
+                                          "ca_vital.sas")
+parole_sas_name            <- test_path("testdata",
+                                          "parole_survey.sas")
+SHR1987_sas_name           <- test_path("testdata",
+                                          "1987_SHR_sas.zip")
+SHR1988_sas_name           <- test_path("testdata",
+                                          "1988_SHR_sas.zip")
+SHR1981_sas_name           <- test_path("testdata",
+                                          "1981_SHR_sas.zip")
+leoka1980_sas_name         <- test_path("testdata",
+                                          "1980_leoka_sas.zip")
+property_stolen_sas_name   <- test_path("testdata",
+                                          "ucr_property_stolen_1998_sas.zip")
+ncvs_sas_name              <- test_path("testdata",
+                                          "ncvs_1979_sas.zip")
+jail_1987_sas_name         <- test_path("testdata",
+                                          "jail_survey_1987.sas")
+jail_2010_sas_name         <- test_path("testdata",
+                                          "jail_survey_2010.sas")
+jail_1987_dataset_name     <- test_path("testdata",
+                                          "jail_survey_1987.zip")
+corrections_sas_name       <- test_path("testdata",
+                                          "corrections_prison_admissions_1991_2016.sas")
+sadc_sas_name              <- test_path("testdata",
+                                          "2017_sadc_sas_input_program.sas")
+starting_number_bigger_than_ending_number <- test_path("testdata",
+                                          "starting_number_bigger_than_ending_number.sps")
 
 
 parole <- read_ascii_setup(data = parole_survey_dataset_name,

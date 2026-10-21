@@ -2,7 +2,7 @@
 # column's short name, and labels with no letters or digits.
 
 all_setup_files <- function() {
-  files <- list.files(system.file("testdata", package = "asciiSetupReader"),
+  files <- list.files(test_path("testdata"),
                       pattern = "[.](sps|sas)$|_(sps|sas)[.]zip$",
                       ignore.case = TRUE, full.names = TRUE)
   # This one is broken on purpose (see test-error.R)
@@ -46,8 +46,7 @@ test_that("a repeated name gets the column's short name added", {
 
 test_that("PSID's repeated labels get each wave's variable name", {
   skip_on_cran()
-  psid <- parse_setup(system.file("testdata", "psid_main_sps.zip",
-                                  package = "asciiSetupReader"))$setup
+  psid <- parse_setup(test_path("testdata", "psid_main_sps.zip"))$setup
   release <- psid[grepl("^RELEASE_NUMBER", psid$column_name), ]
   expect_equal(release$column_name[1:3],
                c("RELEASE_NUMBER", "RELEASE_NUMBER_TA050001",

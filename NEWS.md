@@ -119,6 +119,12 @@ are now different (and correct).
   list of columns, and SAS value ranges and `OTHER` in PROC FORMAT (which
   aren't applied).
 
+## Package
+
+* The setup and data files used only by the tests moved from
+  `inst/testdata` to `tests/testthat/testdata`, so they're no longer
+  installed with the package (about 4 MB less).
+
 ## Bug fixes
 
 * Value labels keep apostrophes. Labels are now read by their quoting, so a
