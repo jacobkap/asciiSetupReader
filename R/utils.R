@@ -268,13 +268,13 @@ fix_missing <- function(data, missing, text_columns = character(0)) {
     missing_values <- as.character(trimws(missing_values))
     missing_values <- gsub("\\'", "", missing_values)
 
-    # Open-ended ranges ("5 THRU HI(GHEST)", "LO(WEST) THRU 0") become the
-    # values in the data that fall in the range. Values are compared as
-    # numbers but kept as they appear in the data, so zero-padded values
-    # (e.g. "0000012" for "0000009 THRU HI") match.
+    # Ranges ("97 THRU 99", "5 THRU HI(GHEST)", "LO(WEST) THRU 0") become
+    # the values in the data that fall in the range. Values are compared as
+    # numbers, so 97.5 is in "97 thru 99", but kept as they appear in the
+    # data, so zero-padded values (e.g. "0000012" for "0000009 THRU HI")
+    # match.
     thru_hi_pattern  <- "\\s+thru\\s+hi.*$"
     low_thru_pattern <- "^lo(w|west)?\\s+thru\\s+"
-    # Ranges too large to list, or of decimals ("99.5 thru 99.9")
     range_pattern    <- "^(-?[0-9]*\\.?[0-9]+)\\s+thru\\s+(-?[0-9]*\\.?[0-9]+)$"
     is_thru_hi  <- grepl(thru_hi_pattern, missing_values, ignore.case = TRUE)
     is_low_thru <- grepl(low_thru_pattern, missing_values, ignore.case = TRUE)
@@ -303,6 +303,8 @@ fix_missing <- function(data, missing, text_columns = character(0)) {
       missing_values <- c(missing_values[!is_thru_hi & !is_low_thru & !is_range],
                           values[in_range])
     }
+    # A range no value falls in leaves nothing to set to NA
+    if (length(missing_values) == 0) next
     names(missing_values) <- NA
 
     data.table::set(data, j = column,

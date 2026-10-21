@@ -155,6 +155,14 @@ are now different (and correct).
 
 ## Bug fixes
 
+* A missing value range that no value in the data falls in (SPSS
+  `97 THRU HI`, `LO THRU -1`, SAS `IF V1 >= 97 THEN V1 = .;`) no longer
+  stops `read_ascii_setup()` with "'names' attribute [1] must be the same
+  length as the vector [0]".
+* Every missing value range is compared with the data as numbers, so values
+  between whole numbers are in it too: 97.5 is missing for `97 THRU 99`.
+  `parse_setup()$missing` still lists a range of whole numbers value by
+  value.
 * Value labels keep apostrophes. Labels are now read by their quoting, so a
   quote character inside a label is part of the label: before, an apostrophe
   became a space or was dropped (`"anti-jehovah's witness"` became

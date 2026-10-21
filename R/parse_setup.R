@@ -41,6 +41,13 @@
 #' head(sps_example$setup)
 parse_setup <- function(setup_file) {
   setup <- read_setup(setup_file)
+  # Ranges of whole numbers are listed value by value, as before 3.0.0
+  if (!is.null(setup$missing)) {
+    missing <- make_thru_missing_rows(setup$missing)
+    missing <- missing[!duplicated(missing), ]
+    rownames(missing) <- seq_len(nrow(missing))
+    setup$missing <- missing
+  }
   setup[c("setup", "value_labels", "missing")]
 }
 
@@ -877,12 +884,12 @@ same_line_start <- function(codebook, command, columns, commented = TRUE) {
 }
 
 # Adds the commented column and the "line" attribute to the parsed missing
-# values, and expands "1 thru 5" ranges. NULL if there are none.
+# values. NULL if there are none. Ranges stay whole ("1 thru 5"); see
+# make_thru_missing_rows().
 finish_missing <- function(missing, commented, line) {
   if (nrow(missing) == 0) {
     return(NULL)
   }
-  missing <- make_thru_missing_rows(missing)
   rownames(missing) <- seq_len(nrow(missing))
   missing$commented <- commented
   attr(missing, "line") <- line
@@ -940,13 +947,8 @@ parse_missing_sas <- function(codebook, setup, after = 0) {
   commented_lines <- sort(unique(commented_lines))
   commented_lines <- commented_lines[c(TRUE, diff(commented_lines) > 3)]
 
-  out <- make_thru_missing_rows(missing[c("variable", "values")])
-  out$commented <- missing$commented[match(out$variable, missing$variable)]
-  # Row-level commented status (a column could have both)
-  key_out <- paste(out$variable, out$values, sep = "\r")
-  key_in  <- paste(missing$variable, missing$values, sep = "\r")
-  known   <- key_out %in% key_in
-  out$commented[known] <- missing$commented[match(key_out[known], key_in)]
+  # (Ranges stay whole; see make_thru_missing_rows())
+  out <- missing[c("variable", "values", "commented")]
   rownames(out) <- NULL
   attr(out, "line") <- commented_lines
   attr(out, "skipped") <- skipped
@@ -1104,18 +1106,21 @@ in_sas_comment <- function(codebook, line) {
   grepl("/*", before, fixed = TRUE)
 }
 
-# Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5).
-# Only ranges of up to 1,000 whole numbers are expanded; others (such as
-# "1000000 thru 9999999" or "99.5 thru 99.9") stay as one row, which
-# fix_missing() compares with the data as numbers.
+# Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5), keeping
+# the row's other columns, for parse_setup()'s output. Only ranges of up to
+# 1,000 whole numbers are expanded; others (such as "1000000 thru 9999999"
+# or "99.5 thru 99.9") stay as one row. (Reading the data doesn't use this:
+# fix_missing() compares every range with the data as numbers, so 97.5 is
+# in "97 thru 99".)
 make_thru_missing_rows <- function(missing) {
   pattern <- "^\\s*(-?[0-9]*\\.?[0-9]+)\\s+thru\\s+(-?[0-9]*\\.?[0-9]+)\\s*$"
   is_thru <- grepl(pattern, missing$values, ignore.case = TRUE)
   if (!any(is_thru)) {
     return(missing)
   }
-  from <- as.numeric(sub(pattern, "\\1", missing$values, ignore.case = TRUE))
-  to   <- as.numeric(sub(pattern, "\\2", missing$values, ignore.case = TRUE))
+  from <- to <- rep(NA_real_, nrow(missing))
+  from[is_thru] <- as.numeric(sub(pattern, "\\1", missing$values[is_thru], ignore.case = TRUE))
+  to[is_thru]   <- as.numeric(sub(pattern, "\\2", missing$values[is_thru], ignore.case = TRUE))
   expand <- is_thru & from == round(from) & to == round(to) & to >= from &
     to - from < 1000
   expand[is.na(expand)] <- FALSE
@@ -1125,12 +1130,14 @@ make_thru_missing_rows <- function(missing) {
 
   for (i in which(expand)) {
     values <- seq(from[i], to[i])
-    missing <- rbind(missing,
-                     data.frame(variable = rep(missing$variable[i], length(values)),
-                                values = as.character(values)))
+    rows <- missing[rep(i, length(values)), , drop = FALSE]
+    rows$values <- as.character(values)
+    missing <- rbind(missing, rows)
   }
   # Removes the expanded "thru" rows
-  missing[-which(expand), ]
+  missing <- missing[-which(expand), ]
+  rownames(missing) <- NULL
+  missing
 }
 
 # Reads the setup file as trimmed lines. For SPSS files, anything before
