@@ -43,16 +43,20 @@ test_that("parse_setup() gives each column's decimal places", {
   expect_equal(weimar$decimals[weimar$column_number %in% c("V5", "V6", "V7", "V11", "V23")],
                c(0, 0, 1, 1, 1))
   expect_equal(sum(weimar$decimals > 0), 8)
-  expect_equal(weimar$decimals, parse_setup(weimar_sas_name)$setup$decimals)
+  # Comparing the columns by name, so a missing decimals column is an error
+  # rather than NULL equalling NULL
+  expect_equal(parse_setup(weimar_sas_name)$setup[, c("column_number", "decimals")],
+               weimar[, c("column_number", "decimals")])
 
   jail <- parse_setup(jail_1987_sps_name)$setup
   expect_equal(jail$decimals[jail$column_number == "V14"], 3)
   expect_equal(sum(jail$decimals > 0), 1)
-  expect_equal(jail$decimals, parse_setup(jail_1987_sas_name)$setup$decimals)
+  expect_equal(parse_setup(jail_1987_sas_name)$setup[, c("column_number", "decimals")],
+               jail[, c("column_number", "decimals")])
 
   # Files without implied decimals have 0 for every column
-  expect_true(all(parse_setup(SHR_sps_name)$setup$decimals == 0))
-  expect_true(all(parse_setup(SHR_sas_name)$setup$decimals == 0))
+  expect_equal(unique(parse_setup(SHR_sps_name)$setup$decimals), 0)
+  expect_equal(unique(parse_setup(SHR_sas_name)$setup$decimals), 0)
 })
 
 test_that("add_decimal_point() puts the point d places from the right", {

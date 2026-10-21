@@ -25,33 +25,35 @@ missing_data <- function() {
 test_that("parse_setup() says which missing values are commented out", {
   shr <- parse_setup(shr_1976_setup())$missing
   expect_named(shr, c("variable", "values", "commented"))
-  expect_true(all(shr$commented))
+  # unique() so that a missing commented column (NULL) fails rather than
+  # passing as all(NULL) or any(NULL) would
+  expect_equal(unique(shr$commented), TRUE)
   expect_equal(nrow(shr), 139)
 
   # SHR 1981 has a commented-out RECODE section and a MISSING VALUES
   # section that isn't commented out (the one used)
   shr_1981 <- parse_setup(SHR1981_sps_name)$missing
-  expect_false(any(shr_1981$commented))
+  expect_equal(unique(shr_1981$commented), FALSE)
 
   weimar <- parse_setup(weimar_sps_name)$missing
-  expect_true(all(weimar$commented))
+  expect_equal(unique(weimar$commented), TRUE)
   # SAS: the IF statements are inside /* */
-  expect_true(all(parse_setup(weimar_sas_name)$missing$commented))
+  expect_equal(unique(parse_setup(weimar_sas_name)$missing$commented), TRUE)
   expect_equal(nrow(parse_setup(weimar_sas_name)$missing), nrow(weimar))
 })
 
 test_that("a section is commented out only if its statement starts with *", {
   live <- parse_setup(sps_with_missing(c("MISSING VALUES", "  V1 (0)", ".")))$missing
-  expect_false(any(live$commented))
+  expect_equal(live$commented, FALSE)
   commented <- parse_setup(sps_with_missing(c("* MISSING VALUES", "  V1 (0)", ".")))$missing
-  expect_true(all(commented$commented))
+  expect_equal(commented$commented, TRUE)
   no_space <- parse_setup(sps_with_missing(c("*MISSING VALUES", "  V1 (0)", ".")))$missing
-  expect_true(all(no_space$commented))
+  expect_equal(no_space$commented, TRUE)
   # A comment before RECODE statements doesn't make them commented out
   recode <- parse_setup(sps_with_missing(c("* SPSS MISSING VALUE RECODE *.",
                                            "RECODE V1 (0=SYSMIS).")))$missing
   expect_equal(recode$values, "0")
-  expect_false(any(recode$commented))
+  expect_equal(recode$commented, FALSE)
 })
 
 test_that("both commented-out and active sections are read", {
@@ -232,7 +234,7 @@ test_that("SAS missing values inside /* */ are commented out", {
   expect_true(commented$commented)
   live <- parse_setup(sas(c("IF V1 = 0 THEN V1 = .;", "IF V2 = 9 THEN V2 = .;")))$missing
   expect_equal(live$values, c("0", "9"))
-  expect_false(any(live$commented))
+  expect_equal(live$commented, c(FALSE, FALSE))
   # A comment that's already closed doesn't count
   closed <- parse_setup(sas(c("/* recodes below */", "IF V1 = 0 THEN V1 = .;")))$missing
   expect_false(closed$commented)

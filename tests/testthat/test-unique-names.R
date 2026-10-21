@@ -102,7 +102,12 @@ test_that("an = inside a label is kept in the name", {
                "Coffee_tea_drinking_over_1_time_day")
   expect_equal(fix_names('V1 = "Age < = 5"'), "Age_5")
   expect_equal(fix_names('V1 "Age = 5"'), "Age_5")
-  expect_equal(fix_names("V1 = 'HHID(=case)'"), "HHID_case")
+  # parse_column_names() puts spaces around every "=" before fix_names(), so
+  # indonesia's HHID='HHID(=case)' arrives like this (2.6.0 gave "case")
+  expect_equal(fix_names("HHID = 'HHID( = case)'"), "HHID_case")
+  setup <- temp_file(c("DATA x;", "INFILE 'x';", "INPUT", "  HHID 1-9", "", ";",
+                       "LABEL", "  HHID='HHID(=case)'", ";"), ".sas")
+  expect_equal(parse_setup(setup)$setup$column_name, "HHID_case")
   # Only the column's short name and the first " = " or ' "' are removed
   expect_equal(fix_names('V1 = "a = b = c"'), "a_b_c")
 })
