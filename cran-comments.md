@@ -1,9 +1,12 @@
 ## Release summary
 
-This is a bug-fix release. Value labels that contain an apostrophe (or
-other quote character) are now kept as written in the setup file, instead
-of having the apostrophe turned into a space; a few related value-label
-parsing errors are also fixed.
+This release fixes how setup files are read: value labels keep apostrophes
+and other characters, columns with implied decimal places get their
+decimal point, column names are always unique, SPSS GET DATA positions are
+no longer off by one, and setup files that can't be read give a clear
+error. It adds a `missing_values` argument for setup files whose missing
+values are commented out. Changes that affect results are listed first in
+NEWS.md.
 
 ## Test environments
 
@@ -13,11 +16,12 @@ parsing errors are also fixed.
 
 0 errors | 0 warnings | 1 note
 
-* Days since last update: 2
+* Days since last update: 3
 
-  This release fixes value labels that were silently altered when reading
-  data (an apostrophe in a label became a space, and some labels gained a
-  variable name), so users get incorrect labels until it's updated.
+  This release fixes values that were silently read wrongly: numbers with
+  implied decimal places (e.g. 78.5 read as 785), value labels with an
+  apostrophe, and columns read one position off. Users get wrong data
+  until it's updated.
 
 ## Reverse dependencies
 

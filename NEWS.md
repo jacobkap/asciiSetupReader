@@ -1,4 +1,64 @@
-# asciiSetupReader 2.6.1
+# asciiSetupReader 2.7.0
+
+## Changes that can affect your results
+
+Read these before upgrading: some numbers, names, labels and missing values
+are now different (and correct).
+
+* **Implied decimal places are applied.** Columns that the setup file gives
+  implied decimal places (`V7 37-43 (1)` in SPSS, `V7 37-43 .1` in SAS)
+  used to be read as whole numbers, so a value of `0000785` was 785 rather
+  than 78.5. They now get their decimal point, with a message listing each
+  column and its number of decimal places. With `coerce_numeric = FALSE`
+  the point is added to the text ("000078.5"). Values that already have a
+  decimal point are kept as they are, as in SPSS and SAS. Value labels and
+  missing values of these columns, which setup files write as numbers
+  (`1.0`, `-9.00`), are now matched by value. `parse_setup()$setup` has a
+  new `decimals` column.
+* **Column names are always unique.** When two columns would get the same
+  clean name, the later ones get their short name added, e.g. the second
+  "CLOTHING" column, V93, is now `CLOTHING_V93`, and PSID's repeated
+  "RELEASE NUMBER" becomes `RELEASE_NUMBER_TA050001` for the 2005 wave.
+  Before, the data had duplicate names, so `data$CLOTHING` only gave the
+  first of them and dplyr and data.table stopped with an error. A message
+  lists the renamed columns.
+* **An `=` inside a label no longer cuts the name short.** "SEP FROM FATHER
+  < OR = 5" was named `X5`; it is now `SEP_FROM_FATHER_under_OR_5`.
+* **`%` in a label becomes `_percent_`** in the name, as `<` already became
+  `_under_` (e.g. "1919 RT % VOTES CAST" is `X1919_RT_percent_VOTES_CAST`,
+  not `X1919_RT_VOTES_CAST`, which "1919 RT VOTES CAST" could also be).
+* **One- and two-digit missing values match however they're padded**, as
+  value labels already did: a missing value of `0` also makes `00` NA.
+* **SPSS GET DATA files are read at the right positions.** Their column
+  positions count from 0, so every column used to be read one position too
+  early.
+
+## New features
+
+* `read_ascii_setup()`, `spss_ascii_reader()` and `sas_ascii_reader()` have
+  a `missing_values` argument. Many setup files have their missing values
+  section commented out (`* MISSING VALUES` in SPSS, inside `/* */` in SAS)
+  so the codes stay in the data unless you choose otherwise:
+  `"all"` (the default, as before) uses every missing value in the file,
+  `"active"` only those that aren't commented out, and `"none"` none of
+  them. When commented-out missing values are used, a message says where
+  they are and how many values they made NA. `parse_setup()$missing` has a
+  new `commented` column.
+* Messages tell you about implied decimal places, commented-out missing
+  values, renamed columns and setup files read as Latin-1. They have the
+  class `"asciiSetupReader_message"` (and one for each kind), so they can
+  be silenced with `suppressMessages()`.
+* More SPSS and SAS syntax is understood: VALUE LABELS and MISSING VALUES
+  for lists of variables (`V1 V2 1 'Yes'`, `V1 TO V5 (9)`) and starting on
+  the command's own line, `ADD VALUE LABELS`, several MISSING VALUES
+  sections in one file, and SAS formatted input (`@1 V1 $CHAR2. @3 V2 4.1`).
+* Setup files that aren't valid UTF-8 are read as Latin-1, with a message,
+  instead of failing with "input string 3 is invalid" (GitHub #5).
+* Setup files the package can't read now say why: a file for delimited data
+  (`GET DATA /ARRANGEMENT = DELIMITED`, GitHub #13), a file of value labels
+  without column positions (such as PSID's separate formats files), or a
+  file without a DATA LIST or INPUT section. These used to fail with
+  "invalid 'row.names' length" or "argument of length 0".
 
 ## Bug fixes
 
@@ -19,10 +79,17 @@
   (`'farmer, ''profits'''`, `'Twelfth grade, "High School", GED'`), and
   SAS labels split over several quoted pieces, whose end became a separate
   code.
-* SPSS value labels with bare negative or decimal codes (`-9 "missing"`)
-  and labels continued with `+` on the next line are read correctly.
+* SPSS value labels continued with `+` (at the end of a line or the start
+  of the next) are joined into one label, and a double-quoted code followed
+  by more pairs on the same line (`"02" "two" 3 'three'`) no longer runs
+  into the next pair.
 * The 2017 YRBS SADC SAS setup file, which failed with "NA/NaN argument",
   can be read.
+* A label of only punctuation (e.g. "...") no longer ends the list of
+  column names early; that column keeps its short name.
+* A setup file that only mentions MISSING VALUES in a comment no longer
+  fails.
+* SAS setup files with many value labels (such as PSID's) are parsed faster.
 
 # asciiSetupReader 2.6.0
 
