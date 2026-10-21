@@ -213,9 +213,7 @@ check_setup_file <- function(codebook, setup_file, type) {
     has_positions <- any(grepl2("DATA LIST|/VARIABLES\\s*=", codebook))
     has_labels    <- any(grepl2("^(ADD )?VALUE LABELS\\b", codebook))
   } else {
-    infile <- grep2("^INFILE\\b", codebook)
-    infile <- infile[!sas_comment_state(codebook)[infile]]
-    if (any(grepl2("\\b(DLM|DELIMITER|DSD)\\b", codebook[infile]))) {
+    if (any(grepl2("\\b(DLM|DELIMITER|DSD)\\b", sas_infile_statements(codebook)))) {
       abort("delimited", "'", file_name, "' is for a delimited data file ",
             "(INFILE ... DLM= or DSD), not a fixed-width one. ",
             "asciiSetupReader only reads fixed-width files; read the data ",
@@ -452,8 +450,7 @@ lines_to_skip <- function(codebook, type) {
     lines <- data_list_lines(codebook)
     pattern <- "(?i)(?:\\bSKIP|/FIRSTCASE)\\s*=\\s*([0-9]+)"
   } else {
-    lines <- codebook[grepl("^INFILE\\b", codebook, ignore.case = TRUE) &
-                        !sas_comment_state(codebook)]
+    lines <- sas_infile_statements(codebook)
     pattern <- "(?i)\\bFIRSTOBS\\s*=\\s*([0-9]+)"
   }
   # (Not inside a quoted file name)
@@ -464,6 +461,25 @@ lines_to_skip <- function(codebook, type) {
   n <- as.numeric(found[2])
   # SKIP = n skips n lines; FIRSTCASE / FIRSTOBS = n starts at line n
   if (grepl("SKIP", found[1], ignore.case = TRUE)) n else max(n - 1, 0)
+}
+
+# The SAS INFILE statements that aren't commented out, each from INFILE to
+# its ";", with quoted text (the file name) removed. INFILE can follow
+# another statement on its line ("DATA x; INFILE 'd.txt' FIRSTOBS=2;") and
+# its options can run onto the next lines.
+sas_infile_statements <- function(codebook) {
+  masked <- mask_quotes(codebook)
+  at <- regexpr("(^|;)\\s*\\KINFILE\\b", masked, ignore.case = TRUE, perl = TRUE)
+  starts <- which(at > 0)
+  starts <- starts[!sas_comment_state(codebook)[starts]]
+  semicolons <- grep(";", masked)
+  vapply(starts, function(s) {
+    first <- substring(masked[s], at[s])
+    end <- if (grepl(";", first)) s else c(semicolons[semicolons > s], length(masked))[1]
+    statement <- paste(c(first, if (end > s) masked[(s + 1):end]), collapse = " ")
+    statement <- sub(";.*$", "", statement)
+    gsub("'x*'|\"x*\"", "", statement)
+  }, character(1))
 }
 
 positions_needed <- function(type) {

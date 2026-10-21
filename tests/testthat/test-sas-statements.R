@@ -169,3 +169,20 @@ test_that("single-spaced column input is read", {
   expect_equal(positions_of(c("INPUT", "V1 1-2 V2 3-4; LENGTH V3 8;")),
                c(V1 = "1-2", V2 = "3-4"))
 })
+
+test_that("FIRSTOBS is read from anywhere in the INFILE statement", {
+  skip_of <- function(...) {
+    read_setup(temp_file(c(..., "INPUT V1 1-2;", "RUN;"), ".sas"))$skip
+  }
+  expect_equal(skip_of("DATA x;", "INFILE 'd.txt' LRECL=10", "  FIRSTOBS=3;"), 2)
+  expect_equal(skip_of("DATA x; INFILE 'd.txt' FIRSTOBS=2;"), 1)
+  expect_equal(skip_of("DATA x;", "INFILE 'firstobs=5.txt';"), 0)
+  expect_equal(skip_of("DATA x;", "/* INFILE 'd.txt' FIRSTOBS=9; */", "INFILE 'd.txt';"), 0)
+})
+
+test_that("DLM or DSD anywhere in INFILE, but not in its file name, means delimited data", {
+  setup <- function(...) temp_file(c("DATA x;", ..., "INPUT V1 1-2;", "RUN;"), ".sas")
+  expect_error(parse_setup(setup("INFILE 'd.txt'", "  DLM = ',';")),
+               class = "asciiSetupReader_delimited")
+  expect_equal(parse_setup(setup("INFILE 'c:/dsd/dlm.txt';"))$setup$column_number, "V1")
+})
