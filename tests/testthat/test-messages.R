@@ -70,6 +70,18 @@ test_that("the implied decimals message is only given when values change", {
                  class = "asciiSetupReader_implied_decimals")
 })
 
+test_that("the implied decimals message lists at most 20 columns", {
+  n <- 25
+  data <- temp_file(strrep("12", n), ".txt")
+  setup <- temp_file(c("DATA LIST FILE = 'x'",
+                       paste0("  V", 1:n, " ", 2 * (1:n) - 1, "-", 2 * (1:n), " (1)"),
+                       ".", "EXECUTE."), ".sps")
+  found <- messages_from(read_ascii_setup(data, setup))
+  expect_match(message_texts(found),
+               "25 columns have implied .*V20 \\(1\\) and 5 more; parse_setup\\(\\)\\$setup\\$decimals has them all\\.")
+  expect_false(grepl("V21 (1)", message_texts(found), fixed = TRUE))
+})
+
 test_that("the commented-out missing values message gives the line and counts", {
   # Line 77 of weimar's setup file is "* MISSING VALUES"
   expect_equal(trimws(readr::read_lines(weimar_sps_name)[77]), "* MISSING VALUES")

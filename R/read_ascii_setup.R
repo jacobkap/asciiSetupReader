@@ -137,8 +137,10 @@ read_ascii_setup <- function(data,
            "values without one (e.g. ", final_name(changed$column_number[1]),
            ": \"", changed$example[1], "\" became \"",
            changed$example_new[1], "\"). Columns (decimal places): ",
-           paste0(final_name(changed$column_number), " (",
-                  changed$decimals, ")", collapse = ", "), ".")
+           list_items(paste0(final_name(changed$column_number), " (",
+                             changed$decimals, ")")),
+           if (nrow(changed) > 20) "; parse_setup()$setup$decimals has them all",
+           ".")
   }
   if (length(commented_na) > 0) {
     lines <- unique(setup$commented_lines)
