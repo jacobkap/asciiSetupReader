@@ -2,12 +2,12 @@
 # that can't be read, Latin-1 files, SPSS GET DATA and SAS formatted input.
 
 test_that("a delimited GET DATA file gives a clear error (GitHub #13)", {
-  expect_error(parse_setup(fixture("SPSS_SPS.sps")),
+  expect_error(parse_setup(fixture("delimited_get_data.sps")),
                "delimited data file .*read.delim",
                class = "asciiSetupReader_delimited")
-  expect_error(read_ascii_setup(tempfile(), fixture("SPSS_SPS.sps")),
+  expect_error(read_ascii_setup(tempfile(), fixture("delimited_get_data.sps")),
                class = "asciiSetupReader_delimited")
-  expect_error(parse_setup(fixture("SPSS_SPS.sps")), class = "asciiSetupReader_error")
+  expect_error(parse_setup(fixture("delimited_get_data.sps")), class = "asciiSetupReader_error")
 })
 
 test_that("a file of formats only gives a clear error", {
