@@ -81,6 +81,7 @@ read_setup <- function(setup_file) {
       second_grep_value <- length(codebook)
     }
     setup <- codebook[grep2("DATA LIST|/VARIABLES =$", codebook)[1]:second_grep_value]
+    check_data_list(setup, setup_file)
     decimals <- parse_decimals(setup, type)
     text_columns <- parse_text_columns(setup, type)
     setup <- gsub("\\([0-9]+\\) |\\.[0-9]+ ", "", setup)
@@ -247,6 +248,42 @@ check_setup_file <- function(codebook, setup_file, type) {
   if (!has_positions) {
     abort("no_positions", "No column positions were found in '",
           file_name, "'. ", positions_needed(type))
+  }
+}
+
+# Stops with a clear error for SPSS DATA LIST forms this package can't
+# read, rather than reading the wrong columns: several records (lines) per
+# case, several variables sharing one column range ("Q1 TO Q3 3-5") and
+# positions implied by formats ("ID (F3) NAME (A5)").
+check_data_list <- function(lines, setup_file) {
+  # Only the DATA LIST (or GET DATA) command itself, up to its closing
+  # period; a FORMATS command after it can have "V1 (F7.3)"
+  lines <- gsub("/\\*.*?(\\*/|$)", " ", lines, perl = TRUE)
+  end <- which(endsWith(trimws(lines), "."))[1]
+  if (!is.na(end)) lines <- lines[seq_len(end)]
+  text <- paste(lines, collapse = " ")
+  file_name <- basename(setup_file)
+  records <- regmatches(text, regexec("(?i)RECORDS\\s*=\\s*([0-9]+)", text, perl = TRUE))[[1]]
+  fixcase <- regmatches(text, regexec("(?i)/FIXCASE\\s*=\\s*([0-9]+)", text, perl = TRUE))[[1]]
+  if ((length(records) && as.numeric(records[2]) > 1) ||
+      (length(fixcase) && as.numeric(fixcase[2]) > 1) ||
+      grepl("(^|\\s)/\\s*([2-9]|[1-9][0-9]+)\\b", text, perl = TRUE)) {
+    abort("unsupported_input", "'", file_name, "' reads several lines ",
+          "(records) per case, which asciiSetupReader can't read.")
+  }
+  if (grepl("(?i)\\b[[:alpha:]][[:alnum:]_.]*\\s+TO\\s+[[:alpha:]][[:alnum:]_.]*\\s+[0-9]+",
+            text, perl = TRUE)) {
+    abort("unsupported_input", "'", file_name, "' gives several variables ",
+          "one column range (e.g. \"Q1 TO Q3 3-5\"), which asciiSetupReader ",
+          "can't read.")
+  }
+  if (!grepl("(?i)/VARIABLES", text, perl = TRUE) &&
+      grepl(paste0("(?i)\\b[[:alpha:]][[:alnum:]_.]*\\s*\\((?:F|A|N|E|Z|DOLLAR|",
+                   "COMMA|DOT|PCT|DATE|ADATE|EDATE|SDATE|JDATE|TIME|DATETIME)",
+                   "[0-9]"), text, perl = TRUE)) {
+    abort("unsupported_input", "'", file_name, "' gives columns by format ",
+          "only (e.g. \"ID (F3) NAME (A5)\"), not by position, which ",
+          "asciiSetupReader can't read.")
   }
 }
 

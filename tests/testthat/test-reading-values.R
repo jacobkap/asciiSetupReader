@@ -108,6 +108,24 @@ test_that("a label mentioning missing values doesn't end VARIABLE LABELS", {
                c("first", "Number_of_missing_values_in_grid", "third"))
 })
 
+test_that("DATA LIST forms the package can't read stop with clear errors", {
+  records <- temp_file(c("DATA LIST FILE = 'x' RECORDS = 2", "/1 V1 1-2", "/2 V2 1-2", ".",
+                         "EXECUTE."), ".sps")
+  expect_error(parse_setup(records), "several lines \\(records\\) per case",
+               class = "asciiSetupReader_unsupported_input")
+  shared <- temp_file(c("DATA LIST FILE = 'x'", "  Q1 TO Q3 3-5", ".", "EXECUTE."), ".sps")
+  expect_error(parse_setup(shared), "one column range",
+               class = "asciiSetupReader_unsupported_input")
+  formats <- temp_file(c("DATA LIST FILE = 'x'", "  ID 1-3 AGE (F2) SEX (A1)", ".",
+                         "EXECUTE."), ".sps")
+  expect_error(parse_setup(formats), "by format only",
+               class = "asciiSetupReader_unsupported_input")
+  # A FORMATS command after DATA LIST is fine
+  ok <- temp_file(c("DATA LIST FILE = 'x'", "  V1 1-2  V2 3-4", ".",
+                    "FORMATS V1 (F7.3) V2 (F2.0).", "EXECUTE."), ".sps")
+  expect_equal(parse_setup(ok)$setup$column_number, c("V1", "V2"))
+})
+
 test_that("SPSS MISSING VALUES follow SPSS's rules", {
   run <- function(missing) {
     setup <- sps_file("  V1 1-2  V2 3-4", missing)
