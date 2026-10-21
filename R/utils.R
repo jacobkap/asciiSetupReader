@@ -117,14 +117,6 @@ match_case <- function(x, table) {
   x
 }
 
-# Labels each element of x with the section it belongs to. A section starts
-# at the first element and after every element flagged in new_section, and
-# is named after its first element.
-fill_section <- function(x, new_section) {
-  starts <- c(1L, which(new_section) + 1L)
-  x[starts[findInterval(seq_along(x), starts)]]
-}
-
 # Replaces values of x found in labels with the names of labels (what
 # haven::as_factor() does for a labelled vector) and returns character.
 # Values with no label are kept as they are. If by_number, values that
