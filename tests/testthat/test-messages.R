@@ -118,8 +118,8 @@ test_that("the unique names message lists the renamed columns", {
                        "  V3 'SEX'", "  V4 'age'", ".", "EXECUTE."), ".sps")
   expect_message(read_ascii_setup(data, setup), paste0(
     "In '", basename(setup), "', 2 columns have the same name as an earlier ",
-    "column, so a number was added to make each name unique: V2 -> AGE_V2, ",
-    "V4 -> age_V4. parse_setup() shows every column's name."),
+    "column, so the column's short name was added to make each name unique: ",
+    "V2 -> AGE_V2, V4 -> age_V4. parse_setup() shows every column's name."),
     fixed = TRUE, class = "asciiSetupReader_unique_names")
   # Not with the short names, and only for columns that are read
   expect_silent(read_ascii_setup(data, setup, use_clean_names = FALSE))

@@ -308,15 +308,23 @@ unique_names <- function(setup) {
   changed <- duplicated(key)
   new_names <- names
   new_names[changed] <- paste0(names[changed], "_", setup$column_number[changed])
-  # If that is still another column's name, add a number too
-  n <- 1
-  repeat {
-    lower <- tolower(new_names)
-    clash <- changed & (duplicated(lower) | duplicated(lower, fromLast = TRUE))
-    if (!any(clash)) break
-    n <- n + 1
-    new_names[clash] <- paste0(names[clash], "_", setup$column_number[clash],
-                               "_", n)
+  # Rarely that is still taken (by another column's name or another new
+  # name); then a number is added too, counting up until it's free. Names
+  # that weren't changed are never touched, so this always ends.
+  lower <- tolower(new_names)
+  if (anyDuplicated(lower)) {
+    taken <- new.env(hash = TRUE)
+    for (x in lower[!changed]) assign(x, TRUE, envir = taken)
+    for (i in which(changed)) {
+      candidate <- new_names[i]
+      n <- 1
+      while (exists(tolower(candidate), envir = taken, inherits = FALSE)) {
+        n <- n + 1
+        candidate <- paste0(new_names[i], "_", n)
+      }
+      new_names[i] <- candidate
+      assign(tolower(candidate), TRUE, envir = taken)
+    }
   }
   data.frame(column_number = setup$column_number[changed],
              name          = names[changed],

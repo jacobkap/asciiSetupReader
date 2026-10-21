@@ -74,6 +74,15 @@ test_that("unique_names() handles case, three or more repeats and clashes", {
   names <- setup$column_name
   names[match(renamed$column_number, setup$column_number)] <- renamed$column_name
   expect_equal(anyDuplicated(tolower(names)), 0)
+
+  # Two new names that are the same (this used to loop forever)
+  setup <- data.frame(column_number = c("P", "Q", "C", "B_C"),
+                      column_name = c("A", "A_B", "A_B", "A"))
+  renamed <- unique_names(setup)
+  expect_equal(renamed$column_name, c("A_B_C", "A_B_C_2"))
+  names <- setup$column_name
+  names[match(renamed$column_number, setup$column_number)] <- renamed$column_name
+  expect_equal(anyDuplicated(tolower(names)), 0)
 })
 
 test_that("select_columns accepts the unique names", {

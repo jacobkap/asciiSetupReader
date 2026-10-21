@@ -159,8 +159,8 @@ read_ascii_setup <- function(data,
   if (use_clean_names && NROW(renamed) > 0) {
     inform("unique_names", "In '", file_name, "', ", nrow(renamed),
            ngettext(nrow(renamed), " column has", " columns have"),
-           " the same name as an earlier column, so a number was added to ",
-           "make each name unique: ",
+           " the same name as an earlier column, so the column's short name ",
+           "was added to make each name unique: ",
            list_items(paste(renamed$column_number, "->", renamed$column_name)),
            ". parse_setup() shows every column's name.")
   }
