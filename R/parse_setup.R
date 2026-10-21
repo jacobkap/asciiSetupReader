@@ -397,6 +397,7 @@ parse_missing_section_sps <- function(missing, setup, start) {
   missing <- gsub("\\*{10,}.*|.*Convert missing data to system missing.*|SAVE OUTFILE = .*", "", missing)
   missing <- missing[missing != ""]
   missing <- gsub("^RECODE ", "", missing)
+  missing <- expand_column_lists(missing, setup$column_number)
   missing <- gsub("^\\(-", " -", missing)
 
   missing <- gsub('\\"\\s+\\"', '""', missing)
@@ -451,6 +452,53 @@ combine_missing <- function(sections) {
   rownames(missing) <- NULL
   attr(missing, "line") <- lines
   missing
+}
+
+# Expands "V1 TO V3" and "V1 V2" column lists before a parenthesised list
+# of values into one "column (values)" piece per column, e.g.
+# "V1 TO V3 (9)" becomes "V1 (9)   V2 (9)   V3 (9)". Only lists made
+# entirely of columns in the setup file (in file order) are expanded.
+expand_column_lists <- function(lines, columns) {
+  pattern <- "((?:[[:alpha:]@#$][[:alnum:]@#$_.]*\\s+)+)(\\([^)]*\\))"
+  vapply(lines, function(line) {
+    found <- gregexpr(pattern, line, perl = TRUE)[[1]]
+    if (found[1] == -1) return(line)
+    pieces <- regmatches(line, list(found))[[1]]
+    expanded <- vapply(pieces, function(piece) {
+      names  <- strsplit(trimws(sub("\\(.*$", "", piece)), "\\s+")[[1]]
+      values <- sub("^[^(]*", "", piece)
+      names  <- expand_to(names, columns)
+      if (is.null(names) || length(names) < 2) return(piece)
+      paste(paste(names, values), collapse = "   ")
+    }, character(1))
+    regmatches(line, list(found)) <- list(expanded)
+    line
+  }, character(1), USE.NAMES = FALSE)
+}
+
+# The columns in a list such as c("V1", "TO", "V3", "V7"), with each
+# "A TO B" expanded to every column from A to B in the order of columns.
+# NULL if anything in the list isn't a column.
+expand_to <- function(names, columns) {
+  position <- match(tolower(names), tolower(columns))
+  is_to <- toupper(names) == "TO"
+  if (any(is.na(position) & !is_to)) return(NULL)
+  out <- character(0)
+  i <- 1
+  while (i <= length(names)) {
+    if (is_to[i]) {
+      if (i == 1 || i == length(names) || is_to[i + 1]) return(NULL)
+      from <- position[i - 1]
+      to   <- position[i + 1]
+      if (to < from) return(NULL)
+      if (to > from) out <- c(out, columns[seq(from + 1, to)])
+      i <- i + 2
+    } else {
+      out <- c(out, columns[position[i]])
+      i <- i + 1
+    }
+  }
+  out
 }
 
 # Lines where a command (e.g. "MISSING VALUES") is followed on the same
