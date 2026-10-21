@@ -37,9 +37,9 @@ test_that("the PSID setup file from GitHub is read", {
   expect_equal(anyDuplicated(tolower(psid$setup$column_name)), 0)
 })
 
-test_that("a setup file that isn't UTF-8 is read as Latin-1 with a message", {
+test_that("a setup file that isn't UTF-8 is read as Windows-1252 with a message", {
   expect_message(sas <- parse_setup(fixture("INPUT_SAS_CENSOESC.sas.zip")),
-                 "'INPUT_SAS_CENSOESC.sas.zip' isn't valid UTF-8 text, so it was read as Latin-1",
+                 "'INPUT_SAS_CENSOESC.sas.zip' isn't valid UTF-8 text, so it was read as Windows-1252",
                  class = "asciiSetupReader_encoding")
   expect_true(all(validUTF8(sas$setup$column_name)))
 
@@ -57,6 +57,17 @@ test_that("a setup file that isn't UTF-8 is read as Latin-1 with a message", {
   writeLines(c("01", "02"), data)
   expect_message(out <- read_ascii_setup(data, setup), class = "asciiSetupReader_encoding")
   expect_equal(out[[1]], c("São Paulo", "02"))
+
+  # Windows-1252's curly quote (byte 0x92) and dash (0x96) are read as such,
+  # not as invisible control characters
+  cp1252 <- file.path(dir, "cp1252.sps")
+  con <- file(cp1252, "wb")
+  writeBin(c(charToRaw("DATA LIST FILE = 'x'\n  V1 1-2\n.\nVALUE LABELS\n  V1 1 'Don"),
+             as.raw(0x92), charToRaw("t know "), as.raw(0x96),
+             charToRaw(" refused'\n.\nEXECUTE.\n")), con)
+  close(con)
+  expect_message(parsed <- parse_setup(cp1252), class = "asciiSetupReader_encoding")
+  expect_equal(names(parsed$value_labels$V1), "Don’t know – refused")
 
   # A UTF-8 file gives no message
   writeLines(lines, setup, useBytes = TRUE)

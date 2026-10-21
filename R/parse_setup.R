@@ -5,8 +5,8 @@
 #'   is SPSS or SAS is determined from the file name: names ending in .sps
 #'   (optionally followed by .zip or .txt) are SPSS and everything else is SAS.
 #'
-#'   A setup file that isn't valid UTF-8 text is read as Latin-1, with a
-#'   message.
+#'   A setup file that isn't valid UTF-8 text is read as Windows-1252
+#'   (Latin-1), with a message.
 #'
 #' @return A list of length 3. The first object ("setup") is a data frame
 #' with 5 columns: column_number, the non-descriptive name of each column
@@ -620,14 +620,20 @@ parse_codebook <- function(setup_file, type) {
 }
 
 # Reads the setup file as trimmed lines. Files that aren't valid UTF-8
-# (often older files with accented letters) are read as Latin-1.
+# (often older files with accented letters) are read as Windows-1252, which
+# is Latin-1 plus curly quotes and dashes in bytes 0x80-0x9F; if that
+# fails, as Latin-1.
 read_setup_lines <- function(setup_file) {
   lines <- readr::read_lines(setup_file)
   if (!all(validUTF8(lines))) {
-    lines <- readr::read_lines(setup_file,
-                               locale = readr::locale(encoding = "latin1"))
+    lines <- tryCatch(
+      readr::read_lines(setup_file,
+                        locale = readr::locale(encoding = "windows-1252")),
+      error = function(e) {
+        readr::read_lines(setup_file, locale = readr::locale(encoding = "latin1"))
+      })
     inform("encoding", "'", basename(setup_file), "' isn't valid UTF-8 ",
-           "text, so it was read as Latin-1 (ISO-8859-1).")
+           "text, so it was read as Windows-1252 (Latin-1).")
   }
   stringr::str_trim(lines)
 }
