@@ -309,14 +309,14 @@ fix_value_labels <- function(data, setup, value_label_fix) {
   }
 
   if (value_label_fix && length(value_labels) > 0) {
-    # Codes of columns with implied decimal places are written as numbers
-    # (e.g. "1.0" for data of "0000010"), so they're also matched as numbers
-    by_number <- setup$setup$column_number[setup$setup$decimals > 0]
+    # As in SPSS and SAS, codes of number columns are matched by value
+    # ("0" labels "0000000"); codes of text columns must be the same text
     for (i in seq_along(value_labels)) {
       data <- fix_variable_values(data,
                                   value_labels[[i]],
                                   names(value_labels)[i],
-                                  by_number = names(value_labels)[i] %in% by_number)
+                                  by_number = !names(value_labels)[i] %in%
+                                    setup$text_columns)
     }
   }
   return(data)
