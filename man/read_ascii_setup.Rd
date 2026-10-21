@@ -10,7 +10,8 @@ read_ascii_setup(
   use_value_labels = TRUE,
   use_clean_names = TRUE,
   select_columns = NULL,
-  coerce_numeric = TRUE
+  coerce_numeric = TRUE,
+  missing_values = c("all", "active", "none")
 )
 }
 \arguments{
@@ -37,7 +38,27 @@ etc.).}
 \item{coerce_numeric}{If TRUE (default) will make columns where all values can be made numeric
 into numeric columns. Every value is checked, so a column with any text
 value stays character. Useful as FALSE if variables have leading zeros -
-such as US Census FIPS codes.}
+such as US Census FIPS codes.
+
+Columns that the setup file gives implied decimal places (e.g.
+\code{V7 37-43 (1)} in SPSS or \code{V7 37-43 .1} in SAS) get their
+decimal point whatever coerce_numeric is: a value of "0000785" with 1
+implied decimal place becomes 78.5, or the text "000078.5" if
+coerce_numeric is FALSE. Values that already have a decimal point are
+kept as they are.}
+
+\item{missing_values}{Which of the setup file's missing values to set to
+NA. Setup files often have their missing values section commented out
+(e.g. "* MISSING VALUES" in SPSS or inside \code{/* */} in SAS) so that
+the codes stay in the data unless the user chooses otherwise.
+\describe{
+  \item{"all"}{(default) Use every missing value in the setup file,
+    ignoring whether it is commented out. This is what earlier versions
+    did.}
+  \item{"active"}{Use only the missing values that aren't commented
+    out, as SPSS and SAS would.}
+  \item{"none"}{Don't use any missing values; every code is kept.}
+}}
 }
 \value{
 data.frame of the data from the ASCII file
@@ -49,6 +70,26 @@ The setup file provides instructions on how to create and name the columns,
 and fix the key-value pairs (sometimes called value labels). This is common
 in government data, particularly data produced before 2010.
 }
+\section{Messages}{
+
+read_ascii_setup() tells you with a message when it:
+\itemize{
+  \item adds implied decimal places to a column's values (listing the
+    columns and their decimal places),
+  \item sets values to NA because of missing values that are commented
+    out in the setup file (only when \code{missing_values = "all"}),
+  \item makes column names unique because two columns would have had
+    the same name (only when \code{use_clean_names = TRUE}), or
+  \item reads a setup file that isn't valid UTF-8 as Latin-1.
+}
+\code{suppressMessages(read_ascii_setup(...))} silences them. They have
+the class "asciiSetupReader_message", so on R 4.0 or later
+\code{suppressMessages(read_ascii_setup(...), classes = "asciiSetupReader_message")}
+silences only these messages. Each kind also has its own class:
+"asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
+"asciiSetupReader_unique_names" and "asciiSetupReader_encoding".
+}
+
 \examples{
 # Text file is zipped to save space.
 dataset_name <- system.file("extdata", "example_data.zip",
@@ -70,4 +111,8 @@ example3 <- read_ascii_setup(data = dataset_name,
 # Only returns the first 5 columns
 example4 <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name, select_columns = 1:5)
+
+# Only uses the missing values that aren't commented out
+example5 <- read_ascii_setup(data = dataset_name,
+  setup_file = sps_name, missing_values = "active")
 }

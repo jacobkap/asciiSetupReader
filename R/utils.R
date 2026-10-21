@@ -234,6 +234,8 @@ fix_missing <- function(data, missing, by_number = character(0)) {
                           values[in_range])
     }
     names(missing_values) <- NA
+    missing_values <- double_digit(single_digit(missing_values))
+    missing_values <- missing_values[!duplicated(missing_values)]
 
     data.table::set(data, j = column,
                     value = replace_values(data[[column]], missing_values,
@@ -261,14 +263,25 @@ read_data <- function(data, setup) {
 
 # Sets missing values to NA, renames columns from their short names (V1) to
 # their descriptive names if real_names, converts all-number columns to
-# numeric if coerce_numeric, and returns a plain data.frame.
+# numeric if coerce_numeric, and returns a plain data.frame. The number of
+# values that only commented-out missing values made NA is the
+# "commented_na" attribute (a named vector, by column).
 fix_names_missing_numeric <- function(data,
                                       setup,
                                       real_names,
                                       coerce_numeric) {
+  commented_na <- NULL
   if (!is.null(setup$missing)) {
     by_number <- setup$setup$column_number[setup$setup$decimals > 0]
-    data <- fix_missing(data, setup$missing, by_number)
+    commented <- setup$missing$commented %in% TRUE
+    data <- fix_missing(data, setup$missing[!commented, ], by_number)
+    if (any(commented)) {
+      columns <- intersect(unique(setup$missing$variable[commented]), names(data))
+      before  <- vapply(columns, function(x) sum(is.na(data[[x]])), numeric(1))
+      data <- fix_missing(data, setup$missing[commented, ], by_number)
+      after   <- vapply(columns, function(x) sum(is.na(data[[x]])), numeric(1))
+      commented_na <- (after - before)[after > before]
+    }
   }
   if (real_names) {
     variables <- setup$setup[setup$setup$column_number
@@ -283,6 +296,7 @@ fix_names_missing_numeric <- function(data,
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL
   data.table::setDF(data)
+  attr(data, "commented_na") <- commented_na
   return(data)
 }
 

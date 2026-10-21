@@ -22,10 +22,11 @@
 #' the codes in the data and its names are the labels. If there are no
 #' value labels, this will be NULL.
 #'
-#' The third object ("missing") is a data.frame with two columns. The first
-#' column (variable) says the column name and the second (values) says the
-#' value that is missing and will be replaced with NA. If there are no
-#' missing values, this will be NULL.
+#' The third object ("missing") is a data.frame with three columns. The
+#' first column (variable) says the column name, the second (values) says
+#' the value that is missing and will be replaced with NA, and the third
+#' (commented) is TRUE if the setup file has that missing value commented
+#' out. If there are no missing values, this will be NULL.
 #' @export
 #'
 #' @examples
@@ -153,6 +154,7 @@ read_setup <- function(setup_file) {
   } else {
     missing <- NULL
   }
+  commented_lines <- attr(missing, "line") + line_offset
   missing <- missing[!duplicated(missing), ]
 
   if (type == "sps") {
@@ -166,7 +168,8 @@ read_setup <- function(setup_file) {
   setup <- list(setup         = setup,
                 value_labels  = value_labels,
                 missing       = missing,
-                renamed       = renamed)
+                renamed       = renamed,
+                commented_lines = if (any(missing$commented)) commented_lines)
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",
                                  "begin",
@@ -349,21 +352,48 @@ fill_down <- function(x) {
 # one row per value; open-ended ones ("8 thru highest") are left for
 # fix_missing(), which needs the data to expand them.
 
-# SPSS: "MISSING VALUES V1 (9, 99) V2 (-1)." or RECODE ... =SYSMIS
-# statements, up to the next EXECUTE.
-parse_missing_sps <- function(codebook, setup) {
-  start <- grep2("MISSING VALUES?$|Convert missing data", codebook)
-  if (length(start) == 0) {
-    start <- grep2("MISSING VALUE RECODE", codebook)
-  }
-  end <- grep2("EXECUTE|^\\*.*SPSS", codebook)
-  if (length(end) == 0 | all(end <= start)) {
-    end <- length(codebook)
-  } else {
-    end <- min(end[end > start])
-  }
-  missing <- codebook[start:end]
+# Both also say whether the section is commented out (the commented
+# column) and give the line it starts on (the "line" attribute).
 
+# SPSS: "MISSING VALUES V1 (9, 99) V2 (-1)." or RECODE ... =SYSMIS
+# statements, up to the next EXECUTE. The statement can start on the
+# MISSING VALUES line, and a list of columns ("V1 V2 (9)" or
+# "V1 TO V5 (9)") shares the missing values that follow it.
+parse_missing_sps <- function(codebook, setup) {
+  # A file can have more than one section, e.g. a commented-out one and one
+  # that isn't; each runs to the next section or EXECUTE
+  starts <- grep2("MISSING VALUES?$|Convert missing data", codebook)
+  starts <- sort(unique(c(starts, same_line_start(codebook, "MISSING VALUES?",
+                                                  setup$column_number))))
+  if (length(starts) == 0) {
+    starts <- grep2("MISSING VALUE RECODE", codebook)[1]
+  }
+  # e.g. only a comment that mentions "MISSING VALUES"
+  if (length(starts) == 0 || is.na(starts[1])) {
+    return(NULL)
+  }
+  ends <- grep2("EXECUTE|^\\*.*SPSS", codebook)
+  sections <- lapply(seq_along(starts), function(k) {
+    start <- starts[k]
+    end <- ends[ends > start][1]
+    if (is.na(end)) end <- length(codebook)
+    if (k < length(starts)) end <- min(end, starts[k + 1] - 1)
+    parse_missing_section_sps(codebook[start:end], setup, start)
+  })
+  combine_missing(sections)
+}
+
+# Parses one missing values section (the lines of codebook from line
+# `start`) of an SPSS file.
+parse_missing_section_sps <- function(missing, setup, start) {
+
+  # Commented out if the statement itself starts with "*" (the section can
+  # start with a comment saying what follows, e.g. "* SPSS MISSING VALUE
+  # RECODE *." before RECODE statements)
+  statement <- grep2("^\\*?\\s*(MISSING VALUES?|RECODE)\\b", missing)[1]
+  commented <- !is.na(statement) && startsWith(missing[statement], "*")
+
+  missing <- sub("^\\*?\\s*MISSING VALUES?\\s*", "", missing, ignore.case = TRUE)
   missing <- gsub("\\*{10,}.*|.*Convert missing data to system missing.*|SAVE OUTFILE = .*", "", missing)
   missing <- missing[missing != ""]
   missing <- gsub("^RECODE ", "", missing)
@@ -400,13 +430,55 @@ parse_missing_sps <- function(codebook, setup) {
   missing$variable <- match_case(missing$variable, setup$column_number)
 
   missing <- missing[missing$variable %in% c(setup$column_number), ]
-  if (nrow(missing) > 0) {
-    missing <- make_thru_missing_rows(missing)
-    rownames(missing) <- 1:nrow(missing)
-  } else {
-    missing <- NULL
+  finish_missing(missing, commented, start)
+}
+
+# Joins the missing values of several sections. A value in both a
+# commented-out section and one that isn't counts as not commented out. The
+# "line" attribute is the first line of each commented-out section used.
+combine_missing <- function(sections) {
+  sections <- Filter(Negate(is.null), sections)
+  if (length(sections) == 0) {
+    return(NULL)
   }
-  return(missing)
+  lines <- unlist(lapply(sections, function(s) {
+    if (all(s$commented)) attr(s, "line")
+  }))
+  missing <- do.call(rbind, sections)
+  key  <- paste(missing$variable, missing$values, sep = "\r")
+  drop <- missing$commented & key %in% key[!missing$commented]
+  missing <- missing[!drop, ]
+  rownames(missing) <- NULL
+  attr(missing, "line") <- lines
+  missing
+}
+
+# Lines where a command (e.g. "MISSING VALUES") is followed on the same
+# line by one of the columns, as in "MISSING VALUES V1 (9)." Comment text
+# that happens to start with the command's name isn't matched. Commands
+# commented out with "*" are included if commented.
+same_line_start <- function(codebook, command, columns, commented = TRUE) {
+  pattern <- paste0(if (commented) "^\\*?\\s*" else "^", command,
+                    "\\s+/?([^[:space:](/]+)")
+  lines <- grep2(pattern, codebook)
+  first <- regmatches(codebook[lines],
+                      regexec(pattern, codebook[lines], ignore.case = TRUE))
+  # The last group is the column (command can have groups of its own)
+  first <- vapply(first, function(m) m[length(m)], character(1))
+  lines[tolower(first) %in% tolower(columns)]
+}
+
+# Adds the commented column and the "line" attribute to the parsed missing
+# values, and expands "1 thru 5" ranges. NULL if there are none.
+finish_missing <- function(missing, commented, line) {
+  if (nrow(missing) == 0) {
+    return(NULL)
+  }
+  missing <- make_thru_missing_rows(missing)
+  rownames(missing) <- 1:nrow(missing)
+  missing$commented <- commented
+  attr(missing, "line") <- line
+  missing
 }
 
 # SAS: "IF V1 = 9 OR V1 = 99 THEN V1 = .;" statements after the MISSING
@@ -458,13 +530,16 @@ parse_missing_sas <- function(codebook, setup) {
   missing$values <- trimws(missing$values)
 
   missing <- missing[missing$variable %in% setup$column_number, ]
-  if (nrow(missing) > 0) {
-    missing <- make_thru_missing_rows(missing)
-    rownames(missing) <- 1:nrow(missing)
-  } else {
-    missing <- NULL
-  }
-  return(missing)
+  finish_missing(missing, in_sas_comment(codebook, start), start)
+}
+
+# TRUE if line `line` of codebook is inside a /* ... */ comment or is a
+# "* ...;" comment statement.
+in_sas_comment <- function(codebook, line) {
+  if (startsWith(codebook[line], "*")) return(TRUE)
+  before <- paste(codebook[seq_len(line - 1)], collapse = "\n")
+  before <- gsub("(?s)/\\*.*?\\*/", "", before, perl = TRUE)
+  grepl("/*", before, fixed = TRUE)
 }
 
 # Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5).

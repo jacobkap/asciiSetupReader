@@ -30,10 +30,11 @@ value labels, one per column with value labels. The vector's values are
 the codes in the data and its names are the labels. If there are no
 value labels, this will be NULL.
 
-The third object ("missing") is a data.frame with two columns. The first
-column (variable) says the column name and the second (values) says the
-value that is missing and will be replaced with NA. If there are no
-missing values, this will be NULL.
+The third object ("missing") is a data.frame with three columns. The
+first column (variable) says the column name, the second (values) says
+the value that is missing and will be replaced with NA, and the third
+(commented) is TRUE if the setup file has that missing value commented
+out. If there are no missing values, this will be NULL.
 }
 \description{
 Parse the setup file (.sps or .sas).

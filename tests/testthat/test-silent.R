@@ -175,8 +175,13 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                  setup_file = NIBRS_sps_name,
                                  select_columns = 3))
 
-  expect_silent(read_ascii_setup(data = weimar_dataset_name,
-                                 setup_file = weimar_sps_name))
+  # Implied decimal places and commented-out missing values are reported
+  # with messages (tested in test-messages.R); anything else is noise
+  expect_silent(allow_messages(
+    read_ascii_setup(data = weimar_dataset_name,
+                     setup_file = weimar_sps_name),
+    classes = c("asciiSetupReader_implied_decimals",
+                "asciiSetupReader_commented_missing")))
   expect_silent(read_ascii_setup(data = weimar_dataset_name,
                                  setup_file = weimar_sps_name,
                                  select_columns = 4))
@@ -246,8 +251,13 @@ test_that("No messages or warnings or errors for file loads - SAS", {
                                  setup_file = NIBRS_sas_name,
                                  select_columns = 3))
 
-  expect_silent(read_ascii_setup(data = weimar_dataset_name,
-                                 setup_file = weimar_sas_name))
+  # Implied decimal places and commented-out missing values are reported
+  # with messages (tested in test-messages.R); anything else is noise
+  expect_silent(allow_messages(
+    read_ascii_setup(data = weimar_dataset_name,
+                     setup_file = weimar_sas_name),
+    classes = c("asciiSetupReader_implied_decimals",
+                "asciiSetupReader_commented_missing")))
   expect_silent(read_ascii_setup(data = weimar_dataset_name,
                                  setup_file = weimar_sas_name,
                                  select_columns = 4))

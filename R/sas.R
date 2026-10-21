@@ -39,12 +39,14 @@ sas_ascii_reader <- function(dataset_name,
                              value_label_fix = TRUE,
                              real_names = TRUE,
                              keep_columns = NULL,
-                             coerce_numeric = TRUE) {
+                             coerce_numeric = TRUE,
+                             missing_values = c("all", "active", "none")) {
 
   read_ascii_setup(data             = dataset_name,
                    setup_file       = sas_name,
                    use_value_labels = value_label_fix,
                    use_clean_names  = real_names,
                    select_columns   = keep_columns,
-                   coerce_numeric   = coerce_numeric)
+                   coerce_numeric   = coerce_numeric,
+                   missing_values   = missing_values)
 }

@@ -27,6 +27,43 @@
 #' value stays character. Useful as FALSE if variables have leading zeros -
 #' such as US Census FIPS codes.
 #'
+#' Columns that the setup file gives implied decimal places (e.g.
+#' \code{V7 37-43 (1)} in SPSS or \code{V7 37-43 .1} in SAS) get their
+#' decimal point whatever coerce_numeric is: a value of "0000785" with 1
+#' implied decimal place becomes 78.5, or the text "000078.5" if
+#' coerce_numeric is FALSE. Values that already have a decimal point are
+#' kept as they are.
+#' @param missing_values Which of the setup file's missing values to set to
+#'   NA. Setup files often have their missing values section commented out
+#'   (e.g. "* MISSING VALUES" in SPSS or inside \code{/* */} in SAS) so that
+#'   the codes stay in the data unless the user chooses otherwise.
+#'   \describe{
+#'     \item{"all"}{(default) Use every missing value in the setup file,
+#'       ignoring whether it is commented out. This is what earlier versions
+#'       did.}
+#'     \item{"active"}{Use only the missing values that aren't commented
+#'       out, as SPSS and SAS would.}
+#'     \item{"none"}{Don't use any missing values; every code is kept.}
+#'   }
+#'
+#' @section Messages:
+#' read_ascii_setup() tells you with a message when it:
+#' \itemize{
+#'   \item adds implied decimal places to a column's values (listing the
+#'     columns and their decimal places),
+#'   \item sets values to NA because of missing values that are commented
+#'     out in the setup file (only when \code{missing_values = "all"}),
+#'   \item makes column names unique because two columns would have had
+#'     the same name (only when \code{use_clean_names = TRUE}), or
+#'   \item reads a setup file that isn't valid UTF-8 as Latin-1.
+#' }
+#' \code{suppressMessages(read_ascii_setup(...))} silences them. They have
+#' the class "asciiSetupReader_message", so on R 4.0 or later
+#' \code{suppressMessages(read_ascii_setup(...), classes = "asciiSetupReader_message")}
+#' silences only these messages. Each kind also has its own class:
+#' "asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
+#' "asciiSetupReader_unique_names" and "asciiSetupReader_encoding".
+#'
 #' @return data.frame of the data from the ASCII file
 #' @export
 #' @examples
@@ -50,21 +87,32 @@
 #' # Only returns the first 5 columns
 #' example4 <- read_ascii_setup(data = dataset_name,
 #'   setup_file = sps_name, select_columns = 1:5)
+#'
+#' # Only uses the missing values that aren't commented out
+#' example5 <- read_ascii_setup(data = dataset_name,
+#'   setup_file = sps_name, missing_values = "active")
 read_ascii_setup <- function(data,
                              setup_file,
                              use_value_labels = TRUE,
                              use_clean_names  = TRUE,
                              select_columns   = NULL,
-                             coerce_numeric   = TRUE) {
+                             coerce_numeric   = TRUE,
+                             missing_values   = c("all", "active", "none")) {
 
   stopifnot(is.character(data), length(data) == 1,
             is.character(setup_file), length(setup_file) == 1,
             is.logical(use_value_labels), length(use_value_labels) == 1,
             is.logical(use_clean_names), length(use_clean_names) == 1)
+  missing_values <- match.arg(missing_values)
 
   # read_setup() works out from the file name whether it's SPSS or SAS
   setup <- read_setup(setup_file)
   setup$setup <- selected_columns(select_columns, setup$setup)
+  if (missing_values == "none") {
+    setup$missing <- NULL
+  } else if (missing_values == "active" && !is.null(setup$missing)) {
+    setup$missing <- setup$missing[!setup$missing$commented, ]
+  }
 
   data <- read_data(data, setup)
   decimals <- fix_implied_decimals(data, setup)
@@ -73,6 +121,9 @@ read_ascii_setup <- function(data,
                                     setup,
                                     use_clean_names,
                                     coerce_numeric)
+  commented_na <- attr(data, "commented_na")
+  attr(data, "commented_na") <- NULL
+
   file_name <- basename(setup_file)
   final_name <- function(column_number) {
     if (!use_clean_names) return(column_number)
@@ -88,6 +139,20 @@ read_ascii_setup <- function(data,
            changed$example_new[1], "\"). Columns (decimal places): ",
            paste0(final_name(changed$column_number), " (",
                   changed$decimals, ")", collapse = ", "), ".")
+  }
+  if (length(commented_na) > 0) {
+    lines <- unique(setup$commented_lines)
+    inform("commented_missing", "In '", file_name, "', the missing values ",
+           ngettext(length(lines), "starting on line ", "starting on lines "),
+           paste(lines, collapse = ", "),
+           " are commented out, but they were still set to NA, as in ",
+           "earlier versions: ", format(sum(commented_na), big.mark = ","),
+           ngettext(sum(commented_na), " value in ", " values in "),
+           length(commented_na),
+           ngettext(length(commented_na), " column (", " columns ("),
+           list_items(final_name(names(commented_na))), "). Use ",
+           "missing_values = \"active\" to only use missing values that ",
+           "aren't commented out, or missing_values = \"none\" to use none.")
   }
   renamed <- setup$renamed
   renamed <- renamed[renamed$column_number %in% setup$setup$column_number, ]
