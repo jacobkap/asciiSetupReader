@@ -371,7 +371,8 @@ fill_down <- function(x) {
 # "V1 TO V5 (9)") shares the missing values that follow it.
 parse_missing_sps <- function(codebook, setup) {
   # A file can have more than one section, e.g. a commented-out one and one
-  # that isn't; each runs to the next section or EXECUTE
+  # that isn't; each runs to the next section or EXECUTE, and a MISSING
+  # VALUES command also ends at the "." that ends its last line
   starts <- grep2("MISSING VALUES?$|Convert missing data", codebook)
   starts <- sort(unique(c(starts, same_line_start(codebook, "MISSING VALUES?",
                                                   setup$column_number))))
@@ -388,6 +389,10 @@ parse_missing_sps <- function(codebook, setup) {
     end <- ends[ends > start][1]
     if (is.na(end)) end <- length(codebook)
     if (k < length(starts)) end <- min(end, starts[k + 1] - 1)
+    if (grepl2("^\\*?\\s*MISSING VALUES?\\b", codebook[start])) {
+      period <- which(endsWith(codebook[start:end], "."))[1]
+      if (!is.na(period)) end <- start + period - 1
+    }
     parse_missing_section_sps(codebook[start:end], setup, start)
   })
   combine_missing(sections)
