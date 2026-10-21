@@ -3,43 +3,10 @@
 # in the setup file, e.g. V1), column_name (its descriptive label, from
 # `variables`), begin and end (positions in the fixed-width file) and, for
 # SAS files with a FORMAT section, f_name (the format holding its value
-# labels). Rows are ordered by position.
+# labels). Rows are ordered by position. SPSS positions come already read
+# (a data.frame from data_list_sps()), so names with "." or "$" are kept.
 get_column_spaces <- function(setup, variables, codebook) {
-  setup <- gsub("^/[0-9]+$", "", setup)
-  setup <- setup[!setup %in% ""]
-
-  # Keep only lines with positions and standardize them to "begin-end"
-  setup <- gsub("([0-9]+) -([0-9]+)", "\\1-\\2", setup)
-  setup <- setup[grep("[0-9]-[0-9]| [0-9]| \\$[0-9]", setup)]
-  setup <- gsub("([0-9])- +([0-9])", "\\1-\\2", setup)
-
-  # Drop SPSS format specs (F3.0, A10, (A)) and split the lines so each
-  # piece is one "name begin-end" pair
-  setup <- gsub("\tF[0-9].0$|\tA[0-9]+$|\t\\(.*\\)$", "", setup)
-  setup <- gsub("\t", " ", setup)
-  setup <- gsub("([0-9]) - ([0-9])", "\\1-\\2", setup)
-  setup <- gsub("([0-9]+-[0-9]+) ([[:alpha:]]+)", "\\1   \\2",
-                setup)
-  setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
-                setup)
-  setup <- gsub("\\s{2,}\\$ ([0-9]+)", " \\1",
-                setup)
-  setup <- unlist(strsplit(setup, "\\s{2,}"))
-  setup <- gsub("\\$|\\;|\\(.*|\\.[0-9]+", "", setup)
-  setup <- gsub("\\.$", "", setup)
-  setup <- stringr::str_trim(setup)
-  setup <- setup[grep("[0-9]$", setup)]
-  setup <- data.frame(column_number = setup
-                      )
-  setup$column_number <- gsub("^\\/", "", setup$column_number)
-
-  # A single position ("V1 5") is a one-character column, so begin == end
-  setup$begin <- gsub(".* ", "", setup$column_number)
-  setup$end   <- gsub(".*-", "", setup$begin)
-  setup$begin <- gsub("-.*", "", setup$begin)
-  setup <- setup[setup$column_number != setup$begin, ]
-
-  setup$column_number <- gsub(" .*", "", setup$column_number)
+  if (!is.data.frame(setup)) setup <- positions_from_lines(setup)
 
   # Add the descriptive names; a column without one keeps its short name
   if (!is.null(variables)) {
@@ -75,6 +42,47 @@ get_column_spaces <- function(setup, variables, codebook) {
   setup <- setup[order(setup$begin), ]
 
   return(setup)
+}
+
+# Turns SAS column-position lines ("V1 1-3  V2 $ 4-5") into a data.frame of
+# column_number (the short name), begin and end.
+positions_from_lines <- function(setup) {
+  setup <- gsub("^/[0-9]+$", "", setup)
+  setup <- setup[!setup %in% ""]
+
+  # Keep only lines with positions and standardize them to "begin-end"
+  setup <- gsub("([0-9]+) -([0-9]+)", "\\1-\\2", setup)
+  setup <- setup[grep("[0-9]-[0-9]| [0-9]| \\$[0-9]", setup)]
+  setup <- gsub("([0-9])- +([0-9])", "\\1-\\2", setup)
+
+  # Drop SPSS format specs (F3.0, A10, (A)) and split the lines so each
+  # piece is one "name begin-end" pair
+  setup <- gsub("\tF[0-9].0$|\tA[0-9]+$|\t\\(.*\\)$", "", setup)
+  setup <- gsub("\t", " ", setup)
+  setup <- gsub("([0-9]) - ([0-9])", "\\1-\\2", setup)
+  setup <- gsub("([0-9]+-[0-9]+) ([[:alpha:]]+)", "\\1   \\2",
+                setup)
+  setup <- gsub("([[:alpha:]]+[0-9]* [0-9]+) ([[:alpha:]]+[0-9]*)", "\\1   \\2",
+                setup)
+  setup <- gsub("\\s{2,}\\$ ([0-9]+)", " \\1",
+                setup)
+  setup <- unlist(strsplit(setup, "\\s{2,}"))
+  setup <- gsub("\\$|\\;|\\(.*|\\.[0-9]+", "", setup)
+  setup <- gsub("\\.$", "", setup)
+  setup <- stringr::str_trim(setup)
+  setup <- setup[grep("[0-9]$", setup)]
+  setup <- data.frame(column_number = setup
+                      )
+  setup$column_number <- gsub("^\\/", "", setup$column_number)
+
+  # A single position ("V1 5") is a one-character column, so begin == end
+  setup$begin <- gsub(".* ", "", setup$column_number)
+  setup$end   <- gsub(".*-", "", setup$begin)
+  setup$begin <- gsub("-.*", "", setup$begin)
+  setup <- setup[setup$column_number != setup$begin, ]
+
+  setup$column_number <- gsub(" .*", "", setup$column_number)
+  setup
 }
 
 

@@ -217,7 +217,7 @@ check_setup_file <- function(codebook, setup_file, type) {
           "readr::read_tsv(), instead.")
   }
   if (type == "sps") {
-    has_positions <- any(grepl2("DATA LIST|/VARIABLES =$", codebook))
+    has_positions <- any(grepl2("DATA LIST|/VARIABLES\\s*=", codebook))
     has_labels    <- any(grepl2("^(ADD )?VALUE LABELS\\b", codebook))
   } else {
     infile <- grep2("^INFILE\\b", codebook)
@@ -251,14 +251,25 @@ check_setup_file <- function(codebook, setup_file, type) {
 data_list_lines <- function(codebook) {
   start <- grep2("^DATA LIST\\b", codebook)
   if (length(start) == 0) start <- grep2("^GET DATA\\b", codebook)
-  if (length(start) == 0) start <- grep2("DATA LIST|/VARIABLES =$", codebook)
+  if (length(start) == 0) {
+    # After another command on the line ("FILE HANDLE ... . DATA LIST"), but
+    # not in a comment
+    start <- setdiff(grep2("DATA LIST|/VARIABLES\\s*=", codebook), grep("^\\*", codebook))
+  }
   lines <- codebook[start[1]:length(codebook)]
   lines <- gsub("/\\*.*?(\\*/|$)", " ", lines, perl = TRUE)
   unquoted <- trimws(gsub("'[^']*'|\"[^\"]*\"", "", lines))
+  # The next command, if the closing period is missing. (A command word
+  # followed by a number is a variable, e.g. "TITLE 5-30".)
   next_command <- grep(paste0("^\\*|^(ADD )?VALUE LABELS\\b|^(VARIABLE|VAR) LABELS?\\b|",
                               "^MISSING VALUES?\\b|^EXECUTE\\b|^FORMATS?\\b|",
-                              "^RECODE\\b|^SAVE\\b|^COMPUTE\\b"),
-                       unquoted, ignore.case = TRUE)
+                              "^RECODE\\b|^SAVE\\b|^COMPUTE\\b|",
+                              "^(VARIABLE LEVEL|FILE LABEL|FILE HANDLE|BEGIN DATA|",
+                              "FREQUENCIES|DESCRIPTIVES|CROSSTABS|STRING|NUMERIC|",
+                              "PRINT FORMATS|WRITE FORMATS|DISPLAY|SORT CASES|SELECT IF|",
+                              "FILTER|WEIGHT|DOCUMENT|TITLE|SUBTITLE|N OF CASES|SET|",
+                              "DO IF|DO REPEAT|IF|LIST)\\b(?!\\s*[0-9])"),
+                       unquoted, ignore.case = TRUE, perl = TRUE)
   next_command <- next_command[next_command > 1]
   end <- min(which(endsWith(unquoted, ".")), next_command - 1, length(lines))
   lines <- lines[seq_len(end)]
@@ -273,10 +284,10 @@ data_list_lines <- function(codebook) {
 # names listed before one range share it equally: "A B C 1-6" is 2 columns
 # each, and "Q1 TO Q3 3-5" is Q1, Q2 and Q3 in one column each. GET DATA
 # gives a format after each range ("V1 0-1 A2"; its columns count from 0,
-# see read_setup()). Returns "name begin-end" lines for
-# get_column_spaces(), with the implied decimal places as the "decimals"
-# attribute and the text columns as the "text" attribute. Stops with an
-# error for what it can't read rather than placing columns wrongly.
+# see read_setup()). Returns a data.frame of column_number, begin and end
+# for get_column_spaces(), with the implied decimal places as the
+# "decimals" attribute and the text columns as the "text" attribute. Stops
+# with an error for what it can't read rather than placing columns wrongly.
 data_list_sps <- function(lines, setup_file) {
   text <- paste(lines, collapse = " ")
   tokens <- regmatches(text, gregexpr(paste0(double_quoted, "|", single_quoted,
@@ -323,17 +334,33 @@ data_list_sps <- function(lines, setup_file) {
   }
 
   name_pattern <- "^[[:alpha:]@#$][[:alnum:]_.@#$]*$"
+  # SPSS formats, as GET DATA writes them after each range: A10, F7.1,
+  # ADATE10, AUTO, ...
+  get_data_format <- paste0("^(A|AHEX|F|N|E|Z|P|PK|IB|PIB|PIBHEX|RB|RBHEX|",
+                            "COMMA|DOT|DOLLAR|PCT|CCA|CCB|CCC|CCD|CCE|DATE|",
+                            "ADATE|EDATE|JDATE|SDATE|QYR|MOYR|WKYR|DATETIME|",
+                            "YMDHMS|TIME|MTIME|DTIME|WKDAY|MONTH|AUTO)",
+                            "[0-9]*(\\.[0-9]+)?$")
   names    <- character(0)  # names waiting for their position
   last     <- character(0)  # names given the latest position
-  out      <- character(0)
+  out_names <- character(0); out_begin <- numeric(0); out_end <- numeric(0)
   text_columns <- character(0)
   decimals <- stats::setNames(integer(0), character(0))
+  record   <- 0
   while (i <= length(tokens)) {
     token <- tokens[i]
     if (startsWith(token, "/")) {
-      # A record ("/", "/1" or "/ 1"); several records per case stop in
-      # check_data_list()
-      if (token == "/" && isTRUE(tokens[i + 1] == "1")) i <- i + 1
+      # A record: "/1" (or "/ 1") is the first line of a case and a bare
+      # "/" the next one
+      if (token == "/" && isTRUE(tokens[i + 1] == "1")) {
+        token <- "/1"
+        i <- i + 1
+      }
+      record <- if (token == "/") record + 1 else as.numeric(substring(token, 2))
+      if (record > 1) {
+        abort("unsupported_input", "'", file_name, "' reads several lines ",
+              "(records) per case, which asciiSetupReader can't read.")
+      }
       last <- character(0)
     } else if (grepl("^[0-9]+(\\s*-\\s*[0-9]+)?$", token)) {
       if (length(names) == 0) cant_read("the position ", token, " has no name.")
@@ -346,7 +373,9 @@ data_list_sps <- function(lines, setup_file) {
                   paste(names, collapse = " "), ".")
       }
       starts <- begin + width * (seq_along(names) - 1)
-      out <- c(out, paste0(names, " ", starts, "-", starts + width - 1))
+      out_names <- c(out_names, names)
+      out_begin <- c(out_begin, starts)
+      out_end   <- c(out_end, starts + width - 1)
       last  <- names
       names <- character(0)
     } else if (startsWith(token, "(")) {
@@ -361,10 +390,11 @@ data_list_sps <- function(lines, setup_file) {
         if (places > 0) decimals[last] <- places
       }
       last <- character(0)
-    } else if (get_data && length(last) &&
-               grepl("^[[:alpha:]]+[0-9]+(\\.[0-9]+)?$", token)) {
+    } else if (get_data && length(last) && grepl(get_data_format, toupper(token))) {
       # GET DATA format, e.g. A2 or F7.1 (which has no implied decimals)
-      if (startsWith(toupper(token), "A")) text_columns <- c(text_columns, last)
+      if (grepl("^(A|AHEX)[0-9]*$", toupper(token))) {
+        text_columns <- c(text_columns, last)
+      }
       last <- character(0)
     } else if (toupper(token) == "TO" && length(names) &&
                isTRUE(grepl(name_pattern, tokens[i + 1]))) {
@@ -390,6 +420,7 @@ data_list_sps <- function(lines, setup_file) {
   if (length(names)) {
     cant_read(paste(names, collapse = " "), " has no column position.")
   }
+  out <- data.frame(column_number = out_names, begin = out_begin, end = out_end)
   attr(out, "decimals") <- decimals
   attr(out, "text") <- unique(text_columns)
   out
@@ -432,6 +463,8 @@ lines_to_skip <- function(codebook, type) {
                         !sas_comment_state(codebook)]
     pattern <- "(?i)\\bFIRSTOBS\\s*=\\s*([0-9]+)"
   }
+  # (Not inside a quoted file name)
+  lines <- gsub("'[^']*'|\"[^\"]*\"", "", lines)
   found <- regmatches(lines, regexec(pattern, lines, perl = TRUE))
   found <- unlist(lapply(found, function(m) if (length(m)) m[1:2]))
   if (length(found) == 0) return(0)

@@ -140,10 +140,12 @@ are now different (and correct).
   matter: tightly spaced columns (`AA 1-4(A) BB 5-8(A)`), formats and
   decimals anywhere on a line (`V1 1-5 (F,2) V2 6-7`), columns on the DATA
   LIST line itself, a name and its position on different lines, `/* */`
-  comments, names with `@`, `#` or `$`, and a missing closing period. As in
-  SPSS, names listed before one range share it equally (`A B C 1-6`,
-  `Q1 TO Q3 3-5`). All 157 setup
-  files the package is tested on are read exactly as before.
+  comments, names with `@`, `#`, `$` or `.`, and a missing closing period.
+  As in SPSS, names listed before one range share it equally (`A B C 1-6`,
+  `Q1 TO Q3 3-5`). GET DATA formats such as `AUTO` and `ADATE10` and
+  `/VARIABLES=` without spaces are read, and a second record given by a
+  bare `/` stops with the several-records error. All 157 setup files the
+  package is tested on are read exactly as before.
 
 ## Package
 
