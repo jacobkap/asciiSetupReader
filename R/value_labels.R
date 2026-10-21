@@ -58,30 +58,28 @@ clean_label <- function(label) {
 # time a variable's pairs are written) into the list parse_setup() returns:
 # one element per variable, a character vector of codes named by their
 # labels, e.g. c(Male = "1", Female = "2"). If a variable's pairs are
-# written more than once, the later copies only add codes not already
-# labelled, so a variable name never ends up inside a label. Pairs from an
-# SPSS ADD VALUE LABELS command (add = TRUE) change the label of a code that
-# already has one, as they do in SPSS.
+# written more than once in one command, the later copies only add codes
+# not already labelled. SPSS pairs also have the `command` they're in and
+# whether it is ADD VALUE LABELS (`add`); see spss_label_commands().
 pairs_to_value_labels <- function(pairs) {
   if (is.null(pairs) || nrow(pairs) == 0) {
     return(stats::setNames(list(), character(0)))
   }
-  if (!is.null(pairs$add) && any(pairs$add)) {
-    key <- paste(pairs$column, pairs$code, sep = "\r")
-    drop <- rep(FALSE, nrow(pairs))
-    for (i in which(pairs$add)) {
-      earlier <- which(key == key[i] & seq_along(key) < i & !drop)
-      if (length(earlier) > 0) {
-        pairs$label[earlier[1]] <- pairs$label[i]
-        drop[i] <- TRUE
-      }
-    }
-    pairs <- pairs[!drop, ]
+  replaced <- NULL
+  if (!is.null(pairs$command)) {
+    pairs <- spss_label_commands(pairs)
+    replaced <- attr(pairs, "replaced")
   }
-  first_block <- stats::ave(pairs$block, pairs$column, FUN = min)
-  repeated <- pairs$block != first_block &
-    duplicated(pairs[c("column", "code")])
-  pairs <- pairs[!repeated, ]
+  # ADD VALUE LABELS pairs are applied after, so they can change labels
+  add <- if (is.null(pairs$add)) rep(FALSE, nrow(pairs)) else pairs$add
+  plain <- pairs[!add, ]
+  first_block <- stats::ave(plain$block, plain$column, FUN = min)
+  repeated <- plain$block != first_block &
+    duplicated(plain[c("column", "code")])
+  pairs <- rbind(plain[!repeated, ], pairs[add, ])
+  if (any(add)) {
+    pairs <- apply_added_labels(pairs)
+  }
 
   columns <- factor(pairs$column, levels = unique(pairs$column))
   codes   <- split(pairs$code, columns)
@@ -89,7 +87,44 @@ pairs_to_value_labels <- function(pairs) {
   value_labels <- lapply(levels(columns), function(col) {
     stats::setNames(codes[[col]], labels[[col]])
   })
-  stats::setNames(value_labels, levels(columns))
+  value_labels <- stats::setNames(value_labels, levels(columns))
+  attr(value_labels, "replaced") <- replaced
+  value_labels
+}
+
+# SPSS: a VALUE LABELS command replaces all of a variable's earlier labels,
+# and an ADD VALUE LABELS command adds to them, changing the label of a
+# code that already has one. So for each variable only the last VALUE
+# LABELS command that labels it, and ADD VALUE LABELS commands after it,
+# count. The "replaced" attribute names the variables whose earlier labels
+# were different from the ones kept (so something was dropped).
+spss_label_commands <- function(pairs) {
+  plain <- pairs$command
+  plain[pairs$add] <- NA
+  last_plain <- stats::ave(plain, pairs$column, FUN = function(x) {
+    if (all(is.na(x))) NA else max(x, na.rm = TRUE)
+  })
+  keep <- is.na(last_plain) | pairs$command >= last_plain
+  pair_key <- paste(pairs$column, pairs$code, pairs$label, sep = "\r")
+  replaced <- unique(pairs$column[!keep & !pair_key %in% pair_key[keep]])
+  pairs <- pairs[keep, ]
+  attr(pairs, "replaced") <- replaced
+  pairs
+}
+
+# Applies the pairs of ADD VALUE LABELS commands (add = TRUE): a code that
+# already has a label gets the new one, and a new code is added.
+apply_added_labels <- function(pairs) {
+  key  <- paste(pairs$column, pairs$code, sep = "\r")
+  drop <- rep(FALSE, nrow(pairs))
+  for (i in which(pairs$add)) {
+    earlier <- which(key == key[i] & seq_along(key) < i & !drop)
+    if (length(earlier) > 0) {
+      pairs$label[earlier[1]] <- pairs$label[i]
+      drop[i] <- TRUE
+    }
+  }
+  pairs[!drop, ]
 }
 
 # Collects code/label pairs one at a time without growing a data.frame.
@@ -99,20 +134,21 @@ pair_collector <- function(size) {
   n <- 0
   store <- list(column = character(size), block = numeric(size),
                 code = character(size), label = character(size),
-                add = logical(size))
+                add = logical(size), command = numeric(size))
   list(
-    add = function(columns, block, code, label, add = FALSE) {
+    add = function(columns, block, code, label, add = FALSE, command = 0) {
       rows <- n + seq_along(columns)
       if (max(c(rows, 0)) > length(store$column)) {
         store <<- lapply(store, function(x) {
           c(x, rep(x[NA_integer_], max(length(x), length(rows))))
         })
       }
-      store$column[rows] <<- columns
-      store$block[rows]  <<- block
-      store$code[rows]   <<- code
-      store$label[rows]  <<- label
-      store$add[rows]    <<- add
+      store$column[rows]  <<- columns
+      store$block[rows]   <<- block
+      store$code[rows]    <<- code
+      store$label[rows]   <<- label
+      store$add[rows]     <<- add
+      store$command[rows] <<- command
       n <<- n + length(columns)
     },
     pairs = function() {
@@ -148,8 +184,10 @@ parse_value_labels_sps <- function(codebook, setup) {
     end <- length(codebook)
   }
   lines <- codebook[start[1]:end]
-  # Drop /* comments */ (PSID files note truncated labels this way)
+  # Drop /* comments */ (PSID files note truncated labels this way) and
+  # comment commands ("* ..." up to a line ending in "." or a blank line)
   lines <- gsub("/\\*.*\\*/", "", lines)
+  lines <- drop_comment_commands(lines)
 
   tokens <- tokenize(lines, c("/", "+"))
   quoted <- is_quoted(tokens)
@@ -158,21 +196,38 @@ parse_value_labels_sps <- function(codebook, setup) {
   known_column <- !quoted & tolower(tokens) %in% tolower(setup$column_number)
 
   word    <- toupper(tokens)
+  # VALUE and LABELS are the command's name only together (a variable can
+  # be called VALUE)
+  next_word <- c(word[-1], "")
+  prev_word <- c("", word[-length(word)])
+  command_word <- !quoted & ((word == "VALUE" & next_word == "LABELS") |
+                               (word == "LABELS" & prev_word == "VALUE"))
+  # Another command ending in "." on the same token, e.g. "(F2.0)." in
+  # "FORMATS V1 (F2.0)."
+  ends_command <- !quoted & !number & nchar(tokens) > 1 & endsWith(tokens, ".")
   columns <- setup$column_number
   found   <- pair_collector(length(tokens))
   current <- character(0)   # the variables the next pairs belong to
   listing <- FALSE          # TRUE while reading a list of variables
   adding  <- FALSE          # TRUE inside an ADD VALUE LABELS command
   block   <- 0
+  command <- 0
   code    <- NULL
   i <- 1
   while (i <= length(tokens)) {
     if (!quoted[i] && word[i] == "ADD" && i < length(tokens) &&
         word[i + 1] == "VALUE") {
       adding <- TRUE
-    } else if (!quoted[i] && word[i] %in% c("VALUE", "LABELS")) {
-      # The VALUE LABELS command itself
-    } else if (!quoted[i] && tokens[i] %in% c("/", ".", "+")) {
+    } else if (command_word[i]) {
+      # The VALUE LABELS command itself starts a new command
+      if (word[i] == "VALUE") {
+        command <- command + 1
+        current <- character(0)
+        listing <- FALSE
+        code    <- NULL
+      }
+    } else if (ends_command[i] ||
+               (!quoted[i] && tokens[i] %in% c("/", ".", "+"))) {
       # The end of a variable's pairs ("/"), of the command (".") or a
       # stray "+"
       code <- NULL
@@ -180,7 +235,7 @@ parse_value_labels_sps <- function(codebook, setup) {
         current <- character(0)
         listing <- FALSE
       }
-      if (tokens[i] == ".") adding <- FALSE
+      if (tokens[i] == "." || ends_command[i]) adding <- FALSE
     } else if (listing && !quoted[i] && word[i] == "TO" &&
                i < length(tokens) && known_column[i + 1]) {
       # "V1 TO V5": add the variables between V1 and V5 (V5 is added next)
@@ -209,7 +264,7 @@ parse_value_labels_sps <- function(codebook, setup) {
         label <- paste0(label, text[i + 2])
         i <- i + 2
       }
-      found$add(current, block, code, label, adding)
+      found$add(current, block, code, label, adding, command)
       code <- NULL
     }
     i <- i + 1
@@ -221,6 +276,24 @@ parse_value_labels_sps <- function(codebook, setup) {
     pairs <- pairs[pairs$column %in% setup$column_number, ]
   }
   pairs_to_value_labels(pairs)
+}
+
+# Removes SPSS comment commands: a line starting with "*" (or "COMMENT")
+# and the lines after it, up to and including one that ends in "." or a
+# blank line, which ends a command in SPSS.
+drop_comment_commands <- function(lines) {
+  keep <- rep(TRUE, length(lines))
+  in_comment <- FALSE
+  for (i in seq_along(lines)) {
+    if (!in_comment && grepl("^(\\*|COMMENT\\b)", lines[i], ignore.case = TRUE)) {
+      in_comment <- TRUE
+    }
+    if (in_comment) {
+      keep[i] <- FALSE
+      if (lines[i] == "" || endsWith(lines[i], ".")) in_comment <- FALSE
+    }
+  }
+  lines[keep]
 }
 
 # SAS -------------------------------------------------------------------------
@@ -302,6 +375,8 @@ parse_value_labels_sas <- function(codebook, setup) {
     return(pairs_to_value_labels(NULL))
   }
   names(pairs)[names(pairs) == "column"] <- "f_name"
+  # SPSS's rules for repeated commands (spss_label_commands()) don't apply
+  pairs$command <- NULL
 
   # Copy each format's pairs to the columns that use it, formats in the
   # order they're defined and columns in file order

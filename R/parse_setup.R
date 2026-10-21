@@ -49,6 +49,11 @@ parse_setup <- function(setup_file) {
 #     column_name: the unique name), or NULL
 #   commented_lines: the line numbers in the setup file of the missing value
 #     sections that are commented out
+#   replaced_labels: SPSS variables whose value labels in an earlier VALUE
+#     LABELS command were replaced by different ones in a later command
+#   text_columns: columns the setup file says are text (SPSS "(A)" or "Aw",
+#     SAS "$"), whose missing values are matched exactly rather than as
+#     numbers
 read_setup <- function(setup_file) {
 
   if (grepl(".sps(\\.zip)?$|.sps(\\.txt)?$", setup_file, ignore.case = TRUE)) {
@@ -169,11 +174,14 @@ read_setup <- function(setup_file) {
   } else {
     value_labels <- NULL
   }
+  replaced_labels <- attr(value_labels, "replaced")
+  attr(value_labels, "replaced") <- NULL
   setup <- list(setup           = setup,
                 value_labels    = value_labels,
                 missing         = missing,
                 renamed         = renamed,
                 commented_lines = if (any(missing$commented)) commented_lines,
+                replaced_labels = replaced_labels,
                 text_columns    = match_case(text_columns, setup$column_number))
   setup$setup <- setup$setup[, c("column_number",
                                  "column_name",

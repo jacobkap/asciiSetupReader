@@ -164,5 +164,14 @@ read_ascii_setup <- function(data,
            list_items(paste(renamed$column_number, "->", renamed$column_name)),
            ". parse_setup() shows every column's name.")
   }
+  replaced <- intersect(setup$replaced_labels, setup$setup$column_number)
+  if (use_value_labels && length(replaced) > 0) {
+    inform("replaced_labels", "In '", file_name, "', ", length(replaced),
+           ngettext(length(replaced), " column has", " columns have"),
+           " value labels in more than one VALUE LABELS command, with ",
+           "different labels; as in SPSS, only the last command's labels ",
+           "are used: ", list_items(final_name(replaced)),
+           ". parse_setup()$value_labels shows the labels used.")
+  }
   return(data)
 }
