@@ -1,4 +1,4 @@
-context("parse-value-labels-sas")
+# parse-value-labels-sas
 
 test_that("Number of value label columns are correct", {
 

@@ -1,4 +1,4 @@
-context("All value labels are present")
+# All value labels are present
 
 test_that("All labels are assigned correctly - SPSS", {
 

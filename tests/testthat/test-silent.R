@@ -1,4 +1,4 @@
-context("There are no warning or error messages")
+# There are no warning or error messages
 
 
 test_that("parse_setup is silent", {

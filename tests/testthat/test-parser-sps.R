@@ -1,4 +1,4 @@
-context("SPSS setup parse")
+# SPSS setup parse
 
 test_that("Right number of columns", {
   skip_on_cran()

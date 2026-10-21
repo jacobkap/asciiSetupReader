@@ -1,4 +1,4 @@
-context("Proper dimensions and missing values")
+# Proper dimensions and missing values
 
 test_that("number of columns is correct - SPSS", {
 

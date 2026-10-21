@@ -1,4 +1,4 @@
-context("That value labels are properly assigned")
+# That value labels are properly assigned
 
 test_that("Correct number of labels - SPSS", {
   expect_equal(length(unique(SHR$GEOGRAPHIC_DIVISION)), 10)

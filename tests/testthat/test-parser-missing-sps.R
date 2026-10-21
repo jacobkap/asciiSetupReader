@@ -1,4 +1,4 @@
-context("test-parser-missing-sps")
+# test-parser-missing-sps
 
 test_that("Right number of missing values", {
 

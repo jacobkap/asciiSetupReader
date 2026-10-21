@@ -1,4 +1,4 @@
-context("Make sure missing values are removed")
+# Make sure missing values are removed
 
 test_that("number of missing values is correct - SPSS", {
   expect_equal(sum(is.na(weimar$X1919_RT_NR_ELIGIBLE_VTRS)), 3)
