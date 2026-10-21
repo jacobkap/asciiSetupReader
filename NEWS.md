@@ -1,4 +1,4 @@
-# asciiSetupReader 2.7.0
+# asciiSetupReader 3.0.0
 
 ## Changes that can affect your results
 
