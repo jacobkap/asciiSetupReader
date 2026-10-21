@@ -196,6 +196,18 @@ test_that("MISSING VALUES can list columns with TO or several names", {
   expect_equal(parse_setup(setup)$missing$variable, "V2")
 })
 
+test_that("many one-column MISSING VALUES lines are read quickly", {
+  # Each line used to recompute tolower() of every column: 26 s for 8,000
+  skip_on_cran()
+  n <- 8000
+  setup <- temp_file(c("DATA LIST FILE = 'x'", paste0("  V", 1:n, " ", 1:n), ".",
+                       "MISSING VALUES", paste0("  V", 1:n, " (9)"), ".",
+                       "EXECUTE."), ".sps")
+  time <- system.time(missing <- parse_setup(setup)$missing)[["elapsed"]]
+  expect_equal(nrow(missing), n)
+  expect_lt(time, 10)
+})
+
 test_that("a list with something that isn't a column isn't expanded", {
   expect_null(expand_to(c("V1", "TO", "V9"), c("V1", "V2")))
   expect_null(expand_to(c("V2", "TO", "V1"), c("V1", "V2")))
@@ -243,4 +255,7 @@ test_that("SAS missing values inside /* */ are commented out", {
   expect_false(in_sas_comment(c("a", "/* b */", "c"), 3))
   expect_true(in_sas_comment(c("a", "/* b */ /* c", "d"), 3))
   expect_true(in_sas_comment(c("a", "* IF V1 = 0 THEN V1 = .;"), 2))
+  # "/*" inside quotes or a "* ...;" comment doesn't start a comment
+  expect_false(in_sas_comment(c("LABEL V1 = 'see /* note';", "IF V1 = 0 THEN V1 = .;"), 2))
+  expect_false(in_sas_comment(c("* a comment mentioning /* here;", "IF V1 = 0 THEN V1 = .;"), 2))
 })

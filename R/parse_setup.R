@@ -474,28 +474,33 @@ combine_missing <- function(sections) {
 # "V1 TO V3 (9)" becomes "V1 (9)   V2 (9)   V3 (9)". Only lists made
 # entirely of columns in the setup file (in file order) are expanded.
 expand_column_lists <- function(lines, columns) {
-  pattern <- "((?:[[:alpha:]@#$][[:alnum:]@#$_.]*\\s+)+)(\\([^)]*\\))"
-  vapply(lines, function(line) {
+  # Only lines with two or more names before a "(" can have a list
+  pattern <- "((?:[[:alpha:]@#$][[:alnum:]@#$_.]*\\s+){2,})(\\([^)]*\\))"
+  has_list <- grepl(pattern, lines, perl = TRUE)
+  if (!any(has_list)) return(lines)
+  lower_columns <- tolower(columns)
+  lines[has_list] <- vapply(lines[has_list], function(line) {
     found <- gregexpr(pattern, line, perl = TRUE)[[1]]
-    if (found[1] == -1) return(line)
     pieces <- regmatches(line, list(found))[[1]]
     expanded <- vapply(pieces, function(piece) {
       names  <- strsplit(trimws(sub("\\(.*$", "", piece)), "\\s+")[[1]]
       values <- sub("^[^(]*", "", piece)
-      names  <- expand_to(names, columns)
+      names  <- expand_to(names, columns, lower_columns)
       if (is.null(names) || length(names) < 2) return(piece)
       paste(paste(names, values), collapse = "   ")
     }, character(1))
     regmatches(line, list(found)) <- list(expanded)
     line
   }, character(1), USE.NAMES = FALSE)
+  lines
 }
 
 # The columns in a list such as c("V1", "TO", "V3", "V7"), with each
 # "A TO B" expanded to every column from A to B in the order of columns.
-# NULL if anything in the list isn't a column.
-expand_to <- function(names, columns) {
-  position <- match(tolower(names), tolower(columns))
+# NULL if anything in the list isn't a column. lower_columns is
+# tolower(columns), passed in so it's only computed once per file.
+expand_to <- function(names, columns, lower_columns = tolower(columns)) {
+  position <- match(tolower(names), lower_columns)
   is_to <- toupper(names) == "TO"
   if (any(is.na(position) & !is_to)) return(NULL)
   out <- character(0)
@@ -601,7 +606,11 @@ parse_missing_sas <- function(codebook, setup) {
 in_sas_comment <- function(codebook, line) {
   if (startsWith(codebook[line], "*")) return(TRUE)
   before <- paste(codebook[seq_len(line - 1)], collapse = "\n")
+  # Closed /* */ comments, then quoted text and "* ...;" comment statements,
+  # which can mention "/*" without starting a comment
   before <- gsub("(?s)/\\*.*?\\*/", "", before, perl = TRUE)
+  before <- gsub("'[^'\n]*'|\"[^\"\n]*\"", "", before, perl = TRUE)
+  before <- gsub("(?m)^\\s*\\*[^;]*;", "", before, perl = TRUE)
   grepl("/*", before, fixed = TRUE)
 }
 
