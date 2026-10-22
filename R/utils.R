@@ -178,20 +178,48 @@ sas_variable_list <- function(token, columns) {
 
 # Keeps the rows of column_spaces for the requested columns, given as row
 # numbers, column_number names (V1, V2) or column_name labels.
-selected_columns <- function(keep_columns, column_spaces) {
+# A column asked for twice is read once. `renamed` (from read_setup())
+# explains names that 3.0.0 made unique.
+selected_columns <- function(keep_columns, column_spaces, renamed = NULL) {
   if (is.null(keep_columns)) {
     return(column_spaces)
-  } else if (is.numeric(keep_columns)) {
+  }
+  keep_columns <- unique(keep_columns)
+  if (is.numeric(keep_columns)) {
+    outside <- keep_columns[!keep_columns %in% seq_len(nrow(column_spaces))]
+    if (length(outside) > 0) {
+      abort("select_columns", "select_columns has column numbers that aren't ",
+            "in the setup file, which has ", nrow(column_spaces), " columns: ",
+            list_items(outside), ".")
+    }
     column_spaces <- column_spaces[keep_columns, ]
   } else if (all(keep_columns %in% column_spaces$column_number)) {
     column_spaces <- column_spaces[
       column_spaces$column_number %in% keep_columns, ]
   } else if (all(keep_columns %in% column_spaces$column_name)) {
+    # A name that another column also had now selects only the first; say
+    # what the other is called now
+    twins <- renamed[renamed$name %in% keep_columns &
+                       !renamed$column_name %in% keep_columns, ]
+    if (NROW(twins) > 0) {
+      inform("select_columns", "select_columns selected the first column named ",
+             list_items(unique(twins$name)), "; ",
+             ngettext(nrow(twins), "a later column with the same name is",
+                      "later columns with the same name are"),
+             " now named with its short name added: ",
+             list_items(paste(twins$name, "->", twins$column_name)), ".")
+    }
     column_spaces <- column_spaces[
       column_spaces$column_name %in% keep_columns, ]
   } else {
-    stop(paste0("Not all column names in 'keep_columns' are in data. ",
-                "Please check spelling"))
+    not_found <- keep_columns[!keep_columns %in% c(column_spaces$column_number,
+                                                   column_spaces$column_name)]
+    abort("select_columns", "Not all column names in select_columns are in the ",
+          "data: ", list_items(not_found), ". Give either short names (e.g. V1) ",
+          "or descriptive names, not both; parse_setup()$setup lists both for ",
+          "every column. Names changed in version 3.0.0 (see its NEWS) if their ",
+          "label has \"%\" or \"=\", continues on a second line (SAS) or is the ",
+          "same as an earlier column's.")
   }
 
   return(column_spaces)

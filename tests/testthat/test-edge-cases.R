@@ -60,7 +60,36 @@ test_that("SAS missing value statements that give nothing return NULL", {
 test_that("a wrong name in select_columns says so", {
   expect_error(read_ascii_setup(weimar_dataset_name, weimar_sps_name,
                                 select_columns = c("V1", "NOT_A_COLUMN")),
-               "Not all column names in 'keep_columns' are in data")
+               "Not all column names in select_columns are in the data: NOT_A_COLUMN",
+               class = "asciiSetupReader_select_columns")
+})
+
+# Found by the 3.0.0 challenge review
+
+test_that("a column number past the last column stops with an error, not a crash", {
+  expect_error(read_ascii_setup(weimar_dataset_name, weimar_sps_name, select_columns = c(1, 500)),
+               "aren't in the setup file, which has 23 columns: 500",
+               class = "asciiSetupReader_select_columns")
+  expect_error(read_ascii_setup(weimar_dataset_name, weimar_sps_name, select_columns = 0),
+               class = "asciiSetupReader_select_columns")
+})
+
+test_that("a column selected twice is read once, with its implied decimals", {
+  once <- allow_messages(read_ascii_setup(weimar_dataset_name, weimar_sps_name, select_columns = "V7"))
+  twice <- allow_messages(read_ascii_setup(weimar_dataset_name, weimar_sps_name,
+                                           select_columns = c("V7", "V7")))
+  expect_identical(twice, once)
+})
+
+test_that("selecting a name another column also had says what that one is called now", {
+  setup <- temp_file(c("DATA LIST FILE = 'x' /V1 1-2 V2 3-4 .", "VARIABLE LABELS",
+                       "  V1 'AGE' /V2 'AGE' .", "EXECUTE."), ".sps")
+  data <- temp_file(c("0102", "0304"), ".txt")
+  expect_message(out <- read_ascii_setup(data, setup, select_columns = "AGE"),
+                 "AGE -> AGE_V2", class = "asciiSetupReader_select_columns")
+  expect_equal(names(out), "AGE")
+  expect_equal(names(allow_messages(read_ascii_setup(data, setup, select_columns = c("AGE", "AGE_V2")))),
+               c("AGE", "AGE_V2"))
 })
 
 test_that("VALUE LABELS sections without pairs give no labels", {

@@ -122,7 +122,9 @@ read_ascii_setup() tells you with a message when it:
   \item skips SAS missing value statements it can't read (only when
     \code{missing_values} isn't "none"),
   \item finds statements that change values (recodes), which aren't
-    applied, or
+    applied,
+  \item selects, by \code{select_columns}, the first of several columns
+    that had the same name (saying what the others are called now), or
   \item reads a setup file that isn't valid UTF-8 as Windows-1252.
 }
 \code{suppressMessages(read_ascii_setup(...))} silences them. They have
@@ -132,8 +134,8 @@ silences only these messages. Each kind also has its own class:
 "asciiSetupReader_implied_decimals", "asciiSetupReader_unscaled_codes",
 "asciiSetupReader_label_ranges", "asciiSetupReader_commented_missing",
 "asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels",
-"asciiSetupReader_skipped_missing", "asciiSetupReader_recodes" and
-"asciiSetupReader_encoding".
+"asciiSetupReader_skipped_missing", "asciiSetupReader_recodes",
+"asciiSetupReader_select_columns" and "asciiSetupReader_encoding".
 }
 
 \section{Errors}{
@@ -144,7 +146,9 @@ Setup files that can't be read stop with an error of class
 data), "asciiSetupReader_no_positions" (no column positions, e.g. a file
 of value labels only) or "asciiSetupReader_unsupported_input" (an SPSS
 DATA LIST or SAS INPUT statement this package can't read, e.g. one with
-several records per case).
+several records per case). A \code{select_columns} that names or numbers
+columns the setup file doesn't have stops with an error of class
+"asciiSetupReader_select_columns".
 }
 
 \examples{
