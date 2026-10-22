@@ -472,15 +472,22 @@ lines_to_skip <- function(codebook, type) {
 # another statement on its line ("DATA x; INFILE 'd.txt' FIRSTOBS=2;") and
 # its options can run onto the next lines.
 sas_infile_statements <- function(codebook) {
-  masked <- mask_quotes(codebook)
+  candidates <- grep("INFILE", codebook, ignore.case = TRUE)
+  if (length(candidates) == 0) return(character(0))
+  masked <- mask_quotes(codebook[candidates])
   at <- regexpr("(^|;)\\s*\\KINFILE\\b", masked, ignore.case = TRUE, perl = TRUE)
-  starts <- which(at > 0)
-  starts <- starts[!sas_comment_state(codebook)[starts]]
-  semicolons <- grep(";", masked)
-  vapply(starts, function(s) {
-    first <- substring(masked[s], at[s])
-    end <- if (grepl(";", first)) s else c(semicolons[semicolons > s], length(masked))[1]
-    statement <- paste(c(first, if (end > s) masked[(s + 1):end]), collapse = " ")
+  starts <- candidates[at > 0]
+  at <- at[at > 0]
+  keep <- !sas_comment_state(codebook)[starts]
+  starts <- starts[keep]
+  at <- at[keep]
+  unquoted <- gsub("'[^']*'|\"[^\"]*\"", "", codebook)
+  semicolons <- grep(";", unquoted)
+  vapply(seq_along(starts), function(k) {
+    s <- starts[k]
+    first <- substring(mask_quotes(codebook[s]), at[k])
+    end <- if (grepl(";", first)) s else c(semicolons[semicolons > s], length(codebook))[1]
+    statement <- paste(c(first, if (end > s) mask_quotes(codebook[(s + 1):end])), collapse = " ")
     statement <- sub(";.*$", "", statement)
     gsub("'x*'|\"x*\"", "", statement)
   }, character(1))
@@ -521,51 +528,64 @@ formatted_input <- function(lines) {
   informat <- "^(\\$?)([[:alpha:]_][[:alnum:]_]*?)?([0-9]+)\\.([0-9]*)$"
   numeric_informats <- c("", "F", "BEST", "COMMA", "COMMAX", "DOLLAR",
                          "DOLLARX", "NUMX", "BZ", "ZD")
+  # What each token is, worked out once for all of them
+  is_decimals <- grepl("^\\.[0-9]+$", tokens)
+  is_at       <- grepl("^@[0-9]+$", tokens)
+  is_plus     <- grepl("^\\+[0-9]+$", tokens)
+  is_hold     <- tokens %in% c("@", "@@")
+  is_record   <- grepl("^#[0-9]+$|^/$", tokens)
+  is_informat <- grepl(informat, tokens, perl = TRUE)
+  is_range    <- grepl("^\\$?[0-9]+(-[0-9]+)?$", tokens)
+  is_name     <- grepl("^[[:alpha:]_][[:alnum:]_]*$", tokens) | tokens == "$"
   pointer  <- 1
   name     <- NA_character_
-  out      <- character(0)
-  text_columns <- character(0)
+  out      <- character(length(tokens))
+  n_out    <- 0
+  is_text  <- logical(length(tokens))
   decimals <- stats::setNames(integer(0), character(0))
   column_input <- NA_character_  # the column just given by column input
-  for (token in tokens) {
-    if (!is.na(column_input) && grepl("^\\.[0-9]+$", token)) {
+  for (t in seq_along(tokens)) {
+    token <- tokens[t]
+    if (!is.na(column_input) && is_decimals[t]) {
       # Column input's implied decimal places: "V6 14-17 .2"
       places <- as.integer(substring(token, 2))
-      if (places > 0 && !column_input %in% text_columns) decimals[column_input] <- places
+      if (places > 0 && !is_text[n_out]) decimals[column_input] <- places
       column_input <- NA_character_
       next
     }
     column_input <- NA_character_
-    if (grepl("^@[0-9]+$", token)) {
+    if (is_at[t]) {
       pointer <- as.numeric(substring(token, 2))
-    } else if (grepl("^\\+[0-9]+$", token)) {
+    } else if (is_plus[t]) {
       pointer <- pointer + as.numeric(substring(token, 2))
-    } else if (token %in% c("@", "@@")) {
+    } else if (is_hold[t]) {
       # Holding the line for another INPUT statement: no columns
-    } else if (grepl("^#[0-9]+$|^/$", token)) {
+    } else if (is_record[t]) {
       abort("unsupported_input", "This SAS INPUT statement reads several ",
             "lines (records) per case (", token, "), which asciiSetupReader ",
             "can't read.")
-    } else if (!is.na(name) && grepl(informat, token, perl = TRUE)) {
+    } else if (!is.na(name) && is_informat[t]) {
       parts  <- regmatches(token, regexec(informat, token, perl = TRUE))[[1]]
       width  <- as.numeric(parts[4])
       places <- parts[5]
-      out <- c(out, paste0(name, " ", pointer, "-", pointer + width - 1))
-      if (nzchar(parts[2])) text_columns <- c(text_columns, name)
+      n_out <- n_out + 1
+      out[n_out] <- paste0(name, " ", pointer, "-", pointer + width - 1)
+      is_text[n_out] <- nzchar(parts[2])
       if (nzchar(places) && as.integer(places) > 0 && !nzchar(parts[2]) &&
           toupper(parts[3]) %in% numeric_informats) {
         decimals[name] <- as.integer(places)
       }
       pointer <- pointer + width
       name <- NA_character_
-    } else if (!is.na(name) && grepl("^\\$?[0-9]+(-[0-9]+)?$", token)) {
+    } else if (!is.na(name) && is_range[t]) {
       range <- as.numeric(strsplit(sub("^\\$", "", token), "-")[[1]])
-      out <- c(out, paste0(name, " ", range[1], "-", range[length(range)]))
-      if (startsWith(token, "$")) text_columns <- c(text_columns, name)
+      n_out <- n_out + 1
+      out[n_out] <- paste0(name, " ", range[1], "-", range[length(range)])
+      is_text[n_out] <- startsWith(token, "$")
       pointer <- range[length(range)] + 1
       column_input <- name
       name <- NA_character_
-    } else if (grepl("^[[:alpha:]_][[:alnum:]_]*$", token) || token == "$") {
+    } else if (is_name[t]) {
       # A name (or a lone $) while the last name still has no position is
       # list input ("V1 $ V2 2."), which reads values separated by blanks,
       # not columns
@@ -580,8 +600,9 @@ formatted_input <- function(lines) {
             "the SAS INPUT statement: '", token, "'.")
     }
   }
+  out <- out[seq_len(n_out)]
   attr(out, "decimals") <- decimals
-  attr(out, "text") <- unique(text_columns)
+  attr(out, "text") <- unique(sub(" .*$", "", out[is_text[seq_len(n_out)]]))
   out
 }
 
@@ -975,44 +996,50 @@ sas_statements <- function(codebook, from = 1) {
   }
   lines <- codebook[from:length(codebook)]
   open_at_start <- sas_comment_state(lines)
-  text <- character(0); line <- integer(0); commented <- logical(0)
-  buffer <- ""; first_line <- NA_integer_; first_commented <- NA
-  for (i in seq_along(lines)) {
-    pieces <- split_outside_quotes(paste0(lines[i], " "), ";")
-    for (k in seq_along(pieces)) {
-      piece <- pieces[k]
-      # A comment that opens and closes here isn't the statement's start
-      blanked <- piece
-      closed <- gregexpr("/\\*.*?\\*/", blanked, perl = TRUE)
-      regmatches(blanked, closed) <- lapply(regmatches(blanked, closed),
-                                            function(m) strrep(" ", nchar(m)))
-      visible <- trimws(gsub("/\\*|\\*/", " ", blanked))
-      if (is.na(first_line) && nzchar(visible)) {
-        first_line <- i
-        # Is the first word inside a comment? Follow the /* and */ markers
-        # on this line up to it
-        word_at <- regexpr("[^[:space:]/*]", blanked)
-        before  <- paste0(paste(pieces[seq_len(k - 1)], collapse = ";"),
-                          if (k > 1) ";", substr(piece, 1, word_at - 1))
-        first_commented <- sas_comment_state(c(lines[i], ""),
-                                             prefix = before,
-                                             open = open_at_start[i])[2] ||
-          startsWith(visible, "*")
-      }
-      buffer <- paste(buffer, piece)
-      if (k < length(pieces)) {
-        if (!is.na(first_line)) {
-          clean <- gsub("/\\*.*?\\*/", " ", buffer, perl = TRUE)
-          clean <- trimws(gsub("\\s+", " ", gsub("/\\*|\\*/", " ", clean)))
-          text <- c(text, clean)
-          line <- c(line, first_line + from - 1)
-          commented <- c(commented, first_commented)
-        }
-        buffer <- ""; first_line <- NA_integer_; first_commented <- NA
-      }
-    }
+  # Every line split at its ";"s (outside quotes) into pieces: a piece
+  # followed by a ";" ends a statement
+  pieces <- as.list(paste0(lines, " "))
+  has_semicolon <- grepl(";", mask_quotes(lines), fixed = TRUE)
+  pieces[has_semicolon] <- lapply(pieces[has_semicolon], split_outside_quotes, ";")
+  n_pieces <- lengths(pieces)
+  piece <- unlist(pieces, use.names = FALSE)
+  piece_line <- rep(seq_along(lines), n_pieces)
+  piece_k <- sequence(n_pieces)
+  ends <- piece_k < n_pieces[piece_line]
+  statement <- c(1, 1 + cumsum(ends)[-length(ends)])
+  # Only statements that end in a ";"
+  complete <- statement <= sum(ends)
+  # The first piece of each statement with something outside a comment that
+  # opens and closes in it is where the statement starts
+  visible <- trimws(gsub("/\\*|\\*/", " ", gsub("/\\*.*?\\*/", " ", piece, perl = TRUE)))
+  starts <- which(complete & nzchar(visible))
+  starts <- starts[!duplicated(statement[starts])]
+  if (length(starts) == 0) {
+    return(data.frame(text = character(0), line = integer(0), commented = logical(0)))
   }
-  data.frame(text = text, line = line, commented = commented)
+  text <- vapply(split(piece[complete], statement[complete]), paste, character(1),
+                 collapse = " ")[as.character(statement[starts])]
+  text <- gsub("/\\*.*?\\*/", " ", text, perl = TRUE)
+  text <- trimws(gsub("\\s+", " ", gsub("/\\*|\\*/", " ", text)))
+  commented <- vapply(starts, function(j) {
+    i <- piece_line[j]
+    k <- piece_k[j]
+    # Is the first word inside a comment? Follow the /* and */ markers on
+    # its line up to it (a comment that opens and closes in the piece
+    # isn't its start)
+    blanked <- piece[j]
+    closed <- gregexpr("/\\*.*?\\*/", blanked, perl = TRUE)
+    regmatches(blanked, closed) <- lapply(regmatches(blanked, closed),
+                                          function(m) strrep(" ", nchar(m)))
+    word_at <- regexpr("[^[:space:]/*]", blanked)
+    line_pieces <- piece[j - k + seq_len(k - 1)]
+    before <- paste0(paste(line_pieces, collapse = ";"),
+                     if (k > 1) ";", substr(piece[j], 1, word_at - 1))
+    sas_comment_state(c(lines[i], ""), prefix = before, open = open_at_start[i])[2] ||
+      startsWith(visible[j], "*")
+  }, logical(1))
+  data.frame(text = unname(text), line = piece_line[starts] + from - 1,
+             commented = commented)
 }
 
 # Splits a line at each `separator` that isn't inside quotes, like
@@ -1031,16 +1058,15 @@ split_outside_quotes <- function(line, separator) {
 # one is open before the first (`open`). Quoted text can't open or close
 # one. If `prefix` is given, only that much of the first line is followed.
 sas_comment_state <- function(lines, prefix = NULL, open = FALSE) {
-  state <- logical(length(lines))
-  for (i in seq_along(lines)) {
-    state[i] <- open
-    line <- if (i == 1 && !is.null(prefix)) prefix else lines[i]
-    line <- gsub("'[^']*'|\"[^\"]*\"", "", line)
-    for (m in regmatches(line, gregexpr("/\\*|\\*/", line))[[1]]) {
-      open <- m == "/*"
-    }
-  }
-  state
+  if (length(lines) == 0) return(logical(0))
+  if (!is.null(prefix)) lines[1] <- prefix
+  lines <- gsub("'[^']*'|\"[^\"]*\"", "", lines)
+  # The last /* or */ on a line decides whether a comment is open after it;
+  # a line with neither leaves it as it was
+  last <- regexpr("(?:/\\*|\\*/)(?!.*(?:/\\*|\\*/))", lines, perl = TRUE)
+  after <- ifelse(last > 0, substring(lines, last, last + 1) == "/*", NA)
+  after <- fill_down(c(open, after))
+  after[-length(after)]
 }
 
 # Reads one SAS "IF ... THEN v = .;" statement (without the ";") into a
@@ -1223,18 +1249,20 @@ variable_labels_sps <- function(codebook) {
   if (length(starts) == 0) {
     return(NULL)
   }
+  # Each command runs to its "." (a "." token) or the next command
+  command_lines <- grep(paste0("^\\*|^(ADD )?VALUE LABELS|^MISSING VALUES?\\b|^EXECUTE\\b|",
+                               "^FORMATS?\\b|^RECODE\\b|^SAVE\\b|^(VARIABLE|VAR) LABELS?"),
+                        codebook, ignore.case = TRUE)
   out <- list()
   for (s in starts) {
-    # The command runs to its "." (a "." token) or the next command
-    end <- grep(paste0("^\\*|^(ADD )?VALUE LABELS|^MISSING VALUES?\\b|^EXECUTE\\b|",
-                       "^FORMATS?\\b|^RECODE\\b|^SAVE\\b|^(VARIABLE|VAR) LABELS?"),
-                codebook, ignore.case = TRUE)
-    end <- c(end[end > s] - 1, length(codebook))[1]
+    end <- c(command_lines[command_lines > s] - 1, length(codebook))[1]
     lines <- codebook[s:end]
     lines[1] <- sub("^(VARIABLE|VAR) LABELS?\\s*", "", lines[1], ignore.case = TRUE)
     tokens <- tokenize(lines, c("/", "+"))
     quoted <- is_quoted(tokens)
     text <- unquote(tokens)
+    columns <- labels <- character(length(tokens))
+    n <- 0
     column <- NA_character_
     i <- 1
     while (i <= length(tokens)) {
@@ -1247,11 +1275,16 @@ variable_labels_sps <- function(codebook) {
           label <- paste0(label, text[i + 2])
           i <- i + 2
         }
-        out[[length(out) + 1]] <- data.frame(column_number = column,
-                                             label = trimws(label))
+        n <- n + 1
+        columns[n] <- column
+        labels[n] <- trimws(label)
         column <- NA_character_
       }
       i <- i + 1
+    }
+    if (n > 0) {
+      out[[length(out) + 1]] <- data.frame(column_number = columns[seq_len(n)],
+                                           label = labels[seq_len(n)])
     }
   }
   do.call(rbind, out)
@@ -1262,46 +1295,61 @@ variable_labels_sps <- function(codebook) {
 # data.frame of column_number and label, or NULL.
 variable_labels_sas <- function(codebook) {
   # Statements start a line or follow a ";" ("LENGTH V1 8; LABEL V1 = ...")
-  masked <- mask_quotes(codebook)
+  candidates <- grep("LABEL|ATTRIB", codebook, ignore.case = TRUE)
+  masked <- mask_quotes(codebook[candidates])
   at <- regexpr("(^|;)\\s*\\K(LABEL|ATTRIB)\\b", masked, ignore.case = TRUE, perl = TRUE)
-  starts <- which(at > 0)
+  starts <- candidates[at > 0]
+  masked <- masked[at > 0]
+  at <- at[at > 0]
   # Not ones inside a /* */ comment
-  starts <- starts[!sas_comment_state(codebook)[starts]]
+  keep <- !sas_comment_state(codebook)[starts]
+  starts <- starts[keep]
+  masked <- masked[keep]
+  at <- at[keep]
   if (length(starts) == 0) {
     return(NULL)
   }
   keywords <- c("LABEL", "ATTRIB", "FORMAT", "INFORMAT", "LENGTH", "TRANSCODE")
   # The line each statement's ";" is on (not one inside quotes)
-  semicolons <- grep(";", masked)
+  semicolons <- grep(";", gsub("'[^']*'|\"[^\"]*\"", "", codebook))
   out <- list()
-  for (s in starts) {
-    first <- substring(codebook[s], at[s])
-    end <- if (grepl(";", substring(masked[s], at[s]))) s else
+  for (k in seq_along(starts)) {
+    s <- starts[k]
+    first <- substring(codebook[s], at[k])
+    end <- if (grepl(";", substring(masked[k], at[k]))) s else
       c(semicolons[semicolons > s], length(codebook))[1]
     statement <- sas_statements(c(first, if (end > s) codebook[(s + 1):end]))
     if (nrow(statement) == 0) next
     tokens <- tokenize(statement$text[1], c("=", ";"))
     quoted <- is_quoted(tokens)
     text <- unquote(tokens)
+    upper <- toupper(tokens)
+    keyword <- !quoted & upper %in% keywords
+    after_equals <- c(FALSE, tokens[-length(tokens)] == "=")
+    name <- !quoted & !keyword & tokens != "=" & !after_equals &
+      grepl("^[[:alpha:]_][[:alnum:]_]*$", tokens)
+    label_statement <- upper[1] == "LABEL"
     # The columns the next label is for: in LABEL, the last name; in
     # ATTRIB, every name listed before its attributes ("ATTRIB V1 V2
     # LABEL = 'x'")
     columns <- character(0)
+    out_columns <- out_labels <- character(0)
     attributes_started <- TRUE
-    for (i in seq_along(tokens)) {
-      if (!quoted[i] && toupper(tokens[i]) %in% keywords) {
+    for (i in which(keyword | name | (quoted & after_equals))) {
+      if (keyword[i]) {
         attributes_started <- TRUE
-      } else if (!quoted[i] && tokens[i] != "=" &&
-                 grepl("^[[:alpha:]_][[:alnum:]_]*$", tokens[i]) &&
-                 !(i > 1 && tokens[i - 1] == "=")) {
-        if (attributes_started || toupper(tokens[1]) == "LABEL") columns <- character(0)
+      } else if (name[i]) {
+        if (attributes_started || label_statement) columns <- character(0)
         columns <- c(columns, tokens[i])
         attributes_started <- FALSE
-      } else if (quoted[i] && i > 2 && tokens[i - 1] == "=" && length(columns) &&
-                 toupper(tokens[i - 2]) %in% c("LABEL", toupper(columns))) {
-        out[[length(out) + 1]] <- data.frame(column_number = columns,
-                                             label = trimws(gsub("\\s+", " ", text[i])))
+      } else if (i > 2 && length(columns) &&
+                 upper[i - 2] %in% c("LABEL", toupper(columns))) {
+        out_columns <- c(out_columns, columns)
+        out_labels <- c(out_labels, rep(trimws(gsub("\\s+", " ", text[i])), length(columns)))
       }
+    }
+    if (length(out_columns)) {
+      out[[length(out) + 1]] <- data.frame(column_number = out_columns, label = out_labels)
     }
   }
   do.call(rbind, out)
@@ -1310,8 +1358,12 @@ variable_labels_sas <- function(codebook) {
 # Replaces each quoted string in x with as many "x"s, so what's outside
 # quotes can be searched without moving any positions.
 mask_quotes <- function(x) {
-  quoted <- gregexpr("'[^']*'|\"[^\"]*\"", x)
-  regmatches(x, quoted) <- lapply(regmatches(x, quoted),
+  has_quote <- grep("['\"]", x)
+  if (length(has_quote) == 0) return(x)
+  y <- x[has_quote]
+  quoted <- gregexpr("'[^']*'|\"[^\"]*\"", y)
+  regmatches(y, quoted) <- lapply(regmatches(y, quoted),
                                   function(m) strrep("x", nchar(m)))
+  x[has_quote] <- y
   x
 }

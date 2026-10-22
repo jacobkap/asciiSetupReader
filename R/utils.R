@@ -113,22 +113,31 @@ sas_formats <- function(codebook, columns) {
       statement <- gsub("\\bFORMAT\\s*=\\s*", " ", statement, ignore.case = TRUE)
     }
     tokens <- strsplit(trimws(statement), "\\s+")[[1]]
-    pending <- character(0)
-    for (token in tokens) {
-      if (grepl("^\\$?([[:alpha:]_][[:alnum:]_]*?)?[0-9]*\\.[0-9]*$", token)) {
+    is_format <- grepl("^\\$?([[:alpha:]_][[:alnum:]_]*?)?[0-9]*\\.[0-9]*$", tokens)
+    # Only a token with a "-" can be a list of columns
+    is_list <- grepl("-", tokens, fixed = TRUE)
+    pending <- list()
+    for (t in seq_along(tokens)) {
+      if (is_format[t]) {
         # A format: its name (if any) without the width and "."
-        f_name <- sub("[0-9]*\\.[0-9]*$", "", token)
+        f_name <- sub("[0-9]*\\.[0-9]*$", "", tokens[t])
         if (length(pending) > 0 && nzchar(sub("^\\$", "", f_name))) {
-          rows[[length(rows) + 1]] <- data.frame(column_name = pending, f_name = f_name)
+          pending <- unlist(pending, use.names = FALSE)
+          rows[[length(rows) + 1]] <- list(pending, rep(f_name, length(pending)))
         }
-        pending <- character(0)
+        pending <- list()
       } else {
-        pending <- c(pending, sas_variable_list(token, columns))
+        pending[[length(pending) + 1]] <- if (is_list[t]) {
+          sas_variable_list(tokens[t], columns)
+        } else {
+          tokens[t]
+        }
       }
     }
   }
   if (length(rows) == 0) return(NULL)
-  format <- do.call(rbind, rows)
+  format <- data.frame(column_name = unlist(lapply(rows, `[[`, 1), use.names = FALSE),
+                       f_name = unlist(lapply(rows, `[[`, 2), use.names = FALSE))
   format$column_name <- match_case(format$column_name, columns)
   # A column given a format twice keeps the last, as in SAS
   format <- format[!duplicated(format$column_name, fromLast = TRUE), ]

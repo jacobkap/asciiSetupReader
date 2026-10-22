@@ -97,3 +97,15 @@ test_that("an SPSS label can be on the line after its column's name", {
   expect_equal(names_of(c("VARIABLE LABELS V1", "'Age'", "/V2 'Income'", "."), ".sps"),
                c("Age", "Income", "V3"))
 })
+
+test_that("a long SAS LABEL statement is read quickly", {
+  # Each line used to be pasted onto the statement so far: 93 s for 40,000
+  # lines, growing with the square of the length
+  skip_on_cran()
+  n <- 20000
+  setup <- temp_file(c("DATA x;", "INFILE 'x';", "INPUT", paste0("  V", 1:n, " ", 1:n), ";",
+                       "LABEL", paste0("  V", 1:n, " = 'Label ", 1:n, "'"), ";", "RUN;"), ".sas")
+  time <- system.time(names <- parse_setup(setup)$setup$column_name)[["elapsed"]]
+  expect_equal(names[c(1, n)], c("Label_1", paste0("Label_", n)))
+  expect_lt(time, 20)
+})
