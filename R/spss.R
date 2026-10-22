@@ -1,4 +1,4 @@
-#' Read fixed-width ASCII file using SPSS Setup file.
+#' Read fixed-width ASCII file using SPSS Setup file
 #'
 #' spss_ascii_reader() and sas_ascii_reader() are used when you need to
 #' read a fixed-width ASCII (text) file that comes with a setup file.
@@ -34,7 +34,9 @@
 #' If TRUE (default) will make columns where all values can be made numeric
 #' into numeric columns. Every value is checked, so a column with any text
 #' value stays character. Useful as FALSE if variables have leading zeros -
-#' such as US Census FIPS codes.
+#' such as US Census FIPS codes. See \code{\link{read_ascii_setup}} for how
+#' implied decimal places are handled.
+#' @inheritParams read_ascii_setup
 #'
 #' @return Data.frame of the data from the ASCII file
 #' @export
@@ -57,12 +59,14 @@ spss_ascii_reader <- function(dataset_name,
                               value_label_fix = TRUE,
                               real_names = TRUE,
                               keep_columns = NULL,
-                              coerce_numeric = TRUE) {
+                              coerce_numeric = TRUE,
+                              missing_values = c("all", "active", "none")) {
 
   read_ascii_setup(data             = dataset_name,
                    setup_file       = sps_name,
                    use_value_labels = value_label_fix,
                    use_clean_names  = real_names,
                    select_columns   = keep_columns,
-                   coerce_numeric   = coerce_numeric)
+                   coerce_numeric   = coerce_numeric,
+                   missing_values   = missing_values)
 }

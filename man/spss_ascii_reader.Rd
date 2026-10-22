@@ -2,7 +2,7 @@
 % Please edit documentation in R/spss.R
 \name{spss_ascii_reader}
 \alias{spss_ascii_reader}
-\title{Read fixed-width ASCII file using SPSS Setup file.}
+\title{Read fixed-width ASCII file using SPSS Setup file}
 \usage{
 spss_ascii_reader(
   dataset_name,
@@ -10,7 +10,8 @@ spss_ascii_reader(
   value_label_fix = TRUE,
   real_names = TRUE,
   keep_columns = NULL,
-  coerce_numeric = TRUE
+  coerce_numeric = TRUE,
+  missing_values = c("all", "active", "none")
 )
 }
 \arguments{
@@ -36,7 +37,27 @@ etc.).}
 \item{coerce_numeric}{If TRUE (default) will make columns where all values can be made numeric
 into numeric columns. Every value is checked, so a column with any text
 value stays character. Useful as FALSE if variables have leading zeros -
-such as US Census FIPS codes.}
+such as US Census FIPS codes. See \code{\link{read_ascii_setup}} for how
+implied decimal places are handled.}
+
+\item{missing_values}{Which of the setup file's missing values to set to
+NA. Setup files often have their missing values section commented out
+(e.g. "* MISSING VALUES" in SPSS or inside \code{/* */} in SAS) so that
+the codes stay in the data unless the user chooses otherwise.
+\describe{
+  \item{"all"}{(default) Use every missing value in the setup file,
+    ignoring whether it is commented out. This is what earlier versions
+    did.}
+  \item{"active"}{Use only the missing values that aren't commented
+    out, as SPSS and SAS would.}
+  \item{"none"}{Don't use any missing values; every code is kept.}
+}
+Missing values are matched by value, as in SPSS and SAS, so a missing
+value written 9 also matches 09 or 0000009 in the data, except in
+columns the setup file says are text (SPSS "(A)", SAS "$"), where it
+must be the same text. Value labels are applied first, so a missing
+value that also has a value label (e.g. 9 = "Unknown") keeps its label
+rather than becoming NA unless \code{use_value_labels = FALSE}.}
 }
 \value{
 Data.frame of the data from the ASCII file

@@ -1,4 +1,4 @@
-context("parse-value-labels-sps")
+# parse-value-labels-sps
 
 
 
@@ -113,7 +113,7 @@ test_that("Monitoring the Future 1979 - parsed value labels are accurate", {
                  "PROFESSIONAL WITHOUT DOCTORAL DEGREE" = "13",
                  "PROFESSIONAL WITH DOCTORAL DEGREE OR EQUIVALENT" = "14",
                  "FULL-TIME HOMEMAKER OR HOUSEWIFE" = "15",
-                 "DON T KNOW-GO TO Q.A13" = "16"))
+                 "DON'T KNOW-GO TO Q.A13" = "16"))
   expect_equal(mtf_1979_parsed_sps$value_labels$V9002,
                c("PART 4: FORM 4 QUESTIONNAIRE" = "4"))
 })
@@ -145,7 +145,7 @@ test_that("Monitoring the Future 1992 - parsed value labels are accurate", {
                  "Form 5" = "5",
                  "Form 6" = "6"))
   expect_equal(mtf_1992_parsed_sps$value_labels$V148,
-               c("Before 71" = "1",
+               c("Before '71" = "1",
                  "1971" = "2",
                  "1972" = "3",
                  "1973" = "4",
@@ -192,13 +192,13 @@ test_that("Monitoring the Future 1991 - parsed value labels are accurate", {
   expect_equal(mtf_1991_parsed_sps$value_labels$V1,
                c("1991" = "91"))
   expect_equal(mtf_1991_parsed_sps$value_labels$V183,
-               c("Definitely won t" = "1",
-                 "Probably won t" = "2",
+               c("Definitely won't" = "1",
+                 "Probably won't" = "2",
                  "Probably will" = "3",
                  "Definitely will" = "4"))
   expect_equal(mtf_1991_parsed_sps$value_labels$V180,
-               c("Definitely won t" = "1",
-                 "Probably won t" = "2",
+               c("Definitely won't" = "1",
+                 "Probably won't" = "2",
                  "Probably will" = "3",
                  "Definitely will" = "4"))
   expect_equal(mtf_1991_parsed_sps$value_labels$V108,
@@ -877,32 +877,32 @@ test_that("CCPS 2004 - parsed value labels are accurate", {
 
   expect_equal(cps_2004_parsed_sps$value_labels$HURESPLI,
                c("REFUSED" = "-3",
-                 "DONT KNOW" = "-2",
+                 "DON'T KNOW" = "-2",
                  "BLANK OR NOT IN UNIVERSE" = "-1"))
   expect_equal(cps_2004_parsed_sps$value_labels$HETELAVL,
                c("REFUSED" = "-3",
-                 "DONT KNOW" = "-2",
+                 "DON'T KNOW" = "-2",
                  "BLANK OR NOT IN UNIVERSE" = "-1",
                  "YES" = "1",
                  "NO" = "2"))
   expect_equal(cps_2004_parsed_sps$value_labels$HETELHHD,
                c("REFUSED" = "-3",
-                 "DONT KNOW" = "-2",
+                 "DON'T KNOW" = "-2",
                  "BLANK OR NOT IN UNIVERSE" = "-1",
                  "YES" = "1",
                  "NO" = "2"))
   expect_equal(cps_2004_parsed_sps$value_labels$PEIO1ICD,
                c("REFUSED" = "-3",
-                 "DONT KNOW" = "-2",
+                 "DON'T KNOW" = "-2",
                  "BLANK OR NOT IN UNIVERSE" = "-1"))
   expect_equal(cps_2004_parsed_sps$value_labels$PEIO1OCD,
                c("REFUSED" = "-3",
-                 "DONT KNOW" = "-2",
+                 "DON'T KNOW" = "-2",
                  "BLANK OR NOT IN UNIVERSE" = "-1"))
   expect_equal(cps_2004_parsed_sps$value_labels$HEQ3,
                c("No response" = "-9",
                  "Refused" = "-3",
-                 "Dont know" = "-2",
+                 "Don't know" = "-2",
                  "Blank or Not in Universe" = "-1",
                  "All or almost all calls," = "1",
                  "More than half," = "2",
@@ -985,7 +985,7 @@ test_that("Detroit - parsed value labels are accurate", {
                  "Refuse" = "9"))
   expect_equal(detroit_parsed_sps$value_labels$J5B,
                c("UNCODEABLE" = "97",
-                 "DONT KNOW" = "98",
+                 "DON'T KNOW" = "98",
                  "REFUSE" = "99"))
   expect_equal(detroit_parsed_sps$value_labels$J7,
                c("IN PERSON" = "1",
@@ -1035,7 +1035,7 @@ test_that("Census Police - parsed value labels are accurate", {
 
   expect_equal(census_police_parsed_sps$value_labels$AGCYTYPE,
                c("Local police department" = "0",
-                 "Sheriffs office" = "1",
+                 "Sheriff's office" = "1",
                  "Primary state law enforcement agency" = "5",
                  "Special jurisdiction" = "6",
                  "Constable/marshal" = "7"))
@@ -1055,7 +1055,7 @@ test_that("Census Police - parsed value labels are accurate", {
                  "No" = "2"))
   expect_equal(census_police_parsed_sps$value_labels$Q3EST,
                c("Blank" = "-9",
-                 "Dont know" = "-2",
+                 "Don't know" = "-2",
                  "Yes" = "1",
                  "No" = "2"))
   expect_equal(census_police_parsed_sps$value_labels$Q6I,
@@ -1069,12 +1069,12 @@ test_that("Step In - parsed value labels are accurate", {
 
 
   expect_equal(step_in_parsed_sps$value_labels$NR_DAYS,
-               c("missing value (date of release (event 2) is unknown or client was still incarcerated at the time of data collection)" = "-99"))
+               c("missing value (date of release (event = 2) is unknown or client was still incarcerated at the time of data collection)" = "-99"))
   expect_equal(step_in_parsed_sps$value_labels$NO_RECORD,
                c("arrest data not available" = "1"))
   expect_equal(step_in_parsed_sps$value_labels$EVENT,
                c("arrest that leads to incarceration" = "1",
-                 "release from jail/prison after arrest (EVENT 1)" = "2",
+                 "release from jail/prison after arrest (EVENT = 1)" = "2",
                  "arrest that does not lead to incarceration" = "3"))
   expect_equal(step_in_parsed_sps$value_labels$CHARGE,
                c("missing value: type of charge is unknown" = "-99",
@@ -1130,7 +1130,7 @@ test_that("Health and Nutrition - parsed value labels are accurate", {
                c("Citizen by birth or naturalization" = "1",
                  "Not a citizen of the US" = "2",
                  "Refused" = "7",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(health_nutrition_parsed_sps$value_labels$DMDEDUC3,
                c("Never Attended / Kindergarten Only" = "0",
                  "1st Grade" = "1",
@@ -1151,13 +1151,13 @@ test_that("Health and Nutrition - parsed value labels are accurate", {
                  "Less Than 5th Grade" = "55",
                  "Less Than 9th Grade" = "66",
                  "Refused" = "77",
-                 "Dont know" = "99"))
+                 "Don't know" = "99"))
   expect_equal(health_nutrition_parsed_sps$value_labels$DMDHRBRN,
                c("Born in 50 US States or Washington, DC" = "1",
                  "Born in Mexico" = "2",
                  "Born Elsewhere" = "3",
                  "Refused" = "7",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(health_nutrition_parsed_sps$value_labels$SIAINTRP,
                c("Yes" = "1",
                  "No" = "2"))
@@ -1418,7 +1418,7 @@ test_that("SHR1981 - parsed value labels are accurate", {
                  "Narcotic drug laws" = "18",
                  "Gambling" = "19",
                  "Other - not specified" = "26",
-                 "Lover s triangle" = "40",
+                 "Lover's triangle" = "40",
                  "Child killed by babysitter" = "41",
                  "Brawl due to influence of alcohol" = "42",
                  "Brawl due to influence of narcotics" = "43",
@@ -2318,19 +2318,19 @@ test_that("Parole - parsed value labels are accurate", {
                  "West Virginia" = "WV",
                  "Wyoming" = "WY"))
   expect_equal(parole_parsed_sps$value_labels$TOTBEG,
-               c("Not known/Dont know" = "-9",
+               c("Not known/Don't know" = "-9",
                  "Not applicable" = "-8"))
   expect_equal(parole_parsed_sps$value_labels$MALE,
-               c("Not known/Dont know" = "-9",
+               c("Not known/Don't know" = "-9",
                  "Not applicable" = "-8"))
   expect_equal(parole_parsed_sps$value_labels$ISP,
                c("No program" = "N",
                  "Yes" = "Y"))
   expect_equal(parole_parsed_sps$value_labels$ISPNUM,
-               c("Not known/Dont know" = "-9",
+               c("Not known/Don't know" = "-9",
                  "Not applicable" = "-8"))
   expect_equal(parole_parsed_sps$value_labels$ISPIN,
-               c("Not known/Dont know" = "DK",
+               c("Not known/Don't know" = "DK",
                  "No" = "N",
                  "Not applicable" = "NA",
                  "Yes" = "Y"))
@@ -2338,7 +2338,7 @@ test_that("Parole - parsed value labels are accurate", {
                c("No program" = "N",
                  "Yes" = "Y"))
   expect_equal(parole_parsed_sps$value_labels$ENDOFYEAR,
-               c("Not known/Dont know" = "DK",
+               c("Not known/Don't know" = "DK",
                  "No" = "N",
                  "Yes" = "Y"))
 
@@ -2730,7 +2730,7 @@ test_that("NCVS - parsed value labels are accurate", {
   expect_equal(ncvs_parsed_sps$value_labels$V4121,
                c("Yes" = "1",
                  "No" = "2",
-                 "Don t know" = "3",
+                 "Don't know" = "3",
                  "Residue" = "8",
                  "Out of universe" = "9"))
   expect_equal(ncvs_parsed_sps$value_labels$V4122,
@@ -2916,62 +2916,62 @@ test_that("Jail survey 2010 - parsed value labels are accurate", {
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$NCONPOPF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$PRETRIALF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$TREATMENTF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$NONCONFDF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$ADFMNCNFF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$JVFMNCNFF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$CONVNCNFF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$UNCNVNCFF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$UNCNVNCFF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$ASIANF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$BLACKF,
                c("Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$OTHERMAJVIO,
                c("Blank" = "-9"))
   expect_equal(jail_2010_parsed_sps$value_labels$ESCAPE,
@@ -2981,19 +2981,19 @@ test_that("Jail survey 2010 - parsed value labels are accurate", {
                  "Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$ESCAPEF,
                c("Blank" = "-9",
                  "Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
   expect_equal(jail_2010_parsed_sps$value_labels$OTHERMAJVIOF,
                c("Blank" = "-9",
                  "Actual" = "0",
                  "Estimated" = "1",
                  "Not applicable" = "8",
-                 "Dont know" = "9"))
+                 "Don't know" = "9"))
 
 })
 
@@ -3145,7 +3145,7 @@ test_that("Crosswalk 2012 - parsed value labels are accurate", {
                  "Undetermined"                      = "999"))
   expect_equal(crosswalk2012_parsed_sps$value_labels$AGCYTYPE,
                c("Local police department"      = "0",
-                 "Sheriffs office"              = "1",
+                 "Sheriff's office"              = "1",
                  "State law enforcement agency" = "5",
                  "Special jurisdiction"         = "6",
                  "Constable/Marshal"            = "7",

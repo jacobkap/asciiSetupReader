@@ -2,35 +2,43 @@
 % Please edit documentation in R/parse_setup.R
 \name{parse_setup}
 \alias{parse_setup}
-\title{Parse the setup file (.sps or .sas).}
+\title{Parse the setup file (.sps or .sas)}
 \usage{
 parse_setup(setup_file)
 }
 \arguments{
 \item{setup_file}{Name of the SPSS or SAS setup file - should be a .sps or
-.sas (.txt also accepted as are these files in zipped format). Whether it
-is SPSS or SAS is determined from the file name: names ending in .sps
-(optionally followed by .zip or .txt) are SPSS and everything else is SAS.}
+  .sas (.txt also accepted as are these files in zipped format). Whether it
+  is SPSS or SAS is determined from the file name: names ending in .sps
+  (optionally followed by .zip or .txt) are SPSS and everything else is SAS.
+
+  A setup file that isn't valid UTF-8 text is read as Windows-1252
+  (Latin-1), with a message.}
 }
 \value{
 A list of length 3. The first object ("setup") is a data frame
-with 4 columns: column_number, the non-descriptive name of each column
-(e.g. V1); column_name, its descriptive name; and begin and end, the
-first and last character position of the column in the fixed-width data
-file.
+with 5 columns: column_number, the non-descriptive name of each column
+(e.g. V1); column_name, its descriptive name; begin and end, the first
+and last character position of the column in the fixed-width data file;
+and decimals, the number of implied decimal places the setup file gives
+the column (0 if none; see \code{\link{read_ascii_setup}}). Descriptive
+names are made unique: a name already used by an earlier column (in any
+case) gets the column's short name added, e.g. the second "CLOTHING"
+column, V93, is "CLOTHING_V93".
 
 The second object ("value_labels") is a list of named vectors for the
 value labels, one per column with value labels. The vector's values are
 the codes in the data and its names are the labels. If there are no
 value labels, this will be NULL.
 
-The third object ("missing") is a data.frame with two columns. The first
-column (variable) says the column name and the second (values) says the
-value that is missing and will be replaced with NA. If there are no
-missing values, this will be NULL.
+The third object ("missing") is a data.frame with three columns. The
+first column (variable) says the column name, the second (values) says
+the value that is missing and will be replaced with NA, and the third
+(commented) is TRUE if the setup file has that missing value commented
+out. If there are no missing values, this will be NULL.
 }
 \description{
-Parse the setup file (.sps or .sas).
+Parse the setup file (.sps or .sas)
 }
 \examples{
 sas_name <- system.file("extdata", "example_setup.sas",

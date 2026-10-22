@@ -96,7 +96,7 @@ make_sps_setup <- function(file_name,
 
 
   if (is.null(col_names)) {
-    col_names <- paste0("V", 1:length(col_positions))
+    col_names <- paste0("V", seq_along(col_positions))
   }
 
   data_list <- format(col_names,
@@ -140,7 +140,7 @@ make_sps_setup <- function(file_name,
     temp <- cumsum(is_column)
     split_missing <- split(missing_values, as.factor(temp))
     missing_values <- c()
-    for (i in 1:length(split_missing)) {
+    for (i in seq_along(split_missing)) {
       temp <- paste(unlist(split_missing[i]), collapse = ", ")
       temp <- stringr::str_replace(temp, ", ", "      (")
       temp <- paste0(temp, ")")

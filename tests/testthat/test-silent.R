@@ -1,4 +1,4 @@
-context("There are no warning or error messages")
+# There are no warning or error messages
 
 
 test_that("parse_setup is silent", {
@@ -122,8 +122,12 @@ test_that("parse_setup is silent", {
 test_that("No messages or warnings or errors for file loads - SPSS", {
   skip_on_cran()
 
-  expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
-                                 setup_file = jail_1987_sps_name))
+  # This file has implied decimal places, which read_ascii_setup() reports
+  # with a message (tested in test-messages.R); anything else is noise
+  expect_silent(allow_messages(
+    read_ascii_setup(data = jail_1987_dataset_name,
+                     setup_file = jail_1987_sps_name),
+    classes = "asciiSetupReader_implied_decimals"))
   expect_silent(read_ascii_setup(data = jail_1987_dataset_name,
                                  setup_file = jail_1987_sps_name,
                                  select_columns = 1:5))
@@ -171,8 +175,13 @@ test_that("No messages or warnings or errors for file loads - SPSS", {
                                  setup_file = NIBRS_sps_name,
                                  select_columns = 3))
 
-  expect_silent(read_ascii_setup(data = weimar_dataset_name,
-                                 setup_file = weimar_sps_name))
+  # Implied decimal places and commented-out missing values are reported
+  # with messages (tested in test-messages.R); anything else is noise
+  expect_silent(allow_messages(
+    read_ascii_setup(data = weimar_dataset_name,
+                     setup_file = weimar_sps_name),
+    classes = c("asciiSetupReader_implied_decimals",
+                "asciiSetupReader_commented_missing")))
   expect_silent(read_ascii_setup(data = weimar_dataset_name,
                                  setup_file = weimar_sps_name,
                                  select_columns = 4))
@@ -242,8 +251,13 @@ test_that("No messages or warnings or errors for file loads - SAS", {
                                  setup_file = NIBRS_sas_name,
                                  select_columns = 3))
 
-  expect_silent(read_ascii_setup(data = weimar_dataset_name,
-                                 setup_file = weimar_sas_name))
+  # Implied decimal places and commented-out missing values are reported
+  # with messages (tested in test-messages.R); anything else is noise
+  expect_silent(allow_messages(
+    read_ascii_setup(data = weimar_dataset_name,
+                     setup_file = weimar_sas_name),
+    classes = c("asciiSetupReader_implied_decimals",
+                "asciiSetupReader_commented_missing")))
   expect_silent(read_ascii_setup(data = weimar_dataset_name,
                                  setup_file = weimar_sas_name,
                                  select_columns = 4))
