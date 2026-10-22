@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Some (usually older) data sets are only available in fixed-width ASCII files (.txt or .dat) that have an .sps (SPSS) or .sas (SAS) setup file explaining to the software how to read that file. This package allows you to read in the data if you have both the fixed-width file and its accompanying setup file. These parameters `data` and `setup_file` are the only ones requires to run the package though three optional parameters allow you to customize results.
+Some (usually older) data sets are only available in fixed-width ASCII files (.txt or .dat) that have an .sps (SPSS) or .sas (SAS) setup file explaining to the software how to read that file. This package allows you to read in the data if you have both the fixed-width file and its accompanying setup file. These parameters `data` and `setup_file` are the only ones requires to run the package though five optional parameters allow you to customize results.
 
 `data` - A string containing the name of the data file
 
@@ -29,7 +29,7 @@ example <- asciiSetupReader::read_ascii_setup(data = data,
 setup_file = setup_file)
 example[1:6, 1:4] # Look at first 6 rows and first 4 columns
 ```
-There are three optional parameters: `use_value_labels`, `use_clean_names`, and `select_columns`.
+There are five optional parameters: `use_value_labels`, `use_clean_names`, `select_columns`, `coerce_numeric` and `missing_values`.
 
 ## `use_value_labels`
 Fixed-width delimited text files are designed to be as compressed as possible. One way of doing this is having letters or numbers represent values. For example, instead of writing "male" or "female" in a column about gender, it will be "0" or "1" (or "M" and "F"). The setup file gives the actual value of these representations. When the parameter `use_value_labels` is TRUE (which it is by default) it will give the value labels; otherwise it will give only the representation. This parameter is the most time consuming part of the function so if you have a very large dataset but only a few variables you are interested in, it may be wise to set it as FALSE (or use the parameter `select_columns` to get only those columns).
@@ -73,7 +73,13 @@ head(example)
 This gets only the first column of data and specifies the column by non-descriptive names. 
 ```{r}
 example <- asciiSetupReader::read_ascii_setup(data = data,
-setup_file = setup_file, 
+setup_file = setup_file,
 select_columns = "V1") # Gets only the first columnss
 head(example)
 ```
+
+## `coerce_numeric`
+When `coerce_numeric` is TRUE (the default), columns whose values are all numbers become numeric columns. Columns the setup file says are text (SPSS "(A)", SAS "$") always stay text, so codes such as ZIP codes keep their leading zeros. Set it to FALSE to keep every column as text.
+
+## `missing_values`
+Setup files often list codes, such as -9 or 999, that mean a value is missing; these become NA. Many setup files have their missing values section commented out. `missing_values = "all"` (the default) uses every missing value in the file, as earlier versions did; `"active"` uses only those that aren't commented out; and `"none"` uses none of them, so the codes stay in the data.

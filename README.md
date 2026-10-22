@@ -35,9 +35,9 @@ devtools::install_github("jacobkap/asciiSetupReader")
 ## Usage
 
 The parameters `data` and `setup_file` are the only ones required to run
-the package though four optional parameters (`use_value_labels`,
-`use_clean_names`, `select_columns` and `coerce_numeric`) allow you to
-customize results.
+the package though five optional parameters (`use_value_labels`,
+`use_clean_names`, `select_columns`, `coerce_numeric` and
+`missing_values`) allow you to customize results.
 
 `data` - A string containing the name of the data file
 

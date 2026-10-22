@@ -19,9 +19,10 @@ are now different (and correct).
   clean name, the later ones get their short name added, e.g. the second
   "CLOTHING" column, V93, is now `CLOTHING_V93`, and PSID's repeated
   "RELEASE NUMBER" becomes `RELEASE_NUMBER_TA050001` for the 2005 wave.
-  Before, the data had duplicate names, so `data$CLOTHING` only gave the
-  first of them and dplyr and data.table stopped with an error. A message
-  lists the renamed columns.
+  Names are compared ignoring case, as SPSS and SAS do, so `Age` and `AGE`
+  count as the same name. Before, the data had duplicate names, so
+  `data$CLOTHING` only gave the first of them and dplyr and data.table
+  stopped with an error. A message lists the renamed columns.
 * **An `=` inside a label no longer cuts the name short.** "SEP FROM FATHER
   < OR = 5" was named `X5`; it is now `SEP_FROM_FATHER_under_OR_5`.
 * **`%` in a label becomes `_percent_`** in the name, as `<` already became
@@ -35,7 +36,10 @@ are now different (and correct).
   exactly the same text.
 * **Value labels of number columns are matched by value** too, so a label
   for `0` now labels data written `0000000` (e.g. 7,997 "Not updated"
-  values in the 1960 UCR file that used to stay as `0000000`).
+  values in the 1960 UCR file that used to stay as `0000000`). A column
+  that now has some labelled values is text rather than numbers: in the
+  1960 UCR file, columns such as `JAN_LAST_UPDATE` have "Not updated" where
+  they had 0. `use_value_labels = FALSE` keeps the codes.
 * **Blanks and the letters `NA` in text columns get their value labels**:
   e.g. 166,650 blanks in the 1960 UCR file are now "No return received" and
   15,555 in the 2000 NIBRS batch header "Inactive", where they used to be
@@ -58,7 +62,7 @@ are now different (and correct).
   file's `LFM` and `LFF` were `..._LOCAL_AUTHORITY` and
   `..._LOCAL_AUTHORITY_LFF` (one name, made unique) and are now
   `..._LOCAL_AUTHORITY_MALE` and `..._LOCAL_AUTHORITY_FEMALE`. 24 names in 6
-  of the 157 setup files the package is tested on changed this way.
+  of the 157 setup files used to check this release changed this way.
 * **A later VALUE LABELS command replaces a column's earlier labels**, as
   in SPSS (`ADD VALUE LABELS` adds to them instead). Before, the first set
   was kept. A message lists the columns whose earlier, different labels were
@@ -71,6 +75,23 @@ are now different (and correct).
   quotes and dashes in labels are read correctly (see below).
 * asciiSetupReader now needs R 4.1.0 or later (its dependencies vroom,
   readr and stringr already did).
+
+## Upgrading from 2.6.0
+
+* Code that uses descriptive column names may need the new names
+  (made unique, `%`, `=`, full SAS labels). `parse_setup(setup_file)$setup`
+  lists every column's short name (`column_number`) and descriptive name
+  (`column_name`); short names haven't changed, and
+  `use_clean_names = FALSE` gives them.
+* Columns with implied decimal places now have their decimal point. To
+  compare with results from 2.6.0, multiply such a column by
+  `10^decimals`, using its `decimals` in `parse_setup(setup_file)$setup`.
+* Columns can now be text rather than numbers because more of their codes
+  get value labels, or because the setup file says they're text.
+  `use_value_labels = FALSE` keeps the codes, and `as.numeric()` turns a
+  text column of numbers into numbers.
+* Missing values are applied as before by default (`missing_values =
+  "all"`, including ones that are commented out in the setup file).
 
 ## New features
 
@@ -158,8 +179,8 @@ are now different (and correct).
   As in SPSS, names listed before one range share it equally (`A B C 1-6`,
   `Q1 TO Q3 3-5`). GET DATA formats such as `AUTO` and `ADATE10` and
   `/VARIABLES=` without spaces are read, and a second record given by a
-  bare `/` stops with the several-records error. All 157 setup files the
-  package is tested on are read exactly as before.
+  bare `/` stops with the several-records error. All 157 setup files used
+  to check this release are read exactly as before.
 
 ## Package
 

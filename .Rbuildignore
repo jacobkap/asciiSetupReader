@@ -16,3 +16,4 @@ revdep/
 ^revdep$
 ^\.claude$
 ^tests/testthat/_problems$
+^vignettes/.*\.(html|R)$
