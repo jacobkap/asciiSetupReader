@@ -513,6 +513,14 @@ positions_needed <- function(type) {
 # an error for what it can't read (several records per case, list input or
 # lists of variables in parentheses) rather than placing columns wrongly.
 formatted_input <- function(lines) {
+  # An INPUT statement missing its ";" ends at a line that starts another
+  # statement ("LABEL V1 = ...", "RUN;"), but not at a column with the same
+  # name followed by its position ("LENGTH 10-12")
+  next_statement <- grep(paste0("^\\s*(LABEL|ATTRIB|FORMAT|INFORMAT|LENGTH|RUN|IF|DROP|",
+                                "KEEP|RETAIN|ARRAY|PROC|DATA|INFILE|OUTPUT)\\b",
+                                "(?!\\s*\\$?\\s*[0-9@+])"),
+                         lines[-1], ignore.case = TRUE, perl = TRUE)
+  if (length(next_statement) > 0) lines <- lines[seq_len(next_statement[1])]
   text <- paste(lines, collapse = " ")
   text <- gsub("/\\*.*?\\*/", " ", text, perl = TRUE)
   text <- sub(";.*$", "", text)

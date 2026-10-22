@@ -228,3 +228,10 @@ test_that("ELSE IF is only read when it tests the same column as the IF before i
   expect_equal(parsed$skipped_missing, "ELSE IF V2 <= 0 THEN V2 = .")
 })
 
+test_that("an INPUT statement missing its ; ends at the next statement", {
+  expect_equal(positions_of(c("INPUT V1 1-2 V2 $ 3-4", "LABEL V1 = 'a';")),
+               c(V1 = "1-2", V2 = "3-4"))
+  # A column named like a statement, with its position, is still a column
+  expect_equal(positions_of(c("INPUT V1 1-2", "LENGTH 3-4;")), c(V1 = "1-2", LENGTH = "3-4"))
+})
+
