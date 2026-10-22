@@ -418,15 +418,19 @@ fix_names_missing_numeric <- function(data,
     }
   }
   data <- blanks_to_na(data)
+  # Columns the setup file says are text (SPSS "(A)", SAS "$") stay text,
+  # as in SPSS and SAS, so a code such as "01001" keeps its leading zero
+  text_columns <- intersect(setup$text_columns, names(data))
   if (real_names) {
     variables <- setup$setup[setup$setup$column_number
                              %in% names(data), ]
     data.table::setnames(data, old = variables$column_number,
                          new = variables$column_name)
+    text_columns <- variables$column_name[match(text_columns, variables$column_number)]
   }
 
   if (coerce_numeric) {
-    data <- make_cols_numeric(data)
+    data <- make_cols_numeric(data, keep_text = text_columns)
   }
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL

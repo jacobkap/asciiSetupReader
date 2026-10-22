@@ -54,10 +54,11 @@ as_numeric_or_null <- function(column) {
   out
 }
 
-# Converts every column whose values are all numbers to numeric. Every row
-# is checked, so a column with even one text value stays character.
-make_cols_numeric <- function(dataset) {
-  for (i in seq_along(dataset)) {
+# Converts every column whose values are all numbers to numeric, except the
+# columns named in keep_text. Every row is checked, so a column with even
+# one text value stays character.
+make_cols_numeric <- function(dataset, keep_text = character(0)) {
+  for (i in which(!names(dataset) %in% keep_text)) {
     # One text value in the first rows rules a column out cheaply; only
     # columns that pass get every row checked.
     if (is.null(as_numeric_or_null(utils::head(dataset[[i]], 1000)))) next

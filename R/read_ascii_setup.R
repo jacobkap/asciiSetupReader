@@ -24,8 +24,10 @@
 #' @param coerce_numeric
 #' If TRUE (default) will make columns where all values can be made numeric
 #' into numeric columns. Every value is checked, so a column with any text
-#' value stays character. Useful as FALSE if variables have leading zeros -
-#' such as US Census FIPS codes.
+#' value stays character. Columns the setup file says are text (SPSS "(A)",
+#' SAS "$") always stay character, so their leading zeros are kept. Useful
+#' as FALSE if other variables have leading zeros - such as US Census FIPS
+#' codes given as numbers.
 #'
 #' Columns that the setup file gives implied decimal places (e.g.
 #' \code{V7 37-43 (1)} in SPSS or \code{V7 37-43 .1} in SAS) get their

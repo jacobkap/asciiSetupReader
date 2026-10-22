@@ -175,3 +175,27 @@ test_that("an inline /* */ comment in VALUE LABELS doesn't hide labels", {
   expect_equal(labels$V1, c(Yes = "1", No = "2", Maybe = "3"))
   expect_equal(labels$V2, c(Male = "1", Female = "2"))
 })
+
+test_that("columns the setup file says are text stay text, keeping leading zeros", {
+  data <- temp_file(c("010010012", "021380034"), ".txt")
+  sps <- temp_file(c("DATA LIST FILE = 'x' /ZIP 1-5 (A) COUNT 6-9 .", "EXECUTE."), ".sps")
+  out <- read_ascii_setup(data, sps)
+  expect_equal(out$ZIP, c("01001", "02138"))
+  expect_equal(out$COUNT, c(12, 34))
+  sas <- temp_file(c("DATA x;", "INFILE 'x';", "INPUT ZIP $ 1-5 COUNT 6-9;", "RUN;"), ".sas")
+  out <- read_ascii_setup(data, sas)
+  expect_equal(out$ZIP, c("01001", "02138"))
+  expect_equal(out$COUNT, c(12, 34))
+  # With short names too
+  out <- read_ascii_setup(data, sps, use_clean_names = FALSE)
+  expect_type(out$ZIP, "character")
+})
+
+test_that("the SHR example's victim ages are all text, as the setup file says", {
+  # Victims 5-11 are rarely filled in and were made numbers before 3.0.0,
+  # unlike victims 1-4, whose codes include NB (newborn)
+  data <- read_ascii_setup(system.file("extdata", "example_data.zip", package = "asciiSetupReader"),
+                           system.file("extdata", "example_setup.sps", package = "asciiSetupReader"))
+  ages <- data[grep("^VICTIM_[0-9]+_AGE$", names(data))]
+  expect_equal(unique(vapply(ages, class, character(1))), "character")
+})

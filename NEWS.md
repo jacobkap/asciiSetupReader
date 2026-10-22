@@ -43,6 +43,14 @@ are now different (and correct).
   missing but still gives it a format's label for a blank.) A blank or `NA`
   text value without a label is still `NA`. In number columns a blank, `NA`
   or a lone `.` is missing (a lone `.` used to be kept).
+* **Columns the setup file says are text stay text** (SPSS `(A)` or an `A`
+  format, SAS `$`), as in SPSS and SAS, even when every value is a number,
+  so codes such as ZIP code `01001` keep their leading zeros. Before, such
+  a column became numeric with `coerce_numeric = TRUE`. In the SHR example
+  data, the rarely filled-in ages of victims 5 to 11 are now text like
+  those of victims 1 to 4, and empty text columns are character `NA`
+  rather than numeric `NA`. Use `as.numeric()` on a column you want as
+  numbers.
 * **Columns without a label in VARIABLE LABELS or LABEL are kept**, named
   by their short name; they used to be dropped.
 * **A SAS label continued on the next line is read in full**, so names that
