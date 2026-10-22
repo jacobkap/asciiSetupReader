@@ -348,7 +348,16 @@ data_list_sps <- function(lines, setup_file) {
         token <- "/1"
         i <- i + 1
       }
-      record <- if (token == "/") record + 1 else as.numeric(substring(token, 2))
+      # (A "/" with no columns after it, as in "V2 3-4 /.", starts no record)
+      no_columns_after <- token == "/" &&
+        !any(grepl("^[0-9]", tokens[seq_along(tokens) > i]))
+      record <- if (no_columns_after) {
+        max(record, 1)
+      } else if (token == "/") {
+        record + 1
+      } else {
+        as.numeric(substring(token, 2))
+      }
       if (record > 1) {
         abort("unsupported_input", "'", file_name, "' reads several lines ",
               "(records) per case, which asciiSetupReader can't read.")

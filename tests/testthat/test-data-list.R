@@ -160,3 +160,8 @@ test_that("a / after columns given without a leading / starts the second record"
   expect_equal(positions(temp_file("DATA LIST FIXED V1 1-2 V2 3-4.", ".sps")),
                c(V1 = "1-2", V2 = "3-4"))
 })
+
+test_that("a / with no columns after it starts no record", {
+  expect_equal(positions(temp_file("DATA LIST FILE = 'x' V1 1-2 V2 3-4 /.", ".sps")),
+               c(V1 = "1-2", V2 = "3-4"))
+})
