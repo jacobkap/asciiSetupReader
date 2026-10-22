@@ -726,14 +726,16 @@ recode_group <- "\\([^()]*=(?![^()]*SYSMIS)[^()]*\\)"
 spss_recodes <- function(codebook) {
   active <- !in_comment_command(codebook)
   starts <- which(active & grepl("^RECODE\\b", codebook, ignore.case = TRUE))
-  next_command <- grepl(paste0("^(\\*|RECODE|EXECUTE|MISSING VALUES?|(ADD )?VALUE LABELS|",
-                               "VARIABLE LABELS|FORMATS|COMPUTE|SAVE)\\b"),
-                        codebook, ignore.case = TRUE)
+  # A RECODE continues onto lines of more groups: "(4=6)", "/V2 (1=2)" or
+  # "V2 V3 (1=2)" (not "FREQUENCIES V1.", the next command)
+  continues <- grepl(paste0("^\\s*(\\(|/|[[:alpha:]@#$][[:alnum:]_.@#$]*",
+                            "(\\s+[[:alpha:]@#$][[:alnum:]_.@#$]*)*\\s*\\()"),
+                     codebook) &
+    !grepl("^(RECODE|EXECUTE|MISSING VALUES?|COMPUTE)\\b", codebook, ignore.case = TRUE)
   out <- character(0)
   for (s in starts) {
     end <- s
-    while (end < length(codebook) && !endsWith(codebook[end], ".") &&
-           codebook[end + 1] != "" && !next_command[end + 1]) {
+    while (end < length(codebook) && !endsWith(codebook[end], ".") && continues[end + 1]) {
       end <- end + 1
     }
     text <- paste(codebook[s:end], collapse = " ")

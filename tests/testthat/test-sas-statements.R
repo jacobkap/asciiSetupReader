@@ -240,3 +240,8 @@ test_that("overlapping comment markers are read left to right", {
                c(FALSE, TRUE, TRUE, FALSE))
 })
 
+test_that("a RECODE doesn't run on into the next command", {
+  setup <- temp_file(c("DATA LIST FILE = 'x' /V1 1-2 V2 3-4 .", "RECODE V1 (1=5)", "  V2 (2=3)",
+                       "FREQUENCIES V1.", "EXECUTE."), ".sps")
+  expect_equal(read_setup(setup)$recodes, "RECODE V1 (1=5) V2 (2=3)")
+})
