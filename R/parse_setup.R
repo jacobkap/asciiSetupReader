@@ -1081,10 +1081,16 @@ sas_comment_state <- function(lines, prefix = NULL, open = FALSE) {
   if (length(lines) == 0) return(logical(0))
   if (!is.null(prefix)) lines[1] <- prefix
   lines <- gsub("'[^']*'|\"[^\"]*\"", "", lines)
-  # The last /* or */ on a line decides whether a comment is open after it;
-  # a line with neither leaves it as it was
-  last <- regexpr("(?:/\\*|\\*/)(?!.*(?:/\\*|\\*/))", lines, perl = TRUE)
-  after <- ifelse(last > 0, substring(lines, last, last + 1) == "/*", NA)
+  # The last /* or */ on a line (reading markers left to right, so "/*/*"
+  # is two openings) decides whether a comment is open after it; a line
+  # with neither leaves it as it was
+  after <- rep(NA, length(lines))
+  marked <- grep("/*", lines, fixed = TRUE)
+  marked <- sort(unique(c(marked, grep("*/", lines, fixed = TRUE))))
+  if (length(marked) > 0) {
+    markers <- regmatches(lines[marked], gregexpr("/\\*|\\*/", lines[marked]))
+    after[marked] <- vapply(markers, function(m) m[length(m)] == "/*", logical(1))
+  }
   after <- fill_down(c(open, after))
   after[-length(after)]
 }

@@ -235,3 +235,8 @@ test_that("an INPUT statement missing its ; ends at the next statement", {
   expect_equal(positions_of(c("INPUT V1 1-2", "LENGTH 3-4;")), c(V1 = "1-2", LENGTH = "3-4"))
 })
 
+test_that("overlapping comment markers are read left to right", {
+  expect_equal(sas_comment_state(c("a /*/*", "b", "c */*/", "d")),
+               c(FALSE, TRUE, TRUE, FALSE))
+})
+
