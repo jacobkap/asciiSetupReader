@@ -14,6 +14,8 @@ installed package is smaller.
 ## Test environments
 
 * local Windows 11 install, R 4.6.1
+* GitHub Actions: macOS (R release), Windows (R release), Ubuntu (R devel,
+  release and oldrel-1)
 
 ## R CMD check results
 
