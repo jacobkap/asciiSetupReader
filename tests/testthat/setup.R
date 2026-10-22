@@ -1,6 +1,7 @@
-# The fixture objects below are read once for all tests. Messages from
-# reading them (e.g. implied decimals) are tested in test-messages.R, so
-# they are kept out of the test log here.
+# The fixture objects below are read when a test first uses them
+# (delayedAssign()), so tests that are skipped, e.g. on CRAN, don't
+# pay for them. Messages from reading them (e.g. implied decimals) are
+# tested in test-messages.R, so they are kept out of the test log here.
 suppressMessages({
 
 SHR_dataset_name      <- system.file("extdata",
@@ -274,235 +275,235 @@ starting_number_bigger_than_ending_number <- test_path("testdata",
                                           "starting_number_bigger_than_ending_number.sps")
 
 
-parole <- read_ascii_setup(data = parole_survey_dataset_name,
+delayedAssign("parole", suppressMessages(read_ascii_setup(data = parole_survey_dataset_name,
                            setup_file = parole_sps_name,
-                           use_clean_names = FALSE)
+                           use_clean_names = FALSE)))
 
-SHR2 <- read_ascii_setup(data = SHR_dataset_name,
-                         setup_file = SHR_sps_name, select_columns = 1:5)
-SHR3 <- read_ascii_setup(data = SHR_dataset_name,
+delayedAssign("SHR2", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
+                         setup_file = SHR_sps_name, select_columns = 1:5)))
+delayedAssign("SHR3", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
                          setup_file = SHR_sps_name,
-                         select_columns = c(1, 5, 50:55, 100:121, 152))
-UCR2 <- read_ascii_setup(data = UCR_dataset_name,
+                         select_columns = c(1, 5, 50:55, 100:121, 152))))
+delayedAssign("UCR2", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                          setup_file = UCR_sps_name,
                          select_columns = c("V1", "V50", "V100", "V111",
-                                            "V1000"))
-NIBRS2 <- read_ascii_setup(data = NIBRS_dataset_name,
+                                            "V1000"))))
+delayedAssign("NIBRS2", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
                            setup_file = NIBRS_sps_name,
                            select_columns = c("B1001", "B1005", "B1010",
-                                              "B1016", "B1019"))
+                                              "B1016", "B1019"))))
 
 # Read SAS ====================================================================
-SHR2_sas   <- read_ascii_setup(data = SHR_dataset_name,
-                               setup_file = SHR_sas_name, select_columns = 1:5)
-SHR3_sas   <- read_ascii_setup(data = SHR_dataset_name,
+delayedAssign("SHR2_sas", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sas_name, select_columns = 1:5)))
+delayedAssign("SHR3_sas", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
                                setup_file = SHR_sas_name,
-                               select_columns = c(1, 5, 50:55, 100:121, 152))
-UCR2_sas   <- read_ascii_setup(data = UCR_dataset_name,
+                               select_columns = c(1, 5, 50:55, 100:121, 152))))
+delayedAssign("UCR2_sas", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                setup_file = UCR_sas_name,
                                select_columns = c("V1", "V50", "V100",
-                                                  "V111", "V1000"))
-NIBRS2_sas <- read_ascii_setup(data = NIBRS_dataset_name,
+                                                  "V111", "V1000"))))
+delayedAssign("NIBRS2_sas", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
                                setup_file = NIBRS_sas_name,
                                select_columns = c("B1001", "B1005",
-                                                  "B1010", "B1016", "B1019"))
+                                                  "B1010", "B1016", "B1019"))))
 
-SHR        <- read_ascii_setup(data = SHR_dataset_name,
-                               setup_file = SHR_sps_name)
-UCR        <- read_ascii_setup(data = UCR_dataset_name,
+delayedAssign("SHR", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sps_name)))
+delayedAssign("UCR", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                setup_file = UCR_sps_name,
-                               select_columns = 1:150)
-NIBRS      <- read_ascii_setup(data = NIBRS_dataset_name,
-                               setup_file = NIBRS_sps_name)
-SHR_sas    <- read_ascii_setup(data = SHR_dataset_name,
-                               setup_file = SHR_sas_name)
-UCR_sas    <- read_ascii_setup(data = UCR_dataset_name,
+                               select_columns = 1:150)))
+delayedAssign("NIBRS", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
+                               setup_file = NIBRS_sps_name)))
+delayedAssign("SHR_sas", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
+                               setup_file = SHR_sas_name)))
+delayedAssign("UCR_sas", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                setup_file = UCR_sas_name,
-                               select_columns = 1:150)
-NIBRS_sas  <- read_ascii_setup(data = NIBRS_dataset_name,
-                               setup_file = NIBRS_sas_name)
-weimar     <- read_ascii_setup(data = weimar_dataset_name,
-                               setup_file = weimar_sps_name)
-weimar_sas <- read_ascii_setup(data = weimar_dataset_name,
-                               setup_file = weimar_sas_name)
+                               select_columns = 1:150)))
+delayedAssign("NIBRS_sas", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
+                               setup_file = NIBRS_sas_name)))
+delayedAssign("weimar", suppressMessages(read_ascii_setup(data = weimar_dataset_name,
+                               setup_file = weimar_sps_name)))
+delayedAssign("weimar_sas", suppressMessages(read_ascii_setup(data = weimar_dataset_name,
+                               setup_file = weimar_sas_name)))
 
 
 
-SHR_names    <- read_ascii_setup(data = SHR_dataset_name,
+delayedAssign("SHR_names", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
                                  setup_file = SHR_sps_name,
-                                 select_columns = c(1, 33, 45, 72, 100, 152))
-SHR2_names   <- read_ascii_setup(data = SHR_dataset_name,
+                                 select_columns = c(1, 33, 45, 72, 100, 152))))
+delayedAssign("SHR2_names", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
                                  setup_file = SHR_sps_name,
                                  use_clean_names = FALSE,
-                                 select_columns = c(1, 33, 45, 72, 100, 152))
-UCR_names    <- read_ascii_setup(data = UCR_dataset_name,
+                                 select_columns = c(1, 33, 45, 72, 100, 152))))
+delayedAssign("UCR_names", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                  setup_file = UCR_sps_name,
-                                 select_columns = c(1, 33, 345, 572, 1000, 1400))
-UCR2_names   <- read_ascii_setup(data = UCR_dataset_name,
+                                 select_columns = c(1, 33, 345, 572, 1000, 1400))))
+delayedAssign("UCR2_names", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                  setup_file = UCR_sps_name,
                                  select_columns = c(1, 33, 345, 572, 1000, 1400),
-                                 use_clean_names = FALSE)
-NIBRS_names   <- read_ascii_setup(data = NIBRS_dataset_name,
+                                 use_clean_names = FALSE)))
+delayedAssign("NIBRS_names", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
                                   setup_file = NIBRS_sps_name,
-                                  select_columns = c(1, 3, 5, 7, 10, 15))
-NIBRS2_names  <- read_ascii_setup(data = NIBRS_dataset_name,
+                                  select_columns = c(1, 3, 5, 7, 10, 15))))
+delayedAssign("NIBRS2_names", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
                                   setup_file = NIBRS_sps_name,
                                   use_clean_names = FALSE,
-                                  select_columns = c(1, 3, 5, 7, 10, 15))
+                                  select_columns = c(1, 3, 5, 7, 10, 15))))
 
-weimar_names  <- read_ascii_setup(data = weimar_dataset_name,
+delayedAssign("weimar_names", suppressMessages(read_ascii_setup(data = weimar_dataset_name,
                                   setup_file = weimar_sps_name,
-                                  select_columns = c(1:7, 23))
-weimar2_names <- read_ascii_setup(data = weimar_dataset_name,
+                                  select_columns = c(1:7, 23))))
+delayedAssign("weimar2_names", suppressMessages(read_ascii_setup(data = weimar_dataset_name,
                                   setup_file = weimar_sps_name,
-                                  use_clean_names = FALSE)
+                                  use_clean_names = FALSE)))
 
 
 # Read SAS ===============================================================
-SHR_sas_names     <- read_ascii_setup(data = SHR_dataset_name,
+delayedAssign("SHR_sas_names", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
                                       setup_file = SHR_sas_name,
-                                      select_columns = c(1, 33, 45, 72, 100, 152))
-SHR2_sas_names    <- read_ascii_setup(data = SHR_dataset_name,
+                                      select_columns = c(1, 33, 45, 72, 100, 152))))
+delayedAssign("SHR2_sas_names", suppressMessages(read_ascii_setup(data = SHR_dataset_name,
                                       setup_file = SHR_sas_name,
                                       use_clean_names = FALSE,
                                       select_columns = c(1, 33, 45,
-                                                         72, 100, 152))
-UCR_sas_names     <- read_ascii_setup(data = UCR_dataset_name,
+                                                         72, 100, 152))))
+delayedAssign("UCR_sas_names", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                       setup_file = UCR_sas_name,
                                       select_columns = c(1, 33, 345,
-                                                         572, 1000, 1400))
-UCR2_sas_names    <- read_ascii_setup(data = UCR_dataset_name,
+                                                         572, 1000, 1400))))
+delayedAssign("UCR2_sas_names", suppressMessages(read_ascii_setup(data = UCR_dataset_name,
                                       setup_file = UCR_sas_name,
                                       select_columns = c(1, 33, 345,
                                                          572, 1000, 1400),
-                                      use_clean_names = FALSE)
-NIBRS_sas_names   <- read_ascii_setup(data = NIBRS_dataset_name,
+                                      use_clean_names = FALSE)))
+delayedAssign("NIBRS_sas_names", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
                                       setup_file = NIBRS_sas_name,
-                                      select_columns = c(1, 3, 5, 7, 10, 15))
-NIBRS2_sas_names  <- read_ascii_setup(data = NIBRS_dataset_name,
+                                      select_columns = c(1, 3, 5, 7, 10, 15))))
+delayedAssign("NIBRS2_sas_names", suppressMessages(read_ascii_setup(data = NIBRS_dataset_name,
                                       setup_file = NIBRS_sas_name,
                                       use_clean_names = FALSE,
-                                      select_columns = c(1, 3, 5, 7, 10, 15))
+                                      select_columns = c(1, 3, 5, 7, 10, 15))))
 
-weimar_sas_names  <- read_ascii_setup(data = weimar_dataset_name,
+delayedAssign("weimar_sas_names", suppressMessages(read_ascii_setup(data = weimar_dataset_name,
                                       setup_file = weimar_sas_name,
-                                      select_columns = c(1:7, 23))
-weimar2_sas_names <- read_ascii_setup(data = weimar_dataset_name,
+                                      select_columns = c(1:7, 23))))
+delayedAssign("weimar2_sas_names", suppressMessages(read_ascii_setup(data = weimar_dataset_name,
                                       setup_file = weimar_sas_name,
-                                      use_clean_names = FALSE)
+                                      use_clean_names = FALSE)))
 # crosswalk         <- read_ascii_setup(data = crosswalk_dataset_name,
 #                                       setup_file = crosswalk_sps_name,
 #                                       use_clean_names = FALSE)
 
-parole_parsed_sps          <- parse_setup(parole_sps_name)
-sac_parsed_sps             <- parse_setup(sac_sps_name)
-sex_offender_parsed_sps    <- parse_setup(sex_offender_sps_name)
-ucr1960_parsed_sps         <- parse_setup(ucr1960_sps_name)
-weimar_parsed_sps          <- parse_setup(weimar_sps_name)
-acs_parsed_sps             <- parse_setup(acs_sps_name)
-nibrs_parsed_sps           <- parse_setup(nibrs_sps_name)
-prisoners_parsed_sps       <- parse_setup(prisoners_sps_name)
-ca_vital_parsed_sps        <- parse_setup(ca_vital_sps_name)
-crosswalk_parsed_sps       <- parse_setup(crosswalk_sps_name)
-ucr1985_parsed_sps         <- parse_setup(ucr1985_sps_name)
-ucr1986_parsed_sps         <- parse_setup(ucr1986_sps_name)
-ucr2000_parsed_sps         <- parse_setup(ucr2000_sps_name)
+delayedAssign("parole_parsed_sps", suppressMessages(parse_setup(parole_sps_name)))
+delayedAssign("sac_parsed_sps", suppressMessages(parse_setup(sac_sps_name)))
+delayedAssign("sex_offender_parsed_sps", suppressMessages(parse_setup(sex_offender_sps_name)))
+delayedAssign("ucr1960_parsed_sps", suppressMessages(parse_setup(ucr1960_sps_name)))
+delayedAssign("weimar_parsed_sps", suppressMessages(parse_setup(weimar_sps_name)))
+delayedAssign("acs_parsed_sps", suppressMessages(parse_setup(acs_sps_name)))
+delayedAssign("nibrs_parsed_sps", suppressMessages(parse_setup(nibrs_sps_name)))
+delayedAssign("prisoners_parsed_sps", suppressMessages(parse_setup(prisoners_sps_name)))
+delayedAssign("ca_vital_parsed_sps", suppressMessages(parse_setup(ca_vital_sps_name)))
+delayedAssign("crosswalk_parsed_sps", suppressMessages(parse_setup(crosswalk_sps_name)))
+delayedAssign("ucr1985_parsed_sps", suppressMessages(parse_setup(ucr1985_sps_name)))
+delayedAssign("ucr1986_parsed_sps", suppressMessages(parse_setup(ucr1986_sps_name)))
+delayedAssign("ucr2000_parsed_sps", suppressMessages(parse_setup(ucr2000_sps_name)))
 #ucr2006_parsed_sps         <- parse_setup(ucr2006_sps_name)
-SHR1987_parsed_sps         <- parse_setup(SHR1987_sps_name)
-SHR1988_parsed_sps         <- parse_setup(SHR1988_sps_name)
-SHR1981_parsed_sps         <- parse_setup(SHR1981_sps_name)
-leoka1980_parsed_sps       <- parse_setup(leoka1980_sps_name)
-property_stolen_parsed_sps <- parse_setup(property_stolen_sps_name)
-ncvs_parsed_sps            <- parse_setup(ncvs_sps_name)
-jail_1987_parsed_sps       <- parse_setup(jail_1987_sps_name)
-jail_2010_parsed_sps       <- parse_setup(jail_2010_sps_name)
-corrections_parsed_sps     <- parse_setup(corrections_sps_name)
-sadc_parsed_sps            <- parse_setup(sadc_sps_name)
-crosswalk2012_parsed_sps   <- parse_setup(crosswalk2012_sps_name)
-dutch_election_parsed_sps  <- parse_setup(dutch_election_sps_name)
-well_being_parsed_sps      <- parse_setup(well_being_sps_name)
-escolar_parsed_sps          <- parse_setup(escolar_sps_name)
-ad_health_parsed_sps        <- parse_setup(ad_health_sps_name)
-health_nutrition_parsed_sps <- parse_setup(health_nutrition_sps_name)
-india_human_parsed_sps      <- parse_setup(india_human_sps_name)
-step_in_parsed_sps          <- parse_setup(step_in_sps_name)
-cps_1973_parsed_sps         <- parse_setup(cps_1973_sps_name)
-census_police_parsed_sps    <- parse_setup(census_police_sps_name)
-british_crime_teen_parsed_sps <- parse_setup(british_crime_teen_sps_name)
-drug_abuse_parsed_sps         <- parse_setup(drug_abuse_sps_name)
-detroit_parsed_sps            <- parse_setup(detroit_sps_name)
-worry_parsed_sps              <- parse_setup(worry_sps_name)
-cps_2004_parsed_sps           <- parse_setup(cps_2004_sps_name)
-cambridge_parsed_sps     <- parse_setup(cambridge_sps_name)
-guam_parsed_sps          <- parse_setup(guam_sps_name)
-china_2002_parsed_sps    <- parse_setup(china_2002_sps_name)
-china_1995_parsed_sps    <- parse_setup(china_1995_sps_name)
-china_1998_parsed_sps    <- parse_setup(china_1998_sps_name)
-indonesia_parsed_sps     <- parse_setup(indonesia_sps_name)
-UN_crime_parsed_sps      <- parse_setup(UN_crime_sps_name)
-county_arrest_parsed_sps <- parse_setup(county_arrest_sps_name)
-cambridge_parsed_sas     <- parse_setup(cambridge_sas_name)
-guam_parsed_sas          <- parse_setup(guam_sas_name)
-china_2002_parsed_sas    <- parse_setup(china_2002_sas_name)
-china_1995_parsed_sas    <- parse_setup(china_1995_sas_name)
-china_1998_parsed_sas    <- parse_setup(china_1998_sas_name)
-indonesia_parsed_sas     <- parse_setup(indonesia_sas_name)
-UN_crime_parsed_sas      <- parse_setup(UN_crime_sas_name)
-county_arrest_parsed_sas <- parse_setup(county_arrest_sas_name)
-escolar_2006_parsed_sps  <- parse_setup(escolar_2006_sps_name)
-mtf_1999_parsed_sps      <- parse_setup(mtf_1999_sps_name)
-mtf_2003_parsed_sps      <- parse_setup(mtf_2003_sps_name)
-mtf_1990_parsed_sps      <- parse_setup(mtf_1990_sps_name)
-mtf_1989_parsed_sps      <- parse_setup(mtf_1989_sps_name)
-mtf_2004_parsed_sps      <- parse_setup(mtf_2004_sps_name)
-mtf_2002_parsed_sps      <- parse_setup(mtf_2002_sps_name)
-mtf_1993_parsed_sps      <- parse_setup(mtf_1993_sps_name)
-mtf_1991_parsed_sps      <- parse_setup(mtf_1991_sps_name)
-mtf_1992_parsed_sps      <- parse_setup(mtf_1992_sps_name)
-mtf_1979_parsed_sps      <- parse_setup(mtf_1979_sps_name)
-missing_value_no_s_parsed_sps <- parse_setup(missing_value_no_s_name)
-ca_sedd_2005_ahal_parsed_sps      <- parse_setup(ca_sedd_2005_ahal_sps_name)
-mtf_2019_parsed_sps    <- parse_setup(mtf_2019_sps_name)
+delayedAssign("SHR1987_parsed_sps", suppressMessages(parse_setup(SHR1987_sps_name)))
+delayedAssign("SHR1988_parsed_sps", suppressMessages(parse_setup(SHR1988_sps_name)))
+delayedAssign("SHR1981_parsed_sps", suppressMessages(parse_setup(SHR1981_sps_name)))
+delayedAssign("leoka1980_parsed_sps", suppressMessages(parse_setup(leoka1980_sps_name)))
+delayedAssign("property_stolen_parsed_sps", suppressMessages(parse_setup(property_stolen_sps_name)))
+delayedAssign("ncvs_parsed_sps", suppressMessages(parse_setup(ncvs_sps_name)))
+delayedAssign("jail_1987_parsed_sps", suppressMessages(parse_setup(jail_1987_sps_name)))
+delayedAssign("jail_2010_parsed_sps", suppressMessages(parse_setup(jail_2010_sps_name)))
+delayedAssign("corrections_parsed_sps", suppressMessages(parse_setup(corrections_sps_name)))
+delayedAssign("sadc_parsed_sps", suppressMessages(parse_setup(sadc_sps_name)))
+delayedAssign("crosswalk2012_parsed_sps", suppressMessages(parse_setup(crosswalk2012_sps_name)))
+delayedAssign("dutch_election_parsed_sps", suppressMessages(parse_setup(dutch_election_sps_name)))
+delayedAssign("well_being_parsed_sps", suppressMessages(parse_setup(well_being_sps_name)))
+delayedAssign("escolar_parsed_sps", suppressMessages(parse_setup(escolar_sps_name)))
+delayedAssign("ad_health_parsed_sps", suppressMessages(parse_setup(ad_health_sps_name)))
+delayedAssign("health_nutrition_parsed_sps", suppressMessages(parse_setup(health_nutrition_sps_name)))
+delayedAssign("india_human_parsed_sps", suppressMessages(parse_setup(india_human_sps_name)))
+delayedAssign("step_in_parsed_sps", suppressMessages(parse_setup(step_in_sps_name)))
+delayedAssign("cps_1973_parsed_sps", suppressMessages(parse_setup(cps_1973_sps_name)))
+delayedAssign("census_police_parsed_sps", suppressMessages(parse_setup(census_police_sps_name)))
+delayedAssign("british_crime_teen_parsed_sps", suppressMessages(parse_setup(british_crime_teen_sps_name)))
+delayedAssign("drug_abuse_parsed_sps", suppressMessages(parse_setup(drug_abuse_sps_name)))
+delayedAssign("detroit_parsed_sps", suppressMessages(parse_setup(detroit_sps_name)))
+delayedAssign("worry_parsed_sps", suppressMessages(parse_setup(worry_sps_name)))
+delayedAssign("cps_2004_parsed_sps", suppressMessages(parse_setup(cps_2004_sps_name)))
+delayedAssign("cambridge_parsed_sps", suppressMessages(parse_setup(cambridge_sps_name)))
+delayedAssign("guam_parsed_sps", suppressMessages(parse_setup(guam_sps_name)))
+delayedAssign("china_2002_parsed_sps", suppressMessages(parse_setup(china_2002_sps_name)))
+delayedAssign("china_1995_parsed_sps", suppressMessages(parse_setup(china_1995_sps_name)))
+delayedAssign("china_1998_parsed_sps", suppressMessages(parse_setup(china_1998_sps_name)))
+delayedAssign("indonesia_parsed_sps", suppressMessages(parse_setup(indonesia_sps_name)))
+delayedAssign("UN_crime_parsed_sps", suppressMessages(parse_setup(UN_crime_sps_name)))
+delayedAssign("county_arrest_parsed_sps", suppressMessages(parse_setup(county_arrest_sps_name)))
+delayedAssign("cambridge_parsed_sas", suppressMessages(parse_setup(cambridge_sas_name)))
+delayedAssign("guam_parsed_sas", suppressMessages(parse_setup(guam_sas_name)))
+delayedAssign("china_2002_parsed_sas", suppressMessages(parse_setup(china_2002_sas_name)))
+delayedAssign("china_1995_parsed_sas", suppressMessages(parse_setup(china_1995_sas_name)))
+delayedAssign("china_1998_parsed_sas", suppressMessages(parse_setup(china_1998_sas_name)))
+delayedAssign("indonesia_parsed_sas", suppressMessages(parse_setup(indonesia_sas_name)))
+delayedAssign("UN_crime_parsed_sas", suppressMessages(parse_setup(UN_crime_sas_name)))
+delayedAssign("county_arrest_parsed_sas", suppressMessages(parse_setup(county_arrest_sas_name)))
+delayedAssign("escolar_2006_parsed_sps", suppressMessages(parse_setup(escolar_2006_sps_name)))
+delayedAssign("mtf_1999_parsed_sps", suppressMessages(parse_setup(mtf_1999_sps_name)))
+delayedAssign("mtf_2003_parsed_sps", suppressMessages(parse_setup(mtf_2003_sps_name)))
+delayedAssign("mtf_1990_parsed_sps", suppressMessages(parse_setup(mtf_1990_sps_name)))
+delayedAssign("mtf_1989_parsed_sps", suppressMessages(parse_setup(mtf_1989_sps_name)))
+delayedAssign("mtf_2004_parsed_sps", suppressMessages(parse_setup(mtf_2004_sps_name)))
+delayedAssign("mtf_2002_parsed_sps", suppressMessages(parse_setup(mtf_2002_sps_name)))
+delayedAssign("mtf_1993_parsed_sps", suppressMessages(parse_setup(mtf_1993_sps_name)))
+delayedAssign("mtf_1991_parsed_sps", suppressMessages(parse_setup(mtf_1991_sps_name)))
+delayedAssign("mtf_1992_parsed_sps", suppressMessages(parse_setup(mtf_1992_sps_name)))
+delayedAssign("mtf_1979_parsed_sps", suppressMessages(parse_setup(mtf_1979_sps_name)))
+delayedAssign("missing_value_no_s_parsed_sps", suppressMessages(parse_setup(missing_value_no_s_name)))
+delayedAssign("ca_sedd_2005_ahal_parsed_sps", suppressMessages(parse_setup(ca_sedd_2005_ahal_sps_name)))
+delayedAssign("mtf_2019_parsed_sps", suppressMessages(parse_setup(mtf_2019_sps_name)))
 
 
-british_crime_teen_parsed_sas <- parse_setup(british_crime_teen_sas_name)
-drug_abuse_parsed_sas         <- parse_setup(drug_abuse_sas_name)
-detroit_parsed_sas            <- parse_setup(detroit_sas_name)
-worry_parsed_sas              <- parse_setup(worry_sas_name)
-cps_2004_parsed_sas           <- parse_setup(cps_2004_sas_name)
-step_in_parsed_sas          <- parse_setup(step_in_sas_name)
-education_1985_parsed_sas   <- parse_setup(education_1985_sas_name)
-education_1995_parsed_sas   <- parse_setup(education_1995_sas_name)
-cps_1973_parsed_sas         <- parse_setup(cps_1973_sas_name)
-census_police_parsed_sas    <- parse_setup(census_police_sas_name)
-psid_toy_parsed_sas         <- parse_setup(psid_toy_sas_name)
-health_nutrition_parsed_sas <- parse_setup(health_nutrition_sas_name)
-india_human_parsed_sas      <- parse_setup(india_human_sas_name)
-well_being_parsed_sas       <- parse_setup(well_being_sas_name)
-parole_parsed_sas           <- parse_setup(parole_sas_name)
-sac_parsed_sas              <- parse_setup(sac_sas_name)
-sex_offender_parsed_sas     <- parse_setup(sex_offender_sas_name)
-ucr1960_parsed_sas          <- parse_setup(ucr1960_sas_name)
-weimar_parsed_sas           <- parse_setup(weimar_sas_name)
-acs_parsed_sas              <- parse_setup(acs_sas_name)
-nibrs_parsed_sas            <- parse_setup(nibrs_sas_name)
-prisoners_parsed_sas        <- parse_setup(prisoners_sas_name)
-ca_vital_parsed_sas         <- parse_setup(ca_vital_sas_name)
-crosswalk_parsed_sas        <- parse_setup(crosswalk_sas_name)
-ucr1985_parsed_sas          <- parse_setup(ucr1985_sas_name)
-ucr1986_parsed_sas          <- parse_setup(ucr1986_sas_name)
-ucr2000_parsed_sas          <- parse_setup(ucr2000_sas_name)
+delayedAssign("british_crime_teen_parsed_sas", suppressMessages(parse_setup(british_crime_teen_sas_name)))
+delayedAssign("drug_abuse_parsed_sas", suppressMessages(parse_setup(drug_abuse_sas_name)))
+delayedAssign("detroit_parsed_sas", suppressMessages(parse_setup(detroit_sas_name)))
+delayedAssign("worry_parsed_sas", suppressMessages(parse_setup(worry_sas_name)))
+delayedAssign("cps_2004_parsed_sas", suppressMessages(parse_setup(cps_2004_sas_name)))
+delayedAssign("step_in_parsed_sas", suppressMessages(parse_setup(step_in_sas_name)))
+delayedAssign("education_1985_parsed_sas", suppressMessages(parse_setup(education_1985_sas_name)))
+delayedAssign("education_1995_parsed_sas", suppressMessages(parse_setup(education_1995_sas_name)))
+delayedAssign("cps_1973_parsed_sas", suppressMessages(parse_setup(cps_1973_sas_name)))
+delayedAssign("census_police_parsed_sas", suppressMessages(parse_setup(census_police_sas_name)))
+delayedAssign("psid_toy_parsed_sas", suppressMessages(parse_setup(psid_toy_sas_name)))
+delayedAssign("health_nutrition_parsed_sas", suppressMessages(parse_setup(health_nutrition_sas_name)))
+delayedAssign("india_human_parsed_sas", suppressMessages(parse_setup(india_human_sas_name)))
+delayedAssign("well_being_parsed_sas", suppressMessages(parse_setup(well_being_sas_name)))
+delayedAssign("parole_parsed_sas", suppressMessages(parse_setup(parole_sas_name)))
+delayedAssign("sac_parsed_sas", suppressMessages(parse_setup(sac_sas_name)))
+delayedAssign("sex_offender_parsed_sas", suppressMessages(parse_setup(sex_offender_sas_name)))
+delayedAssign("ucr1960_parsed_sas", suppressMessages(parse_setup(ucr1960_sas_name)))
+delayedAssign("weimar_parsed_sas", suppressMessages(parse_setup(weimar_sas_name)))
+delayedAssign("acs_parsed_sas", suppressMessages(parse_setup(acs_sas_name)))
+delayedAssign("nibrs_parsed_sas", suppressMessages(parse_setup(nibrs_sas_name)))
+delayedAssign("prisoners_parsed_sas", suppressMessages(parse_setup(prisoners_sas_name)))
+delayedAssign("ca_vital_parsed_sas", suppressMessages(parse_setup(ca_vital_sas_name)))
+delayedAssign("crosswalk_parsed_sas", suppressMessages(parse_setup(crosswalk_sas_name)))
+delayedAssign("ucr1985_parsed_sas", suppressMessages(parse_setup(ucr1985_sas_name)))
+delayedAssign("ucr1986_parsed_sas", suppressMessages(parse_setup(ucr1986_sas_name)))
+delayedAssign("ucr2000_parsed_sas", suppressMessages(parse_setup(ucr2000_sas_name)))
 #ucr2006_parsed_sas         <- parse_setup(ucr2006_sas_name)
-SHR1987_parsed_sas          <- parse_setup(SHR1987_sas_name)
-SHR1988_parsed_sas          <- parse_setup(SHR1988_sas_name)
-SHR1981_parsed_sas          <- parse_setup(SHR1981_sas_name)
-leoka1980_parsed_sas        <- parse_setup(leoka1980_sas_name)
-property_stolen_parsed_sas  <- parse_setup(property_stolen_sas_name)
-ncvs_parsed_sas             <- parse_setup(ncvs_sas_name)
-jail_1987_parsed_sas        <- parse_setup(jail_1987_sas_name)
-jail_2010_parsed_sas        <- parse_setup(jail_2010_sas_name)
-corrections_parsed_sas      <- parse_setup(corrections_sas_name)
-SHR_parsed_sas              <- parse_setup(SHR_sas_name)
+delayedAssign("SHR1987_parsed_sas", suppressMessages(parse_setup(SHR1987_sas_name)))
+delayedAssign("SHR1988_parsed_sas", suppressMessages(parse_setup(SHR1988_sas_name)))
+delayedAssign("SHR1981_parsed_sas", suppressMessages(parse_setup(SHR1981_sas_name)))
+delayedAssign("leoka1980_parsed_sas", suppressMessages(parse_setup(leoka1980_sas_name)))
+delayedAssign("property_stolen_parsed_sas", suppressMessages(parse_setup(property_stolen_sas_name)))
+delayedAssign("ncvs_parsed_sas", suppressMessages(parse_setup(ncvs_sas_name)))
+delayedAssign("jail_1987_parsed_sas", suppressMessages(parse_setup(jail_1987_sas_name)))
+delayedAssign("jail_2010_parsed_sas", suppressMessages(parse_setup(jail_2010_sas_name)))
+delayedAssign("corrections_parsed_sas", suppressMessages(parse_setup(corrections_sas_name)))
+delayedAssign("SHR_parsed_sas", suppressMessages(parse_setup(SHR_sas_name)))
 #sadc_parsed_sas            <- parse_setup(sadc_sas_name)
 
 
