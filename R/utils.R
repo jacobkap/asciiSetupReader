@@ -216,7 +216,10 @@ match_case <- function(x, table) {
 # "000078.5" matches a code of "78.5".
 replace_values <- function(x, labels, by_number = FALSE) {
   x <- as.character(x)
-  m <- match(x, labels, incomparables = NA)
+  # Each different value is looked up once (a column has far fewer than
+  # rows)
+  values <- original <- unique(x)
+  m <- match(values, labels, incomparables = NA)
   if (by_number && anyNA(m)) {
     as_number <- function(v) {
       tryCatch(suppressWarnings(as.numeric(v)), error = function(e) {
@@ -224,11 +227,12 @@ replace_values <- function(x, labels, by_number = FALSE) {
       })
     }
     unmatched <- is.na(m)
-    m[unmatched] <- match(as_number(x[unmatched]), as_number(labels),
+    m[unmatched] <- match(as_number(values[unmatched]), as_number(labels),
                           incomparables = NA)
   }
-  x[!is.na(m)] <- names(labels)[m[!is.na(m)]]
-  x
+  if (all(is.na(m))) return(x)
+  values[!is.na(m)] <- names(labels)[m[!is.na(m)]]
+  values[match(x, original)]
 }
 
 # Implied decimal places ------------------------------------------------------
@@ -250,11 +254,14 @@ fix_implied_decimals <- function(data, setup) {
     values <- data[[column]]
     whole  <- !is.na(values) & grepl("^[+-]?[0-9]+$", values)
     if (!any(whole)) next
-    new_values <- add_decimal_point(values[whole], places)
+    # Each different value is changed once
+    old_values <- unique(values[whole])
+    new_values <- add_decimal_point(old_values, places)
     changed[[length(changed) + 1]] <- data.frame(
       column_number = column, decimals = places,
-      example = values[whole][1], example_new = new_values[1])
-    values[whole] <- new_values
+      example = values[whole][1],
+      example_new = new_values[match(values[whole][1], old_values)])
+    values[whole] <- new_values[match(values[whole], old_values)]
     data.table::set(data, j = column, value = values)
   }
   list(data = data, changed = do.call(rbind, changed))
