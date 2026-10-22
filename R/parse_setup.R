@@ -916,17 +916,29 @@ finish_missing <- function(missing, commented, line) {
 # rather than misread.
 parse_missing_sas <- function(codebook, setup, after = 0, text_columns = character(0)) {
   statements <- sas_statements(codebook, from = after + 1)
-  # "ELSE IF" is read as "IF"
+  # "ELSE IF" is read as "IF" when it tests the same column as the IF before
+  # it (a missing value of that column either way); one that tests another
+  # column only applies when the earlier IF is false, so it's skipped
+  else_if <- grepl("^\\*?\\s*ELSE\\s+IF\\b", statements$text, ignore.case = TRUE)
   statements$text <- sub("^(\\*?\\s*)ELSE\\s+(?=IF\\b)", "\\1", statements$text,
                          ignore.case = TRUE, perl = TRUE)
-  statements <- statements[grepl("^\\*?\\s*IF\\b", statements$text, ignore.case = TRUE), ]
+  is_if <- grepl("^\\*?\\s*IF\\b", statements$text, ignore.case = TRUE)
+  statements <- statements[is_if, ]
+  else_if <- else_if[is_if]
   if (nrow(statements) == 0) return(NULL)
 
   rows    <- list()
   skipped <- character(0)
   recodes <- character(0)
+  previous <- character(0)  # the columns the last IF statement tested
   for (i in seq_len(nrow(statements))) {
     parsed <- sas_missing_statement(sub("^\\*\\s*", "", statements$text[i]))
+    if (!is.null(parsed) && else_if[i] &&
+        !all(toupper(parsed$variable) %in% toupper(previous))) {
+      skipped <- c(skipped, paste("ELSE", statements$text[i]))
+      next
+    }
+    previous <- if (is.null(parsed)) character(0) else parsed$variable
     if (is.null(parsed)) {
       if (is_sas_recode(statements$text[i])) {
         recodes <- c(recodes, statements$text[i])

@@ -214,3 +214,17 @@ test_that("SAS missing codes: text codes stay apart, active ones win, ELSE IF is
                               c("IF V1 = 98 THEN V1 = .;", "ELSE IF V1 = 99 THEN V1 = .;")),
                c("V1 98 FALSE", "V1 99 FALSE"))
 })
+
+# Found by the review of the 3.0.0 challenge fixes
+
+test_that("ELSE IF is only read when it tests the same column as the IF before it", {
+  setup <- temp_file(c("DATA x;", "INFILE 'x';", "INPUT V1 1-2 V2 3-4;",
+                       "IF V1 = 98 THEN V1 = .;", "ELSE IF V1 = 99 THEN V1 = .;",
+                       "IF V1 >= 97 THEN V1 = .;", "ELSE IF V2 <= 0 THEN V2 = .;", "RUN;"), ".sas")
+  parsed <- read_setup(setup)
+  expect_equal(paste(parsed$missing$variable, parsed$missing$values),
+               c("V1 98", "V1 99", "V1 97 thru highest"))
+  # V2 <= 0 only applies when V1 isn't missing, so it isn't used
+  expect_equal(parsed$skipped_missing, "ELSE IF V2 <= 0 THEN V2 = .")
+})
+
