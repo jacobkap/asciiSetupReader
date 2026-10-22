@@ -21,7 +21,7 @@ installed package is smaller.
 
 0 errors | 0 warnings | 1 note
 
-* Days since last update: 4
+* Days since last update: 5
 
   This release fixes values that were silently read wrongly: numbers with
   implied decimal places (e.g. 78.5 read as 785), value labels with an
