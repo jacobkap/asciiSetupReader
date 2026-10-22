@@ -70,8 +70,10 @@ test_that("a column number past the last column stops with an error, not a crash
   expect_error(read_ascii_setup(weimar_dataset_name, weimar_sps_name, select_columns = c(1, 500)),
                "aren't in the setup file, which has 23 columns: 500",
                class = "asciiSetupReader_select_columns")
-  expect_error(read_ascii_setup(weimar_dataset_name, weimar_sps_name, select_columns = 0),
-               class = "asciiSetupReader_select_columns")
+  # Negative numbers still drop columns, as before
+  dropped <- allow_messages(read_ascii_setup(weimar_dataset_name, weimar_sps_name,
+                                             select_columns = -(1:20)))
+  expect_equal(ncol(dropped), 3)
 })
 
 test_that("a column selected twice is read once, with its implied decimals", {

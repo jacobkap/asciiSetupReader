@@ -190,6 +190,12 @@ are now different (and correct).
 
 ## Bug fixes
 
+* `select_columns`: a column number past the last column stops with an
+  error instead of crashing R (negative numbers still drop columns); a
+  column asked for twice is read once, with its implied decimals; a name
+  that isn't found is listed, with a note on which names changed in this
+  version; and selecting a name that another column also had says what
+  that column is called now.
 * A missing value range that no value in the data falls in (SPSS
   `97 THRU HI`, `LO THRU -1`, SAS `IF V1 >= 97 THEN V1 = .;`) no longer
   stops `read_ascii_setup()` with "'names' attribute [1] must be the same

@@ -186,7 +186,8 @@ selected_columns <- function(keep_columns, column_spaces, renamed = NULL) {
   }
   keep_columns <- unique(keep_columns)
   if (is.numeric(keep_columns)) {
-    outside <- keep_columns[!keep_columns %in% seq_len(nrow(column_spaces))]
+    # (Negative numbers drop columns, as in R indexing)
+    outside <- keep_columns[keep_columns > nrow(column_spaces)]
     if (length(outside) > 0) {
       abort("select_columns", "select_columns has column numbers that aren't ",
             "in the setup file, which has ", nrow(column_spaces), " columns: ",
