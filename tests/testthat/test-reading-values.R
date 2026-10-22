@@ -21,7 +21,7 @@ test_that("a blank text value gets the label of a blank code", {
   expect_equal(out$code, c(NA, "XX", "AB"))
 })
 
-test_that("the letters NA in a text column are a value, not missing", {
+test_that("the letters NA in a text column get their label, or are missing", {
   setup <- sps_file("  V1 1-2 (A)  V2 3-4",
                     c("VALUE LABELS", "  V1 'NA' 'Not applicable' 'DK' 'Not known'", "."))
   data <- temp_file(c("NANA", "DK01", "AB02"), ".txt")
@@ -29,8 +29,17 @@ test_that("the letters NA in a text column are a value, not missing", {
   expect_equal(out$code, c("Not applicable", "Not known", "AB"))
   # In a number column it is missing
   expect_equal(out$number, c(NA, "01", "02"))
+  # Without labels, or without a label for "NA", it is missing, as before
+  # 3.0.0
   out <- read_ascii_setup(data, setup, use_value_labels = FALSE)
-  expect_equal(out$code, c("NA", "DK", "AB"))
+  expect_equal(out$code, c(NA, "DK", "AB"))
+  unlabelled <- sps_file("  V1 1-2 (A)  V2 3-4", c("VALUE LABELS", "  V1 'DK' 'Not known'", "."))
+  out <- read_ascii_setup(data, unlabelled, coerce_numeric = FALSE)
+  expect_equal(out$code, c(NA, "Not known", "AB"))
+  # A label whose text is "NA" is kept
+  na_label <- sps_file("  V1 1-2 (A)  V2 3-4", c("VALUE LABELS", "  V1 'DK' 'NA'", "."))
+  out <- read_ascii_setup(data, na_label, coerce_numeric = FALSE)
+  expect_equal(out$code, c(NA, "NA", "AB"))
 })
 
 test_that("a lone . is missing in a number column but kept in a text column", {

@@ -80,8 +80,8 @@ in government data, particularly data produced before 2010.
 
 As in SPSS and SAS, codes of number columns are matched by value (a label
 for 0 labels 0000000), and codes of text columns (SPSS "(A)", SAS "$")
-must be the same text; a blank or the letters NA in a text column are
-values that can have a label. As in SPSS, a VALUE LABELS command replaces
+must be the same text; a blank or the letters NA in a text column can
+have a label. As in SPSS, a VALUE LABELS command replaces
 any labels an earlier VALUE LABELS command gave a column, and ADD VALUE
 LABELS adds to them (changing the label of a code that already has one).
 }
@@ -95,8 +95,9 @@ used. Statements that change values (SAS \code{IF v = 1 THEN v = 5;}, SPSS
 
 \section{Blank values}{
 
-A blank in a number column, or a lone "." or the letters NA, is NA. A
-blank in a text column is NA unless it has a value label.
+A blank, a lone "." or the letters NA in a number column is NA. A blank
+or the letters NA in a text column is NA unless it has a value label (and
+\code{use_value_labels} is TRUE), which is used instead.
 }
 
 \section{Messages}{

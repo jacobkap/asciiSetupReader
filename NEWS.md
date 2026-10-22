@@ -36,12 +36,13 @@ are now different (and correct).
 * **Value labels of number columns are matched by value** too, so a label
   for `0` now labels data written `0000000` (e.g. 7,997 "Not updated"
   values in the 1960 UCR file that used to stay as `0000000`).
-* **Blanks and the letters `NA` in text columns are values, not missing**,
-  as in SPSS and SAS, so their labels are used: e.g. 166,650 blanks in the
-  1960 UCR file are now "No return received" and 15,555 in the 2000 NIBRS
-  batch header "Inactive", where they used to be `NA`. Blank text values
-  without a label are still `NA`. In number columns a blank, `NA` or a lone
-  `.` is missing (a lone `.` used to be kept).
+* **Blanks and the letters `NA` in text columns get their value labels**:
+  e.g. 166,650 blanks in the 1960 UCR file are now "No return received" and
+  15,555 in the 2000 NIBRS batch header "Inactive", where they used to be
+  `NA`. (SPSS treats a blank text value as a value; SAS treats it as
+  missing but still gives it a format's label for a blank.) A blank or `NA`
+  text value without a label is still `NA`. In number columns a blank, `NA`
+  or a lone `.` is missing (a lone `.` used to be kept).
 * **Columns without a label in VARIABLE LABELS or LABEL are kept**, named
   by their short name; they used to be dropped.
 * **A SAS label continued on the next line is read in full**, so names that

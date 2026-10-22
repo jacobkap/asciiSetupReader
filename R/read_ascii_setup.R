@@ -55,8 +55,8 @@
 #' @section Value labels:
 #' As in SPSS and SAS, codes of number columns are matched by value (a label
 #' for 0 labels 0000000), and codes of text columns (SPSS "(A)", SAS "$")
-#' must be the same text; a blank or the letters NA in a text column are
-#' values that can have a label. As in SPSS, a VALUE LABELS command replaces
+#' must be the same text; a blank or the letters NA in a text column can
+#' have a label. As in SPSS, a VALUE LABELS command replaces
 #' any labels an earlier VALUE LABELS command gave a column, and ADD VALUE
 #' LABELS adds to them (changing the label of a code that already has one).
 #'
@@ -66,8 +66,9 @@
 #' \code{RECODE v (1=5)}) aren't applied, and a message lists them.
 #'
 #' @section Blank values:
-#' A blank in a number column, or a lone "." or the letters NA, is NA. A
-#' blank in a text column is NA unless it has a value label.
+#' A blank, a lone "." or the letters NA in a number column is NA. A blank
+#' or the letters NA in a text column is NA unless it has a value label (and
+#' \code{use_value_labels} is TRUE), which is used instead.
 #'
 #' @section Messages:
 #' read_ascii_setup() tells you with a message when it:
@@ -154,7 +155,13 @@ read_ascii_setup <- function(data,
     setup$missing <- setup$missing[!setup$missing$commented, ]
   }
 
-  data <- read_data(data, setup)
+  # Text columns where the letters NA have a label that will be used
+  labelled_na <- if (use_value_labels) {
+    names(Filter(function(codes) "NA" %in% codes, setup$value_labels))
+  } else {
+    character(0)
+  }
+  data <- read_data(data, setup, labelled_na)
   decimals <- fix_implied_decimals(data, setup)
   data <- fix_value_labels(decimals$data, setup, use_value_labels)
   data <- fix_names_missing_numeric(data,

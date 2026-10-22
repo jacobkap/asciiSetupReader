@@ -343,8 +343,9 @@ fix_missing <- function(data, missing, text_columns = character(0)) {
 }
 
 # Reads the fixed-width file with every column as character, using the
-# positions from the setup file.
-read_data <- function(data, setup) {
+# positions from the setup file. `labelled_na` are the text columns where
+# the letters "NA" have a value label that will be used, so they're kept.
+read_data <- function(data, setup, labelled_na = character(0)) {
   positions <- vroom::fwf_positions(setup$setup$begin,
                                     setup$setup$end,
                                     setup$setup$column_number)
@@ -361,10 +362,17 @@ read_data <- function(data, setup) {
   # setDT() converts in place; as.data.table() would copy all the data
   data.table::setDT(out)
   # In number columns a blank, "NA" or a lone "." is missing, as in SPSS
-  # and SAS
-  for (column in setdiff(names(out), setup$text_columns)) {
+  # and SAS. In text columns "NA" is missing unless it has a value label
+  # (blanks are kept for their labels; see blanks_to_na())
+  for (column in names(out)) {
+    missing_text <- if (!column %in% setup$text_columns) {
+      c("", "NA", ".")
+    } else if (!column %in% labelled_na) {
+      "NA"
+    }
+    if (length(missing_text) == 0) next
     values <- out[[column]]
-    empty <- values %in% c("", "NA", ".")
+    empty <- values %in% missing_text
     if (any(empty)) {
       values[empty] <- NA
       data.table::set(out, j = column, value = values)
