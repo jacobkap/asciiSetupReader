@@ -241,13 +241,19 @@ replace_values <- function(x, labels, by_number = FALSE) {
 # places (setup$setup$decimals), e.g. "0000785" with 1 place becomes
 # "000078.5" and "5" with 2 places "0.05". Only whole numbers are changed:
 # a value that already has a decimal point keeps it, as in SPSS and SAS.
-# Returns a list of the data and `changed`, a data.frame of the columns
+# Returns a list of the data, `changed`, a data.frame of the columns
 # changed (column_number, decimals, and an example value before and
-# after), or NULL.
-fix_implied_decimals <- function(data, setup) {
+# after), or NULL, and `unscaled`, a data.frame of the columns with values
+# that equal one of the column's codes (value labels if use_value_labels,
+# and missing values) only before the decimal point is added (column_number,
+# n values, an example before and after, the code's label or "missing"),
+# or NULL. Such values are the data contradicting its setup file (e.g. a
+# code 9 written "9" in a column whose 2 decimal places make it 0.09).
+fix_implied_decimals <- function(data, setup, use_value_labels = TRUE) {
   columns <- setup$setup[setup$setup$decimals > 0 &
                            setup$setup$column_number %in% names(data), ]
   changed <- list()
+  unscaled <- list()
   for (i in seq_len(nrow(columns))) {
     column <- columns$column_number[i]
     places <- columns$decimals[i]
@@ -261,10 +267,38 @@ fix_implied_decimals <- function(data, setup) {
       column_number = column, decimals = places,
       example = values[whole][1],
       example_new = new_values[match(values[whole][1], old_values)])
+    codes <- column_codes(setup, column, use_value_labels)
+    if (length(codes) > 0) {
+      raw <- suppressWarnings(as.numeric(old_values))
+      scaled <- suppressWarnings(as.numeric(new_values))
+      hit <- raw != 0 & raw %in% codes & !scaled %in% codes
+      if (any(hit)) {
+        first <- which(hit)[1]
+        unscaled[[length(unscaled) + 1]] <- data.frame(
+          column_number = column,
+          n = sum(values[whole] %in% old_values[hit]),
+          example = old_values[first], example_new = new_values[first],
+          code = format(raw[first]), meaning = names(codes)[match(raw[first], codes)])
+      }
+    }
     values[whole] <- new_values[match(values[whole], old_values)]
     data.table::set(data, j = column, value = values)
   }
-  list(data = data, changed = do.call(rbind, changed))
+  list(data = data, changed = do.call(rbind, changed),
+       unscaled = do.call(rbind, unscaled))
+}
+
+# A column's codes as numbers, named by what they mean: its value labels'
+# codes (if use_value_labels), named by their labels, and its missing
+# values (not ranges), named "missing".
+column_codes <- function(setup, column, use_value_labels = TRUE) {
+  labels <- if (use_value_labels) setup$value_labels[[column]]
+  missing <- as.character(setup$missing$values[setup$missing$variable %in% column])
+  missing <- missing[!grepl("thru", missing, ignore.case = TRUE)]
+  codes <- c(labels, stats::setNames(missing, rep("missing", length(missing))))
+  numbers <- suppressWarnings(as.numeric(gsub("'", "", codes)))
+  names(numbers) <- names(codes)
+  numbers[!is.na(numbers)]
 }
 
 add_decimal_point <- function(values, places) {

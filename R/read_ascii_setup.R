@@ -77,6 +77,11 @@
 #' \itemize{
 #'   \item adds implied decimal places to a column's values (listing the
 #'     columns and their decimal places),
+#'   \item finds values in such a column that equal one of its codes (value
+#'     labels or missing values) only before the decimal places are
+#'     applied, which suggests the data doesn't match the setup file,
+#'   \item finds SAS value labels for ranges of values or OTHER, which
+#'     aren't applied (only when \code{use_value_labels = TRUE}),
 #'   \item sets values to NA because of missing values that are commented
 #'     out in the setup file (only when \code{missing_values = "all"}),
 #'   \item makes column names unique because two columns would have had
@@ -93,7 +98,8 @@
 #' the class "asciiSetupReader_message", so
 #' \code{suppressMessages(read_ascii_setup(...), classes = "asciiSetupReader_message")}
 #' silences only these messages. Each kind also has its own class:
-#' "asciiSetupReader_implied_decimals", "asciiSetupReader_commented_missing",
+#' "asciiSetupReader_implied_decimals", "asciiSetupReader_unscaled_codes",
+#' "asciiSetupReader_label_ranges", "asciiSetupReader_commented_missing",
 #' "asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels",
 #' "asciiSetupReader_skipped_missing", "asciiSetupReader_recodes" and
 #' "asciiSetupReader_encoding".
@@ -164,7 +170,7 @@ read_ascii_setup <- function(data,
     character(0)
   }
   data <- read_data(data, setup, labelled_na)
-  decimals <- fix_implied_decimals(data, setup)
+  decimals <- fix_implied_decimals(data, setup, use_value_labels)
   data <- fix_value_labels(decimals$data, setup, use_value_labels)
   data <- fix_names_missing_numeric(data,
                                     setup,
@@ -190,6 +196,22 @@ read_ascii_setup <- function(data,
                              changed$decimals, ")")),
            if (nrow(changed) > 20) "; parse_setup()$setup$decimals has them all",
            ".")
+  }
+  if (!is.null(decimals$unscaled)) {
+    unscaled <- decimals$unscaled
+    inform("unscaled_codes", "In '", file_name, "', ", nrow(unscaled),
+           ngettext(nrow(unscaled), " column has", " columns have"),
+           " values that equal one of the column's codes only before its ",
+           "implied decimal places are applied, so the code wasn't used (as ",
+           "in SPSS and SAS, codes are compared with the value after the ",
+           "decimal point is added). The data may not match the setup file's ",
+           "decimal places for ", ngettext(nrow(unscaled), "this column", "these columns"),
+           ": ", list_items(paste0(final_name(unscaled$column_number), ": ",
+                                   format(unscaled$n, big.mark = ","),
+                                   ifelse(unscaled$n == 1, " value", " values"),
+                                   " such as \"", unscaled$example, "\" (now \"",
+                                   unscaled$example_new, "\", but ", unscaled$code,
+                                   " is \"", unscaled$meaning, "\")")), ".")
   }
   if (length(commented_na) > 0) {
     lines <- unique(setup$commented_lines)

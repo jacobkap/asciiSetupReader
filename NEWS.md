@@ -83,6 +83,11 @@ are now different (and correct).
   them. When commented-out missing values are used, a message says where
   they are and how many values they made NA. `parse_setup()$missing` has a
   new `commented` column.
+* A message tells you when a column with implied decimal places has values
+  that equal one of its value labels' or missing values' codes only before
+  the decimal point is added (e.g. `-9` in a `(2)` column is -0.09, not the
+  code -9 'Blank'). As in SPSS and SAS the code isn't used, but it suggests
+  the data doesn't match the setup file's decimal places.
 * Messages tell you about implied decimal places, commented-out missing
   values, renamed columns, replaced value labels and setup files that aren't
   UTF-8. They have the class `"asciiSetupReader_message"` (and one for each

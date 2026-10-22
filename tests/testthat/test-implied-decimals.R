@@ -151,3 +151,28 @@ test_that("SAS implied decimals work the same way", {
   expect_equal(out$rate, c("001.0", "002.0"))
   expect_equal(out$code, c("00100", "00250"))
 })
+
+test_that("a value that equals a code only before scaling gets a message", {
+  # Codes are compared with the scaled value, as in SPSS: "-9" in a (2)
+  # column is -0.09, not the code -9, so the data and setup don't agree
+  setup <- sps_with_decimals("  V1 1-2  V2 3-6 (2)  V3 7-10 (2)",
+                             value_labels = c("VALUE LABELS", "  V2 -9 'Blank' /", "  V3 1 'Yes'", "."),
+                             missing = "MISSING VALUES V3 (99).")
+  data <- temp_file(c("01  -9 100", "02-900  99", "031234 001"), ".txt")
+  found <- messages_from(out <- read_ascii_setup(data, setup))
+  classes <- vapply(found, function(m) class(m)[1], character(1))
+  expect_true("asciiSetupReader_unscaled_codes" %in% classes)
+  text <- conditionMessage(found[[which(classes == "asciiSetupReader_unscaled_codes")]])
+  expect_match(text, "2 columns have values")
+  expect_match(text, "rate: 1 value such as \"-9\" (now \"-0.09\", but -9 is \"Blank\")", fixed = TRUE)
+  # 99 is a missing value and 1 has a label, but the data has 0.99 and 0.01
+  expect_match(text, "weight: 2 values such as \"99\" (now \"0.99\", but 99 is \"missing\")",
+               fixed = TRUE)
+  # The values are still scaled, as SPSS would
+  expect_equal(out$rate, c("-0.09", "Blank", "12.34"))
+  # A value that matches after scaling gives no message
+  data <- temp_file(c("01-900 100", "02 123 200"), ".txt")
+  found <- messages_from(read_ascii_setup(data, setup))
+  expect_false("asciiSetupReader_unscaled_codes" %in%
+                 vapply(found, function(m) class(m)[1], character(1)))
+})
