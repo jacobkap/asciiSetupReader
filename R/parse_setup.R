@@ -333,15 +333,22 @@ data_list_sps <- function(lines, setup_file) {
                             "ADATE|EDATE|JDATE|SDATE|QYR|MOYR|WKYR|DATETIME|",
                             "YMDHMS|TIME|MTIME|DTIME|WKDAY|MONTH|AUTO)",
                             "[0-9]*(\\.[0-9]+)?$")
+  # What each token is, worked out once for all of them
+  is_record   <- startsWith(tokens, "/")
+  is_position <- grepl("^[0-9]+(\\s*-\\s*[0-9]+)?$", tokens)
+  is_format   <- startsWith(tokens, "(")
+  is_get_data_format <- get_data & grepl(get_data_format, upper)
+  is_name     <- grepl(name_pattern, tokens)
+  last_number <- max(c(0, which(grepl("^[0-9]", tokens))))
   names    <- character(0)  # names waiting for their position
   last     <- character(0)  # names given the latest position
-  out_names <- character(0); out_begin <- numeric(0); out_end <- numeric(0)
+  out_names <- out_begin <- out_end <- list()
   text_columns <- character(0)
   decimals <- stats::setNames(integer(0), character(0))
   record   <- 0
   while (i <= length(tokens)) {
     token <- tokens[i]
-    if (startsWith(token, "/")) {
+    if (is_record[i]) {
       # A record: "/1" (or "/ 1") is the first line of a case and a bare
       # "/" the next one
       if (token == "/" && isTRUE(tokens[i + 1] == "1")) {
@@ -349,8 +356,7 @@ data_list_sps <- function(lines, setup_file) {
         i <- i + 1
       }
       # (A "/" with no columns after it, as in "V2 3-4 /.", starts no record)
-      no_columns_after <- token == "/" &&
-        !any(grepl("^[0-9]", tokens[seq_along(tokens) > i]))
+      no_columns_after <- token == "/" && last_number <= i
       record <- if (no_columns_after) {
         max(record, 1)
       } else if (token == "/") {
@@ -363,7 +369,7 @@ data_list_sps <- function(lines, setup_file) {
               "(records) per case, which asciiSetupReader can't read.")
       }
       last <- character(0)
-    } else if (grepl("^[0-9]+(\\s*-\\s*[0-9]+)?$", token)) {
+    } else if (is_position[i]) {
       if (length(names) == 0) cant_read("the position ", token, " has no name.")
       range <- as.numeric(strsplit(token, "\\s*-\\s*")[[1]])
       begin <- range[1]
@@ -377,12 +383,12 @@ data_list_sps <- function(lines, setup_file) {
       # Columns before any "/" are on the first record, so a "/" after
       # them starts the second ("V1 1-2 / V2 3-4")
       if (record == 0) record <- 1
-      out_names <- c(out_names, names)
-      out_begin <- c(out_begin, starts)
-      out_end   <- c(out_end, starts + width - 1)
+      out_names[[length(out_names) + 1]] <- names
+      out_begin[[length(out_begin) + 1]] <- starts
+      out_end[[length(out_end) + 1]]     <- starts + width - 1
       last  <- names
       names <- character(0)
-    } else if (startsWith(token, "(")) {
+    } else if (is_format[i]) {
       format <- toupper(gsub("[()[:space:]]", "", token))
       if (length(last) == 0) {
         cant_read("the format ", token, " has no column position before it.")
@@ -394,14 +400,13 @@ data_list_sps <- function(lines, setup_file) {
         if (places > 0) decimals[last] <- places
       }
       last <- character(0)
-    } else if (get_data && length(last) && grepl(get_data_format, toupper(token))) {
+    } else if (is_get_data_format[i] && length(last)) {
       # GET DATA format, e.g. A2 or F7.1 (which has no implied decimals)
       if (grepl("^(A|AHEX)[0-9]*$", toupper(token))) {
         text_columns <- c(text_columns, last)
       }
       last <- character(0)
-    } else if (toupper(token) == "TO" && length(names) &&
-               isTRUE(grepl(name_pattern, tokens[i + 1]))) {
+    } else if (upper[i] == "TO" && length(names) && isTRUE(is_name[i + 1])) {
       # "Q1 TO Q3" is Q1, Q2 and Q3
       from <- regmatches(names[length(names)], regexec("^(.*?)([0-9]+)$", names[length(names)]))[[1]]
       to   <- regmatches(tokens[i + 1], regexec("^(.*?)([0-9]+)$", tokens[i + 1]))[[1]]
@@ -413,7 +418,7 @@ data_list_sps <- function(lines, setup_file) {
       numbers <- (as.numeric(from[3]) + 1):as.numeric(to[3])
       names <- c(names, paste0(from[2], formatC(numbers, width = nchar(from[3]), flag = "0")))
       i <- i + 1
-    } else if (grepl(name_pattern, token)) {
+    } else if (is_name[i]) {
       names <- c(names, token)
       last  <- character(0)
     } else {
@@ -424,7 +429,9 @@ data_list_sps <- function(lines, setup_file) {
   if (length(names)) {
     cant_read(paste(names, collapse = " "), " has no column position.")
   }
-  out <- data.frame(column_number = out_names, begin = out_begin, end = out_end)
+  out <- data.frame(column_number = as.character(unlist(out_names)),
+                    begin = as.numeric(unlist(out_begin)),
+                    end = as.numeric(unlist(out_end)))
   attr(out, "decimals") <- decimals
   attr(out, "text") <- unique(text_columns)
   out
@@ -1285,30 +1292,34 @@ variable_labels_sps <- function(codebook) {
     tokens <- tokenize(lines, c("/", "+"))
     quoted <- is_quoted(tokens)
     text <- unquote(tokens)
+    # What each token is, worked out once for all of them
+    is_end    <- !quoted & tokens == "."
+    is_plus   <- !quoted & tokens == "+"
+    is_column <- !quoted & !tokens %in% c("/", "+")
     columns <- labels <- character(length(tokens))
     n <- 0
     column <- NA_character_
     i <- 1
     while (i <= length(tokens)) {
-      if (!quoted[i] && tokens[i] == ".") break
-      if (!quoted[i] && !tokens[i] %in% c("/", "+")) {
+      if (is_end[i]) break
+      if (is_column[i]) {
         column <- tokens[i]
       } else if (quoted[i] && !is.na(column)) {
         label <- text[i]
-        while (i + 2 <= length(tokens) && tokens[i + 1] == "+" && quoted[i + 2]) {
+        while (i + 2 <= length(tokens) && is_plus[i + 1] && quoted[i + 2]) {
           label <- paste0(label, text[i + 2])
           i <- i + 2
         }
         n <- n + 1
         columns[n] <- column
-        labels[n] <- trimws(label)
+        labels[n] <- label
         column <- NA_character_
       }
       i <- i + 1
     }
     if (n > 0) {
       out[[length(out) + 1]] <- data.frame(column_number = columns[seq_len(n)],
-                                           label = labels[seq_len(n)])
+                                           label = trimws(labels[seq_len(n)]))
     }
   }
   do.call(rbind, out)
