@@ -165,3 +165,16 @@ test_that("a / with no columns after it starts no record", {
   expect_equal(positions(temp_file("DATA LIST FILE = 'x' V1 1-2 V2 3-4 /.", ".sps")),
                c(V1 = "1-2", V2 = "3-4"))
 })
+
+test_that("a large DATA LIST and VARIABLE LABELS are parsed quickly", {
+  # A guard: cdap's LEOKA setup file (about 2,300 columns) took 0.5 s
+  # before these readers worked out what each token is once
+  skip_on_cran()
+  n <- 10000
+  setup <- temp_file(c("DATA LIST FILE = 'x' /", paste0("  V", 1:n, " ", 1:n), ".",
+                       "VARIABLE LABELS", paste0("  V", 1:n, " 'Label ", 1:n, "'"), ".",
+                       "EXECUTE."), ".sps")
+  time <- system.time(names <- parse_setup(setup)$setup$column_name)[["elapsed"]]
+  expect_equal(names[c(1, n)], c("Label_1", paste0("Label_", n)))
+  expect_lt(time, 15)
+})
