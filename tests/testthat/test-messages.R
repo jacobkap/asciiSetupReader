@@ -94,9 +94,12 @@ test_that("the commented-out missing values message gives the line and counts", 
     "to use none.\n"))
 
   # SAS: line 87 is the "/*" before the IF statements' first line
-  expect_message(read_ascii_setup(weimar_dataset_name, weimar_sas_name),
-                 "the missing values starting on line [0-9]+ are commented out",
-                 class = "asciiSetupReader_commented_missing")
+  # (Its implied decimals message is tested above)
+  allow_messages(
+    expect_message(read_ascii_setup(weimar_dataset_name, weimar_sas_name),
+                   "the missing values starting on line [0-9]+ are commented out",
+                   class = "asciiSetupReader_commented_missing"),
+    "asciiSetupReader_implied_decimals")
 
   # Many values and columns: numbers get commas
   shr <- messages_from(read_ascii_setup(fixture("supplementary_homicide_reports_1976.zip"),

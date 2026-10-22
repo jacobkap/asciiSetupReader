@@ -1118,19 +1118,6 @@ sas_missing_statement <- function(statement) {
   data.frame(variable = target, values = values)
 }
 
-# TRUE if line `line` of codebook is inside a /* ... */ comment or is a
-# "* ...;" comment statement.
-in_sas_comment <- function(codebook, line) {
-  if (startsWith(codebook[line], "*")) return(TRUE)
-  before <- paste(codebook[seq_len(line - 1)], collapse = "\n")
-  # Closed /* */ comments, then quoted text and "* ...;" comment statements,
-  # which can mention "/*" without starting a comment
-  before <- gsub("(?s)/\\*.*?\\*/", "", before, perl = TRUE)
-  before <- gsub("'[^'\n]*'|\"[^\"\n]*\"", "", before, perl = TRUE)
-  before <- gsub("(?m)^\\s*\\*[^;]*;", "", before, perl = TRUE)
-  grepl("/*", before, fixed = TRUE)
-}
-
 # Expands "1 thru 5" rows into one row per value (1, 2, 3, 4, 5), keeping
 # the row's other columns, for parse_setup()'s output. Only ranges of up to
 # 1,000 whole numbers are expanded; others (such as "1000000 thru 9999999"

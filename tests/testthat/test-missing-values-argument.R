@@ -99,7 +99,8 @@ test_that("missing_values chooses which missing values become NA", {
                    all_codes)
   expect_error(read_ascii_setup(missing_data(), setup, missing_values = "some"),
                "should be one of")
-  expect_error(read_ascii_setup(missing_data(), setup, missing_values = TRUE))
+  expect_error(read_ascii_setup(missing_data(), setup, missing_values = TRUE),
+               "must be NULL or a character vector")
 })
 
 test_that("missing_values works on a real file with a commented-out section", {
@@ -298,11 +299,13 @@ test_that("SAS missing values inside /* */ are commented out", {
   closed <- parse_setup(sas(c("/* recodes below */", "IF V1 = 0 THEN V1 = .;")))$missing
   expect_false(closed$commented)
 
-  expect_true(in_sas_comment(c("a", "/* b", "c"), 3))
-  expect_false(in_sas_comment(c("a", "/* b */", "c"), 3))
-  expect_true(in_sas_comment(c("a", "/* b */ /* c", "d"), 3))
-  expect_true(in_sas_comment(c("a", "* IF V1 = 0 THEN V1 = .;"), 2))
-  # "/*" inside quotes or a "* ...;" comment doesn't start a comment
-  expect_false(in_sas_comment(c("LABEL V1 = 'see /* note';", "IF V1 = 0 THEN V1 = .;"), 2))
-  expect_false(in_sas_comment(c("* a comment mentioning /* here;", "IF V1 = 0 THEN V1 = .;"), 2))
+  # Whether a /* */ comment is open at the start of each line
+  expect_equal(sas_comment_state(c("a", "/* b", "c")), c(FALSE, FALSE, TRUE))
+  expect_equal(sas_comment_state(c("a", "/* b */", "c")), c(FALSE, FALSE, FALSE))
+  expect_equal(sas_comment_state(c("a", "/* b */ /* c", "d")), c(FALSE, FALSE, TRUE))
+  # "/*" inside quotes doesn't start a comment
+  expect_equal(sas_comment_state(c("LABEL V1 = 'see /* note';", "IF V1 = 0 THEN V1 = .;")),
+               c(FALSE, FALSE))
+  # A "* ...;" statement is a comment
+  expect_true(sas_statements(c("a;", "* IF V1 = 0 THEN V1 = .;"))$commented[2])
 })

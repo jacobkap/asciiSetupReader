@@ -27,8 +27,8 @@ get_column_spaces <- function(setup, variables, codebook) {
 
   if (any(setup$begin > setup$end)) {
     stop(paste0("The following columns have a start number greater than the end number. Please check your setup file and fix this issue before rerunning this code.",
-                paste("\nColumns with issue: ",
-                      setup$column_number[setup$begin > setup$end])))
+                "\nColumns with issue: ",
+                paste(setup$column_number[setup$begin > setup$end], collapse = ", ")))
   }
 
   # SAS files: the FORMAT statement links each column to the format (f_name)
