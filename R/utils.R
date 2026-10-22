@@ -434,12 +434,9 @@ read_data <- function(data, setup, labelled_na = character(0)) {
       "NA"
     }
     if (length(missing_text) == 0) next
-    values <- out[[column]]
-    empty <- values %in% missing_text
-    if (any(empty)) {
-      values[empty] <- NA
-      data.table::set(out, j = column, value = values)
-    }
+    # Only those cells are changed, in place
+    rows <- which(!is.na(data.table::chmatch(out[[column]], missing_text)))
+    if (length(rows) > 0) data.table::set(out, i = rows, j = column, value = NA_character_)
   }
   return(out)
 }
@@ -449,11 +446,9 @@ read_data <- function(data, setup, labelled_na = character(0)) {
 blanks_to_na <- function(data) {
   for (column in names(data)) {
     values <- data[[column]]
-    blank <- !is.na(values) & values == ""
-    if (any(blank)) {
-      values[blank] <- NA
-      data.table::set(data, j = column, value = values)
-    }
+    # Only those cells are changed, in place, with an NA of the column's type
+    rows <- which(values == "")
+    if (length(rows) > 0) data.table::set(data, i = rows, j = column, value = values[NA_integer_])
   }
   data
 }
