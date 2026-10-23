@@ -83,11 +83,11 @@ make_sps_setup(file_name      = file_name,
 # The new setup file can be used with parse_setup() and read_ascii_setup()
 parse_setup(paste0(file_name, ".sps"))
 #> $setup
-#>   column_number        column_name begin end
-#> 1          var1         state_name     1   1
-#> 2          var2             county     2   4
-#> 3          var3         population     5   8
-#> 4          var4 census_region_code     9  10
+#>   column_number        column_name begin end decimals
+#> 1          var1         state_name     1   1        0
+#> 2          var2             county     2   4        0
+#> 3          var3         population     5   8        0
+#> 4          var4 census_region_code     9  10        0
 #> 
 #> $value_labels
 #> $value_labels$var1
@@ -100,9 +100,9 @@ parse_setup(paste0(file_name, ".sps"))
 #> 
 #> 
 #> $missing
-#>   variable values
-#> 1     var1      9
-#> 2     var1     -8
-#> 3     var2     -8
+#>   variable values commented
+#> 1     var1      9     FALSE
+#> 2     var1     -8     FALSE
+#> 3     var2     -8     FALSE
 #> 
 ```

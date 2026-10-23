@@ -23,9 +23,9 @@ devtools::install_github("jacobkap/asciiSetupReader")
 ## Usage
 
 The parameters `data` and `setup_file` are the only ones required to run
-the package though four optional parameters (`use_value_labels`,
-`use_clean_names`, `select_columns` and `coerce_numeric`) allow you to
-customize results.
+the package though five optional parameters (`use_value_labels`,
+`use_clean_names`, `select_columns`, `coerce_numeric` and
+`missing_values`) allow you to customize results.
 
 `data` - A string containing the name of the data file
 
@@ -68,16 +68,16 @@ example[1:6, 1:4] # Look at first 6 rows and first 4 columns
 ## Read data
 
 - [`read_ascii_setup()`](https://jacobkap.github.io/asciiSetupReader/reference/read_ascii_setup.md)
-  : Read fixed-width ASCII file using SPSS or SAS Setup file.
+  : Read fixed-width ASCII file using SPSS or SAS Setup file
 - [`spss_ascii_reader()`](https://jacobkap.github.io/asciiSetupReader/reference/spss_ascii_reader.md)
-  : Read fixed-width ASCII file using SPSS Setup file.
+  : Read fixed-width ASCII file using SPSS Setup file
 - [`sas_ascii_reader()`](https://jacobkap.github.io/asciiSetupReader/reference/sas_ascii_reader.md)
-  : Read fixed-width ASCII file using SAS Setup file.
+  : Read fixed-width ASCII file using SAS Setup file
 
 ## Setup files
 
 - [`parse_setup()`](https://jacobkap.github.io/asciiSetupReader/reference/parse_setup.md)
-  : Parse the setup file (.sps or .sas).
+  : Parse the setup file (.sps or .sas)
 - [`make_sps_setup()`](https://jacobkap.github.io/asciiSetupReader/reference/make_sps_setup.md)
   : Create an SPSS setup file (.sps) to use for reading in fixed-width
   text files

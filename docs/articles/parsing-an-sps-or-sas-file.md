@@ -15,7 +15,7 @@ example <- asciiSetupReader::parse_setup(sps_name)
 
 ## setup
 
-The first object in the returned list is a data.frame with 4 columns and
+The first object in the returned list is a data.frame with 5 columns and
 as many rows as there are columns in the data. The “column_number”
 column is the non-descriptive name of the column while the “column_name”
 is the descriptive name of the column. In `read_ascii_setup`, setting
@@ -23,17 +23,19 @@ is the descriptive name of the column. In `read_ascii_setup`, setting
 “column_name” names, otherwise it will remain as the “column_number”
 names. Since the data is in fixed-width format, you need to know the
 location of each column. The “begin” and “end” columns in this object
-provide that location for each column in the data.
+provide that location for each column in the data. The “decimals” column
+gives each column’s implied decimal places: a value of 0000785 in a
+column with 1 implied decimal place is 78.5.
 
 ``` r
 head(example$setup)
-#>   column_number         column_name begin end
-#> 1            V1     IDENTIFIER_CODE     1   1
-#> 2            V2  NUMERIC_STATE_CODE     2   3
-#> 3            V3            ORI_CODE     4  10
-#> 4            V4               GROUP    11  12
-#> 5            V5 GEOGRAPHIC_DIVISION    13  13
-#> 6            V6                YEAR    14  17
+#>   column_number         column_name begin end decimals
+#> 1            V1     IDENTIFIER_CODE     1   1        0
+#> 2            V2  NUMERIC_STATE_CODE     2   3        0
+#> 3            V3            ORI_CODE     4  10        0
+#> 4            V4               GROUP    11  12        0
+#> 5            V5 GEOGRAPHIC_DIVISION    13  13        0
+#> 6            V6                YEAR    14  17        0
 ```
 
 ## value_labels
@@ -108,16 +110,19 @@ length(example$value_labels)
 
 ## missing
 
-The final object in the list a data.frame with two columns and as many
+The final object in the list a data.frame with three columns and as many
 rows as there are missing values in the data. The column “variable”
 indicates the column in the data and the column “values” says that the
-value in that row is to be replaced with NA. For example, if there are
-10 columns in the data with missing values and each column has two
-missing values (e.g. -8 and -9) there will be 20 rows in this
-data.frame. A missing value is when the data includes a value that
-should be replaced with NA. For example, data often includes negative
-values such as -8 or -9 mean that that value is missing and should be
-NA. If there are no missing values this object will be NULL.
+value in that row is to be replaced with NA. The column “commented” is
+TRUE for missing values from a part of the setup file that is commented
+out (see the `missing_values` parameter of
+[`read_ascii_setup()`](https://jacobkap.github.io/asciiSetupReader/reference/read_ascii_setup.md)).
+For example, if there are 10 columns in the data with missing values and
+each column has two missing values (e.g. -8 and -9) there will be 20
+rows in this data.frame. A missing value is when the data includes a
+value that should be replaced with NA. For example, data often includes
+negative values such as -8 or -9 mean that that value is missing and
+should be NA. If there are no missing values this object will be NULL.
 
 ``` r
 head(example$missing)

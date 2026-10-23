@@ -13,7 +13,7 @@ the setup file yourself."><meta property="og:image" content="https://jacobkap.gi
 
     <a class="navbar-brand me-2" href="../index.html">asciiSetupReader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,11 +128,11 @@ to be replaced by NA, e.g. c("var1", "9", "-8", "var2", "-8").</p></dd>
 <span class="r-in"><span><span class="co"># The new setup file can be used with parse_setup() and read_ascii_setup()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="parse_setup.html">parse_setup</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="st">".sps"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $setup</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   column_number        column_name begin end</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          var1         state_name     1   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          var2             county     2   4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          var3         population     5   8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          var4 census_region_code     9  10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   column_number        column_name begin end decimals</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          var1         state_name     1   1        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          var2             county     2   4        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          var3         population     5   8        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          var4 census_region_code     9  10        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $value_labels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $value_labels$var1</span>
@@ -145,10 +145,10 @@ to be replaced by NA, e.g. c("var1", "9", "-8", "var2", "-8").</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $missing</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   variable values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     var1      9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     var1     -8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     var2     -8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   variable values commented</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     var1      9     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     var1     -8     FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     var2     -8     FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

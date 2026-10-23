@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">asciiSetupReader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Jacob
 Kaplan</h4>
             
-            <h4 data-toc-skip class="date">2026-10-17</h4>
+            <h4 data-toc-skip class="date">2026-10-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/HEAD/vignettes/Introduction_to_asciiSetupReader.Rmd" class="external-link"><code>vignettes/Introduction_to_asciiSetupReader.Rmd</code></a></small>
       <div class="d-none name"><code>Introduction_to_asciiSetupReader.Rmd</code></div>
@@ -80,7 +80,7 @@ file explaining to the software how to read that file. This package
 allows you to read in the data if you have both the fixed-width file and
 its accompanying setup file. These parameters <code>data</code> and
 <code>setup_file</code> are the only ones requires to run the package
-though three optional parameters allow you to customize results.</p>
+though five optional parameters allow you to customize results.</p>
 <p><code>data</code> - A string containing the name of the data file</p>
 <p><code>setup_file</code> - A string containing the name of the data
 file</p>
@@ -111,8 +111,9 @@ file.</p>
 <span><span class="co">## 4 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span></span>
 <span><span class="co">## 5 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span></span>
 <span><span class="co">## 6 SHR master file            Arizona  AZ00189       Cit &lt; 2,500</span></span></code></pre>
-<p>There are three optional parameters: <code>use_value_labels</code>,
-<code>use_clean_names</code>, and <code>select_columns</code>.</p>
+<p>There are five optional parameters: <code>use_value_labels</code>,
+<code>use_clean_names</code>, <code>select_columns</code>,
+<code>coerce_numeric</code> and <code>missing_values</code>.</p>
 <div class="section level2">
 <h2 id="use_value_labels">
 <code>use_value_labels</code><a class="anchor" aria-label="anchor" href="#use_value_labels"></a>
@@ -206,7 +207,7 @@ columns by descriptive names.</p>
 non-descriptive names.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example</span> <span class="op">&lt;-</span> <span class="fu">asciiSetupReader</span><span class="fu">::</span><span class="fu"><a href="../reference/read_ascii_setup.html">read_ascii_setup</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>setup_file <span class="op">=</span> <span class="va">setup_file</span>, </span>
+<span>setup_file <span class="op">=</span> <span class="va">setup_file</span>,</span>
 <span>select_columns <span class="op">=</span> <span class="st">"V1"</span><span class="op">)</span> <span class="co"># Gets only the first columnss</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   IDENTIFIER_CODE</span></span>
@@ -216,6 +217,28 @@ non-descriptive names.</p>
 <span><span class="co">## 4 SHR master file</span></span>
 <span><span class="co">## 5 SHR master file</span></span>
 <span><span class="co">## 6 SHR master file</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="coerce_numeric">
+<code>coerce_numeric</code><a class="anchor" aria-label="anchor" href="#coerce_numeric"></a>
+</h2>
+<p>When <code>coerce_numeric</code> is TRUE (the default), columns whose
+values are all numbers become numeric columns. Columns the setup file
+says are text (SPSS “(A)”, SAS “$”) always stay text, so codes such as
+ZIP codes keep their leading zeros. Set it to FALSE to keep every column
+as text.</p>
+</div>
+<div class="section level2">
+<h2 id="missing_values">
+<code>missing_values</code><a class="anchor" aria-label="anchor" href="#missing_values"></a>
+</h2>
+<p>Setup files often list codes, such as -9 or 999, that mean a value is
+missing; these become NA. Many setup files have their missing values
+section commented out. <code>missing_values = "all"</code> (the default)
+uses every missing value in the file, as earlier versions did;
+<code>"active"</code> uses only those that aren’t commented out; and
+<code>"none"</code> uses none of them, so the codes stay in the
+data.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

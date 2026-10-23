@@ -12,12 +12,12 @@ Source:
 
 Kaplan J (2026). *asciiSetupReader: Reads Fixed-Width ASCII Data Files
 (.txt or .dat) that Have Accompanying Setup Files (.sps or .sas)*. R
-package version 2.6.0, <https://jacobkap.github.io/asciiSetupReader/>.
+package version 3.0.0, <https://jacobkap.github.io/asciiSetupReader/>.
 
     @Manual{,
       title = {asciiSetupReader: Reads Fixed-Width ASCII Data Files (.txt or .dat) that Have Accompanying Setup Files (.sps or .sas)},
       author = {Jacob Kaplan},
       year = {2026},
-      note = {R package version 2.6.0},
+      note = {R package version 3.0.0},
       url = {https://jacobkap.github.io/asciiSetupReader/},
     }

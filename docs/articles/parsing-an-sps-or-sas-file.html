@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">asciiSetupReader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Jacob
 Kaplan</h4>
             
-            <h4 data-toc-skip class="date">2026-10-17</h4>
+            <h4 data-toc-skip class="date">2026-10-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jacobkap/asciiSetupReader/blob/HEAD/vignettes/parsing-an-sps-or-sas-file.Rmd" class="external-link"><code>vignettes/parsing-an-sps-or-sas-file.Rmd</code></a></small>
       <div class="d-none name"><code>parsing-an-sps-or-sas-file.Rmd</code></div>
@@ -86,7 +86,7 @@ convert the .sps or .sas setup files into an usable format for R.</p>
 <div class="section level2">
 <h2 id="setup">setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p>The first object in the returned list is a data.frame with 4 columns
+<p>The first object in the returned list is a data.frame with 5 columns
 and as many rows as there are columns in the data. The “column_number”
 column is the non-descriptive name of the column while the “column_name”
 is the descriptive name of the column. In <code>read_ascii_setup</code>,
@@ -94,16 +94,18 @@ setting <code>use_clean_names</code> to TRUE will set the data column
 names to the “column_name” names, otherwise it will remain as the
 “column_number” names. Since the data is in fixed-width format, you need
 to know the location of each column. The “begin” and “end” columns in
-this object provide that location for each column in the data.</p>
+this object provide that location for each column in the data. The
+“decimals” column gives each column’s implied decimal places: a value of
+0000785 in a column with 1 implied decimal place is 78.5.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example</span><span class="op">$</span><span class="va">setup</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   column_number         column_name begin end</span></span>
-<span><span class="co">#&gt; 1            V1     IDENTIFIER_CODE     1   1</span></span>
-<span><span class="co">#&gt; 2            V2  NUMERIC_STATE_CODE     2   3</span></span>
-<span><span class="co">#&gt; 3            V3            ORI_CODE     4  10</span></span>
-<span><span class="co">#&gt; 4            V4               GROUP    11  12</span></span>
-<span><span class="co">#&gt; 5            V5 GEOGRAPHIC_DIVISION    13  13</span></span>
-<span><span class="co">#&gt; 6            V6                YEAR    14  17</span></span></code></pre></div>
+<span><span class="co">#&gt;   column_number         column_name begin end decimals</span></span>
+<span><span class="co">#&gt; 1            V1     IDENTIFIER_CODE     1   1        0</span></span>
+<span><span class="co">#&gt; 2            V2  NUMERIC_STATE_CODE     2   3        0</span></span>
+<span><span class="co">#&gt; 3            V3            ORI_CODE     4  10        0</span></span>
+<span><span class="co">#&gt; 4            V4               GROUP    11  12        0</span></span>
+<span><span class="co">#&gt; 5            V5 GEOGRAPHIC_DIVISION    13  13        0</span></span>
+<span><span class="co">#&gt; 6            V6                YEAR    14  17        0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="value_labels">value_labels<a class="anchor" aria-label="anchor" href="#value_labels"></a>
@@ -173,16 +175,19 @@ labels. We can see how many there are using <code><a href="https://rdrr.io/r/bas
 <div class="section level2">
 <h2 id="missing">missing<a class="anchor" aria-label="anchor" href="#missing"></a>
 </h2>
-<p>The final object in the list a data.frame with two columns and as
+<p>The final object in the list a data.frame with three columns and as
 many rows as there are missing values in the data. The column “variable”
 indicates the column in the data and the column “values” says that the
-value in that row is to be replaced with NA. For example, if there are
-10 columns in the data with missing values and each column has two
-missing values (e.g. -8 and -9) there will be 20 rows in this
-data.frame. A missing value is when the data includes a value that
-should be replaced with NA. For example, data often includes negative
-values such as -8 or -9 mean that that value is missing and should be
-NA. If there are no missing values this object will be NULL.</p>
+value in that row is to be replaced with NA. The column “commented” is
+TRUE for missing values from a part of the setup file that is commented
+out (see the <code>missing_values</code> parameter of
+<code><a href="../reference/read_ascii_setup.html">read_ascii_setup()</a></code>). For example, if there are 10 columns
+in the data with missing values and each column has two missing values
+(e.g. -8 and -9) there will be 20 rows in this data.frame. A missing
+value is when the data includes a value that should be replaced with NA.
+For example, data often includes negative values such as -8 or -9 mean
+that that value is missing and should be NA. If there are no missing
+values this object will be NULL.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example</span><span class="op">$</span><span class="va">missing</span><span class="op">)</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>

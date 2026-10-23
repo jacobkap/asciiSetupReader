@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">asciiSetupReader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,88 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.6.0" id="asciisetupreader-260">asciiSetupReader 2.6.0<a class="anchor" aria-label="anchor" href="#asciisetupreader-260"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.0.0" id="asciisetupreader-300">asciiSetupReader 3.0.0<a class="anchor" aria-label="anchor" href="#asciisetupreader-300"></a></h2>
+<div class="section level3">
+<h3 id="changes-that-can-affect-your-results-3-0-0">Changes that can affect your results<a class="anchor" aria-label="anchor" href="#changes-that-can-affect-your-results-3-0-0"></a></h3>
+<p>Read these before upgrading: some numbers, names, labels and missing values are now different (and correct).</p>
+<ul><li>
+<strong>Implied decimal places are applied.</strong> Columns that the setup file gives implied decimal places (<code>V7 37-43 (1)</code> in SPSS, <code>V7 37-43 .1</code> in SAS) used to be read as whole numbers, so a value of <code>0000785</code> was 785 rather than 78.5. They now get their decimal point, with a message listing each column and its number of decimal places. With <code>coerce_numeric = FALSE</code> the point is added to the text (“000078.5”). Values that already have a decimal point are kept as they are, as in SPSS and SAS. Value labels and missing values of these columns, which setup files write as numbers (<code>1.0</code>, <code>-9.00</code>), are now matched by value. <code>parse_setup()$setup</code> has a new <code>decimals</code> column.</li>
+<li>
+<strong>Column names are always unique.</strong> When two columns would get the same clean name, the later ones get their short name added, e.g. the second “CLOTHING” column, V93, is now <code>CLOTHING_V93</code>, and PSID’s repeated “RELEASE NUMBER” becomes <code>RELEASE_NUMBER_TA050001</code> for the 2005 wave. Names are compared ignoring case, as SPSS and SAS do, so <code>Age</code> and <code>AGE</code> count as the same name. Before, the data had duplicate names, so <code>data$CLOTHING</code> only gave the first of them and dplyr and data.table stopped with an error. A message lists the renamed columns.</li>
+<li>
+<strong>An <code>=</code> inside a label no longer cuts the name short.</strong> “SEP FROM FATHER &lt; OR = 5” was named <code>X5</code>; it is now <code>SEP_FROM_FATHER_under_OR_5</code>.</li>
+<li>
+<strong><code>%</code> in a label becomes <code>_percent_</code></strong> in the name, as <code>&lt;</code> already became <code>_under_</code> (e.g. “1919 RT % VOTES CAST” is <code>X1919_RT_percent_VOTES_CAST</code>, not <code>X1919_RT_VOTES_CAST</code>, which “1919 RT VOTES CAST” could also be).</li>
+<li>
+<strong>Missing values are matched by value</strong>, as SPSS and SAS do: a missing value written <code>9</code>, <code>09</code> or <code>0000009</code> matches any of them in the data. Before, they had to be written exactly as in the data, so <code>IF V156=0000009 THEN V156=.;</code> never matched the <code>9</code>s in a 1-column field. Columns the setup file says are text (SPSS <code>(A)</code>, SAS <code>$</code>) still need exactly the same text.</li>
+<li>
+<strong>Value labels of number columns are matched by value</strong> too, so a label for <code>0</code> now labels data written <code>0000000</code> (e.g. 7,997 “Not updated” values in the 1960 UCR file that used to stay as <code>0000000</code>). A column that now has some labelled values is text rather than numbers: in the 1960 UCR file, columns such as <code>JAN_LAST_UPDATE</code> have “Not updated” where they had 0. <code>use_value_labels = FALSE</code> keeps the codes.</li>
+<li>
+<strong>Blanks and the letters <code>NA</code> in text columns get their value labels</strong>: e.g. 166,650 blanks in the 1960 UCR file are now “No return received” and 15,555 in the 2000 NIBRS batch header “Inactive”, where they used to be <code>NA</code>. (SPSS treats a blank text value as a value; SAS treats it as missing but still gives it a format’s label for a blank.) A blank or <code>NA</code> text value without a label is still <code>NA</code>. In number columns a blank, <code>NA</code> or a lone <code>.</code> is missing (a lone <code>.</code> used to be kept).</li>
+<li>
+<strong>Columns the setup file says are text stay text</strong> (SPSS <code>(A)</code> or an <code>A</code> format, SAS <code>$</code>), as in SPSS and SAS, even when every value is a number, so codes such as ZIP code <code>01001</code> keep their leading zeros. Before, such a column became numeric with <code>coerce_numeric = TRUE</code>. In the SHR example data, the rarely filled-in ages of victims 5 to 11 are now text like those of victims 1 to 4, and empty text columns are character <code>NA</code> rather than numeric <code>NA</code>. Use <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> on a column you want as numbers.</li>
+<li>
+<strong>Columns without a label in VARIABLE LABELS or LABEL are kept</strong>, named by their short name; they used to be dropped.</li>
+<li>
+<strong>A SAS label continued on the next line is read in full</strong>, so names that used to be cut short at the line’s end are longer: e.g. the prisoners file’s <code>LFM</code> and <code>LFF</code> were <code>..._LOCAL_AUTHORITY</code> and <code>..._LOCAL_AUTHORITY_LFF</code> (one name, made unique) and are now <code>..._LOCAL_AUTHORITY_MALE</code> and <code>..._LOCAL_AUTHORITY_FEMALE</code>. 24 names in 6 of the 157 setup files used to check this release changed this way.</li>
+<li>
+<strong>A later VALUE LABELS command replaces a column’s earlier labels</strong>, as in SPSS (<code>ADD VALUE LABELS</code> adds to them instead). Before, the first set was kept. A message lists the columns whose earlier, different labels were replaced.</li>
+<li>
+<strong>SPSS GET DATA files are read at the right positions.</strong> Their column positions count from 0, so every column used to be read one position too early. As in SPSS, GET DATA formats such as <code>F7.1</code> don’t imply decimal places.</li>
+<li>Setup files that aren’t valid UTF-8 are read as Windows-1252, so curly quotes and dashes in labels are read correctly (see below).</li>
+<li>asciiSetupReader now needs R 4.1.0 or later (its dependencies vroom, readr and stringr already did).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="upgrading-from-3-0-0">Upgrading from 2.6.0<a class="anchor" aria-label="anchor" href="#upgrading-from-3-0-0"></a></h3>
+<ul><li>Code that uses descriptive column names may need the new names (made unique, <code>%</code>, <code>=</code>, full SAS labels). <code>parse_setup(setup_file)$setup</code> lists every column’s short name (<code>column_number</code>) and descriptive name (<code>column_name</code>); short names haven’t changed, and <code>use_clean_names = FALSE</code> gives them.</li>
+<li>Columns with implied decimal places now have their decimal point. To compare with results from 2.6.0, multiply such a column by <code>10^decimals</code>, using its <code>decimals</code> in <code>parse_setup(setup_file)$setup</code>.</li>
+<li>Columns can now be text rather than numbers because more of their codes get value labels, or because the setup file says they’re text. <code>use_value_labels = FALSE</code> keeps the codes, and <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> turns a text column of numbers into numbers.</li>
+<li>Missing values are applied as before by default (<code>missing_values =   "all"</code>, including ones that are commented out in the setup file).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-3-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-3-0-0"></a></h3>
+<ul><li>
+<code><a href="../reference/read_ascii_setup.html">read_ascii_setup()</a></code>, <code><a href="../reference/spss_ascii_reader.html">spss_ascii_reader()</a></code> and <code><a href="../reference/sas_ascii_reader.html">sas_ascii_reader()</a></code> have a <code>missing_values</code> argument. Many setup files have their missing values section commented out (<code>* MISSING VALUES</code> in SPSS, inside <code>/* */</code> in SAS) so the codes stay in the data unless you choose otherwise: <code>"all"</code> (the default, as before) uses every missing value in the file, <code>"active"</code> only those that aren’t commented out, and <code>"none"</code> none of them. When commented-out missing values are used, a message says where they are and how many values they made NA. <code>parse_setup()$missing</code> has a new <code>commented</code> column.</li>
+<li>A message tells you when a column with implied decimal places has values that equal one of its value labels’ or missing values’ codes only before the decimal point is added (e.g. <code>-9</code> in a <code>(2)</code> column is -0.09, not the code -9 ‘Blank’). As in SPSS and SAS the code isn’t used, but it suggests the data doesn’t match the setup file’s decimal places.</li>
+<li>Messages tell you about implied decimal places, commented-out missing values, renamed columns, replaced value labels and setup files that aren’t UTF-8. They have the class <code>"asciiSetupReader_message"</code> (and one for each kind), so they can be silenced with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code>. Missing values that also have a value label keep the label (as before); the documentation now says so.</li>
+<li>More SPSS and SAS syntax is understood: VALUE LABELS and MISSING VALUES for lists of variables (<code>V1 V2 1 'Yes'</code>, <code>V1 TO V5 (9)</code>) and starting on the command’s own line, <code>ADD VALUE LABELS</code>, several MISSING VALUES sections in one file, commented-out VALUE LABELS between other sections, variables named VALUE or LABELS, and SAS formatted input (<code>@1 V1 $CHAR2. <a href="https://github.com/3" class="external-link">@3</a> V2 4.1</code>).</li>
+<li>Setup files that aren’t valid UTF-8 are read as Windows-1252 (Latin-1 plus curly quotes and dashes), with a message, instead of failing with “input string 3 is invalid” (GitHub <a href="https://github.com/jacobkap/asciiSetupReader/issues/5" class="external-link">#5</a>).</li>
+<li>SPSS MISSING VALUES follow SPSS’s rules more closely: a later command replaces a column’s missing values, <code>V1 ()</code> clears them, <code>ALL</code> means every column, <code>/</code> can separate columns on one line, <code>THRU</code> can be in any case, and long or decimal ranges (<code>1000000 THRU 9999999</code>, <code>99.5 THRU 99.9</code>) are compared as numbers instead of being listed one value at a time.</li>
+<li>SAS missing value recodes are read as whole statements, from every section after INPUT: <code>&gt;=</code>/<code>GE</code> alone (<code>98 thru highest</code>), <code>&lt;=</code>/<code>LE</code>, <code>GE a AND LE b</code>, <code>EQ</code>, lower-case names and statements over several lines. Statements that aren’t “IF v = … THEN v = .;” (e.g. a recode to another value, or a condition on another column) used to be misread as missing values; they’re now skipped, with a message.</li>
+<li>Statements that change values rather than mark them missing (SAS <code>IF v = 1 THEN v = 5;</code>, SPSS <code>RECODE v (1=5)</code>) aren’t applied; a message lists them. Only a setup file’s layout, names, labels and missing values are used, as before, but such statements used to be misread.</li>
+<li>
+<code>SKIP</code> (SPSS DATA LIST), <code>/FIRSTCASE</code> (GET DATA) and <code>FIRSTOBS</code> (SAS INFILE) skip header lines in the data.</li>
+<li>SAS formatted input without <code>@</code> pointers (<code>INPUT V1 2. V2 $3.;</code>), INPUT on the same line as the first column, blank lines inside INPUT and commented-out INPUT statements are handled.</li>
+<li>Setup files the package can’t read now say why, with an error of class <code>"asciiSetupReader_error"</code>: a file for delimited data (<code>GET DATA /ARRANGEMENT = DELIMITED</code>, <code>DATA LIST FREE</code> or <code>LIST</code>, or SAS <code>DLM=</code>/<code>DSD</code>, GitHub <a href="https://github.com/jacobkap/asciiSetupReader/issues/13" class="external-link">#13</a>), a file of value labels without column positions (such as PSID’s separate formats files), a file without a DATA LIST or INPUT section, or a layout the package can’t read: several records per case (<code>RECORDS=</code>, <code>/2</code>, SAS <code>#2</code>), columns given by format only (<code>ID (F3) NAME (A5)</code>) or SAS variable lists in parentheses. These used to fail with “invalid ‘row.names’ length” or “argument of length 0”, or read the wrong columns.</li>
+<li>SAS FORMAT statements are read as whole statements: one format for a list of columns (<code>FORMAT V1 V2 YNF.;</code>), numbered and positional lists (<code>V1-V5</code>, <code>Q08-Q10</code>, <code>A1_1-A1_3</code>, <code>V1--V5</code>), formats without value labels (<code>8.2</code>, <code>DATE9.</code>) and <code>ATTRIB ... FORMAT=</code> (also after <code>LABEL='...'</code>). Format names match in any case, and a format defined twice uses the later definition, as in SAS.</li>
+<li>Column labels are read by their quoting, so they can be laid out any way SPSS and SAS allow: in SPSS VARIABLE LABELS (or <code>VAR LABELS</code>), several columns on one line, <code>/</code> between columns, the first column on the command’s own line and labels joined with <code>+</code>; in SAS LABEL, several columns on one line, blank lines, labels over several lines, a <code>;</code> inside a label, LABEL after another statement on its line, and <code>ATTRIB V1 V2 LABEL = '...'</code> (for every column listed) whatever else ATTRIB sets. A LABEL statement inside a <code>/* */</code> comment isn’t used.</li>
+<li>SAS code lists (<code>VALUE F 1, 2, 3 = 'Low';</code>) give each code the label. Value ranges (<code>1 - 97 = 'Actual hours'</code>) and <code>OTHER</code> aren’t applied, so the real numbers are kept; a message lists them.</li>
+<li>SPSS DATA LIST is read token by token, so its spacing and layout don’t matter: tightly spaced columns (<code>AA 1-4(A) BB 5-8(A)</code>), formats and decimals anywhere on a line (<code>V1 1-5 (F,2) V2 6-7</code>), columns on the DATA LIST line itself, a name and its position on different lines, <code>/* */</code> comments, names with <code>@</code>, <code>#</code>, <code>$</code> or <code>.</code>, and a missing closing period. As in SPSS, names listed before one range share it equally (<code>A B C 1-6</code>, <code>Q1 TO Q3 3-5</code>). GET DATA formats such as <code>AUTO</code> and <code>ADATE10</code> and <code>/VARIABLES=</code> without spaces are read, and a second record given by a bare <code>/</code> stops with the several-records error. All 157 setup files used to check this release are read exactly as before.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="package-3-0-0">Package<a class="anchor" aria-label="anchor" href="#package-3-0-0"></a></h3>
+<ul><li>The setup and data files used only by the tests moved from <code>inst/testdata</code> to <code>tests/testthat/testdata</code>, so they’re no longer installed with the package (about 4 MB less).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-3-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-3-0-0"></a></h3>
+<ul><li>
+<code>select_columns</code>: a column number past the last column stops with an error instead of crashing R (negative numbers still drop columns); a column asked for twice is read once, with its implied decimals; a name that isn’t found is listed, with a note on which names changed in this version; and selecting a name that another column also had says what that column is called now.</li>
+<li>A missing value range that no value in the data falls in (SPSS <code>97 THRU HI</code>, <code>LO THRU -1</code>, SAS <code>IF V1 &gt;= 97 THEN V1 = .;</code>) no longer stops <code><a href="../reference/read_ascii_setup.html">read_ascii_setup()</a></code> with “‘names’ attribute [1] must be the same length as the vector [0]”.</li>
+<li>SAS column input (<code>INPUT V1 1-2 V2 $ 3-4 V3 5-8 .2;</code>) is read token by token, as formatted input is, so a statement or comment after the <code>;</code> on INPUT’s line (<code>INPUT V1 1-2 V2 3-4; RUN;</code>), a <code>/* */</code> comment inside INPUT and single-spaced columns (<code>SEX $ 8 INCOME 9-15</code>) no longer drop or misplace columns.</li>
+<li>Every missing value range is compared with the data as numbers, so values between whole numbers are in it too: 97.5 is missing for <code>97 THRU 99</code>. <code>parse_setup()$missing</code> still lists a range of whole numbers value by value.</li>
+<li>Value labels keep apostrophes. Labels are now read by their quoting, so a quote character inside a label is part of the label: before, an apostrophe became a space or was dropped (<code>"anti-jehovah's witness"</code> became “anti-jehovah s witness” and <code>'Don''t know'</code> became “Dont know”). This affected both SPSS and SAS setup files.</li>
+<li>Value labels are kept exactly as written between their quotes in other ways too: a double quote inside a single-quoted label (<code>'Wife/"Wife"'</code>) is kept, and so are <code>=</code> and <code>;</code>, which used to become a space or be dropped.</li>
+<li>A variable whose value labels are written more than once in a setup file no longer gets its name added to a label (e.g. “msa state police V9”). Within one VALUE LABELS command, later copies only add codes that weren’t already labelled; a later command replaces the labels (see above).</li>
+<li>Fixed labels being assigned to the wrong codes in some setup files: a label of just ‘Wife’ (<code>2 'Wife' 3 'Common-law husband'</code> gave a code “2 Wife 3”), a code written <code>''''</code>, quoted words inside a label (<code>'farmer, ''profits'''</code>, <code>'Twelfth grade, "High School", GED'</code>), and SAS labels split over several quoted pieces, whose end became a separate code.</li>
+<li>SPSS value labels continued with <code>+</code> (at the end of a line or the start of the next) are joined into one label, and a double-quoted code followed by more pairs on the same line (<code>"02" "two" 3 'three'</code>) no longer runs into the next pair.</li>
+<li>The 2017 YRBS SADC SAS setup file, which failed with “NA/NaN argument”, can be read.</li>
+<li>A label of only punctuation (e.g. “…”) no longer ends the list of column names early; that column keeps its short name.</li>
+<li>A setup file that only mentions MISSING VALUES in a comment no longer fails.</li>
+<li>SAS setup files with many value labels (such as PSID’s) are parsed faster.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.6.0" id="asciisetupreader-260">asciiSetupReader 2.6.0<a class="anchor" aria-label="anchor" href="#asciisetupreader-260"></a></h2><p class="text-muted">CRAN release: 2026-10-17</p>
 <div class="section level3">
 <h3 id="bug-fixes-2-6-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-6-0"></a></h3>
 <ul><li>

@@ -1,4 +1,4 @@
-# Read fixed-width ASCII file using SPSS or SAS Setup file.
+# Read fixed-width ASCII file using SPSS or SAS Setup file
 
 read_ascii_setup() is used when you need to read a fixed-width ASCII
 (text) file that comes with a setup file. The setup file provides
@@ -15,7 +15,8 @@ read_ascii_setup(
   use_value_labels = TRUE,
   use_clean_names = TRUE,
   select_columns = NULL,
-  coerce_numeric = TRUE
+  coerce_numeric = TRUE,
+  missing_values = c("all", "active", "none")
 )
 ```
 
@@ -55,12 +56,125 @@ read_ascii_setup(
 
   If TRUE (default) will make columns where all values can be made
   numeric into numeric columns. Every value is checked, so a column with
-  any text value stays character. Useful as FALSE if variables have
-  leading zeros - such as US Census FIPS codes.
+  any text value stays character. Columns the setup file says are text
+  (SPSS "(A)", SAS "\$") always stay character, so their leading zeros
+  are kept. Useful as FALSE if other variables have leading zeros - such
+  as US Census FIPS codes given as numbers.
+
+  Columns that the setup file gives implied decimal places (e.g.
+  `V7 37-43 (1)` in SPSS or `V7 37-43 .1` in SAS) get their decimal
+  point whatever coerce_numeric is: a value of "0000785" with 1 implied
+  decimal place becomes 78.5, or the text "000078.5" if coerce_numeric
+  is FALSE. Values that already have a decimal point are kept as they
+  are.
+
+- missing_values:
+
+  Which of the setup file's missing values to set to NA. Setup files
+  often have their missing values section commented out (e.g. "\*
+  MISSING VALUES" in SPSS or inside `/* */` in SAS) so that the codes
+  stay in the data unless the user chooses otherwise.
+
+  "all"
+
+  :   (default) Use every missing value in the setup file, ignoring
+      whether it is commented out. This is what earlier versions did.
+
+  "active"
+
+  :   Use only the missing values that aren't commented out, as SPSS and
+      SAS would.
+
+  "none"
+
+  :   Don't use any missing values; every code is kept.
+
+  Missing values are matched by value, as in SPSS and SAS, so a missing
+  value written 9 also matches 09 or 0000009 in the data, except in
+  columns the setup file says are text (SPSS "(A)", SAS "\$"), where it
+  must be the same text. Value labels are applied first, so a missing
+  value that also has a value label (e.g. 9 = "Unknown") keeps its label
+  rather than becoming NA unless `use_value_labels = FALSE`.
 
 ## Value
 
 data.frame of the data from the ASCII file
+
+## Value labels
+
+As in SPSS and SAS, codes of number columns are matched by value (a
+label for 0 labels 0000000), and codes of text columns (SPSS "(A)", SAS
+"\$") must be the same text; a blank or the letters NA in a text column
+can have a label. As in SPSS, a VALUE LABELS command replaces any labels
+an earlier VALUE LABELS command gave a column, and ADD VALUE LABELS adds
+to them (changing the label of a code that already has one).
+
+## Recodes
+
+Only a setup file's layout, names, value labels and missing values are
+used. Statements that change values (SAS `IF v = 1 THEN v = 5;`, SPSS
+`RECODE v (1=5)`) aren't applied, and a message lists them.
+
+## Blank values
+
+A blank, a lone "." or the letters NA in a number column is NA. A blank
+or the letters NA in a text column is NA unless it has a value label
+(and `use_value_labels` is TRUE), which is used instead.
+
+## Messages
+
+read_ascii_setup() tells you with a message when it:
+
+- adds implied decimal places to a column's values (listing the columns
+  and their decimal places),
+
+- finds values in such a column that equal one of its codes (value
+  labels or missing values) only before the decimal places are applied,
+  which suggests the data doesn't match the setup file,
+
+- finds SAS value labels for ranges of values or OTHER, which aren't
+  applied (only when `use_value_labels = TRUE`),
+
+- sets values to NA because of missing values that are commented out in
+  the setup file (only when `missing_values = "all"`),
+
+- makes column names unique because two columns would have had the same
+  name (only when `use_clean_names = TRUE`),
+
+- uses only the last of several different sets of value labels a column
+  has (only when `use_value_labels = TRUE`),
+
+- skips SAS missing value statements it can't read (only when
+  `missing_values` isn't "none"),
+
+- finds statements that change values (recodes), which aren't applied,
+
+- selects, by `select_columns`, the first of several columns that had
+  the same name (saying what the others are called now), or
+
+- reads a setup file that isn't valid UTF-8 as Windows-1252.
+
+`suppressMessages(read_ascii_setup(...))` silences them. They have the
+class "asciiSetupReader_message", so
+`suppressMessages(read_ascii_setup(...), classes = "asciiSetupReader_message")`
+silences only these messages. Each kind also has its own class:
+"asciiSetupReader_implied_decimals", "asciiSetupReader_unscaled_codes",
+"asciiSetupReader_label_ranges", "asciiSetupReader_commented_missing",
+"asciiSetupReader_unique_names", "asciiSetupReader_replaced_labels",
+"asciiSetupReader_skipped_missing", "asciiSetupReader_recodes",
+"asciiSetupReader_select_columns" and "asciiSetupReader_encoding".
+
+## Errors
+
+Setup files that can't be read stop with an error of class
+"asciiSetupReader_error" and a more specific class:
+"asciiSetupReader_delimited" (a file for delimited, not fixed-width,
+data), "asciiSetupReader_no_positions" (no column positions, e.g. a file
+of value labels only) or "asciiSetupReader_unsupported_input" (an SPSS
+DATA LIST or SAS INPUT statement this package can't read, e.g. one with
+several records per case). A `select_columns` that names or numbers
+columns the setup file doesn't have stops with an error of class
+"asciiSetupReader_select_columns".
 
 ## Examples
 
@@ -85,4 +199,8 @@ example3 <- read_ascii_setup(data = dataset_name,
 # Only returns the first 5 columns
 example4 <- read_ascii_setup(data = dataset_name,
   setup_file = sps_name, select_columns = 1:5)
+
+# Only uses the missing values that aren't commented out
+example5 <- read_ascii_setup(data = dataset_name,
+  setup_file = sps_name, missing_values = "active")
 ```

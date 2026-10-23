@@ -5,7 +5,7 @@ files (.txt or .dat) that have an .sps (SPSS) or .sas (SAS) setup file
 explaining to the software how to read that file. This package allows
 you to read in the data if you have both the fixed-width file and its
 accompanying setup file. These parameters `data` and `setup_file` are
-the only ones requires to run the package though three optional
+the only ones requires to run the package though five optional
 parameters allow you to customize results.
 
 `data` - A string containing the name of the data file
@@ -45,8 +45,9 @@ example[1:6, 1:4] # Look at first 6 rows and first 4 columns
     ## 5 SHR master file            Arizona  AZ00189       Cit < 2,500
     ## 6 SHR master file            Arizona  AZ00189       Cit < 2,500
 
-There are three optional parameters: `use_value_labels`,
-`use_clean_names`, and `select_columns`.
+There are five optional parameters: `use_value_labels`,
+`use_clean_names`, `select_columns`, `coerce_numeric` and
+`missing_values`.
 
 ## `use_value_labels`
 
@@ -150,7 +151,7 @@ non-descriptive names.
 
 ``` r
 example <- asciiSetupReader::read_ascii_setup(data = data,
-setup_file = setup_file, 
+setup_file = setup_file,
 select_columns = "V1") # Gets only the first columnss
 head(example)
 ```
@@ -162,3 +163,19 @@ head(example)
     ## 4 SHR master file
     ## 5 SHR master file
     ## 6 SHR master file
+
+## `coerce_numeric`
+
+When `coerce_numeric` is TRUE (the default), columns whose values are
+all numbers become numeric columns. Columns the setup file says are text
+(SPSS “(A)”, SAS “\$”) always stay text, so codes such as ZIP codes keep
+their leading zeros. Set it to FALSE to keep every column as text.
+
+## `missing_values`
+
+Setup files often list codes, such as -9 or 999, that mean a value is
+missing; these become NA. Many setup files have their missing values
+section commented out. `missing_values = "all"` (the default) uses every
+missing value in the file, as earlier versions did; `"active"` uses only
+those that aren’t commented out; and `"none"` uses none of them, so the
+codes stay in the data.
